@@ -25,3 +25,10 @@ end
 前提 /^rake db:migrate$/ do
   show 'db/schema.rb', :as => 'auto'
 end
+
+前提 /^rails s$/ do
+end
+
+前提 /^http:\/\/localhost:3000 にアクセス$/ do
+  assert_visit '/'
+end

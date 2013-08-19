@@ -21,7 +21,6 @@ group :assets do
 end
 
 gem 'daddy'
-gem 'devise'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
@@ -31,11 +30,7 @@ gem 'jquery-rails'
 # gem 'jbuilder'
 
 # Use unicorn as the app server
-gem 'unicorn'
-
-group :development, :test do
-  gem 'thin'
-end
+# gem 'unicorn'
 
 # Deploy with Capistrano
 # gem 'capistrano'

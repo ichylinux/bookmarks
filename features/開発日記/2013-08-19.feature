@@ -12,4 +12,8 @@
     * rake dad:db:create
     * rake db:migrate
 
+  シナリオ: アプリを起動
+    * rails s
+    * http://localhost:3000 にアクセス
+
 
