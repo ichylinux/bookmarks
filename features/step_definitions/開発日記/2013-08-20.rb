@@ -18,5 +18,21 @@ end
 end
 
 もし /^rake db:migrate$/ do
-  show 'db/schema.rb'
+  git_diff 'db/schema.rb', :as => 'auto'
+end
+
+もし /^application_controllerを修正$/ do
+  git_diff 'app/controllers/application_controller.rb'
+end
+
+もし /^レイアウトにログアウトのリンクを用意$/ do
+  show 'app/views/common/_menu.html.erb', :as => 'new'
+  git_diff 'app/views/layouts/application.html.erb'
+end
+
+もし /^rails s$/ do
+end
+
+もし /^http:\/\/localhost:3000 にアクセスするとログイン画面が表示される$/ do
+  assert_visit '/users/sign_in'
 end
