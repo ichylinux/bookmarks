@@ -34,5 +34,22 @@ end
 end
 
 もし /^http:\/\/localhost:3000 にアクセスするとログイン画面が表示される$/ do
-  assert_visit '/users/sign_in'
+  visit '/'
+  assert_url '/users/sign_in'
+end
+
+もし /^メールアドレスとパスワードを入力して (.*?) をクリック$/ do |action|
+  fill_in 'Email', :with => 'test@example.com'
+  fill_in 'Password', :with => 'password'
+  fill_in 'Password confirmation', :with => 'password'
+  click_on action
+end
+
+ならば /^ユーザ登録画面に遷移$/ do
+  assert_url '/users/sign_up'
+end
+
+ならば /^トップ画面に遷移し、ログアウトのリンクが表示される$/ do
+  assert_url '/$'
+  assert page.has_link?('ログアウト')
 end
