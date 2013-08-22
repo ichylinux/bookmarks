@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th><%= Bookmark.human_attribute_name :title %></th>
+    <th><%= Bookmark.human_attribute_name :url %></th>
+    <th></th>
+  </tr>
+  
+  <% @bookmarks.each do |b| %>
+    <tr>
+      <td><%= b.title %></td>
+      <td><%= b.url %></td>
+      <td>
+        <%= link_to '編集', edit_bookmark_path(b) %>
+        <%= link_to '削除', bookmark_path(b), :method => 'delete', :confirm => t('messages.confirm_delete', :name => b.title) %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= link_to '追加', new_bookmark_path %>

@@ -1,0 +1,13 @@
+<%= form_for @bookmark do |f| %>
+  <table>
+    <tr>
+      <th><%= f.label :title %></th>
+      <td><%= f.text_field :title %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :url %></th>
+      <td><%= f.text_field :url %></td>
+    </tr>
+  </table>
+  <%= f.submit '登録' %>
+<% end %>

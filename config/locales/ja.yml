@@ -1,0 +1,9 @@
+ja:
+  activerecord:
+    attributes:
+      bookmark:
+        title: タイトル
+        url: URL
+
+  messages:
+    confirm_delete: '%{name} を削除します。よろしいですか？'
