@@ -14,6 +14,7 @@
 ActiveRecord::Schema.define(:version => 20130821035447) do
 
   create_table "bookmarks", :force => true do |t|
+    t.integer  "user_id",                       :null => false
     t.string   "title",                         :null => false
     t.string   "url",                           :null => false
     t.boolean  "deleted",    :default => false, :null => false

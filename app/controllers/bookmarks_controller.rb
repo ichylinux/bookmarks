@@ -3,7 +3,7 @@
 class BookmarksController < ApplicationController
   
   def index
-    @bookmarks = Bookmark.not_deleted
+    @bookmarks = Bookmark.where(:user_id => current_user).not_deleted
   end
 
   def show
@@ -18,6 +18,7 @@ class BookmarksController < ApplicationController
     @bookmark = Bookmark.new(params[:bookmark])
     
     @bookmark.transaction do
+      @bookmark.user = current_user
       @bookmark.save!
     end
     

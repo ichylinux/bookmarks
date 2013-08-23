@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class Bookmark < ActiveRecord::Base
-  # attr_accessible :title, :body
+  belongs_to :user
 end

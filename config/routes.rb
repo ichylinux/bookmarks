@@ -47,7 +47,7 @@ Bookmarks::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-  
+
   resources :bookmarks
 
   # You can have the root of your site routed with "root"
