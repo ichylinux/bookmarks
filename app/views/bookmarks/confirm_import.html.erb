@@ -1,0 +1,21 @@
+<%= form_for @bookmark_import_form, :url => {:action => 'import'} do |f| %>
+  <%= f.submit '登録' %>
+  <table>
+    <tr>
+      <th>削除</th>
+      <th>タイトル</th>
+    </tr>
+    <% @bookmark_import_form.bookmarks.each_with_index do |b, i| %>
+      <%= f.fields_for b, :index => i do |f_b| %>
+        <tr>
+          <td>
+            <%= f_b.check_box :deleted %>
+            <%= f_b.hidden_field :title %>
+            <%= f_b.hidden_field :url %>
+          </td>
+          <td><%= link_to b.title, b.url, :target => '_blank' %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+<% end %>

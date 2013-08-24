@@ -210,6 +210,7 @@ DEPENDENCIES
   devise
   jquery-rails
   mysql2
+  nokogiri
   rails (= 3.2.14)
   sass-rails (~> 3.2.3)
   therubyracer

@@ -3,7 +3,7 @@
 class WelcomeController < ApplicationController
 
   def index
-    @bookmarks = Bookmark.not_deleted
+    @bookmarks = Bookmark.where(:user_id => current_user).not_deleted
   end
 
 end

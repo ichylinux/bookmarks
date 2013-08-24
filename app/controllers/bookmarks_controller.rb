@@ -49,4 +49,29 @@ class BookmarksController < ApplicationController
     
     redirect_to :action => 'index'
   end
+
+  def new_import
+    @bookmark_import_form = BookmarkImportForm.new
+  end
+
+  def confirm_import
+    @bookmark_import_form = BookmarkImportForm.new(params[:bookmark_import_form])
+
+    doc = Nokogiri::XML(@bookmark_import_form.bookmark_file.open)
+    @bookmark_import_form.bookmarks = doc.css('A').map { |a| Bookmark.new(:title => a.text, :url => a['HREF']) }
+  end
+
+  def import
+    @bookmark_import_form = BookmarkImportForm.new(params[:bookmark_import_form])
+    
+    Bookmark.transaction do
+      @bookmark_import_form.bookmarks.each do |b|
+        b.user = current_user
+        b.save!
+      end
+    end
+    
+    redirect_to :action => 'index'
+  end
+
 end

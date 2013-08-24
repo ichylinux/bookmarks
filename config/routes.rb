@@ -48,7 +48,13 @@ Bookmarks::Application.routes.draw do
   #     resources :products
   #   end
 
-  resources :bookmarks
+  resources :bookmarks do
+    collection do
+      get  'new_import'
+      post 'confirm_import'
+      post 'import'
+    end
+  end
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.

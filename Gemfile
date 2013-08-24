@@ -23,6 +23,7 @@ end
 gem 'daddy'
 gem 'devise'
 gem 'jquery-rails'
+gem 'nokogiri'
 
 group :development, :test do
   gem 'capybara-webkit'
