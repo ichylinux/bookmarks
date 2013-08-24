@@ -40,3 +40,7 @@ end
 もし /^管理機能へのリンクを作成$/ do
   git_diff 'app/views/common/_menu.html.erb', :as => 'edit'
 end
+
+もし /^indexアクションを追加$/ do
+  git_diff 'app/controllers/welcome_controller.rb'
+end
