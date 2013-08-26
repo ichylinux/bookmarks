@@ -14,8 +14,9 @@
     * サーバにログインし、以下のコマンドを実行
       """
       $ ssh ホスト名
-      $ rake dad:unicorn:install
-      $ rake dad:nginx:app:config
+      $ rake dad:unicorn:install RAILS_ENV=production RAILS_ROOT=/home/${USER}/apps/bookmarks/current
+      $ rake dad:nginx:app:config RAILS_ENV=production RAILS_ROOT=/home/${USER}/apps/bookmarks/current
       $ cap deploy:setup
       $ cap deploy:cold
+      $ sudo /etc/init.d/nginx restart
       """
