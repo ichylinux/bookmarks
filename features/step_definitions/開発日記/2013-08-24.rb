@@ -30,4 +30,5 @@ end
 
 もし /^ブックマークの検索を修正$/ do |string|
   git_diff 'app/controllers/welcome_controller.rb'
+  git_diff 'app/controllers/bookmarks_controller.rb', :from => 5, :to => 7
 end
