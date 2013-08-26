@@ -28,6 +28,6 @@ end
   git_diff 'app/controllers/bookmarks_controller.rb', :from => 53, :to => 75
 end
 
-もし /^ログインユーザのブックマークだけに絞り込み$/ do
+もし /^ブックマークの検索を修正$/ do |string|
   git_diff 'app/controllers/welcome_controller.rb'
 end
