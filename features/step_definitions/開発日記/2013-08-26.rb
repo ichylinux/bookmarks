@@ -5,7 +5,7 @@
 end
 
 もし /^Capistranoの設定ファイルを用意$/ do |string|
-  show 'Capfile', :as => 'auto'
+  show 'Capfile', :as => ['auto', 'edit']
   show 'config/deploy.rb', :as => ['auto', 'edit']
 end
 
