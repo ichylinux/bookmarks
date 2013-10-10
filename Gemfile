@@ -20,9 +20,10 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'compass-rails'
 gem 'daddy'
 gem 'devise'
-gem 'faraday'
+gem 'feedzirra'
 gem 'jquery-rails'
 gem 'nokogiri'
 

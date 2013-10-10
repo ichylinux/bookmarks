@@ -1,5 +1,23 @@
-<ol>
-  <% @bookmarks.each do |b| %>
-    <li><%= link_to b.title, b.url %></li>
+<div style="margin-left: 5px;">
+  <% if @bookmarks.present? %>
+    <div class="gadget">
+      <div>Bookmark</div>
+      <ol>
+        <% @bookmarks.each do |b| %>
+          <li><%= link_to b.title, b.url %></li>
+        <% end %>
+      </ol>
+    </div>
   <% end %>
-</ol>
+
+  <% @feeds.each_with_index do |f, i| %>
+    <div class="gadget">
+      <div><%= f.title %></div>
+      <ol>
+        <% f.entries.each do |e| %>
+          <li><%= link_to e.title, e.url %></li>
+        <% end %>
+      </ol>
+    </div>
+  <% end %>
+</div>

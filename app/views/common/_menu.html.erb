@@ -1,4 +1,12 @@
-<%= link_to 'トップ', root_path %>
-<%= link_to 'ブックマーク', bookmarks_path %>
-<%= link_to 'RSS', feeds_path %>
-<%= link_to 'ログアウト', destroy_user_session_path, :method => 'delete' if user_signed_in? %>
+<div class="header">
+  <span>
+    <%= link_to current_user.email, root_path %>
+  </span>
+  <span style="float: right;">
+    <%= link_to 'ブックマーク', bookmarks_path %>
+    |
+    <%= link_to 'RSS', feeds_path %>
+    |
+    <%= link_to 'ログアウト', destroy_user_session_path, :method => 'delete' if user_signed_in? %>
+  </span>
+</div>
