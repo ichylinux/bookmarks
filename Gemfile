@@ -22,6 +22,7 @@ end
 
 gem 'daddy'
 gem 'devise'
+gem 'faraday'
 gem 'jquery-rails'
 gem 'nokogiri'
 
@@ -44,7 +45,7 @@ group :development, :test do
 end
 
 # Deploy with Capistrano
-# gem 'capistrano'
+gem 'capistrano', '< 3.0.0'
 
 # To use debugger
 # gem 'debugger'
