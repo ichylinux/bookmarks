@@ -2,11 +2,14 @@
 
 class Feed < ActiveRecord::Base
 
-  def fead
-    @feed ||= Feedzirra::Feed.fetch_and_parse(self.url)
+  def feed
+    begin
+      @feed ||= Feedzirra::Feed.fetch_and_parse(self.url)
+    rescue => e
+    end
   end
 
   def entries
-    fead.entries
+    feed ? feed.entries : []
   end
 end

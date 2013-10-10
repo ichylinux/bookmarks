@@ -1,8 +1,22 @@
-div.gadget {
-  width: 33%;
-  float: left;
+@import "compass/css3/box-shadow";
 
-  div {
-    font-weight: bold;
+div.gadgets {
+  padding: 0 4px;
+
+  div.gadget {
+    width: 33.33%;
+    float: left;
+
+    div {
+      margin: 4px;
+      @include box-shadow(rgba(0, 0, 0, .2) 0 0 2px);
+
+      div.title {
+        margin: 0;
+        padding: 4px;
+        font-weight: bold;
+        background: rgba(0, 0, 0, .20);
+      }
+    }
   }
 }

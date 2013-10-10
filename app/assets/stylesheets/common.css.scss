@@ -9,9 +9,17 @@ body {
   font-size: 12px;
 }
 
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 ol {
   margin: 0;
-  padding: 0;
+  padding: 2px;
 
   li {
     margin: 5px;

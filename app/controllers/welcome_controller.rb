@@ -4,7 +4,7 @@ class WelcomeController < ApplicationController
 
   def index
     @bookmarks = Bookmark.where(:user_id => current_user).not_deleted.order(:title)
-    @feeds = Feed.where(:user_id => current_user).not_deleted.order(:title)
+    @feeds = Feed.where(:user_id => current_user).not_deleted
   end
 
 end
