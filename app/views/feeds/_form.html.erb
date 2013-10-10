@@ -1,0 +1,15 @@
+<%= form_for @feed do |f| %>
+  <table>
+    <tr>
+      <th><%= f.label :title %></th>
+      <td><%= f.text_field :title %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :url %></th>
+      <td><%= f.text_field :url %></td>
+    </tr>
+    <tr>
+      <td colspan="2"><%= f.submit %></td>
+    </tr>
+  </table>
+<% end %>

@@ -4,6 +4,9 @@ ja:
       bookmark:
         title: タイトル
         url: URL
+      feed:
+        title: サイト名
+        url: フィードURL
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'

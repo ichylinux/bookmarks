@@ -1,0 +1,17 @@
+.actions {
+  margin: 10px 0;
+
+  a, a:visited {
+    vertical-align: middle;
+    border: solid 1px #595757;
+    border-radius: 8px;
+    padding: 4px 8px;
+    text-decoration: none;
+    color: #595757;
+  }
+  
+  a:hover {
+    color: white;
+    background: #A9A9A9;
+  }
+}

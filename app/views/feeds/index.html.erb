@@ -1,0 +1,23 @@
+<div class="actions">
+  <%= link_to '追加', new_feed_path %>
+</div>
+
+<% unless @feeds.present? %>
+  <div>1件も登録されていません。</div>
+<% else %>
+  <table>
+    <tr>
+      <th>サイト名</th>
+      <th>フィードURL</th>
+      <th></th>
+    </tr>
+    
+    <% @feeds.each do |feed| %>
+      <tr>
+        <td><%= feed.title %></td>
+        <td><%= feed.url %></td>
+        <td><%= link_to '削除', feed_path(feed), :method => 'delete', :confirm => t('messages.confirm_delete', :name => feed.title) %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
