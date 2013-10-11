@@ -1,6 +1,6 @@
 <div class="header">
   <span>
-    <%= link_to current_user.email, root_path %>
+    <%= link_to current_user.email, root_path if user_signed_in? %>
   </span>
   <span style="float: right;">
     <%= link_to 'ブックマーク', bookmarks_path %>
