@@ -23,7 +23,7 @@ end
 gem 'compass-rails'
 gem 'daddy'
 gem 'devise'
-gem 'feedzirra'
+gem 'feedzirra', '= 0.2.0.rc2', :path => File.join(File.dirname(__FILE__), 'vendor', 'feedzirra-0.2.0.rc2')
 gem 'jquery-rails'
 gem 'nokogiri'
 
