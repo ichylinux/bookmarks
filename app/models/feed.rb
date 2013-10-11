@@ -12,6 +12,7 @@ class Feed < ActiveRecord::Base
   end
 
   def entries
+    Rails.logger.debug feed.class.name
     feed.is_a?(Feedzirra::Parser::RSS) ? feed.entries : []
   end
 end
