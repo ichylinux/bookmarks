@@ -8,7 +8,10 @@
       <b>
       $ rails g model feed
       </b>
-      マイグレーションファイルを編集
+      """
+    * マイグレーションファイルを編集
+    * マイグレーション実行
+      """
       <b>
       $ rake db:migrate
       </b>
@@ -19,4 +22,5 @@
       $ rails g controller feeds
       </b>
       """
+    * ルーティングを追加
     * トップページにRSSを表示
