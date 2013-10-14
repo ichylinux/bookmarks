@@ -34,7 +34,7 @@ end
 
 もし /^ラベルを日本語化$/ do
   show 'config/locales/ja.yml', :as => 'new'
-  git_diff 'config/application.rb', :as => 'edit', :from => 32, :to => 34
+  git_diff 'config/application.rb', :as => 'edit', :from => 32, :to => 35
 end
 
 もし /^管理機能へのリンクを作成$/ do
