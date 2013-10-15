@@ -13,15 +13,15 @@
   <% end %>
 
   <% if @todos.present? %>
-    <div class="gadget">
+    <div class="gadget todo">
       <div>
         <div class="title">Todo</div>
         <ol>
           <% @todos.each do |t| %>
             <li>
-              <span style="display: table-cell;"><%= t.priority_name %></span>
+              <span class="<%= "priority_#{t.priority}" %>" style="display: table-cell;"><%= t.priority_name %></span>
               <span style="display: table-cell;">&nbsp;</span>
-              <span style="display: table-cell;"><%= link_to t.title %></span>
+              <span style="display: table-cell;"><%= t.title %></span>
             </li>
           <% end %>
         </ol>
