@@ -10,6 +10,7 @@ div.gadgets {
     div {
       margin: 4px;
       @include box-shadow(rgba(0, 0, 0, .2) 0 0 2px);
+      overflow: hidden;
 
       div.title {
         margin: 0;
@@ -22,6 +23,15 @@ div.gadgets {
 }
 
 .todo {
+  ol {
+    li {
+      span {
+        display: table-cell;
+        padding: 0 4px;
+      }
+    }
+  }
+
   .priority_1 {
     color: red;
   }
