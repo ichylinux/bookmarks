@@ -9,7 +9,7 @@ end
 end
 
 もし /^マイグレーション実行$/ do |string|
-  git_diff 'db/schema.rb', :as => 'auto'
+  git_diff 'db/schema.rb', :as => 'auto', :from => 34, :to => 42
 end
 
 もし /^マスタ管理画面を作成$/ do
