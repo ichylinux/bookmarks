@@ -57,7 +57,7 @@ Bookmarks::Application.routes.draw do
   end
 
   resources :feeds
-  
+
   resources :todos do
     collection do
       get  'new_import'

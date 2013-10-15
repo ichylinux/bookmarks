@@ -6,40 +6,6 @@ class TodosController < ApplicationController
     @todos = Todo.where(:user_id => current_user).not_deleted.order(:title)
   end
 
-  def show
-    @todo = Todo.find(params[:id])
-  end
-
-  def new
-    @todo = Todo.new
-  end
-
-  def create
-    @todo = Todo.new(params[:todo])
-    
-    @todo.transaction do
-      @todo.user = current_user
-      @todo.save!
-    end
-    
-    redirect_to :action => 'index'
-  end
-
-  def edit
-    @todo = Todo.find(params[:id])
-  end
-  
-  def update
-    @todo = Todo.find(params[:id])
-    
-    @todo.transaction do
-      @todo.attributes = params[:todo]
-      @todo.save!
-    end
-    
-    redirect_to :action => 'show', :id => @todo
-  end
-
   def destroy
     @todo = Todo.find(params[:id])
     

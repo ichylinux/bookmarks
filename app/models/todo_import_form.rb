@@ -8,7 +8,7 @@ class TodoImportForm < Daddy::Model
   def build
     CSV.readlines(self.file.open).each_with_index do |line, i|
       next unless line.length == 2
-      self.todos << Todo.new(:title => line[1], :priority => PRIORITIES.invert[line[0]])
+      self.todos << Todo.new(:title => line[1], :priority => PRIORITIES.invert[line[0]] || PRIORITY_NORMAL)
     end
 
     self
