@@ -1,3 +1,8 @@
+<div class="actions">
+  <%= link_to '追加', new_bookmark_path %>
+  <%= link_to 'インポート', new_import_bookmarks_path %>
+</div>
+
 <table>
   <tr>
     <th><%= Bookmark.human_attribute_name :title %></th>
@@ -15,6 +20,3 @@
     </tr>
   <% end %>
 </table>
-
-<%= link_to '追加', new_bookmark_path %>
-<%= link_to 'インポート', new_import_bookmarks_path %>

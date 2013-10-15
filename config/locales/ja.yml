@@ -7,6 +7,9 @@ ja:
       feed:
         title: サイト名
         url: フィードURL
+      todo:
+        priority: 優先度
+        title: タイトル
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'
