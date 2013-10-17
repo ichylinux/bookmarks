@@ -56,7 +56,11 @@ Bookmarks::Application.routes.draw do
     end
   end
 
-  resources :feeds
+  resources :feeds do
+    collection do
+      get  'get_feed_title'
+    end
+  end
 
   resources :todos do
     collection do

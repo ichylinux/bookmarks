@@ -1,12 +1,15 @@
 <%= form_for @feed do |f| %>
   <table>
     <tr>
-      <th><%= f.label :title %></th>
-      <td><%= f.text_field :title %></td>
-    </tr>
-    <tr>
       <th><%= f.label :url %></th>
       <td><%= f.text_field :url %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :title %></th>
+      <td>
+        <%= f.text_field :title %>
+        <%= f.button 'フィードから取得', :onclick => 'feeds.get_feed_title(this); return false;', :'data-url' => url_for(:action => 'get_feed_title') %>
+      </td>
     </tr>
     <tr>
       <td colspan="2"><%= f.submit %></td>
