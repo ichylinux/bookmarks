@@ -1,7 +1,7 @@
 # coding: UTF-8
 
 もし /^タイトルを取得するアクションを追加$/ do
-  git_diff 'config/routes.rb', :from => 59, :to => 63
+  git_diff 'config/routes.rb', :from => 59, :to => 64
   git_diff 'app/controllers/feeds_controller.rb'
 end
 
