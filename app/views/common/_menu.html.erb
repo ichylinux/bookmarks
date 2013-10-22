@@ -1,14 +1,26 @@
 <div class="header">
-  <span>
-    <%= link_to current_user.email, root_path if user_signed_in? %>
+  <script>
+    function toggle_menu() {
+      var menu = $('.header .menu');
+      menu.toggleClass('hidden');
+    }
+    
+    $(document).ready(function() {
+      var menu = $('.header .menu');
+      menu.position({
+        of: $('.header .email'),
+        my: 'right top',
+        at: 'right bottom'
+      });
+    });
+  </script>
+  <span class="email">
+    <a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a>
   </span>
-  <span style="float: right;">
-    <%= link_to 'ブックマーク', bookmarks_path %>
-    |
-    <%= link_to 'RSS', feeds_path %>
-    |
-    <%= link_to 'TODO', todos_path %>
-    |
-    <%= link_to 'ログアウト', destroy_user_session_path, :method => 'delete' if user_signed_in? %>
-  </span>
+  <div class="menu hidden">
+    <div><%= link_to 'ブックマーク', bookmarks_path %></div>
+    <div><%= link_to 'RSS', feeds_path %></div>
+    <div><%= link_to 'TODO', todos_path %></div>
+    <div><%= link_to 'ログアウト', destroy_user_session_path, :method => 'delete' %></div>
+  </div>
 </div>
