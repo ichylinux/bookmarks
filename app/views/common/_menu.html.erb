@@ -1,23 +1,21 @@
 <div class="header">
   <script>
     function toggle_menu() {
-      var menu = $('.header .menu');
-      menu.toggleClass('hidden');
+      $('.header .menu').toggleClass('hidden');
     }
     
     $(document).ready(function() {
-      var menu = $('.header .menu');
-      menu.position({
-        of: $('.header .email'),
-        my: 'right top',
-        at: 'right bottom'
-      });
+      var header = $('.header').first();
+      var menu = header.find('.menu').first();
+      menu.css('top', header.offset().top + header.height());
+      menu.css('left', header.offset().left + header.outerWidth() - menu.outerWidth());
     });
   </script>
   <span class="email">
     <a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a>
   </span>
   <div class="menu hidden">
+    <div><%= link_to 'Home', root_path %></div>
     <div><%= link_to 'ブックマーク', bookmarks_path %></div>
     <div><%= link_to 'RSS', feeds_path %></div>
     <div><%= link_to 'TODO', todos_path %></div>
