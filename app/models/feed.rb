@@ -10,7 +10,7 @@ class Feed < ActiveRecord::Base
       @feed = false
     end
   end
-  
+
   def feed?
     feed.is_a?(Feedzirra::Parser::RSS)
   end

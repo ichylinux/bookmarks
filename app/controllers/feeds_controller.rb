@@ -17,11 +17,11 @@ class FeedsController < ApplicationController
 
     redirect_to :action => 'index'
   end
-  
+
   def edit
     @feed = Feed.find(params[:id])
   end
-  
+
   def update
     @feed = Feed.find(params[:id])
     @feed.attributes = params[:feed]

@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<%= render 'common/menu' %>
+<%= render 'common/menu' if user_signed_in? %>
 <%= yield %>
 
 </body>
