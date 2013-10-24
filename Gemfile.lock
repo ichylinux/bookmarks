@@ -78,7 +78,7 @@ GEM
       nokogiri (>= 1.5.0)
       rails (>= 3.0.0)
     curb (0.8.5)
-    daddy (0.1.15)
+    daddy (0.1.16)
       capybara
       ci_reporter
       cucumber
@@ -86,6 +86,7 @@ GEM
       database_cleaner
       differ
       execjs
+      faraday
       poltergeist
       rails (~> 3.2.0)
       rails-i18n
@@ -106,6 +107,8 @@ GEM
     erubis (2.7.0)
     eventmachine (1.0.3)
     execjs (2.0.2)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
     feedzirra (0.2.1)
       curb (~> 0.8.1)
       loofah (~> 1.2.1)
@@ -136,6 +139,7 @@ GEM
     mini_portile (0.5.2)
     multi_json (1.8.2)
     multi_test (0.0.2)
+    multipart-post (1.2.0)
     mysql2 (0.3.13)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)

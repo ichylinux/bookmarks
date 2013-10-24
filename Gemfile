@@ -5,8 +5,11 @@ gem 'rails', '3.2.15'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+gem 'daddy'
+gem 'devise'
+gem 'feedzirra'
 gem 'mysql2'
-
+gem 'nokogiri'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -21,12 +24,8 @@ group :assets do
 end
 
 gem 'compass-rails'
-gem 'daddy'
-gem 'devise'
-gem 'feedzirra'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'nokogiri'
 
 group :development, :test do
   gem 'capybara-webkit'

@@ -12,7 +12,9 @@ class Feed < ActiveRecord::Base
   end
 
   def feed?
-    feed.is_a?(Feedzirra::Parser::RSS)
+    return true if feed.is_a?(Feedzirra::Parser::RSS)
+    return true if feed.is_a?(Feedzirra::Parser::Atom)
+    false
   end
 
   def entries
