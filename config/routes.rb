@@ -58,7 +58,7 @@ Bookmarks::Application.routes.draw do
 
   resources :feeds do
     collection do
-      get  'get_feed_title'
+      post 'get_feed_title'
     end
   end
 

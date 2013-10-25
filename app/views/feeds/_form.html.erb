@@ -5,6 +5,14 @@
       <td><%= f.text_field :url %></td>
     </tr>
     <tr>
+      <th><%= f.label :auth_user %></th>
+      <td><%= f.text_field :auth_user %></td>
+    </tr>
+    <tr>
+      <th><%= f.label :auth_password %></th>
+      <td><%= f.password_field :auth_password %></td>
+    </tr>
+    <tr>
       <th><%= f.label :title %></th>
       <td>
         <%= f.text_field :title %>

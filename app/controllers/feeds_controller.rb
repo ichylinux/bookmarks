@@ -38,7 +38,7 @@ class FeedsController < ApplicationController
   end
 
   def get_feed_title
-    @feed = Feed.new(:url => params[:url])
+    @feed = Feed.new(:url => params[:url], :auth_user => params[:auth_user], :auth_password => params[:auth_password])
     if @feed.feed?
       render :text => @feed.feed.title
     else

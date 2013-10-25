@@ -8,7 +8,7 @@ feeds.get_feed_title = function(button) {
     return;
   }
   
-  $.get($(button).data('url'), {url: url}, function(title) {
+  $.post($(button).data('url'), {url: url}, function(title) {
     if ($.trim(title) == '') {
       alert('フィードを取得できませんでした。');
       return;

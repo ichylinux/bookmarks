@@ -5,6 +5,8 @@ ja:
         title: タイトル
         url: URL
       feed:
+        auth_user: 認証ユーザ
+        auth_password: 認証パスワード
         title: サイト名
         url: フィードURL
       todo:

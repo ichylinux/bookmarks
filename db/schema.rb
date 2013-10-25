@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131015031309) do
+ActiveRecord::Schema.define(:version => 20131025030933) do
 
   create_table "bookmarks", :force => true do |t|
     t.integer  "user_id",                       :null => false
@@ -23,12 +23,15 @@ ActiveRecord::Schema.define(:version => 20131015031309) do
   end
 
   create_table "feeds", :force => true do |t|
-    t.integer  "user_id",                       :null => false
-    t.string   "title",                         :null => false
-    t.string   "url",                           :null => false
-    t.boolean  "deleted",    :default => false, :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.integer  "user_id",                                    :null => false
+    t.string   "title",                                      :null => false
+    t.string   "url",                                        :null => false
+    t.boolean  "deleted",                 :default => false, :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+    t.string   "auth_user"
+    t.string   "auth_encrypted_password"
+    t.string   "auth_salt"
   end
 
   create_table "todos", :force => true do |t|
