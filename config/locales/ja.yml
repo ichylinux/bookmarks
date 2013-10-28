@@ -7,6 +7,7 @@ ja:
       feed:
         auth_user: 認証ユーザ
         auth_password: 認証パスワード
+        auth_url: 認証用URL
         title: サイト名
         url: フィードURL
       todo:

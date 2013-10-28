@@ -12,7 +12,15 @@ class Feed < ActiveRecord::Base
       split = self.url.split('/')
 
       url = split[0] + '//' + split[2]
-      path = '/' + split[3..-1].join('/')
+
+      split = ('/' + split[3..-1].join('/')).split('?')
+      path = split[0]
+
+      params = {}
+      split[1].split('&').each do |query|
+        key_value = query.split('=')
+        params[key_value[0]] = key_value[1]
+      end if split[1]
 
       options = {}
       if self.auth_user.present?
@@ -24,7 +32,13 @@ class Feed < ActiveRecord::Base
         end
       end
 
-      xml = Daddy::HttpClient.new(url, options).get(path)
+      client = Daddy::HttpClient.new(url, options)
+      if auth_url.present?
+        client.get(auth_url)
+      end
+      xml = client.get(path, params)
+
+      Rails.logger.info xml
 
       @feed ||= Feedzirra::Feed.parse(xml)
 
@@ -49,7 +63,7 @@ class Feed < ActiveRecord::Base
 
   def auth_decrypted_password
     encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt, :cipher => 'aes-256-cbc')
-    encryptor.decrypt_and_verify(self.auth_encrypted_password)
+    encryptor.decrypt(self.auth_encrypted_password)
   end
 
   private
@@ -58,7 +72,7 @@ class Feed < ActiveRecord::Base
     if self.auth_user.present? and self.auth_password.present?
       self.auth_salt = SecureRandom::hex(128).to_s
       encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt, :cipher => 'aes-256-cbc')
-      self.auth_encrypted_password = encryptor.encrypt_and_sign(self.auth_password)
+      self.auth_encrypted_password = encryptor.encrypt(self.auth_password)
     end
   end
 
