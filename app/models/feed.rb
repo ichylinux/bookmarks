@@ -9,39 +9,11 @@ class Feed < ActiveRecord::Base
     return @feed unless @feed.nil?
 
     begin
-      split = self.url.split('/')
-
-      url = split[0] + '//' + split[2]
-
-      split = ('/' + split[3..-1].join('/')).split('?')
-      path = split[0]
-
-      params = {}
-      split[1].split('&').each do |query|
-        key_value = query.split('=')
-        params[key_value[0]] = key_value[1]
-      end if split[1]
-
-      options = {}
-      if self.auth_user.present?
-        options[:auth_user] = self.auth_user
-        if self.auth_password.present?
-          options[:auth_password] = self.auth_password
-        elsif self.auth_encrypted_password.present?
-          options[:auth_password] = self.auth_decrypted_password
-        end
+      if basic_auth_required?
+        @feed ||= retrieve_feed_with_basic_auth
+      else
+        @feed ||= Feedzirra::Feed.fetch_and_parse(self.url, :ssl_verify_host => false)
       end
-
-      client = Daddy::HttpClient.new(url, options)
-      if auth_url.present?
-        client.get(auth_url)
-      end
-      xml = client.get(path, params)
-
-      Rails.logger.info xml
-
-      @feed ||= Feedzirra::Feed.parse(xml)
-
     rescue => e
       Rails.logger.error e.message
       @feed = false
@@ -53,6 +25,7 @@ class Feed < ActiveRecord::Base
   def feed?
     return true if feed.is_a?(Feedzirra::Parser::RSS)
     return true if feed.is_a?(Feedzirra::Parser::Atom)
+    return true if feed.is_a?(Feedzirra::Parser::RSSFeedBurner)
     false
   end
 
@@ -74,6 +47,60 @@ class Feed < ActiveRecord::Base
       encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt, :cipher => 'aes-256-cbc')
       self.auth_encrypted_password = encryptor.encrypt(self.auth_password)
     end
+  end
+
+  def basic_auth_required?
+    auth_user.present?
+  end
+
+  def retrieve_feed_with_basic_auth
+    options = {}
+    if self.auth_user.present?
+      options[:auth_user] = self.auth_user
+      if self.auth_password.present?
+        options[:auth_password] = self.auth_password
+      elsif self.auth_encrypted_password.present?
+        options[:auth_password] = self.auth_decrypted_password
+      end
+    end
+
+    client = Daddy::HttpClient.new(base_url, options)
+
+    if auth_url.present?
+      auth_path = '/' + auth_url.split('/')[3..-1].join('/')
+      client.get(auth_path)
+    end
+
+    xml = client.get(request_path, request_params)
+
+    Rails.logger.info xml
+
+    Feedzirra::Feed.parse(xml)
+  end
+
+  def base_url
+    split = self.url.split('/')
+    url = split[0] + '//' + split[2]
+  end
+
+  def request_path
+    split = self.url.split('/')
+    split = ('/' + split[3..-1].join('/')).split('?')
+    split[0]
+  end
+
+  def request_params
+    split = self.url.split('/')
+    split = ('/' + split[3..-1].join('/')).split('?')
+
+    ret = {}
+
+    split[1].split('&').each do |query|
+      key_value = query.split('=')
+      ret[key_value[0]] = key_value[1]
+    end if split[1]
+    
+    ret
   end
 
 end
