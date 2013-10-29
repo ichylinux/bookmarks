@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131028035011) do
+ActiveRecord::Schema.define(:version => 20131029035156) do
 
   create_table "bookmarks", :force => true do |t|
     t.integer  "user_id",                       :null => false
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20131028035011) do
     t.string   "auth_encrypted_password"
     t.string   "auth_salt"
     t.string   "auth_url"
+    t.integer  "display_count",                              :null => false
   end
 
   create_table "todos", :force => true do |t|

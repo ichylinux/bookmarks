@@ -33,7 +33,8 @@
       <div>
         <div class="title"><%= f.title %></div>
         <ol>
-          <% f.entries.each do |e| %>
+          <% f.entries.each_with_index do |e, i| %>
+            <% break if i == f.display_count %>
             <li><%= link_to e.title, e.url %></li>
           <% end %>
         </ol>

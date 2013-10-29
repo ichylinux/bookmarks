@@ -1,8 +1,15 @@
 # coding: UTF-8
 
+module FeedConst
+  DEFAULT_DISPLAY_COUNT = 5
+end
+
 class Feed < ActiveRecord::Base
+  include FeedConst
+
   attr_accessor :auth_password
 
+  before_save :set_display_count
   before_save :set_auth
 
   def feed
@@ -40,6 +47,10 @@ class Feed < ActiveRecord::Base
   end
 
   private
+
+  def set_display_count
+    self.display_count = DEFAULT_DISPLAY_COUNT if self.display_count.to_i == 0
+  end
 
   def set_auth
     if self.auth_user.present? and self.auth_password.present?
