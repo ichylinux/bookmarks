@@ -2,7 +2,7 @@
   <table>
     <tr>
       <th><%= f.label :url %></th>
-      <td><%= f.text_field :url %></td>
+      <td><%= f.text_field :url, :class => 'url' %></td>
     </tr>
     <tr>
       <th><%= f.label :auth_user %></th>
@@ -22,6 +22,10 @@
         <%= f.text_field :title %>
         <%= f.button 'フィードから取得', :onclick => 'feeds.get_feed_title(this); return false;', :'data-url' => url_for(:action => 'get_feed_title') %>
       </td>
+    </tr>
+    <tr>
+      <th><%= f.label :display_count %></th>
+      <td><%= f.number_field :display_count, :class => 'display_count' %></td>
     </tr>
     <tr>
       <td colspan="2"><%= f.submit %></td>

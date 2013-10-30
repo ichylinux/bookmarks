@@ -8,6 +8,7 @@ ja:
         auth_user: 認証ユーザ
         auth_password: 認証パスワード
         auth_url: 認証用URL
+        display_count: 表示件数
         title: サイト名
         url: フィードURL
       todo:

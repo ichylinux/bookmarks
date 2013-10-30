@@ -8,6 +8,7 @@
   <table class="feeds">
     <tr>
       <th>サイト名</th>
+      <th>表示件数</th>
       <th>フィードURL</th>
       <th colspan="2"></th>
     </tr>
@@ -15,6 +16,7 @@
     <% @feeds.each do |feed| %>
       <tr>
         <td><%= feed.title %></td>
+        <td class="center"><%= feed.display_count %></td>
         <td><div class="url"><%= feed.url %></div></td>
         <td><%= link_to '編集', edit_feed_path(feed) %></td>
         <td><%= link_to '削除', feed_path(feed), :method => 'delete', :confirm => t('messages.confirm_delete', :name => feed.title) %></td>
