@@ -6,8 +6,7 @@
 <table>
   <tr>
     <th><%= Bookmark.human_attribute_name :title %></th>
-    <th><%= Bookmark.human_attribute_name :url %></th>
-    <th></th>
+    <th colspan="2"></th>
   </tr>
   
   <% @bookmarks.each do |b| %>
@@ -15,6 +14,8 @@
       <td><%= link_to b.title, b.url, :target => '_blank' %></td>
       <td>
         <%= link_to '編集', edit_bookmark_path(b) %>
+      </td>
+      <td>
         <%= link_to '削除', bookmark_path(b), :method => 'delete', :confirm => t('messages.confirm_delete', :name => b.title) %>
       </td>
     </tr>
