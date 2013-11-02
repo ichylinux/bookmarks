@@ -8,8 +8,13 @@
 </head>
 <body>
 
-<%= render 'common/menu' if user_signed_in? %>
-<%= yield %>
+<div class="head_box">
+  へっど
+</div>
+<div class="wrapper">
+  <%= render 'common/menu' if user_signed_in? %>
+  <%= yield %>
+</div>
 
 </body>
 </html>
