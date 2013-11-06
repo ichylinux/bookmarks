@@ -1,6 +1,0 @@
-<ol>
-  <% @feed.entries.each_with_index do |e, i| %>
-    <% break if i == @feed.display_count %>
-    <li><%= link_to e.title, e.url %></li>
-  <% end %>
-</ol>
