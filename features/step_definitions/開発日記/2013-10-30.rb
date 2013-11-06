@@ -6,6 +6,7 @@ end
 
 もし /^フォームの修正$/ do
   git_diff 'app/views/feeds/_form.html.erb', :from => 19, :to => 33
+  git_diff 'config/locales/ja.yml'
 end
 
 もし /^表示件数で絞り込み$/ do
