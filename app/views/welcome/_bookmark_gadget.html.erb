@@ -1,0 +1,10 @@
+<div class="gadget">
+  <div>
+    <div class="title"><%= gadget.title %></div>
+    <ol>
+      <% gadget.entries.each do |bookmark| %>
+        <li><%= link_to bookmark.title, bookmark.url %></li>
+      <% end %>
+    </ol>
+  </div>
+</div>

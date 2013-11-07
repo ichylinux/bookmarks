@@ -1,12 +1,11 @@
 @import "compass/css3/box-shadow";
 
 div.gadgets {
-  padding: 0 4px;
+  float: left;
+  width: 33.33%;
+  padding-bottom: 100px;
 
   div.gadget {
-    width: 33.33%;
-    float: left;
-
     div {
       margin: 4px;
       @include box-shadow(rgba(0, 0, 0, .2) 0 0 2px);
@@ -41,12 +40,4 @@ div.gadgets {
   .priority_3 {
     color: grey;
   }
-}
-
-.viewport {
-  @include box-shadow(rgba(0, 0, 0, .2) 0 0 2px);
-  width: 32%;
-  height: 600px;
-  margin: 0 0.5%;
-  float: left;
 }

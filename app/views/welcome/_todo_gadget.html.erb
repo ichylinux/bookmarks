@@ -1,0 +1,13 @@
+<div class="gadget todo">
+  <div>
+    <div class="title"><%= gadget.title %></div>
+    <ol>
+      <% gadget.entries.each do |todo| %>
+        <li>
+          <span class="<%= "priority_#{todo.priority}" %>"><%= todo.priority_name %></span>
+          <span><%= todo.title %></span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+</div>
