@@ -12,6 +12,22 @@
     </div>
   <% end %>
 
+  <% if @todos.present? %>
+    <div class="gadget todo">
+      <div>
+        <div class="title">Todo</div>
+        <ol>
+          <% @todos.each do |t| %>
+            <li>
+              <span class="<%= "priority_#{t.priority}" %>"><%= t.priority_name %></span>
+              <span><%= t.title %></span>
+            </li>
+          <% end %>
+        </ol>
+      </div>
+    </div>
+  <% end %>
+
   <% @feeds.each do |f| %>
     <script>
       $(document).ready(function() {
