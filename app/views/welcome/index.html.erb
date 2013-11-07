@@ -1,13 +1,31 @@
 <script>
   $(document).ready(function() {
-    $('.gadgets').sortable({connectWith: ".gadgets"});
-    $('.gadgets').disableSelection();
+    $('#column_0, #column_1, #column_2').sortable({
+      connectWith: ".gadgets",
+      update: function() {
+        <% 3.times.each do |i| %>
+          var column_<%= i %> = new Array();
+          $('#column_<%= i %> > div').each(function() {
+            column_<%= i %>.push($(this).attr('id'));
+          });
+        <% end %>
+
+        var params = {
+          <% 3.times.each do |i| %>
+            column_<%= i %>: column_<%= i %>,
+          <% end %>
+        }; 
+        
+        $.post('<%= url_for :action => 'save_state' %>', params, function() {
+        });
+      }
+    }).disableSelection();
   });
 </script>
 
 
 <% 3.times.each do |i| %>
-  <div class="gadgets">
+  <div id="column_<%= i %>" class="gadgets">
     <% @gadgets[i].each do |g| %>
       <%= render g.class.name.underscore, :gadget => g %>
     <% end %>
