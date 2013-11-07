@@ -6,6 +6,12 @@ class FeedsController < ApplicationController
     @feeds = Feed.where(:user_id => current_user.id).not_deleted
   end
 
+  def show
+    @feed = Feed.find(params[:id])
+    
+    render :layout => ! request.xhr?
+  end
+
   def new
     @feed = Feed.new
   end
