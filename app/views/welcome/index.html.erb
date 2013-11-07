@@ -29,13 +29,21 @@
   <% end %>
 
   <% @feeds.each do |f| %>
-    <div class="gadget">
+    <script>
+      $(document).ready(function() {
+        $.get('<%= feed_path(f) %>', {format: 'html'}, function(html) {
+          $('#feed_<%= f.id %>').find('ol').replaceWith(html);
+        });
+      });
+    </script>
+
+    <div id="feed_<%= f.id %>" class="gadget">
       <div>
         <div class="title"><%= f.title %></div>
         <ol>
-          <% f.entries.each do |e| %>
-            <li><%= link_to e.title, e.url %></li>
-          <% end %>
+          <li>
+            <span style="line-height: <%= f.display_count %>em;">フィードを取得中・・・</span>
+          </li>
         </ol>
       </div>
     </div>
