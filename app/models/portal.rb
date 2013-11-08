@@ -25,10 +25,8 @@ class Portal
       @columns[pl.column_no] << g if g
     end
 
-    count = 0
     gadgets.each_with_index do |g, i|
-      @columns[i % 3] << g
-      count += 1
+      @columns[i % 3] << g[1]
     end
     
     columns
