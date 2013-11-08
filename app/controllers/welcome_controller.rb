@@ -24,8 +24,4 @@ class WelcomeController < ApplicationController
     end
   end
 
-  def save_state
-    render :nothing => true
-  end
-
 end
