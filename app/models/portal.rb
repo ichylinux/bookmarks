@@ -64,11 +64,14 @@ class Portal
         pl = PortalLayout.where(:user_id => user.id, :column_no => column_no, :display_order => i).first
         pl ||= PortalLayout.new(:user_id => user.id, :column_no => column_no, :display_order => i)
         pl.gadget_id = gadget_id
+        pl.updated_at = now
         pl.save!
       end
     end
 
-    PortalLayout.delete_all(['user_id = ? and updated_at < ?', user.id, now])
+    PortalLayout.where('user_id = ? and updated_at < ?', user.id, now).each do |pl|
+      pl.destroy
+    end
   end
 
 end
