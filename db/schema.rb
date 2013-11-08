@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131029035156) do
+ActiveRecord::Schema.define(:version => 20131108034231) do
 
   create_table "bookmarks", :force => true do |t|
     t.integer  "user_id",                       :null => false
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(:version => 20131029035156) do
     t.string   "auth_salt"
     t.string   "auth_url"
     t.integer  "display_count",                              :null => false
+  end
+
+  create_table "portal_layouts", :force => true do |t|
+    t.integer  "user_id",                      :null => false
+    t.integer  "column_no",     :default => 0, :null => false
+    t.integer  "display_order", :default => 0, :null => false
+    t.string   "gadget_id",                    :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   create_table "todos", :force => true do |t|
