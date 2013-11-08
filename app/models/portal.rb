@@ -26,7 +26,7 @@ class Portal
     end
 
     gadgets.each_with_index do |g, i|
-      @columns[i % 3] << g[1]
+      @columns[i % 3].unshift(g[1])
     end
     
     columns
