@@ -14,7 +14,7 @@
 
         var params = {
           <% @portal.column_count.times.each do |i| %>
-            column_<%= i %>: column_<%= i %>,
+            'portal[column_<%= i %>]': column_<%= i %>,
           <% end %>
         }; 
         
@@ -23,7 +23,6 @@
     }).disableSelection();
   });
 </script>
-
 
 <% @portal.columns.each_with_index do |gadgets, i| %>
   <div id="column_<%= i %>" class="gadgets">
