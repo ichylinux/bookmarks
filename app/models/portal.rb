@@ -15,33 +15,45 @@ class Portal
   end
 
   def columns
-    gadgets
+    return @columns if @columns
+
+    gadgets = get_gadgets
+    @columns = [[], [], []]
+
+    PortalLayout.where(:user_id => user.id).order('column_no, display_order').each do |pl|
+      g = gadgets.delete(pl.gadget_id)
+      @columns[pl.column_no] << g if g
+    end
+
+    count = 0
+    gadgets.each_with_index do |g, i|
+      @columns[i % 3] << g
+      count += 1
+    end
+    
+    columns
   end
 
-  def gadgets
-    return @gadgets if @gadgets
-
-    @gadgets = [[], [], []]
-    count = 0
-
+  def get_gadgets
+    ret = {}
+    
     bookmarks = Bookmark.where(:user_id => user).not_deleted.order(:title)
     if bookmarks.present?
-      @gadgets[count % 3] << BookmarkGadget.new(bookmarks)
-      count += 1
+      gadget = BookmarkGadget.new(bookmarks) 
+      ret[gadget.gadget_id] = gadget
     end
 
     todos = Todo.where(:user_id => user).not_deleted.order(:priority, :title)
     if todos.present?
-      @gadgets[count % 3] << TodoGadget.new(todos)
-      count += 1
+      gadget = TodoGadget.new(todos) 
+      ret[gadget.gadget_id] = gadget
     end
     
     Feed.where(:user_id => user).not_deleted.each do |f|
-      @gadgets[count % 3] << f
-      count += 1
+      ret[f.gadget_id] = f
     end
 
-    gadgets
+    ret
   end
 
   def update_layout(params = {})

@@ -5,7 +5,11 @@ class TodoGadget
   def initialize(todos)
     @todos = todos
   end
-  
+
+  def gadget_id
+    'todo'
+  end
+
   def title
     'Todo'
   end

@@ -1,23 +1,26 @@
 <script>
+  function collect_portal_layout_params() {
+    <% @portal.column_count.times.each do |i| %>
+      var column_<%= i %> = new Array();
+      $('#column_<%= i %> > div').each(function() {
+        column_<%= i %>.push($(this).attr('id'));
+      });
+    <% end %>
+
+    return {
+      <% @portal.column_count.times.each do |i| %>
+        'portal[column_<%= i %>]': column_<%= i %>,
+      <% end %>
+    }; 
+  }
+
   $(document).ready(function() {
     var selector = '<%= (0..@portal.column_count - 1).map{|i| "#column_#{i}" }.join(',') %>';
 
     $(selector).sortable({
       connectWith: ".gadgets",
       update: function() {
-        <% @portal.column_count.times.each do |i| %>
-          var column_<%= i %> = new Array();
-          $('#column_<%= i %> > div').each(function() {
-            column_<%= i %>.push($(this).attr('id'));
-          });
-        <% end %>
-
-        var params = {
-          <% @portal.column_count.times.each do |i| %>
-            'portal[column_<%= i %>]': column_<%= i %>,
-          <% end %>
-        }; 
-        
+        var params = collect_portal_layout_params();
         $.post('<%= url_for :action => 'save_state' %>', params);
       }
     }).disableSelection();

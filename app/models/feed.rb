@@ -36,6 +36,10 @@ class Feed < ActiveRecord::Base
     false
   end
 
+  def gadget_id
+    "feed_#{self.id}"
+  end
+
   def entries
     Rails.logger.debug feed.class.name
     feed? ? feed.entries : []
