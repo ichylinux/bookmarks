@@ -6,10 +6,6 @@ class Portal
     @user = user
   end
 
-  def user
-    @user
-  end
-
   def column_count
     columns.size
   end
@@ -32,6 +28,33 @@ class Portal
     columns
   end
 
+  def update_layout(params = {})
+    valid_layouts = []
+
+    params.each do |column, gadget_ids|
+      column_no = column.split('_').last.to_i
+      
+      gadget_ids.each_with_index do |gadget_id, i|
+        pl = PortalLayout.where(:user_id => user.id, :column_no => column_no, :display_order => i).first
+        pl ||= PortalLayout.new(:user_id => user.id, :column_no => column_no, :display_order => i)
+        pl.gadget_id = gadget_id
+        pl.save!
+        
+        valid_layouts << pl.id
+      end
+    end
+
+    PortalLayout.where('user_id = ? and id not in(?)', user.id, valid_layouts).each do |pl|
+      pl.destroy
+    end
+  end
+
+  private
+
+  def user
+    @user
+  end
+
   def get_gadgets
     ret = {}
     
@@ -52,26 +75,6 @@ class Portal
     end
 
     ret
-  end
-
-  def update_layout(params = {})
-    now = Time.now
-
-    params.each do |column, gadget_ids|
-      column_no = column.split('_').last.to_i
-      
-      gadget_ids.each_with_index do |gadget_id, i|
-        pl = PortalLayout.where(:user_id => user.id, :column_no => column_no, :display_order => i).first
-        pl ||= PortalLayout.new(:user_id => user.id, :column_no => column_no, :display_order => i)
-        pl.gadget_id = gadget_id
-        pl.updated_at = now
-        pl.save!
-      end
-    end
-
-    PortalLayout.where('user_id = ? and updated_at < ?', user.id, now).each do |pl|
-      pl.destroy
-    end
   end
 
 end
