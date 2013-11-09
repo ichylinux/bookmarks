@@ -46,8 +46,8 @@ class Feed < ActiveRecord::Base
   end
 
   def auth_decrypted_password
-    encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt, :cipher => 'aes-256-cbc')
-    encryptor.decrypt(self.auth_encrypted_password)
+    encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt)
+    encryptor.decrypt_and_verify(self.auth_encrypted_password)
   end
 
   private
@@ -58,9 +58,9 @@ class Feed < ActiveRecord::Base
 
   def set_auth
     if self.auth_user.present? and self.auth_password.present?
-      self.auth_salt = SecureRandom::hex(128).to_s
-      encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt, :cipher => 'aes-256-cbc')
-      self.auth_encrypted_password = encryptor.encrypt(self.auth_password)
+      self.auth_salt = SecureRandom.hex(64).to_s
+      encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt)
+      self.auth_encrypted_password = encryptor.encrypt_and_sign(self.auth_password)
     end
   end
 
