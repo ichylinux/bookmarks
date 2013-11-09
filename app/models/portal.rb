@@ -69,7 +69,7 @@ class Portal
       gadget = TodoGadget.new(todos) 
       ret[gadget.gadget_id] = gadget
     end
-    
+
     Feed.where(:user_id => user).not_deleted.each do |f|
       ret[f.gadget_id] = f
     end
