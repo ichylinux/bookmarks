@@ -21,6 +21,18 @@ div.gadgets {
   }
 }
 
+@media (max-width: 480px) {
+  div.gadgets {
+    width: 100%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  div.gadgets {
+    width: 50%;
+  }
+}
+
 .todo {
   ol {
     li {
