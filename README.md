@@ -1,4 +1,4 @@
 bookmarks
 =========
 
-デモサイト: bookmarks.reading.jp
+デモサイト: http://bookmarks.reading.jp
