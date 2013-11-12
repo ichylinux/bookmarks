@@ -1,18 +1,15 @@
 # coding: UTF-8
 
-もし /^モデルを作成$/ do
-  puts '$ rails g model bookmark'
+もし /^モデルを作成$/ do |string|
   show 'app/models/bookmark.rb', :as => ['auto', 'edit']
   show 'db/migrate/20130821035447_create_bookmarks.rb', :as => ['auto', 'edit']
 end
 
-もし /^マイグレーション$/ do
-  puts '$ rake db:migrate'
+もし /^マイグレーション$/ do |string|
   git_diff 'db/schema.rb', :as => 'auto', :from => 14, :to => 27
 end
 
-もし /^コントローラを作成$/ do
-  puts '$ rails g controller bookmarks'
+もし /^コントローラを作成$/ do |string|
   show 'app/controllers/bookmarks_controller.rb', :as => ['auto', 'edit']
 end
 

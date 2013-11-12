@@ -4,8 +4,23 @@
 
   シナリオ: ブックマークの管理機能を作成
     * モデルを作成
+      """
+      <b>
+      $ rails g model bookmark
+      </b>
+      """
     * マイグレーション
+      """
+      <b>
+      $ rake db:migrate
+      </b>
+      """
     * コントローラを作成
+      """
+      <b>
+      $ rails g controller bookmarks --no-assets --no-helper
+      </b>
+      """
     * ルーティングを追加
     * モデルの属性を一括代入できるように設定を変更
     * ビューを作成
