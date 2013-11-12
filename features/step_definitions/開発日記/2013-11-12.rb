@@ -8,3 +8,9 @@ end
 もし /^マイグレーション$/ do |string|
   git_diff 'db/schema.rb', :as => 'auto', :from => 25, :to => 31
 end
+
+もし /^コントローラを作成$/ do |string|
+  diff 'app/controllers/calendars_controller.rb',
+      File.join(File.dirname(__FILE__), 'calendars_controller.rb.txt'), :as => ['auto', 'edit']
+  git_diff 'config/routes.rb', :from => 4, :to => 20
+end

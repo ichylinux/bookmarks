@@ -16,3 +16,9 @@
       </b>
       """
     * コントローラを作成
+      """
+      <b>
+      $ rails g controller calendars --no-assets --no-helper
+      </b>
+      """
+    

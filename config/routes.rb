@@ -9,6 +9,8 @@ Bookmarks::Application.routes.draw do
     end
   end
 
+  resources :calendars
+
   resources :feeds do
     collection do
       post 'get_feed_title'
