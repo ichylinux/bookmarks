@@ -21,6 +21,18 @@ a:hover {
   padding: 0 50px 50px 50px;
 }
 
+@media (max-width: 480px) {
+.wrapper {
+  padding: 0 10px 10px 10px;
+}
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+.wrapper {
+  padding: 0 20px 20px 20px;
+}
+}
+
 .head_box {
   background: #AAA;
   height: 80px;
