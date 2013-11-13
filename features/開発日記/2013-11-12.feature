@@ -18,7 +18,9 @@
     * コントローラを作成
       """
       <b>
-      $ rails g controller calendars --no-assets --no-helper
+      $ rake dad:generate:controller calendars
       </b>
       """
+    * ルーティングを追加
+    
     

@@ -12,5 +12,8 @@ end
 もし /^コントローラを作成$/ do |string|
   diff 'app/controllers/calendars_controller.rb',
       File.join(File.dirname(__FILE__), 'calendars_controller.rb.txt'), :as => ['auto', 'edit']
+end
+
+もし /^ルーティングを追加$/ do
   git_diff 'config/routes.rb', :from => 4, :to => 20
 end

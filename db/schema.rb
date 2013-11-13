@@ -23,10 +23,11 @@ ActiveRecord::Schema.define(:version => 20131112032742) do
   end
 
   create_table "calendars", :force => true do |t|
-    t.integer  "user_id",    :null => false
+    t.integer  "user_id",                       :null => false
     t.string   "title"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.boolean  "deleted",    :default => false, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "feeds", :force => true do |t|
