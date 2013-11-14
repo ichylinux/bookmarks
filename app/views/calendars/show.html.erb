@@ -1,24 +1,12 @@
 <div class="actions">
   <%= link_to '一覧', calendars_path %>
   <%= link_to '編集', edit_calendar_path(@calendar) %>
-  <%= link_to '削除', calendar_path(@calendar), :method => 'delete', :confirm => '削除します。よろしいですか？' %>
+  <%= link_to '削除', calendar_path(@calendar), :method => 'delete', :confirm => t('messages.confirm_delete', :name => @calendar.title) %>
 </div>
 
 <table>
   <tr>
-    <th><%= Calendar.human_attribute_name :user_id %></th>
-    <td><%= @calendar.user_id %></td>
-  </tr>
-  <tr>
     <th><%= Calendar.human_attribute_name :title %></th>
     <td><%= @calendar.title %></td>
-  </tr>
-  <tr>
-    <th><%= Calendar.human_attribute_name :created_at %></th>
-    <td><%= @calendar.created_at %></td>
-  </tr>
-  <tr>
-    <th><%= Calendar.human_attribute_name :updated_at %></th>
-    <td><%= @calendar.updated_at %></td>
   </tr>
 </table>

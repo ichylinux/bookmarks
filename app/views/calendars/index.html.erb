@@ -4,20 +4,18 @@
 
 <table>
   <tr>
-    <th><%= Calendar.human_attribute_name :user_id %></th>
     <th><%= Calendar.human_attribute_name :title %></th>
     <th colspan="2"></th>
   </tr>
   
   <% @calendars.each do |c| %>
     <tr>
-      <td><%= c.user_id %></td>
       <td><%= c.title %></td>
       <td>
         <%= link_to '編集', edit_calendar_path(c) %>
       </td>
       <td>
-        <%= link_to '削除', calendar_path(c), :method => 'delete', :confirm => '削除します。よろしいですか？' %>
+        <%= link_to '削除', calendar_path(c), :method => 'delete', :confirm => t('messages.confirm_delete', :name => c.title) %>
       </td>
     </tr>
   <% end %>

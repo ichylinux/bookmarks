@@ -4,6 +4,8 @@ ja:
       bookmark:
         title: タイトル
         url: URL
+      calendar:
+        title: タイトル
       feed:
         auth_user: 認証ユーザ
         auth_password: 認証パスワード
