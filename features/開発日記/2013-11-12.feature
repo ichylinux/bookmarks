@@ -21,6 +21,12 @@
       $ rake dad:generate:controller calendars
       </b>
       """
+    * ビューを作成
+      """
+      <b>
+      $ rake dad:generate:view calendars
+      </b>
+      """
     * ルーティングを追加
-    
+    * メニューを追加
     

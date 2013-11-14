@@ -11,11 +11,11 @@ class CalendarsController < ApplicationController
   end
 
   def new
-    @calendar = Calendar.new(:user_id => current_user)
+    @calendar = Calendar.new(:user_id => current_user.id)
   end
 
   def create
-    @calendar = Calendar.new(params[:id])
+    @calendar = Calendar.new(params[:calendar])
     
     begin
       @calendar.transaction do

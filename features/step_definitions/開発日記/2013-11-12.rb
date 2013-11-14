@@ -14,6 +14,12 @@ end
       File.join(File.dirname(__FILE__), 'calendars_controller.rb.txt'), :as => ['auto', 'edit']
 end
 
+もし /^ビューを作成$/ do |string|
+  Dir["#{Rails.root}/app/views/calendars/*.html.erb"].sort.each do |view|
+    diff view, File.join(File.dirname(__FILE__), File.basename(view)), :as => ['auto', 'edit']
+  end
+end
+
 もし /^ルーティングを追加$/ do
   git_diff 'config/routes.rb', :from => 4, :to => 20
 end
