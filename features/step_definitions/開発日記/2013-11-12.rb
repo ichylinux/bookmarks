@@ -34,11 +34,11 @@ end
 
 もし /^モデルを修正$/ do
   git_diff 'app/models/calendar.rb',
-      :between => '24e278b94687bc60832c043bf83903b6b5c27a85',
+      :between => 'deba43380716407cab9576713bc77b4bf6c02738',
       :and => '37e3b964227d18ed0ade147b96e7efe0a952f12b'
   git_diff 'app/models/portal.rb'
 end
 
 もし /^カレンダー用のビューを作成$/ do
-  git_diff 'app/views/welcome/_calendar.html.erb', :as => 'new'
+  show 'app/views/welcome/_calendar.html.erb', :as => 'new'
 end
