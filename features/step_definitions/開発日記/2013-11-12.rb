@@ -4,6 +4,7 @@
   diff 'db/migrate/20131112032742_create_calendars.rb',
       File.join(File.dirname(__FILE__), '20131112032742_create_calendars.rb.txt'), :as => ['auto', 'edit']
   git_diff 'config/locales/ja.yml', :to => 10
+  git_diff 'app/models/calendar.rb', :and => '15d2edc3afd7a9508a6a4b6248507234e6e893ea'
 end
 
 もし /^マイグレーション$/ do |string|
