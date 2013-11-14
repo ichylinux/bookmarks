@@ -4,7 +4,9 @@
   diff 'db/migrate/20131112032742_create_calendars.rb',
       File.join(File.dirname(__FILE__), '20131112032742_create_calendars.rb.txt'), :as => ['auto', 'edit']
   git_diff 'config/locales/ja.yml', :to => 10
-  git_diff 'app/models/calendar.rb', :and => '15d2edc3afd7a9508a6a4b6248507234e6e893ea'
+  git_diff 'app/models/calendar.rb',
+      :between => '37e3b964227d18ed0ade147b96e7efe0a952f12b',
+      :and => '15d2edc3afd7a9508a6a4b6248507234e6e893ea'
 end
 
 もし /^マイグレーション$/ do |string|
@@ -28,4 +30,8 @@ end
 
 もし /^メニューを追加$/ do
   git_diff 'app/views/common/_menu.html.erb'
+end
+
+もし /^モデルを修正$/ do
+  
 end
