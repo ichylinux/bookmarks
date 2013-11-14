@@ -23,3 +23,7 @@ end
 もし /^ルーティングを追加$/ do
   git_diff 'config/routes.rb', :from => 4, :to => 20
 end
+
+もし /^メニューを追加$/ do
+  git_diff 'app/views/common/_menu.html.erb'
+end

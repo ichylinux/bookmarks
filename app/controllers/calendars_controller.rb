@@ -22,7 +22,7 @@ class CalendarsController < ApplicationController
         @calendar.save!
       end
 
-      redirect_to :action => 'show', :id => @calendar
+      redirect_to :action => 'show', :id => @calendar.id
 
     rescue ActiveRecord::RecordInvalid => e
       render :new
@@ -42,7 +42,7 @@ class CalendarsController < ApplicationController
         @calendar.save!
       end
 
-      redirect_to :action => 'show', :id => @calendar
+      redirect_to :action => 'show', :id => @calendar.id
 
     rescue ActiveRecord::RecordInvalid => e
       render :edit

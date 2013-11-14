@@ -1,28 +1,12 @@
 <%= form_for @calendar do |f| %>
   <table>
     <tr>
-      <th><%= f.label :id %></th>
-      <td><%= f.text_field :id %></td>
-    </tr>
-    <tr>
       <th><%= f.label :user_id %></th>
       <td><%= f.text_field :user_id %></td>
     </tr>
     <tr>
       <th><%= f.label :title %></th>
       <td><%= f.text_field :title %></td>
-    </tr>
-    <tr>
-      <th><%= f.label :deleted %></th>
-      <td><%= f.text_field :deleted %></td>
-    </tr>
-    <tr>
-      <th><%= f.label :created_at %></th>
-      <td><%= f.text_field :created_at %></td>
-    </tr>
-    <tr>
-      <th><%= f.label :updated_at %></th>
-      <td><%= f.text_field :updated_at %></td>
     </tr>
   </table>
   <%= f.submit %>

@@ -4,23 +4,15 @@
 
 <table>
   <tr>
-    <th><%= Calendar.human_attribute_name :id %></th>
     <th><%= Calendar.human_attribute_name :user_id %></th>
     <th><%= Calendar.human_attribute_name :title %></th>
-    <th><%= Calendar.human_attribute_name :deleted %></th>
-    <th><%= Calendar.human_attribute_name :created_at %></th>
-    <th><%= Calendar.human_attribute_name :updated_at %></th>
     <th colspan="2"></th>
   </tr>
   
   <% @calendars.each do |c| %>
     <tr>
-      <td><%= c.id %></td>
       <td><%= c.user_id %></td>
       <td><%= c.title %></td>
-      <td><%= c.deleted %></td>
-      <td><%= c.created_at %></td>
-      <td><%= c.updated_at %></td>
       <td>
         <%= link_to '編集', edit_calendar_path(c) %>
       </td>
