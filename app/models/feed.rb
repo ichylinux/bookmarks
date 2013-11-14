@@ -87,9 +87,6 @@ class Feed < ActiveRecord::Base
     end
 
     xml = client.get(request_path, request_params)
-
-    Rails.logger.info xml
-
     Feedzirra::Feed.parse(xml)
   end
 

@@ -1,0 +1,53 @@
+table.calendar {
+  border-collapse: collapse;
+  margin: 4px;
+  padding: 0;
+
+  tr {
+    td {
+      width: 14.29%;
+      margin: 0;
+      padding: 0;
+      border: solid 1px #666666;
+
+      div.day {
+        margin: 2px;
+        padding: 2px;
+        font-size: 0.8em;
+        text-align: right;
+        border-bottom: solid 1px #AAAAAA;
+      }
+      div.day.sunday {
+        color: #FF0000;
+        background: #FFB6C1;
+      }
+      div.day.saturday {
+        color: #000080;
+        background: #87CEFA;
+      }
+      div.day.holiday {
+        color: #FF0000;
+        background: #FFB6C1;
+      }
+      div.content {
+        margin: 0;
+        padding: 2px;
+        font-size: 0.9em;
+        height: 40px;
+      }
+      div.content.holiday {
+        color: #FF0000;
+      }
+      div.day.previous_month, div.day.next_month {
+        color: #AAAAAA;
+        background: #FFFFFF;
+      }
+    }
+    td:hover {
+      background: none;
+    }
+  }
+  tr:hover {
+    background: none;
+  }
+}

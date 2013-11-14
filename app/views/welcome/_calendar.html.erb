@@ -1,0 +1,65 @@
+<div id="<%= gadget.gadget_id %>" class="gadget">
+  <div>
+    <div class="title"><%= gadget.title %></div>
+    <table class="calendar">
+      <caption>
+        <span><%= gadget.display_year %>年<%= gadget.display_month %>月</span>
+      </caption>
+      <tr>
+        <% 7.times do |i| %>
+          <th><%= gadget.day_of_week(i) %></th>
+        <% end %>
+      </tr>
+      
+      <% if gadget.display_date.beginning_of_month.wday != 0 %>
+        <tr>
+          <% gadget.display_date.beginning_of_month.wday.times do |i| %>
+            <% date = (gadget.display_date - (gadget.display_date.wday - i).days) %>
+            <td>
+              <div class="previous_month day <%= date_classes(gadget, date) %>">
+                <%= date.day %>
+              </div>
+              <div class="content <%= date_classes(gadget, date) %>">
+                <%= gadget.holiday(date) %>
+              </div>
+            </td>
+          <% end %>
+      <% end %>
+      
+      <% gadget.display_date.end_of_month.day.times do |i| %>
+        <% date = gadget.display_date + i.days %>
+        <% if date.wday == 0 %>
+          <tr>
+        <% end %>
+        
+        <td>
+          <div class="day <%= date_classes(gadget, date) %>">
+            <%= date.day %>
+          </div>
+          <div class="content <%= date_classes(gadget, date) %>">
+            <%= gadget.holiday(date) %>
+          </div>
+        </td>
+        
+        <% if date.wday == 6 %>
+          </tr>
+        <% end %>
+      <% end %>
+    
+      <% if gadget.display_date.end_of_month.wday != 6 %>
+          <% (6 - gadget.display_date.end_of_month.wday).times do |i| %>
+            <% date = gadget.display_date.end_of_month + (i + 1).days %>
+            <td>
+              <div class="day next_month <%= date_classes(gadget, date) %>">
+                <%= i + 1 %>
+              </div>
+              <div class="content <%= date_classes(gadget, date) %>">
+                <%= gadget.holiday(date) %>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

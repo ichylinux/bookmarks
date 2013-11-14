@@ -70,6 +70,10 @@ class Portal
       ret[gadget.gadget_id] = gadget
     end
 
+    calendars = Calendar.where(:user_id => user).not_deleted.each do |c|
+      ret[c.gadget_id] = c
+    end
+
     Feed.where(:user_id => user).not_deleted.each do |f|
       ret[f.gadget_id] = f
     end

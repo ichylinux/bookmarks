@@ -78,7 +78,7 @@ GEM
       nokogiri (>= 1.5.0)
       rails (>= 3.0.0)
     curb (0.8.5)
-    daddy (0.1.19)
+    daddy (0.1.20)
       capybara
       ci_reporter
       cucumber
@@ -87,6 +87,7 @@ GEM
       differ
       execjs
       faraday
+      holiday_jp
       poltergeist
       rails (~> 3.2.0)
       rails-i18n
@@ -121,6 +122,7 @@ GEM
       multi_json (~> 1.3)
     highline (1.6.20)
     hike (1.2.3)
+    holiday_jp (0.3.1)
     i18n (0.6.5)
     journey (1.0.4)
     jquery-rails (3.0.4)
