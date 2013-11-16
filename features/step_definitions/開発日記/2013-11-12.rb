@@ -36,7 +36,7 @@ end
   git_diff 'app/models/calendar.rb',
       :between => 'deba43380716407cab9576713bc77b4bf6c02738',
       :and => '37e3b964227d18ed0ade147b96e7efe0a952f12b'
-  git_diff 'app/models/portal.rb'
+  git_diff 'app/models/portal.rb', :from => 58
 end
 
 もし /^カレンダー用のビューを作成$/ do
