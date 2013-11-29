@@ -29,6 +29,11 @@ table.calendar {
         color: #FF0000;
         background: #FFB6C1;
       }
+      div.day.today {
+        color: #FF8C00;
+        font-weight: bold;
+        border-bottom: solid 2px #FFA500;
+      }
       div.content {
         margin: 0;
         padding: 2px;

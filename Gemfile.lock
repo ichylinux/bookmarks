@@ -44,9 +44,6 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-webkit (1.0.0)
-      capybara (~> 2.0, >= 2.0.2)
-      json
     childprocess (0.3.9)
       ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.2.9)
@@ -78,7 +75,7 @@ GEM
       nokogiri (>= 1.5.0)
       rails (>= 3.0.0)
     curb (0.8.5)
-    daddy (0.1.20)
+    daddy (0.1.22)
       capybara
       ci_reporter
       cucumber
@@ -97,7 +94,7 @@ GEM
       term-ansicolor
     daemons (1.1.9)
     database_cleaner (1.2.0)
-    devise (3.2.1)
+    devise (3.2.2)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
@@ -105,13 +102,13 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
     differ (0.1.2)
-    docile (1.1.0)
+    docile (1.1.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
     execjs (2.0.2)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
-    feedzirra (0.2.2)
+    feedzirra (0.4.0)
       curb (~> 0.8.1)
       loofah (~> 1.2.1)
       nokogiri (~> 1.6.0)
@@ -133,13 +130,12 @@ GEM
     json (1.8.1)
     kgio (2.8.1)
     libv8 (3.16.14.3)
-    lockfile (2.1.0)
     loofah (1.2.1)
       nokogiri (>= 1.4.4)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.25)
+    mime-types (1.25.1)
     mini_portile (0.5.2)
     multi_json (1.8.2)
     multi_test (0.0.2)
@@ -204,9 +200,8 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0.0)
       websocket (~> 1.0.4)
-    simplecov (0.8.1)
+    simplecov (0.8.2)
       docile (~> 1.1.0)
-      lockfile (>= 2.1.0)
       multi_json
       simplecov-html (~> 0.8.0)
     simplecov-html (0.8.0)
@@ -254,7 +249,6 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano (< 3.0.0)
-  capybara-webkit
   coffee-rails (~> 3.2.1)
   compass-rails
   daddy

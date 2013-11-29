@@ -28,7 +28,6 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 group :development, :test do
-  gem 'capybara-webkit'
   gem 'thin'
 end
 
