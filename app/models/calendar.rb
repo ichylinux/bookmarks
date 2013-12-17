@@ -20,6 +20,10 @@ class Calendar < ActiveRecord::Base
     @display_date ||= Date.today.beginning_of_month
   end
 
+  def display_date=(date)
+    @display_date = date
+  end
+
   def display_year
     display_date.year
   end
@@ -27,7 +31,7 @@ class Calendar < ActiveRecord::Base
   def display_month
     display_date.month
   end
-  
+
   def holiday?(date)
     HolidayJp.holiday?(date)
   end

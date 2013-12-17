@@ -1,0 +1,66 @@
+<table class="calendar">
+  <caption>
+    <%= link_to '<<', 
+          {:controller => 'calendars', :action => 'get_gadget', :id => @calendar.id, :display_date => @calendar.display_date - 1.month},
+          :onclick => 'calendars.get_gadget(this); return false;' %>
+    <span><%= @calendar.display_year %>年<%= @calendar.display_month %>月</span>
+    <%= link_to '>>',
+          {:controller => 'calendars', :action => 'get_gadget', :id => @calendar.id, :display_date => @calendar.display_date + 1.month},
+          :onclick => 'calendars.get_gadget(this); return false;' %>
+  </caption>
+  <tr>
+    <% 7.times do |i| %>
+      <th><%= @calendar.day_of_week(i) %></th>
+    <% end %>
+  </tr>
+  
+  <% if @calendar.display_date.beginning_of_month.wday != 0 %>
+    <tr>
+      <% @calendar.display_date.beginning_of_month.wday.times do |i| %>
+        <% date = (@calendar.display_date - (@calendar.display_date.wday - i).days) %>
+        <td>
+          <div class="previous_month day <%= date_classes(@calendar, date) %>">
+            <%= date.day %>
+          </div>
+          <div class="content <%= date_classes(@calendar, date) %>">
+            <%= @calendar.holiday(date) %>
+          </div>
+        </td>
+      <% end %>
+  <% end %>
+  
+  <% @calendar.display_date.end_of_month.day.times do |i| %>
+    <% date = @calendar.display_date + i.days %>
+    <% if date.wday == 0 %>
+      <tr>
+    <% end %>
+    
+    <td>
+      <div class="day <%= date_classes(@calendar, date) %>">
+        <%= date.day %>
+      </div>
+      <div class="content <%= date_classes(@calendar, date) %>">
+        <%= @calendar.holiday(date) %>
+      </div>
+    </td>
+    
+    <% if date.wday == 6 %>
+      </tr>
+    <% end %>
+  <% end %>
+
+  <% if @calendar.display_date.end_of_month.wday != 6 %>
+      <% (6 - @calendar.display_date.end_of_month.wday).times do |i| %>
+        <% date = @calendar.display_date.end_of_month + (i + 1).days %>
+        <td>
+          <div class="day next_month <%= date_classes(@calendar, date) %>">
+            <%= i + 1 %>
+          </div>
+          <div class="content <%= date_classes(@calendar, date) %>">
+            <%= @calendar.holiday(date) %>
+          </div>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

@@ -10,6 +10,12 @@ class CalendarsController < ApplicationController
     @calendar = Calendar.find(params[:id])
   end
 
+  def get_gadget
+    @calendar = Calendar.find(params[:id])
+    @calendar.display_date = Date.parse(params[:display_date])
+    render :layout => false
+  end
+
   def new
     @calendar = Calendar.new(:user_id => current_user.id)
   end

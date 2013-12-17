@@ -9,7 +9,11 @@ Bookmarks::Application.routes.draw do
     end
   end
 
-  resources :calendars
+  resources :calendars do
+    member do
+      get  'get_gadget'
+    end
+  end
 
   resources :feeds do
     collection do
