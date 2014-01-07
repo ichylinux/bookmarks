@@ -40,6 +40,10 @@ class Feed < ActiveRecord::Base
     "feed_#{self.id}"
   end
 
+  def url
+    feed.url
+  end
+
   def entries
     Rails.logger.debug feed.class.name
     feed? ? feed.entries : []
