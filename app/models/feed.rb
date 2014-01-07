@@ -19,7 +19,7 @@ class Feed < ActiveRecord::Base
       if basic_auth_required?
         @feed ||= retrieve_feed_with_basic_auth
       else
-        @feed ||= Feedzirra::Feed.fetch_and_parse(self.url, :ssl_verify_host => false)
+        @feed ||= Feedzirra::Feed.fetch_and_parse(self.feed_url, :ssl_verify_host => false)
       end
     rescue => e
       Rails.logger.error e.message
@@ -91,18 +91,18 @@ class Feed < ActiveRecord::Base
   end
 
   def base_url
-    split = self.url.split('/')
+    split = self.feed_url.split('/')
     url = split[0] + '//' + split[2]
   end
 
   def request_path
-    split = self.url.split('/')
+    split = self.feed_url.split('/')
     split = ('/' + split[3..-1].join('/')).split('?')
     split[0]
   end
 
   def request_params
-    split = self.url.split('/')
+    split = self.feed_url.split('/')
     split = ('/' + split[3..-1].join('/')).split('?')
 
     ret = {}

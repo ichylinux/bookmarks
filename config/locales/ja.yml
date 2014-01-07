@@ -12,7 +12,7 @@ ja:
         auth_url: 認証用URL
         display_count: 表示件数
         title: サイト名
-        url: フィードURL
+        feed_url: フィードURL
       todo:
         priority: 優先度
         title: タイトル

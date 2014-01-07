@@ -3,7 +3,7 @@ var feeds = {};
 feeds.get_feed_title = function(button) {
   var form = $(button).closest('form');
 
-  var url = form.find('input[name*="url"]').val();
+  var url = form.find('input[name*="feed_url"]').val();
   if (url == '') {
     alert('フィードURLを先に入力してください。');
     return;

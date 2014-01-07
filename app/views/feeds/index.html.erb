@@ -17,7 +17,7 @@
       <tr>
         <td><%= feed.title %></td>
         <td class="center"><%= feed.display_count %></td>
-        <td><div class="url"><%= feed.url %></div></td>
+        <td><div class="feed_url"><%= feed.feed_url %></div></td>
         <td><%= link_to '編集', edit_feed_path(feed) %></td>
         <td><%= link_to '削除', feed_path(feed), :method => 'delete', :confirm => t('messages.confirm_delete', :name => feed.title) %></td>
       </tr>
