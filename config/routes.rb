@@ -21,6 +21,8 @@ Bookmarks::Application.routes.draw do
     end
   end
 
+  resources :preferences, :only => ['index', 'create', 'update']
+
   resources :todos do
     collection do
       get  'new_import'

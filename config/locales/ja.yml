@@ -13,6 +13,8 @@ ja:
         display_count: 表示件数
         title: サイト名
         feed_url: フィードURL
+      preference:
+        theme: テーマ
       todo:
         priority: 優先度
         title: タイトル

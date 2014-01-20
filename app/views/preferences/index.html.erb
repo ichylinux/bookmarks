@@ -1,0 +1,10 @@
+<%= form_for @preference do |f| %>
+  <table>
+    <tr>
+      <th><%= f.label :theme %></th>
+      <td><%= f.select :theme, {'シンプル' => 'simple'}, :include_blank => true %></td>
+    </tr>
+  </table>
+  
+  <%= f.submit %>
+<% end %>
