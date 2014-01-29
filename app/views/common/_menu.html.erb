@@ -14,11 +14,15 @@
       menu.css('left', header.offset().left + header.outerWidth() - menu.outerWidth());
     });
   </script>
-  <span class="email">
-    <a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a>
-  </span>
+  <div>
+    <ul class="navigation">
+      <li><%= link_to 'Home', root_path %></li>
+      <li class="email">
+        <a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a>
+      </li>
+    </ul>
+  </div>
   <div class="menu hidden">
-    <div><%= link_to 'Home', root_path %></div>
     <div><%= link_to '設定', preferences_path %></div>
     <div><%= link_to 'ブックマーク', bookmarks_path %></div>
     <div><%= link_to 'タスク', todos_path %></div>

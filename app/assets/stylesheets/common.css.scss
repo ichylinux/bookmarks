@@ -88,10 +88,19 @@ table {
   height: 20px;
   line-height: 20px;
   
-  .email {
-    float: right;
+  ul.navigation {
+    padding: 0;
+
+    li {
+      list-style: none;
+      display: inline-block;
+    }
+
+    .email {
+      float: right;
+    }
   }
-  
+
   .menu {
     position: absolute;
     border: solid 1px #595757;
