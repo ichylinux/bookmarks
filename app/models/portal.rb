@@ -1,31 +1,31 @@
 # coding: UTF-8
 
-class Portal
+class Portal < ActiveRecord::Base
 
-  def initialize(user)
-    @user = user
+  belongs_to :user
+
+  validates :name, :presence => true
+
+  def portal_column_count
+    portal_columns.size
   end
 
-  def column_count
-    columns.size
-  end
-
-  def columns
-    return @columns if @columns
+  def portal_columns
+    return @portal_columns if @portal_columns
 
     gadgets = get_gadgets
-    @columns = [[], [], []]
+    @portal_columns = [[], [], []]
 
     PortalLayout.where(:user_id => user.id).order('column_no, display_order').each do |pl|
       g = gadgets.delete(pl.gadget_id)
-      @columns[pl.column_no] << g if g
+      @portal_columns[pl.column_no] << g if g
     end
 
     gadgets.each_with_index do |g, i|
-      @columns[i % 3].unshift(g[1])
+      @portal_columns[i % 3].unshift(g[1])
     end
     
-    columns
+    portal_columns
   end
 
   def update_layout(params = {})
@@ -51,30 +51,26 @@ class Portal
 
   private
 
-  def user
-    @user
-  end
-
   def get_gadgets
     ret = {}
     
-    bookmarks = Bookmark.where(:user_id => user).not_deleted.order(:title)
+    bookmarks = Bookmark.where(:user_id => user.id).not_deleted.order(:title)
     if bookmarks.present?
       gadget = BookmarkGadget.new(bookmarks) 
       ret[gadget.gadget_id] = gadget
     end
 
-    todos = Todo.where(:user_id => user).not_deleted.order(:priority, :title)
+    todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
     if todos.present?
       gadget = TodoGadget.new(todos) 
       ret[gadget.gadget_id] = gadget
     end
 
-    calendars = Calendar.where(:user_id => user).not_deleted.each do |c|
+    calendars = Calendar.where(:user_id => user.id).not_deleted.each do |c|
       ret[c.gadget_id] = c
     end
 
-    Feed.where(:user_id => user).not_deleted.each do |f|
+    Feed.where(:user_id => user.id).not_deleted.each do |f|
       ret[f.gadget_id] = f
     end
 

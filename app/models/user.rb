@@ -11,4 +11,5 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
   has_one :preference
+  has_many :portals, :conditions => ['deleted = ?', false]
 end

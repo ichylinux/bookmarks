@@ -1,6 +1,6 @@
 <script>
   function collect_portal_layout_params() {
-    <% @portal.column_count.times.each do |i| %>
+    <% @portal.portal_column_count.times.each do |i| %>
       var column_<%= i %> = new Array();
       $('#column_<%= i %> > div').each(function() {
         column_<%= i %>.push($(this).attr('id'));
@@ -8,14 +8,14 @@
     <% end %>
 
     return {
-      <% @portal.column_count.times.each do |i| %>
+      <% @portal.portal_column_count.times.each do |i| %>
         'portal[column_<%= i %>]': column_<%= i %>,
       <% end %>
     }; 
   }
 
   $(document).ready(function() {
-    var selector = '<%= (0..@portal.column_count - 1).map{|i| "#column_#{i}" }.join(',') %>';
+    var selector = '<%= (0..@portal.portal_column_count - 1).map{|i| "#column_#{i}" }.join(',') %>';
 
     $(selector).sortable({
       connectWith: ".gadgets",
@@ -27,7 +27,7 @@
   });
 </script>
 
-<% @portal.columns.each_with_index do |gadgets, i| %>
+<% @portal.portal_columns.each_with_index do |gadgets, i| %>
   <div id="column_<%= i %>" class="gadgets">
     <% gadgets.each do |g| %>
       <%= render g.class.name.underscore, :gadget => g %>

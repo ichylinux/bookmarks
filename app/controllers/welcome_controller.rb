@@ -3,12 +3,12 @@
 class WelcomeController < ApplicationController
 
   def index
-    @portal = Portal.new(current_user)
+    @portal = current_user.portals.first
   end
 
   def save_state
     ActiveRecord::Base.transaction do
-      Portal.new(current_user).update_layout(params[:portal])
+      current_user.portals.first.update_layout(params[:portal])
     end
 
     render :nothing => true
