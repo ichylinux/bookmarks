@@ -1,6 +1,6 @@
 # language: ja
 
-機能:
+機能: スプリント１
 
   シナリオ: アプリの新規作成
     * rails new bookmarks -d mysql --skip-bundle
