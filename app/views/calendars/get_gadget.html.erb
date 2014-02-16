@@ -18,8 +18,8 @@
     <tr>
       <% @calendar.display_date.beginning_of_month.wday.times do |i| %>
         <% date = (@calendar.display_date - (@calendar.display_date.wday - i).days) %>
-        <td>
-          <div class="previous_month day <%= date_classes(@calendar, date) %>">
+        <td class="previous_month">
+          <div class="day <%= date_classes(@calendar, date) %>">
             <%= date.day %>
           </div>
           <div class="content <%= date_classes(@calendar, date) %>">
@@ -52,8 +52,8 @@
   <% if @calendar.display_date.end_of_month.wday != 6 %>
       <% (6 - @calendar.display_date.end_of_month.wday).times do |i| %>
         <% date = @calendar.display_date.end_of_month + (i + 1).days %>
-        <td>
-          <div class="day next_month <%= date_classes(@calendar, date) %>">
+        <td class="next_month">
+          <div class="day <%= date_classes(@calendar, date) %>">
             <%= i + 1 %>
           </div>
           <div class="content <%= date_classes(@calendar, date) %>">

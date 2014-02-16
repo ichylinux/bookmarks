@@ -44,13 +44,13 @@ table.calendar {
       div.content.holiday {
         color: #FF0000;
       }
-      div.day.previous_month, div.day.next_month {
-        color: #AAAAAA;
+    }
+    
+    td.previous_month, td.next_month {
+      div {
+        opacity: 0.5;
         background: #FFFFFF;
       }
-    }
-    td:hover {
-      background: none;
     }
   }
   tr:hover {
