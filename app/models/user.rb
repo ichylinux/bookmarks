@@ -12,4 +12,16 @@ class User < ActiveRecord::Base
 
   has_one :preference
   has_many :portals, :conditions => ['deleted = ?', false]
+
+  after_save :create_default_portal
+
+  private
+
+  def create_default_portal
+    if Portal.where(:user_id => self.id).not_deleted.count == 0
+      p = Portal.new(:user_id => self.id, :name => 'Home')
+      p.save!
+    end
+  end
+  
 end
