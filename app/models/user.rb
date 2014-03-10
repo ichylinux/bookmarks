@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   private
 
   def create_default_portal
-    if Portal.where(:user_id => self.id).not_deleted.count == 0
+    if Portal.where(:user_id => self.id).not_deleted.empty?
       p = Portal.new(:user_id => self.id, :name => 'Home')
       p.save!
     end
