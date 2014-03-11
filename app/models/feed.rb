@@ -6,6 +6,7 @@ end
 
 class Feed < ActiveRecord::Base
   include FeedConst
+  include Crud::ByUser
 
   attr_accessor :auth_password
 

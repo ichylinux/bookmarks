@@ -31,6 +31,11 @@ group :development, :test do
   gem 'thin'
 end
 
+group :test do
+  gem 'minitest-rails'
+  gem 'turn'
+end
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
