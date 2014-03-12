@@ -1,11 +1,11 @@
 # coding: UTF-8
 
 class CalendarsController < ApplicationController
+  before_filter :load_calendar
 
   def index
-    c = Calendar.where(:user_id => current_user).not_deleted.first
-    if c
-      redirect_to :action => 'show', :id => c.id
+    if @calendar
+      redirect_to :action => 'show', :id => @calendar.id
     else
       redirect_to :action => 'new'
     end
@@ -68,6 +68,22 @@ class CalendarsController < ApplicationController
     end
     
     redirect_to :action => 'index'
+  end
+
+  private
+
+  def load_calendar
+    if action_name == 'index'
+      @calendar = Calendar.where(:user_id => current_user).not_deleted.first
+    else
+      @calendar = Calendar.find(params[:id])
+      unless @calendar.readable_by?(current_user)
+        render :nothing => true, :status => :not_found
+        return false
+      end
+    end
+    
+    true
   end
 
 end

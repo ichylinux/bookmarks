@@ -1,6 +1,8 @@
 # coding: UTF-8
 
 class Calendar < ActiveRecord::Base
+  include Crud::ByUser
+
   belongs_to :user
 
   def gadget_id
