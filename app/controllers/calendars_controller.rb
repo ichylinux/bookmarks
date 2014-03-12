@@ -1,9 +1,11 @@
 # coding: UTF-8
 
 class CalendarsController < ApplicationController
-  before_filter :load_calendar
+  before_filter :load_calendar, :except => ['index', 'new', 'create']
 
   def index
+    @calendar = Calendar.where(:user_id => current_user).not_deleted.first
+
     if @calendar
       redirect_to :action => 'show', :id => @calendar.id
     else
@@ -12,11 +14,9 @@ class CalendarsController < ApplicationController
   end
 
   def show
-    @calendar = Calendar.find(params[:id])
   end
 
   def get_gadget
-    @calendar = Calendar.find(params[:id])
     @calendar.display_date = Date.parse(params[:display_date])
     render :layout => false
   end
@@ -41,12 +41,9 @@ class CalendarsController < ApplicationController
   end
 
   def edit
-    @calendar = Calendar.find(params[:id])
   end
 
   def update
-    @calendar = Calendar.find(params[:id])
-    
     begin
       @calendar.transaction do
         @calendar.attributes = params[:calendar]
@@ -61,8 +58,6 @@ class CalendarsController < ApplicationController
   end
 
   def destroy
-    @calendar = Calendar.find(params[:id])
-    
     @calendar.transaction do
       @calendar.destroy_logically!
     end
@@ -73,14 +68,11 @@ class CalendarsController < ApplicationController
   private
 
   def load_calendar
-    if action_name == 'index'
-      @calendar = Calendar.where(:user_id => current_user).not_deleted.first
-    else
-      @calendar = Calendar.find(params[:id])
-      unless @calendar.readable_by?(current_user)
-        render :nothing => true, :status => :not_found
-        return false
-      end
+    @calendar = Calendar.find(params[:id])
+
+    unless @calendar.readable_by?(current_user)
+      render :nothing => true, :status => :not_found
+      return false
     end
     
     true
