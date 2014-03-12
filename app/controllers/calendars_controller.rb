@@ -3,7 +3,12 @@
 class CalendarsController < ApplicationController
 
   def index
-    @calendars = Calendar.where(:user_id => current_user).not_deleted.order(:title)
+    c = Calendar.where(:user_id => current_user).not_deleted.first
+    if c
+      redirect_to :action => 'show', :id => c.id
+    else
+      redirect_to :action => 'new'
+    end
   end
 
   def show
