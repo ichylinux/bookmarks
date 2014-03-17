@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140310032013) do
+ActiveRecord::Schema.define(:version => 20140317034635) do
 
   create_table "bookmarks", :force => true do |t|
     t.integer  "user_id",                       :null => false
@@ -23,11 +23,12 @@ ActiveRecord::Schema.define(:version => 20140310032013) do
   end
 
   create_table "calendars", :force => true do |t|
-    t.integer  "user_id",                       :null => false
+    t.integer  "user_id",                         :null => false
     t.string   "title"
-    t.boolean  "deleted",    :default => false, :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.boolean  "deleted",      :default => false, :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.boolean  "show_weather", :default => false, :null => false
   end
 
   create_table "feeds", :force => true do |t|
@@ -94,5 +95,13 @@ ActiveRecord::Schema.define(:version => 20140310032013) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+
+  create_table "weathers", :force => true do |t|
+    t.date     "observation_day", :null => false
+    t.integer  "prefecture_no",   :null => false
+    t.integer  "weather_type",    :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
 
 end
