@@ -5,6 +5,10 @@
       <th><%= f.label :title %></th>
       <td><%= f.text_field :title %></td>
     </tr>
+    <tr>
+      <th><%= f.label :show_weather %></th>
+      <td><%= f.check_box :show_weather %></td>
+    </tr>
   </table>
   <%= f.submit %>
 <% end %>

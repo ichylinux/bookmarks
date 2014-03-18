@@ -8,4 +8,8 @@
     <th><%= Calendar.human_attribute_name :title %></th>
     <td><%= @calendar.title %></td>
   </tr>
+  <tr>
+    <th><%= Calendar.human_attribute_name :show_weather %></th>
+    <td><%= @calendar.show_weather? ? 'する' : 'しない' %></td>
+  </tr>
 </table>

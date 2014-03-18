@@ -5,6 +5,7 @@ ja:
         title: タイトル
         url: URL
       calendar:
+        show_weather: 天気を表示
         title: タイトル
       feed:
         auth_user: 認証ユーザ
