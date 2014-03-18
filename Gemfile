@@ -7,9 +7,11 @@ gem 'rails', '3.2.17'
 
 gem 'daddy'
 gem 'devise'
-gem 'feedzirra'
+gem 'feedjira'
 gem 'mysql2'
 gem 'nokogiri'
+gem 'resque'
+gem 'resque-scheduler'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -20,7 +20,7 @@ class Feed < ActiveRecord::Base
       if basic_auth_required?
         @feed ||= retrieve_feed_with_basic_auth
       else
-        @feed ||= Feedzirra::Feed.fetch_and_parse(self.feed_url, :ssl_verify_host => false)
+        @feed ||= Feedjira::Feed.fetch_and_parse(self.feed_url, :ssl_verify_host => false)
       end
     rescue => e
       Rails.logger.error e.message
@@ -31,9 +31,9 @@ class Feed < ActiveRecord::Base
   end
 
   def feed?
-    return true if feed.is_a?(Feedzirra::Parser::RSS)
-    return true if feed.is_a?(Feedzirra::Parser::Atom)
-    return true if feed.is_a?(Feedzirra::Parser::RSSFeedBurner)
+    return true if feed.is_a?(Feedjira::Parser::RSS)
+    return true if feed.is_a?(Feedjira::Parser::Atom)
+    return true if feed.is_a?(Feedjira::Parser::RSSFeedBurner)
     false
   end
 
@@ -92,7 +92,7 @@ class Feed < ActiveRecord::Base
     end
 
     xml = client.get(request_path, request_params)
-    Feedzirra::Feed.parse(xml)
+    Feedjira::Feed.parse(xml)
   end
 
   def base_url
