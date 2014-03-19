@@ -1,5 +1,14 @@
+require 'resque/server'
+require 'resque_scheduler/server'
+
 Bookmarks::Application.routes.draw do
   devise_for :users
+  resque_constraint = lambda do |request|
+    request.env['warden'].authenticate? and request.env['warden'].user.admin?
+  end
+  constraints resque_constraint do
+    mount Resque::Server.new, :at => "/resque", :as => 'resque'
+  end
 
   resources :bookmarks do
     collection do

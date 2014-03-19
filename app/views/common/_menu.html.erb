@@ -17,9 +17,12 @@
   <div>
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
-      <li class="email">
-        <a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a>
-      </li>
+
+      <li class="email"><a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a></li>
+
+      <% if current_user.admin? %>
+        <li class="admin"><%= link_to '管理', resque_path, :target => '_blank' %></li>
+      <% end %>
     </ul>
   </div>
   <div class="menu hidden">
