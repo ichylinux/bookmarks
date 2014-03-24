@@ -18,12 +18,13 @@
     var selector = '<%= (0..@portal.portal_column_count - 1).map{|i| "#column_#{i}" }.join(',') %>';
 
     $(selector).sortable({
-      connectWith: ".gadgets",
+      connectWith: '.gadgets',
+      handle: 'div.title',
       update: function() {
         var params = collect_portal_layout_params();
         $.post('<%= url_for :action => 'save_state' %>', params);
       }
-    }).disableSelection();
+    });
   });
 </script>
 
