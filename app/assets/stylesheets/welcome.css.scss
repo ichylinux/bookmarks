@@ -17,6 +17,9 @@ div.gadgets {
         font-weight: bold;
         background: rgba(0, 0, 0, .20);
       }
+      div.title:hover {
+        cursor: move;
+      }
     }
   }
 }
