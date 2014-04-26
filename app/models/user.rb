@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
@@ -11,9 +9,14 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
 
   has_one :preference
-  has_many :portals, :conditions => ['deleted = ?', false]
 
+  has_many :portals, :conditions => ['deleted = ?', false]
   after_save :create_default_portal
+
+  def use_todo?
+    return true unless preference.present?
+    preference.use_todo?
+  end
 
   private
 
@@ -23,5 +26,5 @@ class User < ActiveRecord::Base
       p.save!
     end
   end
-  
+
 end

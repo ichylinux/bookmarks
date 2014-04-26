@@ -1,14 +1,24 @@
-# coding: UTF-8
-
 class TodosController < ApplicationController
+  before_filter :load_todo, :only => ['edit', 'update', 'destroy']
   
   def index
     @todos = Todo.where(:user_id => current_user).not_deleted.order(:title)
   end
 
+  def edit
+    render :layout => ! request.xhr?
+  end
+
+  def update
+    @todo.transaction do
+      @todo.attributes = params[:todo]
+      @todo.save!
+    end
+
+    render :partial => 'todo', :locals => {:todo => @todo}
+  end
+
   def destroy
-    @todo = Todo.find(params[:id])
-    
     @todo.transaction do
       @todo.destroy_logically!
     end
@@ -35,6 +45,17 @@ class TodosController < ApplicationController
     end
     
     redirect_to :action => 'index'
+  end
+
+  private
+
+  def load_todo
+    @todo = Todo.find(params[:id])
+
+    unless @todo.readable_by?(current_user)
+      render :nothing => true, :status => :not_found
+      return
+    end
   end
 
 end

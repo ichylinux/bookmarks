@@ -1,5 +1,6 @@
 def user
-  @_user ||= User.first
+  assert @_user ||= User.first
+  @_user
 end
 
 def user_without_calendar

@@ -4,6 +4,10 @@
       <th><%= f.label :theme %></th>
       <td><%= f.select :theme, {'シンプル' => 'simple'}, :include_blank => true %></td>
     </tr>
+    <tr>
+      <th><%= f.label :use_todo %></th>
+      <th><%= f.check_box :use_todo %></th>
+    </tr>
   </table>
   
   <%= f.submit %>

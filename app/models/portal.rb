@@ -1,9 +1,6 @@
-# coding: UTF-8
-
 class Portal < ActiveRecord::Base
 
   belongs_to :user
-
   validates :name, :presence => true
 
   def portal_column_count
@@ -60,10 +57,12 @@ class Portal < ActiveRecord::Base
       ret[gadget.gadget_id] = gadget
     end
 
-    todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
-    if todos.present?
-      gadget = TodoGadget.new(todos) 
-      ret[gadget.gadget_id] = gadget
+    if user.use_todo?
+      todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
+      if todos.present?
+        gadget = TodoGadget.new(todos) 
+        ret[gadget.gadget_id] = gadget
+      end
     end
 
     calendars = Calendar.where(:user_id => user.id).not_deleted.each do |c|

@@ -1,12 +1,20 @@
 <div id="<%= gadget.gadget_id %>" class="gadget todo">
+  <script>
+    $(document).ready(function() {
+      $('#<%= gadget.gadget_id %>').delegate('li', 'dblclick', function() {
+        var that = this;
+        $.get($(that).data('url'), {format: 'html'}, function(html) {
+          $(that).html(html);
+        });
+      });
+    });
+  </script>
+
   <div>
     <div class="title"><%= gadget.title %></div>
     <ol>
       <% gadget.entries.each do |todo| %>
-        <li>
-          <span class="<%= "priority_#{todo.priority}" %>"><%= todo.priority_name %></span>
-          <span><%= todo.title %></span>
-        </li>
+        <%= render todo %>
       <% end %>
     </ol>
   </div>

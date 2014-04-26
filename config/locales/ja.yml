@@ -16,6 +16,7 @@ ja:
         feed_url: フィードURL
       preference:
         theme: テーマ
+        use_todo: タスクウィジェットを表示する
       todo:
         priority: 優先度
         title: タイトル

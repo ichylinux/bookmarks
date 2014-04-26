@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 module FeedConst
   DEFAULT_DISPLAY_COUNT = 5
 end

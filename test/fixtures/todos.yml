@@ -1,0 +1,11 @@
+1:
+  id: 1
+  user_id: 1
+  title: 原稿締切り
+  priority: <%= Todo::PRIORITY_HIGH %>
+
+2:
+  id: 2
+  user_id: 2
+  title: 受験勉強
+  priority: <%= Todo::PRIORITY_NORMAL %>

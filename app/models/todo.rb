@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 module TodoConst
   PRIORITIES = {
     PRIORITY_HIGH = 1 => '高',
@@ -10,6 +8,7 @@ end
 
 class Todo < ActiveRecord::Base
   include TodoConst
+  include Crud::ByUser
 
   belongs_to :user
 

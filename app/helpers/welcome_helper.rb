@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 module WelcomeHelper
 
   def favorite_theme
