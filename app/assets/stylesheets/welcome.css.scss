@@ -37,24 +37,3 @@ div.gadgets {
   padding-bottom: 0px;
 }
 }
-
-.todo {
-  ol {
-    li {
-      span {
-        display: table-cell;
-        padding: 0 4px;
-      }
-    }
-  }
-
-  .priority_1 {
-    color: red;
-  }
-  .priority_2 {
-    color: green;
-  }
-  .priority_3 {
-    color: grey;
-  }
-}

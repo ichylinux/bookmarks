@@ -1,18 +1,18 @@
 <div id="<%= gadget.gadget_id %>" class="gadget todo">
   <script>
     $(document).ready(function() {
-      $('#<%= gadget.gadget_id %>').delegate('li', 'dblclick', function() {
-        var that = this;
-        $.get($(that).data('url'), {format: 'html'}, function(html) {
-          $(that).html(html);
-        });
-      });
+      todos.init('#<%= gadget.gadget_id %>');
     });
   </script>
 
   <div>
     <div class="title"><%= gadget.title %></div>
-    <ol>
+    <ol data-url_for_new="<%= new_todo_path %>" data-url_for_delete="<%= delete_todos_path %>">
+      <li class="todo_actions">
+        <span style="float: left;"><%= link_to_function '完了', 'todos.delete_todos(this);' %></span>
+        <span style="float: right;"><%= link_to_function '新しいタスク', 'todos.new_todo(this);' %></span>
+      </li>
+
       <% gadget.entries.each do |todo| %>
         <%= render todo %>
       <% end %>

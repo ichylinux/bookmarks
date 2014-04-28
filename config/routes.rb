@@ -36,6 +36,7 @@ Bookmarks::Application.routes.draw do
     collection do
       get  'new_import'
       post 'confirm_import'
+      post 'delete'
       post 'import'
     end
   end

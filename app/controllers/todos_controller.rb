@@ -5,6 +5,22 @@ class TodosController < ApplicationController
     @todos = Todo.where(:user_id => current_user).not_deleted.order(:title)
   end
 
+  def new
+    @todo = Todo.new(:user => current_user)
+    render :layout => ! request.xhr?
+  end
+
+  def create
+    @todo = Todo.new(params[:todo])
+    @todo.user = current_user
+    
+    @todo.transaction do
+      @todo.save!
+    end
+
+    render :partial => 'todo', :locals => {:todo => @todo}
+  end
+
   def edit
     render :layout => ! request.xhr?
   end
@@ -24,6 +40,19 @@ class TodosController < ApplicationController
     end
     
     redirect_to :action => 'index'
+  end
+
+  def delete
+    if params[:todo_id].present?
+      Todo.transaction do
+        params[:todo_id].each do |id|
+          @todo = Todo.find(id)
+          @todo.destroy_logically!
+        end
+      end
+    end
+    
+    render :nothing => true
   end
 
   def new_import

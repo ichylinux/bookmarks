@@ -1,0 +1,61 @@
+.todo {
+  li {
+    span {
+      display: table-cell;
+      padding: 0 2px;
+    }
+
+  }
+
+  li:hover {
+    background: #EEEEEE;
+  }
+  
+  span.selected {
+    border: 0;
+    background-image: url('<%= asset_path('selected.png') %>');
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: top center;
+  }
+
+  table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    tr {
+      width: 100%;
+      
+      td {
+        padding: 0 1px;
+        text-align: center;
+        
+        input[type="text"] {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .priority_1 {
+    color: red;
+    min-width: 2em;
+  }
+  .priority_2 {
+    color: green;
+    min-width: 2em;
+  }
+  .priority_3 {
+    color: grey;
+    min-width: 2em;
+  }
+  
+  .todo_actions {
+    min-height: 1.2em;
+    
+    a:visited {
+      color: blue;
+    }
+  }
+}
