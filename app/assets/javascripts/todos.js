@@ -10,10 +10,10 @@ todos.init = function(selector) {
     });
   });
 
-  $(selector).delegate('li', 'click', function() {
-    if (!$(this).is('.todo_actions')) {
+  $(selector).delegate('li span:first-child', 'click', function() {
+    if (!$(this).parent().is('.todo_actions')) {
       $(this).toggleClass('selected');
-      $(this).find('span').first().toggleClass('selected');
+      $(this).parent().toggleClass('selected');
     }
   });
 };

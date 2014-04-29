@@ -8,10 +8,7 @@
   <div>
     <div class="title"><%= gadget.title %></div>
     <ol data-url_for_new="<%= new_todo_path %>" data-url_for_delete="<%= delete_todos_path %>">
-      <li class="todo_actions">
-        <span style="float: left;"><%= link_to_function '完了', 'todos.delete_todos(this);' %></span>
-        <span style="float: right;"><%= link_to_function '新しいタスク', 'todos.new_todo(this);' %></span>
-      </li>
+      <%= render 'todos/actions' %>
 
       <% gadget.entries.each do |todo| %>
         <%= render todo %>

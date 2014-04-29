@@ -6,7 +6,7 @@ class TodosController < ApplicationController
   end
 
   def new
-    @todo = Todo.new(:user => current_user)
+    @todo = Todo.new(:user => current_user, :priority => Todo::PRIORITY_NORMAL)
     render :layout => ! request.xhr?
   end
 
