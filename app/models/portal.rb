@@ -59,10 +59,8 @@ class Portal < ActiveRecord::Base
 
     if user.use_todo?
       todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
-      if todos.present?
-        gadget = TodoGadget.new(todos) 
-        ret[gadget.gadget_id] = gadget
-      end
+      gadget = TodoGadget.new(todos) 
+      ret[gadget.gadget_id] = gadget
     end
 
     calendars = Calendar.where(:user_id => user.id).not_deleted.each do |c|

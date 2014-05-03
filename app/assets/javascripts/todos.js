@@ -21,16 +21,21 @@ todos.init = function(selector) {
 todos.new_todo = function(trigger) {
   var ol = $(trigger).closest('ol');
   $.get(ol.data('url_for_new'), {format: 'html'}, function(html) {
-    ol.find('.todo_actions').html(html);
+    ol.find('.todo_actions').hide().after('<li>' + html + '</li>');
   });
 };
 
 todos.create_todo = function(trigger) {
   var form = $(trigger).closest('form');
-  $.post(form.attr('action'), form.serialize(), function(html) {
-    form.closest('li').after($(html).wrap('<li></li>'));
-    form.find('input[type="text"]').val('');
-  });
+  if (form.find('input[type="text"]').val() == '') {
+    var ol = $(trigger).closest('ol');
+    ol.find('.todo_actions').show().next().remove();
+  } else {
+    $.post(form.attr('action'), form.serialize(), function(html) {
+      form.closest('li').after(html);
+      form.find('input[type="text"]').val('');
+    });
+  }
 };
 
 todos.update_todo = function(trigger) {
