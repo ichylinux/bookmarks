@@ -18,7 +18,7 @@
     * コントローラを作成
       """
       <b>
-      $ rails g controller bookmarks --no-assets --no-helper
+      $ rake dad:generate:controller bookmarks
       </b>
       """
     * ルーティングを追加

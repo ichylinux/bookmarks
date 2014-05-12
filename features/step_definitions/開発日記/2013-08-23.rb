@@ -10,7 +10,7 @@ end
 end
 
 もし /^コントローラを作成$/ do |string|
-  show 'app/controllers/bookmarks_controller.rb', :as => ['auto', 'edit']
+  diff 'app/controllers/bookmarks_controller.rb', File.join(File.dirname(__FILE__), 'bookmarks_controller.rb'), :as => ['auto', 'edit']
 end
 
 もし /^ルーティングを追加$/ do
