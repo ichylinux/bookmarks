@@ -1,44 +1,67 @@
-set :default_run_options, :pty => true
-set :use_sudo, false
+# config valid only for Capistrano 3.1
+lock '3.2.1'
 
-set :application, "bookmarks"
-set :repository,  "git://github.com/ichylinux/bookmarks.git"
-set :scm, :git
-set :branch, 'master'
-
-# set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-
+set :application, 'bookmarks'
 set :user, ENV['USER']
-set :deploy_via, :remote_cache
-set :deploy_to, "/home/#{user}/apps/#{application}"
+set :repo_url, 'git://github.com/ichylinux/bookmarks.git'
 
-role :web, "localhost"                          # Your HTTP server, Apache/etc
-role :app, "localhost"                          # This may be the same as your `Web` server
-role :db,  "localhost", :primary => true # This is where Rails migrations will run
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
-# if you want to clean up old releases on each deploy uncomment this:
-after "deploy:start", "deploy:cleanup"
+# Default deploy_to directory is /var/www/my_app
+# set :deploy_to, '/var/www/my_app'
+set :deploy_to, "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
 
-# if you're still using the script/reaper helper you will need
-# these http://github.com/rails/irs_process_scripts
+# Default value for :scm is :git
+# set :scm, :git
 
-# If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
+# Default value for :format is :pretty
+# set :format, :pretty
+
+# Default value for :log_level is :debug
+# set :log_level, :debug
+
+# Default value for :pty is false
+# set :pty, true
+
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
+
+# Default value for linked_dirs is []
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
+
 namespace :deploy do
-  task :start, :roles => :app, :except => { :no_release => true } do 
-    run "sudo service unicorn_bookmarks_pro start"
+
+  task :start do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute "sudo service unicorn_bookmarks_pro start"
+    end
   end
-  task :stop, :roles => :app, :except => { :no_release => true } do 
-    run "sudo service unicorn_bookmarks_pro stop"
+  task :stop do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute "sudo service unicorn_bookmarks_pro stop"
+    end
   end
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "sudo service unicorn_bookmarks_pro restart"
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute "sudo service unicorn_bookmarks_pro restart"
+    end
   end
+
+  after :publishing, :restart
+
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      within release_path do
+        execute :rake, 'tmp:cache:clear'
+      end
+    end
+  end
+
 end
