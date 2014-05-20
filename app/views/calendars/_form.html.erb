@@ -1,3 +1,9 @@
+<script>
+  $(document).ready(function() {
+    calendars.init_form();
+  });
+</script>
+
 <%= form_for @calendar do |f| %>
   <%= f.hidden_field :user_id %>
   <table>
@@ -7,7 +13,10 @@
     </tr>
     <tr>
       <th><%= f.label :show_weather %></th>
-      <td><%= f.check_box :show_weather %></td>
+      <td>
+        <%= f.check_box :show_weather %>
+        <%= f.select :prefecture_code, Prefecture::PREFECTURES.invert, :include_blank => true %>
+      </td>
     </tr>
   </table>
   <%= f.submit %>
