@@ -81,7 +81,7 @@ GEM
       nokogiri (~> 1.5)
       rails (>= 3, < 5)
     curb (0.8.5)
-    daddy (0.2.9)
+    daddy (0.2.11)
       capybara (~> 2.2)
       ci_reporter (~> 1.9)
       cucumber (~> 1.3)
