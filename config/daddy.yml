@@ -1,2 +1,5 @@
+cucumber:
+  title: "Bookmarks"
+
 fluentd:
   nginx: true
