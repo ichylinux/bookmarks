@@ -48,7 +48,6 @@ gem 'unicorn'
 
 # Deploy with Capistrano
 gem 'capistrano'
-gem 'capistrano-bundler'
 gem 'capistrano-rails'
 
 # To use debugger

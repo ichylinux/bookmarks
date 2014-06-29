@@ -287,7 +287,6 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano
-  capistrano-bundler
   capistrano-rails
   coffee-rails (~> 3.2.1)
   compass-rails
