@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 require 'resque'
 require 'resque/failure/base'
 require 'resque/failure/multiple'

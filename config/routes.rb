@@ -1,5 +1,5 @@
 require 'resque/server'
-require 'resque_scheduler/server'
+require 'resque/scheduler/server'
 
 Bookmarks::Application.routes.draw do
   devise_for :users

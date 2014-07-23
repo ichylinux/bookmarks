@@ -10,7 +10,7 @@
   </caption>
   <tr>
     <% 7.times do |i| %>
-      <th><%= @calendar.day_of_week(i) %></th>
+      <th class="<%= ['sunday', nil, nil, nil, nil, nil, 'saturday'][i] %>"><%= @calendar.day_of_week(i) %></th>
     <% end %>
   </tr>
   

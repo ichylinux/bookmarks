@@ -5,18 +5,27 @@ table.calendar {
   width: 98%;
 
   tr {
+    th {
+      color: #888888;
+    }
+    th.sunday {
+      color: #FF0000;
+    }
+    th.saturday {
+      color: #000080;
+    }
+
     td {
       width: 14.28%;
       margin: 0;
       padding: 0;
-      border: solid 1px #666666;
-
+      
       div.day {
-        margin: 2px;
-        padding: 2px;
+        margin: 0px;
+        padding: 2px 4px;
         font-size: 0.8em;
         text-align: right;
-        border-bottom: solid 1px #AAAAAA;
+        background: #FFFFFF;
       }
       div.day.sunday {
         color: #FF0000;
@@ -47,7 +56,7 @@ table.calendar {
     }
     
     td.previous_month, td.next_month {
-      div {
+      div.day {
         opacity: 0.5;
         background: #FFFFFF;
       }
