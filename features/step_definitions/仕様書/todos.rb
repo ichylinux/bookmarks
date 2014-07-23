@@ -14,13 +14,11 @@ end
 end
 
 もし /^(.*?) をクリックしてタスクを追加します。$/ do |action|
-  assert page.has_selector?('.todo_actions', :visible => true)
-  capture
+  assert page.has_selector?('.todo_actions')
 
   @todo_count = page.find('#todo').all('li').size
 
   click_on action
-  assert page.has_no_selector?('.todo_actions', :visible => true)
   assert page.has_selector?('#new_todo')
   capture
   
@@ -30,12 +28,12 @@ end
     click_on '登録'
   end
 
-  wait_until { page.find('#todo').all('li').size == @todo_count + 1 }
+  assert wait_until { page.find('#todo').all('li').size == @todo_count + 1 }
   capture
 end
 
 もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
-  assert page.has_no_selector?('.todo_actions', :visible => true)
+  click_on '新しいタスク'
   assert page.has_selector?('#new_todo')
   capture
 
@@ -43,6 +41,6 @@ end
     click_on action
   end
   
-  assert page.has_selector?('.todo_actions', :visible => true)
+  assert page.has_selector?('.todo_actions')
   capture
 end
