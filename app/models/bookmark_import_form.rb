@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class BookmarkImportForm < Daddy::Model
 
   def bookmarks

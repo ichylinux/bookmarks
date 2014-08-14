@@ -1,9 +1,9 @@
-# coding: UTF-8
-
 class Calendar < ActiveRecord::Base
   include Crud::ByUser
 
   belongs_to :user
+  validates :user, :presence => true
+  validates :title ,:presence => true
 
   def gadget_id
     "calendar_#{self.id}"

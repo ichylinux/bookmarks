@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 module CalendarsHelper
 
   def date_classes(calendar, date)

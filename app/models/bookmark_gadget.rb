@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class BookmarkGadget
   
   def initialize(bookmarks)

@@ -1,3 +1,8 @@
+<div class="actions">
+  <%= link_to '一覧', bookmarks_path %>
+  <%= link_to '編集', edit_bookmark_path(@bookmark) %>
+</div>
+
 <table>
   <tr>
     <th><%= Bookmark.human_attribute_name :title %></th>

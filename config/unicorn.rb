@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 require 'yaml'
 
 rails_root = "#{File.dirname(File.expand_path(__FILE__))}/.."

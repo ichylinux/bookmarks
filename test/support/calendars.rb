@@ -10,3 +10,10 @@ def valid_calendar_params(user)
     :title => 'カレンダータイトル'
   }
 end
+
+def invalid_calendar_params(user)
+  {
+    :user_id => user.id,
+    :title => ''
+  }
+end

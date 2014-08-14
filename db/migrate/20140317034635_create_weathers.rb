@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class CreateWeathers < ActiveRecord::Migration
   def change
     create_table :weathers do |t|

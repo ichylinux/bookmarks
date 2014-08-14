@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 require 'csv'
 
 class TodoImportForm < Daddy::Model

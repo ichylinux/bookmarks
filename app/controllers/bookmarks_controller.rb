@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class BookmarksController < ApplicationController
   
   def index
@@ -15,7 +13,7 @@ class BookmarksController < ApplicationController
   end
 
   def create
-    @bookmark = Bookmark.new(params[:bookmark])
+    @bookmark = Bookmark.new(bookmark_params)
     
     @bookmark.transaction do
       @bookmark.user = current_user
@@ -33,7 +31,7 @@ class BookmarksController < ApplicationController
     @bookmark = Bookmark.find(params[:id])
     
     @bookmark.transaction do
-      @bookmark.attributes = params[:bookmark]
+      @bookmark.attributes = bookmark_params
       @bookmark.save!
     end
     
@@ -74,4 +72,9 @@ class BookmarksController < ApplicationController
     redirect_to :action => 'index'
   end
 
+  private
+
+  def bookmark_params
+    params.require(:bookmark).permit(:user_id, :title, :url)
+  end
 end
