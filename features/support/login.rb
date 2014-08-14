@@ -4,7 +4,7 @@ module Login
     visit '/users/sign_in'
     fill_in 'Email', :with => user.email
     fill_in 'Password', :with => 'testtest'
-    click_on 'Sign in'
+    click_on 'Log in'
 
     @_current_user = user
   end

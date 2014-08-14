@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class CalendarsController < ApplicationController
   before_filter :load_calendar, :except => ['index', 'new', 'create']
 
@@ -26,7 +24,7 @@ class CalendarsController < ApplicationController
   end
 
   def create
-    @calendar = Calendar.new(params[:calendar])
+    @calendar = Calendar.new(calendar_params)
     
     begin
       @calendar.transaction do
@@ -46,7 +44,7 @@ class CalendarsController < ApplicationController
   def update
     begin
       @calendar.transaction do
-        @calendar.attributes = params[:calendar]
+        @calendar.attributes = calendar_params
         @calendar.save!
       end
 
@@ -76,6 +74,10 @@ class CalendarsController < ApplicationController
     end
     
     true
+  end
+
+  def calendar_params
+    params.require(:calendar).permit(:user_id, :title, :show_weather, :prefecture_code)
   end
 
 end

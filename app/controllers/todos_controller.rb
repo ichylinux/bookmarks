@@ -11,7 +11,7 @@ class TodosController < ApplicationController
   end
 
   def create
-    @todo = Todo.new(params[:todo])
+    @todo = Todo.new(todo_params)
     @todo.user = current_user
     
     @todo.transaction do
@@ -27,7 +27,7 @@ class TodosController < ApplicationController
 
   def update
     @todo.transaction do
-      @todo.attributes = params[:todo]
+      @todo.attributes = todo_params
       @todo.save!
     end
 
@@ -85,6 +85,10 @@ class TodosController < ApplicationController
       render :nothing => true, :status => :not_found
       return
     end
+  end
+
+  def todo_params
+    params.require(:todo).permit(:user_id, :title, :priority)
   end
 
 end

@@ -1,5 +1,3 @@
-# coding: UTF-8
-
 class PreferencesController < ApplicationController
 
   def index
@@ -7,7 +5,7 @@ class PreferencesController < ApplicationController
   end
 
   def create
-    @preference = Preference.new(params[:preference])
+    @preference = Preference.new(preference_params)
     @preference.user_id = current_user.id
     @preference.save!
 
@@ -17,9 +15,16 @@ class PreferencesController < ApplicationController
   def update
     @preference = Preference.find(params[:id])
     @preference.user_id = current_user.id
-    @preference.attributes = params[:preference]
+    @preference.attributes = preference_params
     @preference.save!
     
     redirect_to :action => 'index'
   end
+
+  private
+
+  def preference_params
+    params.require(:preference).permit(:user_id, :theme, :use_todo)
+  end
+
 end

@@ -1,16 +1,12 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable,
-  # :lockable, :timeoutable and :omniauthable
+  # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-
   has_one :preference
 
-  has_many :portals, :conditions => ['deleted = ?', false]
+  has_many :portals, -> { where( :deleted => false) }
   after_save :create_default_portal
 
   def use_todo?

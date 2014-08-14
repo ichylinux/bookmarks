@@ -1,32 +1,23 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.19'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.6'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem 'daddy'
+gem 'coffee-rails', '~> 4.0.0'
+gem 'compass-rails'
+gem 'daddy', '~> 0.3.0'
 gem 'devise'
 gem 'feedjira'
-gem 'mysql2'
-gem 'nokogiri'
-gem 'rake'
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
-
-  gem 'uglifier', '>= 1.0.3'
-end
-
-gem 'compass-rails'
+gem 'jbuilder', '~> 1.2'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
+gem 'mysql2'
+gem 'nokogiri'
+gem 'rails-i18n'
+gem 'rake'
+gem 'sass-rails', '~> 4.0.2'
+gem 'turbolinks'
+gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'thin'
@@ -34,21 +25,22 @@ end
 
 group :test do
   gem 'minitest-rails'
-  gem 'turn'
+  #gem 'turn'
 end
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  gem 'sdoc', require: false
+end
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+# Use ActiveModel has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 gem 'unicorn'
 
-# Deploy with Capistrano
-gem 'capistrano'
-gem 'capistrano-rails'
+# Use Capistrano for deployment
+gem 'capistrano', group: :development
 
-# To use debugger
-# gem 'debugger'
+# Use debugger
+# gem 'debugger', group: [:development, :test]
