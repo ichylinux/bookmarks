@@ -18,9 +18,6 @@ if ENV['JENKINS']
 end
 
 class ActiveSupport::TestCase
-  include HyaccConstants
-  include HyaccErrors
-
   ActiveRecord::Migration.check_pending!
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
