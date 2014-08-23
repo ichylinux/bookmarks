@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.6'
+gem 'rails', '4.0.9'
 
 gem 'coffee-rails', '~> 4.0.0'
 gem 'compass-rails'
@@ -24,8 +24,9 @@ group :development, :test do
 end
 
 group :test do
-  gem 'minitest-rails'
-  #gem 'turn'
+  gem 'minitest'
+  gem 'minitest-colorize'
+  gem 'minitest-reporters'
 end
 
 group :doc do
