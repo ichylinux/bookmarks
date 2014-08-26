@@ -20,9 +20,12 @@ class FeedsController < ApplicationController
   end
 
   def create
-    @feed = Feed.new(params[:feed])
+    @feed = Feed.new(feed_params)
     @feed.user_id = current_user.id
-    @feed.save!
+
+    @feed.transaction do
+      @feed.save!
+    end
 
     redirect_to :action => 'index'
   end
@@ -33,25 +36,40 @@ class FeedsController < ApplicationController
 
   def update
     @feed = Feed.find(params[:id])
-    @feed.attributes = params[:feed]
-    @feed.save!
-    
+    @feed.attributes = feed_params
+
+    @feed.transaction do
+      @feed.save!
+    end
+
     redirect_to :action => 'index'
   end
 
   def destroy
     @feed = Feed.find(params[:id])
-    @feed.destroy_logically!
+
+    @feed.transaction do
+      @feed.destroy_logically!
+    end
 
     redirect_to :action => 'index'
   end
 
   def get_feed_title
-    @feed = Feed.new(params[:feed])
+    @feed = Feed.new(feed_params)
     if @feed.feed?
       render :text => @feed.feed.title
     else
       render :nothing => true
     end
   end
+
+  private
+
+  def feed_params
+    params.require(:feed).permit(
+        :user_id, :title, :feed_url, :display_count,
+        :auth_user, :auth_encrypted_password, :auth_salt, :auth_url)
+  end
+
 end
