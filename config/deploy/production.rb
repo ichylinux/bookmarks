@@ -4,9 +4,9 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{localhost}
-role :web, %w{localhost}
-role :db,  %w{localhost}
+role :app, %w{bookmarks-server}
+role :web, %w{bookmarks-server}
+role :db,  %w{bookmarks-server}
 
 
 # Custom SSH Options
