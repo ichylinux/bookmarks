@@ -9,7 +9,7 @@ set :repo_url, 'git://github.com/ichylinux/bookmarks.git'
 
 # Default deploy_to directory is /var/www/my_app
 # set :deploy_to, '/var/www/my_app'
-set :deploy_to, "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
+set :deploy_to, "/var/apps/#{fetch(:application)}"
 
 # Default value for :scm is :git
 # set :scm, :git
