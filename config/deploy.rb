@@ -2,7 +2,6 @@
 lock '3.2.1'
 
 set :application, 'bookmarks'
-set :user, ENV['USER']
 set :repo_url, 'git://github.com/ichylinux/bookmarks.git'
 
 # Default branch is :master
