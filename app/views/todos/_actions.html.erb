@@ -1,4 +1,4 @@
 <li class="todo_actions">
-  <span style="float: left;"><%= link_to '完了', '#', :onclick => 'todos.delete_todos(this);' %></span>
-  <span style="float: right;"><%= link_to '新しいタスク', '#', :onclick => 'todos.new_todo(this);' %></span>
+  <span style="float: left;"><%= link_to '完了', '#', :onclick => 'todos.delete_todos(this); return false;' %></span>
+  <span style="float: right;"><%= link_to '新しいタスク', '#', :onclick => 'todos.new_todo(this); return false;' %></span>
 </li>
