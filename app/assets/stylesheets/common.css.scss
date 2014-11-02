@@ -78,11 +78,11 @@ table {
     padding: 4px 8px;
     text-decoration: none;
     color: #595757;
-  }
-  
-  a:hover {
-    color: white;
-    background: #A9A9A9;
+
+    &:hover {
+      color: white;
+      background: #A9A9A9;
+    }
   }
 }
 
@@ -110,6 +110,7 @@ table {
     border: solid 1px #595757;
     background: #EEEEEE;
     padding: 5px;
+    z-index: 1;
 
     div {
       margin: 5px;

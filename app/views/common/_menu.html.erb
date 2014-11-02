@@ -1,7 +1,11 @@
 <div class="header">
   <script>
-    function toggle_menu() {
-      $('.header .menu').toggleClass('hidden');
+    function toggle_menu(trigger, menu) {
+      menu.toggleClass('hidden');
+      if (menu.is(':visible')) {
+        menu.css('min-width', trigger.outerWidth() - 10);
+        menu.position({my: 'right top', at: 'right bottom', of: trigger});
+      }
     }
 
     $(document).ready(function() {
@@ -9,13 +13,19 @@
       var email = header.find('.email').first();
       var menu = header.find('.menu').first();
 
-      menu.css('min-width', menu.outerWidth());
-      menu.css('top', header.offset().top + header.height());
-      menu.css('left', header.offset().left + header.outerWidth() - menu.outerWidth());
+      email.click(function() {
+        toggle_menu(email, menu);
+      });
 
-      menu.find('a').click(function() {
+      menu.delegate('a', 'click', function() {
         if ($(this).attr('target') == '_blank') {
-          toggle_menu();
+          toggle_menu(email, menu);
+        }
+      });
+      
+      $('html').click(function(e) {
+        if ($(e.target).closest('.navigation').length == 0) {
+          menu.addClass('hidden');
         }
       });
     });
@@ -23,7 +33,7 @@
   <div>
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
-      <li class="email"><a href="" onclick="toggle_menu(); return false;"><%= current_user.email %></a></li>
+      <li class="email"><%= link_to current_user.email, '#' %></a></li>
     </ul>
   </div>
   <div class="menu hidden">
