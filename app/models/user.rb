@@ -1,8 +1,10 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable, :two_factor_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
+
+  has_one_time_password
 
   has_one :preference
 
@@ -12,6 +14,10 @@ class User < ActiveRecord::Base
   def use_todo?
     return true unless preference.present?
     preference.use_todo?
+  end
+
+  def send_two_factor_authentication_code
+    LoginMailer.invoice_login(self).deliver
   end
 
   private

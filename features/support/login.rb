@@ -6,6 +6,9 @@ module Login
     fill_in 'Password', :with => 'testtest'
     click_on 'Log in'
 
+    fill_in 'code', :with => User.find(user.id).otp_code
+    click_on 'Submit'
+
     @_current_user = user
   end
 

@@ -8,8 +8,7 @@ class FeedsController < ApplicationController
     @feed = Feed.find(params[:id])
     
     unless @feed.readable_by?(current_user)
-      render :nothing => true, :status => :not_found
-      return
+      render :nothing => true, :status => :not_found and return
     end
 
     render :layout => ! request.xhr?
@@ -21,7 +20,6 @@ class FeedsController < ApplicationController
 
   def create
     @feed = Feed.new(feed_params)
-    @feed.user_id = current_user.id
 
     @feed.transaction do
       @feed.save!
@@ -67,6 +65,8 @@ class FeedsController < ApplicationController
   private
 
   def feed_params
+    params[:feed][:user_id] = current_user.id
+
     params.require(:feed).permit(
         :user_id, :title, :feed_url, :display_count,
         :auth_user, :auth_encrypted_password, :auth_salt, :auth_url)
