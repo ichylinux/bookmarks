@@ -11,7 +11,7 @@
       <% @portal.portal_column_count.times.each do |i| %>
         'portal[column_<%= i %>]': column_<%= i %>,
       <% end %>
-    }; 
+    };
   }
 
   $(document).ready(function() {
@@ -21,10 +21,10 @@
       connectWith: '.gadgets',
       handle: 'div.title',
       start: function() {
-        $(this).addClass('dragging')
+        $('.gadgets').addClass('dragging')
       },
       stop: function() {
-        $(this).removeClass('dragging')
+        $('.gadgets').removeClass('dragging')
       },
       update: function() {
         var params = collect_portal_layout_params();
