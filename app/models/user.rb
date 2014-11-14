@@ -16,6 +16,15 @@ class User < ActiveRecord::Base
     preference.use_todo?
   end
 
+  def use_two_factor_authentication?
+    return false unless preference.present?
+    preference.use_two_factor_authentication?
+  end
+
+  def need_two_factor_authentication?(request)
+    use_two_factor_authentication?
+  end
+
   def send_two_factor_authentication_code
     LoginMailer.invoice_login(self).deliver
   end
