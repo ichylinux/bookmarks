@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141114022458) do
+ActiveRecord::Schema.define(version: 20141114051925) do
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",                    null: false
@@ -64,11 +64,12 @@ ActiveRecord::Schema.define(version: 20141114022458) do
   end
 
   create_table "preferences", force: true do |t|
-    t.integer  "user_id",                    null: false
+    t.integer  "user_id",                                       null: false
     t.string   "theme"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.boolean  "use_todo",   default: false, null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.boolean  "use_todo",                      default: false, null: false
+    t.boolean  "use_two_factor_authentication", default: false, null: false
   end
 
   create_table "todos", force: true do |t|

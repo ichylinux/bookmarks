@@ -17,6 +17,7 @@ ja:
       preference:
         theme: テーマ
         use_todo: タスクウィジェットを表示する
+        use_two_factor_authentication: ２段階認証を使用する
       todo:
         priority: 優先度
         title: タイトル

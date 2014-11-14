@@ -14,17 +14,17 @@ class PreferencesController < ApplicationController
 
   def update
     @preference = Preference.find(params[:id])
-    @preference.user_id = current_user.id
     @preference.attributes = preference_params
     @preference.save!
-    
+
     redirect_to :action => 'index'
   end
 
   private
 
   def preference_params
-    params.require(:preference).permit(:user_id, :theme, :use_todo)
+    permitted = [:theme, :use_todo, :use_two_factor_authentication]
+    params.require(:preference).permit(permitted)
   end
 
 end

@@ -8,7 +8,11 @@
       <th><%= f.label :use_todo %></th>
       <th><%= f.check_box :use_todo %></th>
     </tr>
+    <tr>
+      <th><%= f.label :use_two_factor_authentication %></th>
+      <th><%= f.check_box :use_two_factor_authentication %></th>
+    </tr>
   </table>
   
-  <%= f.submit %>
+  <%= f.submit '保存' %>
 <% end %>
