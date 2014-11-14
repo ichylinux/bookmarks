@@ -4,7 +4,7 @@
   click_on '設定'
   check name
   capture
-  click_on '登録する'
+  click_on '保存'
 end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
