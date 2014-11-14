@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141102105219) do
+ActiveRecord::Schema.define(version: 20141114022458) do
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",                    null: false
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 20141102105219) do
   end
 
   create_table "preferences", force: true do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",                    null: false
     t.string   "theme"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
