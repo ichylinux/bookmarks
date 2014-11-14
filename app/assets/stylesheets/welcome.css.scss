@@ -3,13 +3,8 @@
 div.gadgets {
   float: left;
   width: 33.33%;
-  min-height: 100%;
-  padding-bottom: 20px;
+  padding-bottom: 100px;
   
-  &.dragging {
-    padding-bottom: 200px;
-  }
-
   div.gadget {
     div {
       margin: 4px;

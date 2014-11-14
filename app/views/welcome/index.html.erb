@@ -21,10 +21,10 @@
       connectWith: '.gadgets',
       handle: 'div.title',
       start: function() {
-        $('.gadgets').addClass('dragging')
+        $(this).addClass('dragging')
       },
       stop: function() {
-        $('.gadgets').removeClass('dragging')
+        $(this).removeClass('dragging')
       },
       update: function() {
         var params = collect_portal_layout_params();
