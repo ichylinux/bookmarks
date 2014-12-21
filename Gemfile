@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.12'
 
 gem 'cancan'
+gem 'closer'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'compass', '0.12.7'
 gem 'compass-rails'

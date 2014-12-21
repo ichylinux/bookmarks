@@ -299,6 +299,7 @@ DEPENDENCIES
   capistrano
   capistrano-bundler
   capistrano-rails
+  closer
   coffee-rails (~> 4.0.0)
   compass (= 0.12.7)
   compass-rails
