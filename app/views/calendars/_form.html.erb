@@ -15,7 +15,6 @@
       <th><%= f.label :show_weather %></th>
       <td>
         <%= f.check_box :show_weather %>
-        <%= f.select :prefecture_code, Prefecture::PREFECTURES.invert, :include_blank => true %>
       </td>
     </tr>
   </table>

@@ -31,7 +31,7 @@ class CalendarsController < ApplicationController
         @calendar.save!
       end
 
-      redirect_to :action => 'show', :id => @calendar.id
+      redirect_to @calendar
 
     rescue ActiveRecord::RecordInvalid => e
       render :new
@@ -48,7 +48,7 @@ class CalendarsController < ApplicationController
         @calendar.save!
       end
 
-      redirect_to :action => 'show', :id => @calendar.id
+      redirect_to @calendar
 
     rescue ActiveRecord::RecordInvalid => e
       render :edit
@@ -70,14 +70,11 @@ class CalendarsController < ApplicationController
 
     unless @calendar.readable_by?(current_user)
       render :nothing => true, :status => :not_found
-      return false
     end
-    
-    true
   end
 
   def calendar_params
-    params.require(:calendar).permit(:user_id, :title, :show_weather, :prefecture_code)
+    params.require(:calendar).permit(:user_id, :title, :show_weather)
   end
 
 end

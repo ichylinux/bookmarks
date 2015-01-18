@@ -13,14 +13,3 @@ calendars.init_form = function() {
     show_weather.change(calendars.update_prefecture);
   });
 };
-
-calendars.update_prefecture = function() {
-  var form = $(this).closest('form');
-  var prefecture_code = form.find('select[name*="prefecture_code"]');
-
-  if ($(this).prop('checked')) {
-    prefecture_code.attr('disabled', false);
-  } else {
-    prefecture_code.attr('disabled', true);
-  }
-};
