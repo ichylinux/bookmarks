@@ -11,7 +11,11 @@ class FeedsController < ApplicationController
       render :nothing => true, :status => :not_found and return
     end
 
-    render :layout => ! request.xhr?, :status => @feed.status
+    if @feed.feed?
+      render :layout => ! request.xhr?
+    else
+      render :text => @feed.status, :status => @feed.status
+    end
   end
 
   def new
