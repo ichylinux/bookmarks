@@ -28,6 +28,12 @@ class Feed < ActiveRecord::Base
     feed
   end
 
+  def status
+    return :success if feed?
+    return feed if feed.is_a?(Fixnum)
+    :internal_server_error
+  end
+
   def feed?
     return true if feed.is_a?(Feedjira::Parser::RSS)
     return true if feed.is_a?(Feedjira::Parser::Atom)
@@ -40,12 +46,15 @@ class Feed < ActiveRecord::Base
   end
 
   def url
-    feed.url
+    feed? ? feed.url : nil
   end
 
   def entries
-    Rails.logger.debug feed.class.name
-    feed? ? feed.entries : []
+    if feed?
+      feed.entries.slice(0, self.display_count)
+    else
+      []
+    end
   end
 
   def auth_decrypted_password

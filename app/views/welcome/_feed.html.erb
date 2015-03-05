@@ -2,6 +2,9 @@
   $(document).ready(function() {
     $.get('<%= feed_path(gadget) %>', {format: 'html'}, function(html) {
       $('#feed_<%= gadget.id %>').html(html);
+    })
+    .fail(function(xhr, status, error) {
+      $('#feed_<%= gadget.id %>').find('ol li span').first().text('フィードを取得できませんでした。(' + status + ')'); 
     });
   });
 </script>
