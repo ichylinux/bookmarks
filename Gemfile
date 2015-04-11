@@ -32,7 +32,6 @@ end
 
 group :test do
   gem 'minitest'
-  gem 'minitest-colorize'
   gem 'minitest-reporters'
 end
 
