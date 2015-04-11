@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.13'
+gem 'rails', '4.1.10'
 
 gem 'closer'
 gem 'coffee-rails', '~> 4.0.0'
@@ -10,17 +10,21 @@ gem 'compass-rails'
 gem 'daddy'
 gem 'devise'
 gem 'feedjira'
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '~> 2.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'mysql2'
 gem 'nokogiri'
 gem 'rails-i18n'
 gem 'rake'
-gem 'sass-rails', '~> 4.0.2'
+gem 'sass-rails', '~> 4.0.3'
 gem 'two_factor_authentication'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
+
+group :development do
+	gem 'spring'
+end
 
 group :development, :test do
   gem 'thin'
@@ -32,14 +36,6 @@ group :test do
   gem 'minitest-reporters'
 end
 
-group :doc do
-  # bundle exec rake doc:rails generates the API under doc/api.
-  gem 'sdoc', require: false
-end
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
 # Use unicorn as the app server
 gem 'unicorn'
 
@@ -49,6 +45,8 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
 end
+
+gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
