@@ -5,7 +5,7 @@ if ENV["COVERAGE"]
   SimpleCov.start 'rails' 
 end
 
-if ENV['JENKINS']
+if ENV['FORMAT'].to_s.downcase == 'junit'
   require 'minitest/reporters'
   MiniTest::Reporters.use! [
     MiniTest::Reporters::DefaultReporter.new,
