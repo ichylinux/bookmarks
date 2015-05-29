@@ -19,6 +19,7 @@ set :deploy_to, "/var/apps/#{fetch(:application)}"
 
 # Default value for :log_level is :debug
 # set :log_level, :debug
+set :log_level, ENV['LOG_LEVEL'] || :info
 
 # Default value for :pty is false
 # set :pty, true
