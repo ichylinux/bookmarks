@@ -6,8 +6,10 @@ module Login
     fill_in 'Password', :with => 'testtest'
     click_on 'Log in'
 
-    fill_in 'code', :with => User.find(user.id).otp_code
-    click_on 'Submit'
+    if user.need_two_factor_authentication?
+      fill_in 'code', :with => User.find(user.id).otp_code
+      click_on 'Submit'
+    end
 
     @_current_user = user
   end

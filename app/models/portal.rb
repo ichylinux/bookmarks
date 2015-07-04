@@ -57,7 +57,7 @@ class Portal < ActiveRecord::Base
       ret[gadget.gadget_id] = gadget
     end
 
-    if user.use_todo?
+    if user.preference.use_todo?
       todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
       gadget = TodoGadget.new(todos) 
       ret[gadget.gadget_id] = gadget

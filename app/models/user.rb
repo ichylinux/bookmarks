@@ -11,18 +11,12 @@ class User < ActiveRecord::Base
   has_many :portals, -> { where( :deleted => false) }
   after_save :create_default_portal
 
-  def use_todo?
-    return true unless preference.present?
-    preference.use_todo?
+  def preference
+    super || Preference.default_preference(self)
   end
 
-  def use_two_factor_authentication?
-    return false unless preference.present?
+  def need_two_factor_authentication?(request = nil)
     preference.use_two_factor_authentication?
-  end
-
-  def need_two_factor_authentication?(request)
-    use_two_factor_authentication?
   end
 
   def send_two_factor_authentication_code

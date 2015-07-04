@@ -14,3 +14,18 @@ def user_without_calendar
   assert @_user_without_calendar = User.where(sql.to_a).first
   @_user_without_calendar
 end
+
+def user_without_two_factor_authentication
+  unless @_user_without_two_factor_authentication
+    sql = SqlBuilder.new
+    sql.append('not exists (')
+    sql.append('  select 1 from preferences p')
+    sql.append('  where p.user_id = users.id')
+    sql.append('    and p.use_two_factor_authentication = ?', true)
+    sql.append(')')
+
+    assert @_user_without_two_factor_authentication = User.where(sql.to_a).first
+  end
+  
+  @_user_without_two_factor_authentication
+end

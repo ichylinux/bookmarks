@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150118063559) do
+ActiveRecord::Schema.define(version: 20150615120126) do
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",                    null: false
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 20150118063559) do
     t.datetime "updated_at",                                    null: false
     t.boolean  "use_todo",                      default: false, null: false
     t.boolean  "use_two_factor_authentication", default: false, null: false
+    t.integer  "default_priority"
   end
 
   create_table "todos", force: true do |t|
