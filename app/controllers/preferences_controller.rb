@@ -1,12 +1,11 @@
 class PreferencesController < ApplicationController
 
   def index
-    @preference = current_user.preference || Preference.new(:user_id => current_user.id)
+    @preference = current_user.preference
   end
 
   def create
     @preference = Preference.new(preference_params)
-    @preference.user_id = current_user.id
     @preference.save!
 
     redirect_to :action => 'index'
@@ -23,8 +22,8 @@ class PreferencesController < ApplicationController
   private
 
   def preference_params
-    permitted = [:theme, :use_todo, :use_two_factor_authentication]
-    params.require(:preference).permit(permitted)
+    permitted = [:theme, :use_todo, :use_two_factor_authentication, :default_priority]
+    params.require(:preference).permit(permitted).merge(:user_id => current_user.id)
   end
 
 end
