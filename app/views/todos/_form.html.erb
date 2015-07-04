@@ -1,12 +1,8 @@
-<%= form_for @todo do |f| %>
+<%= form_for @todo, :html => {:class => 'todo'} do |f| %>
   <table>
     <tr>
-      <td>
-        <%= f.select :priority, Todo::PRIORITIES.invert %>
-      </td>
-      <td>
-        <%= f.text_field :title %>
-      </td>
+      <td><%= f.select :priority, Todo::PRIORITIES.invert %></td>
+      <td><%= f.text_field :title %></td>
       <td>
         <% if @todo.new_record? %>
           <%= f.submit '登録', :onclick => 'todos.create_todo(this); return false;' %>
