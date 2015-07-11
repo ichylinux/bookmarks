@@ -73,7 +73,7 @@ class FeedsController < ApplicationController
 
     params.require(:feed).permit(
         :user_id, :title, :feed_url, :display_count,
-        :auth_user, :auth_encrypted_password, :auth_salt, :auth_url)
+        :auth_user, :auth_password, :auth_salt, :auth_url)
   end
 
 end
