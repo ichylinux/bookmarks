@@ -336,7 +336,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   coffee-rails (~> 4.0.0)
-  compass (= 0.12.7)
+  compass
   compass-rails
   daddy
   devise

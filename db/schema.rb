@@ -18,16 +18,16 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.string   "title",                      null: false
     t.string   "url",                        null: false
     t.boolean  "deleted",    default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "calendars", force: true do |t|
     t.integer  "user_id",                      null: false
     t.string   "title"
     t.boolean  "deleted",      default: false, null: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "show_weather", default: false, null: false
   end
 
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.string   "title",                                   null: false
     t.string   "feed_url",                                null: false
     t.boolean  "deleted",                 default: false, null: false
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "auth_user"
     t.string   "auth_encrypted_password"
     t.string   "auth_salt"
@@ -50,23 +50,23 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.integer  "column_no",     default: 0, null: false
     t.integer  "display_order", default: 0, null: false
     t.string   "gadget_id",                 null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "portals", force: true do |t|
     t.integer  "user_id",                    null: false
     t.string   "name",                       null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "deleted",    default: false, null: false
   end
 
   create_table "preferences", force: true do |t|
     t.integer  "user_id",                                       null: false
     t.string   "theme"
-    t.datetime "created_at",                                    null: false
-    t.datetime "updated_at",                                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "use_todo",                      default: false, null: false
     t.boolean  "use_two_factor_authentication", default: false, null: false
     t.integer  "default_priority"
@@ -77,8 +77,8 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.string   "title",                      null: false
     t.integer  "priority",                   null: false
     t.boolean  "deleted",    default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "admin",                        default: false, null: false
     t.string   "otp_secret_key"
     t.integer  "second_factor_attempts_count", default: 0
@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.date     "observation_day", null: false
     t.integer  "prefecture_no",   null: false
     t.integer  "weather_type",    null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

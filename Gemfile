@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.14.1'
 
 gem 'coffee-rails', '~> 4.0.0'
-gem 'compass', '0.12.7'
+gem 'compass'
 gem 'compass-rails'
 gem 'daddy'
 gem 'devise'
