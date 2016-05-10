@@ -4,9 +4,9 @@ cache:
   directories:
     - vendor/bundle
 rvm:
-  - 2.3.0
-  - 2.2.4
-  - 2.1.0
+  - 2.3.1
+  - 2.2.5
+  - 2.1.9
 before_script:
   - cp -f travis/database.yml config/
   - bundle exec rake dad:db:create DAD_MYSQL_NO_ROOT_PASSWORD=true
