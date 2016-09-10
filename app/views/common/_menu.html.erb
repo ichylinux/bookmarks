@@ -15,7 +15,6 @@
 
       email.click(function() {
         toggle_menu(email, menu);
-        return false;
       });
 
       menu.delegate('a', 'click', function() {
@@ -35,7 +34,7 @@
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
       <li class="email">
-        <a href="#"><%= current_user.email %><span style="font-size: 0.8em;"> ▼</span></a>
+        <a href="#" data-turbolinks="false"><%= current_user.email %><span style="font-size: 0.8em;"> ▼</span></a>
         <div class="menu hidden">
           <div><%= link_to '設定', preferences_path %></div>
           <div><%= link_to 'ブックマーク', bookmarks_path %></div>
