@@ -1,22 +1,19 @@
-require 'yaml'
+rails_root = "#{File.expand_path(File.dirname(File.dirname(__FILE__)))}"
 
-rails_root = "#{File.dirname(File.expand_path(__FILE__))}/.."
-rails_env = ENV['RAILS_ENV'] || 'development'
+worker_processes 1
+working_directory "#{File.dirname(File.expand_path(__FILE__))}/.."
 
-worker_processes 2
-working_directory rails_root
-
-app_name = YAML.load_file("#{File.dirname(__FILE__)}/database.yml")[rails_env]['database']
-listen "/tmp/#{app_name}.sock"
+listen "#{rails_root}/tmp/sockets/unicorn.sock"
 timeout 300
 
-stdout_path rails_root + '/log/unicorn.log'
-stderr_path rails_root + '/log/unicorn.log'
+stdout_path 'log/unicorn.log'
+stderr_path 'log/unicorn.log'
 
 preload_app true
 
 before_fork do |server, worker|
-  ActiveRecord::Base.connection.disconnect!
+  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+
   old_pid = "#{server.config[:pid]}.oldbin"
   if old_pid != server.pid
     begin
@@ -28,5 +25,5 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
-  ActiveRecord::Base.establish_connection
+  defined?(ActiveRecord::Base) and ActiveRecord::Base.establish_connection
 end
