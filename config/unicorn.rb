@@ -1,7 +1,7 @@
 rails_root = "#{File.expand_path(File.dirname(File.dirname(__FILE__)))}"
 
 worker_processes 1
-working_directory "#{File.dirname(File.expand_path(__FILE__))}/.."
+working_directory rails_root
 
 listen "#{rails_root}/tmp/sockets/unicorn.sock"
 timeout 300
