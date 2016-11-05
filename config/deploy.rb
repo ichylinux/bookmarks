@@ -43,17 +43,17 @@ namespace :deploy do
 
   task :start do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)}_pro start"
+      execute "sudo service unicorn_#{fetch(:application)} start"
     end
   end
   task :stop do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)}_pro stop"
+      execute "sudo service unicorn_#{fetch(:application)} stop"
     end
   end
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)}_pro restart"
+      execute "sudo service unicorn_#{fetch(:application)} restart"
     end
   end
 
