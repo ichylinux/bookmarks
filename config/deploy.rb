@@ -6,7 +6,7 @@ set :repo_url, `git config --get remote.origin.url`
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-set :branch, ENV['BRANCH'] || 'release'
+set :branch, ENV['BRANCH'] || `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, '/var/www/my_app_name'
@@ -43,17 +43,17 @@ namespace :deploy do
 
   task :start do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)} start"
+      execute "sudo service #{fetch(:application)} start"
     end
   end
   task :stop do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)} stop"
+      execute "sudo service #{fetch(:application)} stop"
     end
   end
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service unicorn_#{fetch(:application)} restart"
+      execute "sudo service #{fetch(:application)} restart"
     end
   end
 
