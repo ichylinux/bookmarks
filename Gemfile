@@ -65,5 +65,7 @@ group :test do
   gem 'database_cleaner'
   gem 'minitest'
   gem 'minitest-reporters'
+  gem 'simplecov', :require => false
+  gem 'simplecov-rcov', :require => false
 end
 

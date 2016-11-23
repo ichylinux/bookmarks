@@ -1,11 +1,9 @@
 sudo: false
 language: ruby
-cache:
-  directories:
-    - vendor/bundle
+cache: bundler
 rvm:
-  - 2.3.1
-  - 2.2.5
+  - 2.3.2
+  - 2.2.6
   - 2.1.9
 before_script:
   - cp -f travis/database.yml config/
@@ -13,5 +11,5 @@ before_script:
   - bundle exec rake db:schema:load
 script:
   - bundle exec rake test
-  - bundle exec rake dad:test
+  - bundle exec rake dad:test CI=travis
 
