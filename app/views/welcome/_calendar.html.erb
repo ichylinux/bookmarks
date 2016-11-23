@@ -1,14 +1,15 @@
-<script>
-  $(document).ready(function() {
-    $.get('<%= url_for :controller => 'calendars', :action => 'get_gadget', :id => gadget.id, :display_date => gadget.display_date %>', {format: 'html'}, function(html) {
-      $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
-    });
-  });
-</script>
-
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title"><%= gadget.title %></div>
-    <div style="line-height: 30em;"><%= gadget.title %>を取得中・・・</div>
+    <div style="line-height: 30em;">
+      <script>
+        $(document).ready(function() {
+          $.get('<%= url_for :controller => 'calendars', :action => 'get_gadget', :id => gadget.id, :display_date => gadget.display_date %>', {format: 'html'}, function(html) {
+            $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
+          });
+        });
+      </script>
+      <span><%= gadget.title %>を取得中・・・</span>
+    </div>
   </div>
 </div>
