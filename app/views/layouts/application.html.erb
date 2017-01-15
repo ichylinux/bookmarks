@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Bookmarks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body class="<%= favorite_theme %>">
+  <head>
+    <title>Bookmarks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%= csrf_meta_tags %>
 
-<div class="head_box">
-  Bookmarks
-</div>
-<div class="wrapper">
-  <%= render 'common/menu' if user_signed_in? %>
-  <%= yield %>
-</div>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
 
-</body>
+  <body class="<%= favorite_theme %>">
+    <div class="head_box">
+      Bookmarks
+    </div>
+    <div class="wrapper">
+      <%= render 'common/menu' if user_signed_in? %>
+      <%= yield %>
+    </div>
+  </body>
 </html>

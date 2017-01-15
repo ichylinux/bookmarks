@@ -1,5 +1,5 @@
 class CalendarsController < ApplicationController
-  before_filter :load_calendar, :except => ['index', 'new', 'create']
+  before_action :preload_calendar, :except => ['index', 'new', 'create']
 
   def index
     @calendar = Calendar.where(:user_id => current_user).not_deleted.first
@@ -65,11 +65,11 @@ class CalendarsController < ApplicationController
 
   private
 
-  def load_calendar
+  def preload_calendar
     @calendar = Calendar.find(params[:id])
 
     unless @calendar.readable_by?(current_user)
-      render :nothing => true, :status => :not_found
+      head :not_found and return
     end
   end
 

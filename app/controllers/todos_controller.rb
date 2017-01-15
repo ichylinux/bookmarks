@@ -1,5 +1,5 @@
 class TodosController < ApplicationController
-  before_filter :load_todo, :only => ['edit', 'update', 'destroy']
+  before_action :preload_todo, :only => ['edit', 'update', 'destroy']
   
   def index
     @todos = Todo.where(:user_id => current_user).not_deleted.order(:title)
@@ -78,12 +78,11 @@ class TodosController < ApplicationController
 
   private
 
-  def load_todo
+  def preload_todo
     @todo = Todo.find(params[:id])
 
     unless @todo.readable_by?(current_user)
-      render :nothing => true, :status => :not_found
-      return
+      head :not_found and return
     end
   end
 

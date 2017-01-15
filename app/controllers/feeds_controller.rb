@@ -8,7 +8,7 @@ class FeedsController < ApplicationController
     @feed = Feed.find(params[:id])
     
     unless @feed.readable_by?(current_user)
-      render :nothing => true, :status => :not_found and return
+      head :not_found and return
     end
 
     if @feed.feed?

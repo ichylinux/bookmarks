@@ -13,7 +13,7 @@ class TodosControllerTest < ActionController::TestCase
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    xhr :get, :edit, :id => todo.id
+    get :edit, :params => {:id => todo.id}, :xhr => true
 
     assert_response :not_found
   end
@@ -22,7 +22,7 @@ class TodosControllerTest < ActionController::TestCase
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    xhr :put, :update, :id => todo.id
+    patch :update, :params => {:id => todo.id}, :xhr => true
 
     assert_response :not_found 
   end

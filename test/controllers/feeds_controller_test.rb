@@ -13,7 +13,7 @@ class FeedsControllerTest < ActionController::TestCase
     sign_in user
     assert feed = Feed.where('user_id <> ?', user).first
 
-    get :show, :id => feed.id
+    get :show, :params => {:id => feed.id}
 
     assert_response :not_found
   end
@@ -27,7 +27,7 @@ class FeedsControllerTest < ActionController::TestCase
 
   def test_登録
     sign_in user
-    post :create, :feed => feed_of(user).attributes
+    post :create, :params => {:feed => feed_of(user).attributes}
     assert_response :redirect
     assert @feed = assigns(:feed)
     assert_redirected_to :action => 'index'
@@ -35,14 +35,14 @@ class FeedsControllerTest < ActionController::TestCase
 
   def test_編集
     sign_in user
-    get :edit, :id => feed_of(user)
+    get :edit, :params => {:id => feed_of(user)}
     assert_response :success
     assert_template :edit
   end
 
   def test_更新
     sign_in user
-    patch :update, :id => feed_of(user), :feed => feed_of(user).attributes
+    patch :update, :params => {:id => feed_of(user), :feed => feed_of(user).attributes}
     assert_response :redirect
     assert @feed = assigns(:feed)
     assert_redirected_to :action => 'index'
