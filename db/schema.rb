@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150704071642) do
+ActiveRecord::Schema.define(version: 20170115215326) do
 
   create_table "bookmarks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer  "user_id",                    null: false
@@ -96,6 +96,9 @@ ActiveRecord::Schema.define(version: 20150704071642) do
     t.boolean  "admin",                        default: false, null: false
     t.string   "otp_secret_key"
     t.integer  "second_factor_attempts_count", default: 0
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "token"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

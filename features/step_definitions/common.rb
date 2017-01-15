@@ -6,10 +6,10 @@
   end
 
   with_capture do
-    fill_in 'Email', :with => current_user.email
-    fill_in 'Password', :with => 'testtest'
+    fill_in 'メールアドレス', :with => current_user.email
+    fill_in 'パスワード', :with => 'testtest'
   end
-  click_on 'Log in'
+  click_on 'ログイン'
 
   with_capture do
     assert has_selector?('form[action="/users/two_factor_authentication"]')

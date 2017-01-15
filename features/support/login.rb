@@ -2,9 +2,9 @@ module Login
 
   def sign_in(user)
     visit '/users/sign_in'
-    fill_in 'Email', :with => user.email
-    fill_in 'Password', :with => 'testtest'
-    click_on 'Log in'
+    fill_in 'メールアドレス', :with => user.email
+    fill_in 'パスワード', :with => 'testtest'
+    click_on 'ログイン'
 
     if user.need_two_factor_authentication?
       fill_in 'code', :with => User.find(user.id).otp_code
