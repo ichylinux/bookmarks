@@ -142,6 +142,9 @@ GEM
     devise-i18n (1.1.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    doorkeeper (4.2.0)
+      railties (>= 4.2)
+    doorkeeper-i18n (4.0.0)
     encryptor (3.0.0)
     erubis (2.7.0)
     execjs (2.7.0)
@@ -389,6 +392,8 @@ DEPENDENCIES
   database_cleaner
   devise
   devise-i18n
+  doorkeeper
+  doorkeeper-i18n
   feedjira
   jbuilder (~> 2.5)
   jquery-rails

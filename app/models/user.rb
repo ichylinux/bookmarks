@@ -20,6 +20,10 @@ class User < ActiveRecord::Base
       user
   end
 
+  def admin?
+    self.email == User.first.email
+  end
+
   def preference
     super || Preference.default_preference(self)
   end
