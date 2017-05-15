@@ -7,7 +7,7 @@ module Login
     click_on 'ログイン'
 
     if user.need_two_factor_authentication?
-      fill_in 'code', :with => User.find(user.id).otp_code
+      fill_in 'code', :with => User.find(user.id).direct_otp
       click_on 'Submit'
     end
 

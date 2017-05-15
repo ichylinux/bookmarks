@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
     preference.use_two_factor_authentication?
   end
 
-  def send_two_factor_authentication_code
+  def send_two_factor_authentication_code(code)
     LoginMailer.invoice_login(self).deliver_now
   end
 

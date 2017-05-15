@@ -3,16 +3,13 @@
   email: user@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
   admin: true
-  otp_secret_key: <%= ROTP::Base32.random_base32 %>
 
 2:
   id: 2
   email: user2@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
-  otp_secret_key: <%= ROTP::Base32.random_base32 %>
 
 3:
   id: 3
   email: user3@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
-  otp_secret_key: <%= ROTP::Base32.random_base32 %>
