@@ -41,22 +41,6 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/syst
 
 namespace :deploy do
 
-  task :start do
-    on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service #{fetch(:application)} start"
-    end
-  end
-  task :stop do
-    on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service #{fetch(:application)} stop"
-    end
-  end
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      execute "sudo service #{fetch(:application)} restart"
-    end
-  end
-
   after :publishing, :restart
 
   after :restart, :clear_cache do
