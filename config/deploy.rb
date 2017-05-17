@@ -2,7 +2,7 @@
 lock '3.8.1'
 
 set :application, 'bookmarks'
-set :repo_url, `git config --get remote.origin.url`.strip
+set :repo_url, `git config --get remote.origin.url`.chomp
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
