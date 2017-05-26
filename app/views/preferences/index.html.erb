@@ -4,10 +4,13 @@
       <th><%= f.label :theme %></th>
       <td><%= f.select :theme, {'シンプル' => 'simple'}, :include_blank => true %></td>
     </tr>
-    <tr>
-      <th><%= f.label :use_two_factor_authentication %></th>
-      <th><%= f.check_box :use_two_factor_authentication %></th>
-    </tr>
+
+    <% if current_user.has_valid_email? %>
+      <tr>
+        <th><%= f.label :use_two_factor_authentication %></th>
+        <th><%= f.check_box :use_two_factor_authentication %></th>
+      </tr>
+    <% end %>
     <tr>
       <th><%= f.label :use_todo %></th>
       <th><%= f.check_box :use_todo %></th>
