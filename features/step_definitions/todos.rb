@@ -29,7 +29,7 @@ end
   @todo_count = page.find('#todo').all('li').size
 
   click_on action
-  assert page.has_selector?('#new_todo')
+  assert has_selector?('#new_todo')
   capture
   
   within '#new_todo' do
@@ -38,7 +38,7 @@ end
     click_on '登録'
   end
 
-  assert wait_until { page.find('#todo').all('li').size == @todo_count + 1 }
+  assert find('#todo').all('li', :count => @todo_count + 1)
   capture
 end
 
