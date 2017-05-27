@@ -29,7 +29,11 @@ class User < ActiveRecord::Base
   end
 
   def display_name
-    email.presence || name.presence
+    if has_valid_email?
+      email
+    else
+      name
+    end
   end
 
   def has_valid_email?
