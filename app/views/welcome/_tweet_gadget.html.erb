@@ -3,7 +3,10 @@
     <div class="title"><%= gadget.title %></div>
     <ol>
       <% gadget.entries.each do |e| %>
-        <li><%= e.tweet_id %></li>
+        <li>
+          <div class="header"><%= e.twitter_user_name %></div>
+          <div class="body"><%= e.content %></div>
+        </li>
       <% end %>
     </ol>
   </div>
