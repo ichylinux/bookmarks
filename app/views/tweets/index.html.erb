@@ -7,19 +7,18 @@
 <% else %>
   <table class="tweets">
     <tr>
-      <th><%= Tweet.human_attribute_name :tweet_id %></th>
       <th><%= Tweet.human_attribute_name :twitter_user %></th>
+      <th><%= Tweet.human_attribute_name :tweet_id %></th>
       <th><%= Tweet.human_attribute_name :content %></th>
-      <th colspan="2"></th>
+      <th></th>
     </tr>
     
     <% @tweets.each do |t| %>
       <tr>
+        <td><%= t.twitter_user_name %></td>
         <td><%= t.tweet_id %></td>
-        <td><%= t.twitter_user_name %>（<%= t.twitter_user_id %>）</td>
         <td><%= truncate(t.content) %></td>
-        <td><%= link_to '編集', edit_tweet_path(t) %></td>
-        <td><%= link_to '削除', tweet_path(t), method: 'delete', confirm: t('messages.confirm_delete', name: t.tweet_id) %></td>
+        <td><%= link_to '削除', tweet_path(t), method: 'delete', data: {confirm: t('messages.confirm_delete', name: t.tweet_id)} %></td>
       </tr>
     <% end %>
   </table>
