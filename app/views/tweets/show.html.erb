@@ -1,0 +1,8 @@
+<div>
+  <div class="title"><%= link_to @feed.title, @feed.url %></div>
+  <ol>
+    <% @feed.entries.each do |e| %>
+      <li><%= link_to e.title, e.url %></li>
+    <% end %>
+  </ol>
+</div>

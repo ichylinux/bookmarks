@@ -1,5 +1,4 @@
 class Portal < ActiveRecord::Base
-
   belongs_to :user
   validates :name, :presence => true
 
@@ -51,10 +50,11 @@ class Portal < ActiveRecord::Base
   def get_gadgets
     ret = {}
     
-    bookmarks = Bookmark.where(:user_id => user.id).not_deleted.order(:title)
-    if bookmarks.present?
-      gadget = BookmarkGadget.new(bookmarks) 
-      ret[gadget.gadget_id] = gadget
+    [BookmarkGadget, TweetGadget].each do |klass|
+      gadget = klass.new(user)
+      if gadget.visible?
+        ret[gadget.gadget_id] = gadget
+      end
     end
 
     if user.preference.use_todo?
@@ -67,10 +67,10 @@ class Portal < ActiveRecord::Base
       ret[c.gadget_id] = c
     end
 
-    Feed.where(:user_id => user.id).not_deleted.each do |f|
+    Feed.where(user_id: user.id, deleted: false).each do |f|
       ret[f.gadget_id] = f
     end
-
+    
     ret
   end
 

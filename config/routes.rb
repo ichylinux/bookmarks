@@ -33,6 +33,8 @@ Rails.application.routes.draw do
       post 'import'
     end
   end
+  
+  resources :tweets
 
   resources :welcome, :only => [] do
     collection do

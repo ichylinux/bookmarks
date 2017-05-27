@@ -1,0 +1,22 @@
+<div class="actions">
+  <%= link_to '追加', new_tweet_path %>
+</div>
+
+<% unless @tweets.present? %>
+  <div>1件も登録されていません。</div>
+<% else %>
+  <table class="tweets">
+    <tr>
+      <th>ID</th>
+      <th colspan="2"></th>
+    </tr>
+    
+    <% @tweets.each do |tweet| %>
+      <tr>
+        <td><%= tweet.tweet_id %></td>
+        <td><%= link_to '編集', edit_tweet_path(tweet) %></td>
+        <td><%= link_to '削除', tweet_path(tweet), method: 'delete', confirm: t('messages.confirm_delete', name: tweet.id) %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

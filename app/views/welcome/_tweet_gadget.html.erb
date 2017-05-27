@@ -1,0 +1,10 @@
+<div id="<%= gadget.gadget_id %>" class="gadget">
+  <div>
+    <div class="title"><%= gadget.title %></div>
+    <ol>
+      <% gadget.entries.each do |e| %>
+        <li><%= e.tweet_id %></li>
+      <% end %>
+    </ol>
+  </div>
+</div>

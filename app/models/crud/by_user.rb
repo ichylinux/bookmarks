@@ -1,13 +1,14 @@
 module Crud::ByUser
 
   def readable_by?(user)
-    if user.is_a?(User)
-      user_id = user.id
-    else
-      user_id = user
-    end
-
-    self.user_id == user_id
+    user.id == user_id
   end
 
+  def updatable_by?(user)
+    readable_by?(user)
+  end
+
+  def deletable_by?(user)
+    readable_by?(user)
+  end  
 end

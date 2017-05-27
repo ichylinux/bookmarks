@@ -22,6 +22,8 @@ ja:
       todo:
         priority: 優先度
         title: タイトル
+      tweet:
+        tweet_id: ID
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'

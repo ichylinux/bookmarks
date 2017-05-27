@@ -27,7 +27,7 @@ class FeedsControllerTest < ActionController::TestCase
 
   def test_登録
     sign_in user
-    post :create, :params => {:feed => feed_of(user).attributes}
+    post :create, :params => {:feed => feed_params}
     assert_response :redirect
     assert @feed = assigns(:feed)
     assert_redirected_to :action => 'index'
@@ -42,7 +42,7 @@ class FeedsControllerTest < ActionController::TestCase
 
   def test_更新
     sign_in user
-    patch :update, :params => {:id => feed_of(user), :feed => feed_of(user).attributes}
+    patch :update, :params => {:id => feed_of(user), :feed => feed_params}
     assert_response :redirect
     assert @feed = assigns(:feed)
     assert_redirected_to :action => 'index'
