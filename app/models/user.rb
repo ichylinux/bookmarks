@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 
   def has_valid_email?
     return false if email.blank?
-    return false if email.end_with?('@example.com')
+    return false if email =~ /^dummy_.+@example.com$/
     true
   end
 
