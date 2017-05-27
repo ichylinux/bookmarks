@@ -1,29 +1,43 @@
 class PreferencesController < ApplicationController
 
   def index
-    @preference = current_user.preference
+    @user = User.find(current_user.id)
+    @user.build_preference unless @user.preference.present?
   end
 
   def create
-    @preference = Preference.new(preference_params)
-    @preference.save!
+    @user = User.find(current_user.id)
+    @user.attributes = user_params
+
+    @user.transaction do
+      @user.save!
+    end
 
     redirect_to :action => 'index'
   end
 
   def update
-    @preference = Preference.find(params[:id])
-    @preference.attributes = preference_params
-    @preference.save!
+    @user = User.find(current_user.id)
+    @user.attributes = user_params
+
+    @user.transaction do
+      @user.save!
+    end
 
     redirect_to :action => 'index'
   end
 
   private
 
-  def preference_params
-    permitted = [:theme, :use_todo, :use_two_factor_authentication, :default_priority]
-    params.require(:preference).permit(permitted).merge(:user_id => current_user.id)
+  def user_params
+    permitted = [
+      :name,
+      preference_attributes: [
+        :id, :theme, :use_todo, :use_two_factor_authentication, :default_priority
+      ]
+    ]
+
+    params.require(:user).permit(permitted)
   end
 
 end

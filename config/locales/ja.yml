@@ -24,6 +24,8 @@ ja:
         title: タイトル
       tweet:
         tweet_id: ID
+      user:
+        name: Twitterアカウント
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'

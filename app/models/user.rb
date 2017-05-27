@@ -7,7 +7,8 @@ class User < ActiveRecord::Base
 
   has_one_time_password
 
-  has_one :preference
+  has_one :preference, inverse_of: 'user'
+  accepts_nested_attributes_for :preference
 
   has_many :portals, -> { where( :deleted => false) }
   after_save :create_default_portal
@@ -28,7 +29,7 @@ class User < ActiveRecord::Base
   end
 
   def display_name
-    name || email
+    email.presence || name.presence
   end
 
   def has_valid_email?

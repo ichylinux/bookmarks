@@ -1,24 +1,35 @@
-<%= form_for @preference, :html => {:class => 'preference'} do |f| %>
+<%= form_for @user, url: @user.preference do |f| %>
   <table>
-    <tr>
-      <th><%= f.label :theme %></th>
-      <td><%= f.select :theme, {'シンプル' => 'simple'}, :include_blank => true %></td>
-    </tr>
-
-    <% if current_user.has_valid_email? %>
+    <% if @user.has_valid_email? %>
       <tr>
-        <th><%= f.label :use_two_factor_authentication %></th>
-        <th><%= f.check_box :use_two_factor_authentication %></th>
+        <th><%= f.label :name %></th>
+        <td><%= f.text_field :name %></td>
       </tr>
     <% end %>
-    <tr>
-      <th><%= f.label :use_todo %></th>
-      <th><%= f.check_box :use_todo %></th>
-    </tr>
-    <tr>
-      <th><%= f.label :default_priority %></th>
-      <th><%= f.select :default_priority, Todo::PRIORITIES.invert %></th>
-    </tr>
+
+    <%= f.fields_for :preference_attributes, @user.preference do |f| %>
+      <tr>
+        <th><%= f.label :theme %></th>
+        <td>
+          <%= f.hidden_field :id %>
+          <%= f.select :theme, {'シンプル' => 'simple'}, :include_blank => 'デフォルト' %>
+        </td>
+      </tr>
+      <% if current_user.has_valid_email? %>
+        <tr>
+          <th><%= f.label :use_two_factor_authentication %></th>
+          <th><%= f.check_box :use_two_factor_authentication %></th>
+        </tr>
+      <% end %>
+      <tr>
+        <th><%= f.label :use_todo %></th>
+        <th><%= f.check_box :use_todo %></th>
+      </tr>
+      <tr>
+        <th><%= f.label :default_priority %></th>
+        <th><%= f.select :default_priority, Todo::PRIORITIES.invert %></th>
+      </tr>
+    <% end %>
   </table>
   
   <%= f.submit '保存' %>

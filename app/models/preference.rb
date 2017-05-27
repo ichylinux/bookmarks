@@ -1,6 +1,6 @@
 class Preference < ActiveRecord::Base
 
-  belongs_to :user
+  belongs_to :user, inverse_of: 'preference'
 
   def self.default_preference(user)
     ret = self.new(:user => user)
