@@ -19,6 +19,7 @@ class Tweet < ApplicationRecord
   def fetch_tweet
     s = client.status(tweet_id)
     self.twitter_user_id = s.user.id
+    self.twitter_user_name = s.user.name
     self.content = s.full_text
   end
 

@@ -23,7 +23,11 @@ ja:
         priority: 優先度
         title: タイトル
       tweet:
-        tweet_id: ID
+        content: つぶやき
+        tweet_id: ツイートID
+        twitter_user: ユーザ
+        twitter_user_id: ユーザID
+        twitter_user_name: ユーザ名
       user:
         name: Twitterアカウント
 
