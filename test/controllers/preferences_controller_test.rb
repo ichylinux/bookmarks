@@ -17,7 +17,7 @@ class PreferencesControllerTest < ActionController::TestCase
     }
     assert_equal Todo::PRIORITY_HIGH, assigns(:user).preference.default_priority
     assert_response :redirect
-    assert_redirected_to :action => 'index'
+    assert_redirected_to root_path
   end
 
 end

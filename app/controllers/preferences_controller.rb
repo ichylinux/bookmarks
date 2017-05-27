@@ -24,7 +24,7 @@ class PreferencesController < ApplicationController
       @user.save!
     end
 
-    redirect_to :action => 'index'
+    redirect_to root_path
   end
 
   private
