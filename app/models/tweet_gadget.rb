@@ -2,7 +2,7 @@ class TweetGadget
   include Gadget
 
   def title
-    'ツイート'
+    'Twitter'
   end
 
   def entries
