@@ -21,9 +21,10 @@ require "capistrano/deploy"
 # require 'capistrano/bundler'
 # require 'capistrano/rails/assets'
 # require 'capistrano/rails/migrations'
+require 'capistrano/daddy'
 require 'capistrano/passenger'
 require 'capistrano/rails'
-require 'capistrano/daddy'
+require 'capistrano/sidekiq'
 
 require 'capistrano/scm/git'
 install_plugin Capistrano::SCM::Git
