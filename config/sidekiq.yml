@@ -1,0 +1,5 @@
+:dynamic: true
+:schedule:
+  fetch_retweets:
+    class: FetchRetweetsWorker
+    every: 5s
