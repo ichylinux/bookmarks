@@ -235,7 +235,7 @@ GEM
     multi_test (0.1.2)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mysql2 (0.4.7)
+    mysql2 (0.4.6)
     naught (1.1.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
