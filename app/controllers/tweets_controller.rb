@@ -10,12 +10,6 @@ class TweetsController < ApplicationController
     unless @tweet.readable_by?(current_user)
       head :not_found and return
     end
-
-    if @tweet.tweet?
-      render :layout => ! request.xhr?
-    else
-      head @tweet.status
-    end
   end
 
   def new

@@ -1,7 +1,11 @@
 class Tweet < ApplicationRecord
   include Crud::ByUser
 
-  before_create :fetch_tweet
+  has_many :retweets, inverse_of: 'tweet'
+  accepts_nested_attributes_for :retweets
+  
+  
+  before_save :set_status
 
   def gadget_id
     "#{self.class.name.underscore}_#{self.id}"
@@ -14,13 +18,17 @@ class Tweet < ApplicationRecord
     end
   end
 
+  def status
+    @status ||= client.status(tweet_id)
+  end
+
   private
 
-  def fetch_tweet
-    s = client.status(tweet_id)
-    self.twitter_user_id = s.user.id
-    self.twitter_user_name = s.user.name
-    self.content = s.full_text
+  def set_status
+    self.twitter_user_id = status.user.id
+    self.twitter_user_name = status.user.name
+    self.content = status.full_text
+    self.retweet_count = status.retweet_count
   end
 
 end

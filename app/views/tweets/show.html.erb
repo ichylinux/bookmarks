@@ -1,8 +1,15 @@
+<div class="actions">
+  <%= link_to '一覧', tweets_path %>
+</div>
+
 <div>
-  <div class="title"><%= link_to @feed.title, @feed.url %></div>
+  <pre><%= @tweet.content %></pre>
+  <div>
+    <span>リツイート数: <%= @tweet.retweet_count %></span>
+  </div>
   <ol>
-    <% @feed.entries.each do |e| %>
-      <li><%= link_to e.title, e.url %></li>
+    <% @tweet.retweets.each do |rt| %>
+      <li><%= rt.twitter_user_name %></li>
     <% end %>
   </ol>
 </div>

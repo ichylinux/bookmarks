@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     end
   end
   
-  resources :tweets, only: ['index', 'new', 'create', 'destroy']
+  resources :tweets
 
   resources :welcome, :only => [] do
     collection do

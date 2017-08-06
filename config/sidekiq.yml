@@ -2,4 +2,4 @@
 :schedule:
   fetch_retweets:
     class: FetchRetweetsWorker
-    every: 5s
+    every: 1m
