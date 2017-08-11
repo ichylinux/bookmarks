@@ -4,8 +4,6 @@ class FetchRetweetsWorker
   include Sidekiq::Worker
 
   def perform(*args)
-    Rails.logger.info 'Fetching retweets of ?? ..'
-    
     Tweet.find_each do |t|
       t.client.retweeters_of(t.tweet_id, count: 100).each do |user|
         rt = t.retweets.where(twitter_user_id: user.id).first
