@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FetchRetweetsWorkerTest < MiniTest::Unit::TestCase
+class FetchRetweetsWorkerTest < MiniTest::Test
 
   def test_example
     w = FetchRetweetsWorker.new
