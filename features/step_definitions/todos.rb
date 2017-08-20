@@ -1,6 +1,7 @@
 もし /^設定画面で タスクウィジェットを表示する にチェックを入れます。$/ do
   sign_in user
   click_on current_user.email
+  assert find('.navigation .menu')
   click_on '設定'
   check 'タスクウィジェットを表示する'
   capture
@@ -24,7 +25,7 @@ end
 end
 
 もし /^(.*?) をクリックしてタスクを追加します。$/ do |action|
-  assert page.has_selector?('.todo_actions')
+  assert has_selector?('.todo_actions')
 
   @todo_count = page.find('#todo').all('li').size
 
@@ -48,20 +49,19 @@ end
   capture
 
   click_on '新しいタスク'
-  begin
+  assert has_selector?('#new_todo')
+  with_capture do
     within '#new_todo' do
       selector = 'select[name*="\[priority\]"]'
       assert has_selector?(selector)
       assert Todo::PRIORITY_HIGH == first(selector).value.to_i, "優先度が #{Todo::PRIORITY_HIGH} であること"
     end
-  ensure
-    capture
   end
 end
 
 もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
   click_on '新しいタスク'
-  assert page.has_selector?('#new_todo')
+  assert has_selector?('#new_todo')
   capture
 
   within '#new_todo' do
