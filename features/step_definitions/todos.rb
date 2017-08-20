@@ -20,7 +20,7 @@ end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
   click_on 'Home'
-  assert page.has_selector?('#todo .title', :text => name)
+  assert has_selector?('#todo .title', :text => name)
   capture
 end
 
@@ -30,7 +30,7 @@ end
   @todo_count = page.find('#todo').all('li').size
 
   click_on action
-  assert has_selector?('#new_todo')
+  assert wait_until{ has_selector?('#new_todo') }
   capture
   
   within '#new_todo' do
