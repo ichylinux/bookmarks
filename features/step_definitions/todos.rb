@@ -25,22 +25,23 @@ end
 end
 
 もし /^(.*?) をクリックしてタスクを追加します。$/ do |action|
-  assert has_selector?('.todo_actions')
+  with_capture do
+    assert has_selector?('.todo_actions')
 
-  @todo_count = page.find('#todo').all('li').size
-
-  click_on action
-  assert wait_until{ has_selector?('#new_todo') }
-  capture
+    @todo_count = page.find('#todo').all('li').size
   
-  within '#new_todo' do
-    fill_in 'todo_title', :with => '新しいタスクの内容'
+    click_on action
+    assert wait_until{ has_selector?('#new_todo') }
     capture
-    click_on '登録'
-  end
 
-  assert find('#todo').all('li', :count => @todo_count + 1)
-  capture
+    within '#new_todo' do
+      fill_in 'todo_title', :with => '新しいタスクの内容'
+      capture
+      click_on '登録'
+    end
+
+    assert find('#todo').all('li', :count => @todo_count + 1)
+  end
 end
 
 もし /^新しいタスクの追加時に、選択した優先度が選択された状態で表示されます。$/ do
