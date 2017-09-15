@@ -28,7 +28,7 @@ end
   with_capture do
     assert has_selector?('.todo_actions')
 
-    @todo_count = page.find('#todo').all('li').size
+    @todo_count = find('#todo').all('li').size
   
     click_on action
     assert wait_until{ has_selector?('#new_todo') }
@@ -69,6 +69,6 @@ end
     click_on action
   end
   
-  assert page.has_selector?('.todo_actions')
+  assert has_selector?('.todo_actions')
   capture
 end
