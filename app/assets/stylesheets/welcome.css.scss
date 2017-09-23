@@ -1,5 +1,3 @@
-@import "compass/css3/box-shadow";
-
 div.gadgets {
   float: left;
   width: 33.33%;
@@ -8,7 +6,6 @@ div.gadgets {
   div.gadget {
     div {
       margin: 4px;
-      @include box-shadow(rgba(0, 0, 0, .2) 0 0 2px);
       overflow: hidden;
 
       div.title {

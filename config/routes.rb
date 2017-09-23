@@ -2,8 +2,6 @@ require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
-  use_doorkeeper
-
   devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' }
 
   authenticate :user, lambda {|u| u.admin? } do
