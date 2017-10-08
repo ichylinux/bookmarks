@@ -4,12 +4,11 @@ cache: bundler
 rvm:
   - 2.4.2
   - 2.3.5
-  - 2.2.8
 before_script:
   - cp -f travis/database.yml config/
   - bundle exec rake dad:db:create DAD_MYSQL_NO_ROOT_PASSWORD=true
   - bundle exec rake db:schema:load
 script:
-  - bundle exec rake test
-  - bundle exec rake dad:test CI=travis
+  - bin/rails test
+  - bundle exec rake dad:test
 
