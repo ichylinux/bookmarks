@@ -57,6 +57,7 @@ group :test do
   gem 'minitest'
   gem 'minitest-reporters'
   gem 'rails-controller-testing'
+  gem 'selenium-webdriver'
   gem 'simplecov', :require => false
   gem 'simplecov-rcov', :require => false
 end
