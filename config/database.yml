@@ -1,4 +1,4 @@
-# MySQL. Versions 5.0 and up are supported.
+# MySQL. Versions 5.1.10 and up are supported.
 #
 # Install the MySQL driver
 #   gem install mysql2
@@ -14,7 +14,7 @@ default: &default
   encoding: utf8mb4
   charset: utf8mb4
   collation: utf8mb4_general_ci
-  pool: 5
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: bookmarks
   password: bookmarks
   socket: /var/lib/mysql/mysql.sock
@@ -30,6 +30,9 @@ test: &test
   <<: *default
   database: bookmarks_test
 
+cucumber:
+  <<: *test
+  
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -52,6 +55,3 @@ test: &test
 production:
   <<: *default
   database: bookmarks_pro
-
-cucumber:
-  <<: *test
