@@ -7,6 +7,7 @@ class Feed < ActiveRecord::Base
   include Crud::ByUser
 
   attr_accessor :auth_password
+  after_find :load_auth_password
 
   before_save :set_display_count
   before_save :set_auth
@@ -57,23 +58,30 @@ class Feed < ActiveRecord::Base
     end
   end
 
-  def auth_decrypted_password
-    encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt)
-    encryptor.decrypt_and_verify(self.auth_encrypted_password)
-  end
-
   private
+
+  def load_auth_password
+    if self.auth_encrypted_password.present?
+      self.auth_password = encryptor.decrypt_and_verify(self.auth_encrypted_password)
+    end
+  end
 
   def set_display_count
     self.display_count = DEFAULT_DISPLAY_COUNT if self.display_count.to_i == 0
   end
 
   def set_auth
-    if self.auth_user.present? and self.auth_password.present?
-      self.auth_salt = SecureRandom.hex(32).to_s
-      encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt)
+    if self.auth_password.present?
       self.auth_encrypted_password = encryptor.encrypt_and_sign(self.auth_password)
     end
+  end
+
+  def encryptor
+    @encryptor ||= ::ActiveSupport::MessageEncryptor.new(auth_salt)
+  end
+
+  def auth_salt
+    Rails.application.secrets.secret_key_base[0..31]
   end
 
   def basic_auth_required?
@@ -86,8 +94,6 @@ class Feed < ActiveRecord::Base
       options[:auth_user] = self.auth_user
       if self.auth_password.present?
         options[:auth_password] = self.auth_password
-      elsif self.auth_encrypted_password.present?
-        options[:auth_password] = self.auth_decrypted_password
       end
     end
 

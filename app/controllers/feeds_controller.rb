@@ -69,11 +69,16 @@ class FeedsController < ApplicationController
   private
 
   def feed_params
-    params[:feed][:user_id] = current_user.id
+    ret = params.require(:feed).permit(:user_id, :title, :feed_url, :display_count,
+          :auth_user, :auth_salt, :auth_url)
 
-    params.require(:feed).permit(
-        :user_id, :title, :feed_url, :display_count,
-        :auth_user, :auth_password, :auth_salt, :auth_url)
+    ret.merge!(user_id: current_user.id)
+
+    if params[:feed][:auth_password].present?
+      ret.merge!(auth_password: params[:feed][:auth_password])
+    end
+
+    ret
   end
 
 end
