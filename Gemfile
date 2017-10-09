@@ -58,7 +58,6 @@ group :test do
   gem 'database_cleaner', :require => false
   gem 'minitest'
   gem 'minitest-reporters'
-  gem 'rails-controller-testing'
   gem 'simplecov', :require => false
   gem 'simplecov-rcov', :require => false
 end

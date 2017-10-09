@@ -13,6 +13,6 @@ class ActiveSupport::TestCase
   end
 end
 
-class ActionController::TestCase
-  include Devise::Test::ControllerHelpers
+class ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
 end

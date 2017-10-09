@@ -1,51 +1,50 @@
 require 'test_helper'
 
-class FeedsControllerTest < ActionController::TestCase
+class FeedsControllerTest < ActionDispatch::IntegrationTest
 
   def test_一覧
     sign_in user
-    get :index
+    get feeds_path
     assert_response :success
-    assert_template :index
+    assert_equal '/feeds', path
   end
 
   def test_他人のフィードは参照できない
     sign_in user
     assert feed = Feed.where('user_id <> ?', user).first
 
-    get :show, :params => {:id => feed.id}
-
+    get feed_path(feed)
     assert_response :not_found
   end
 
   def test_追加
     sign_in user
-    get :new
+    get new_feed_path
     assert_response :success
-    assert_template :new
+    assert_equal '/feeds/new', path
   end
 
   def test_登録
     sign_in user
-    post :create, :params => {:feed => feed_params}
+    post feeds_path, :params => {:feed => feed_params}
     assert_response :redirect
-    assert @feed = assigns(:feed)
-    assert_redirected_to :action => 'index'
   end
 
   def test_編集
+    assert feed = feed_of(user)
+
     sign_in user
-    get :edit, :params => {:id => feed_of(user)}
+    get edit_feed_path(feed)
     assert_response :success
-    assert_template :edit
+    assert_equal "/feeds/#{feed.id}/edit", path
   end
 
   def test_更新
+    assert feed = feed_of(user)
+
     sign_in user
-    patch :update, :params => {:id => feed_of(user), :feed => feed_params}
+    patch feed_path(feed), :params => {:feed => feed_params}
     assert_response :redirect
-    assert @feed = assigns(:feed)
-    assert_redirected_to :action => 'index'
   end
 
 end

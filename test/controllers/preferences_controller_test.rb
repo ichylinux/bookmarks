@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PreferencesControllerTest < ActionController::TestCase
+class PreferencesControllerTest < ActionDispatch::IntegrationTest
 
   def test_更新
     assert user.preference.persisted?
@@ -9,15 +9,15 @@ class PreferencesControllerTest < ActionController::TestCase
     assert_not_equal user.preference.default_priority, preference_param[:default_priority]
 
     sign_in user
-    patch :update, :params => {id: user.id,
+    patch preference_path(user), :params => {
       user: {
         name: 'twitter_name',
         preference_attributes: preference_param
       }
     }
-    assert_equal Todo::PRIORITY_HIGH, assigns(:user).preference.default_priority
     assert_response :redirect
-    assert_redirected_to root_path
+    follow_redirect!
+    assert_equal '/', path
   end
 
 end

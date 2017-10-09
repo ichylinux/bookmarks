@@ -1,10 +1,12 @@
 require 'test_helper'
 
-class WelcomeControllerTest < ActionController::TestCase
-  test "should get index" do
+class WelcomeControllerTest < ActionDispatch::IntegrationTest
+
+  def test_トップページ
     sign_in user
-    get :index
+    get root_path
     assert_response :success
+    assert_equal '/', path
   end
 
 end

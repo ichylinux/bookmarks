@@ -1,20 +1,19 @@
 require 'test_helper'
 
-class TodosControllerTest < ActionController::TestCase
+class TodosControllerTest < ActionDispatch::IntegrationTest
 
   def test_一覧
     sign_in user
-    get :index
+    get todos_path
     assert_response :success
-    assert_template :index
+    assert_equal '/todos', path
   end
 
   def test_他人のタスクは編集できない
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    get :edit, :params => {:id => todo.id}, :xhr => true
-
+    get edit_todo_path(todo), :xhr => true
     assert_response :not_found
   end
 
@@ -22,8 +21,7 @@ class TodosControllerTest < ActionController::TestCase
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    patch :update, :params => {:id => todo.id}, :xhr => true
-
+    patch todo_path(todo), :xhr => true
     assert_response :not_found 
   end
 
