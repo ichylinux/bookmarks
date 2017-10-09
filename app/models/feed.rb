@@ -22,7 +22,6 @@ class Feed < ActiveRecord::Base
       end
     rescue => e
       Rails.logger.error e.message
-      Rails.logger.error e.backtrace.join("\n")
       @feed = false
     end
     
@@ -31,7 +30,7 @@ class Feed < ActiveRecord::Base
 
   def status
     return :success if feed?
-    return feed if feed.is_a?(Fixnum)
+    return feed if feed.is_a?(Integer)
     :internal_server_error
   end
 

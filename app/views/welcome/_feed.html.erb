@@ -4,7 +4,7 @@
       $('#feed_<%= gadget.id %>').html(html);
     })
     .fail(function(xhr, status, error) {
-      $('#feed_<%= gadget.id %>').find('ol li span').first().text('フィードを取得できませんでした。(' + xhr.responseText + ')'); 
+      $('#feed_<%= gadget.id %>').find('ol li span').first().text('フィードを取得できませんでした。(' + xhr.status + ')'); 
     });
   });
 </script>
