@@ -52,7 +52,7 @@ class TodosController < ApplicationController
       end
     end
     
-    render :nothing => true
+    head :ok
   end
 
   def new_import

@@ -9,7 +9,7 @@ class WelcomeController < ApplicationController
       current_user.portals.first.update_layout(params[:portal])
     end
 
-    render :nothing => true
+    head :ok
   end
 
 end

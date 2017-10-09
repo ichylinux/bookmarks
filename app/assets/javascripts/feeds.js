@@ -11,8 +11,10 @@ feeds.get_feed_title = function(button) {
   
   var params = form.serializeArray();
   for (var i = 0; i < params.length; i ++) {
-    if (params[i].name == 'id' || params[i].name == '_method') {
+    if (params[i].name == 'id') {
       params[i].value = null;
+    } else if (params[i].name == '_method') {
+      params[i].value = 'post';
     }
   }
 

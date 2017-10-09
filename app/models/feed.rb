@@ -39,6 +39,7 @@ class Feed < ActiveRecord::Base
     return true if feed.is_a?(Feedjira::Parser::RSS)
     return true if feed.is_a?(Feedjira::Parser::Atom)
     return true if feed.is_a?(Feedjira::Parser::RSSFeedBurner)
+    Rails.logger.info "unknow class for feed: #{feed.class.name}"
     false
   end
 
