@@ -8,6 +8,7 @@
     <% end %>
 
     return {
+      'authenticity_token': '<%= form_authenticity_token %>',
       <% @portal.portal_column_count.times.each do |i| %>
         'portal[column_<%= i %>]': column_<%= i %>,
       <% end %>
@@ -15,9 +16,7 @@
   }
 
   $(document).ready(function() {
-    var selector = '<%= (0..@portal.portal_column_count - 1).map{|i| "#column_#{i}" }.join(',') %>';
-
-    $(selector).sortable({
+    $('.gadgets').sortable({
       connectWith: '.gadgets',
       handle: 'div.title',
       start: function() {
@@ -26,7 +25,7 @@
       stop: function() {
         $(this).removeClass('dragging')
       },
-      update: function() {
+      update: function(event, ui) {
         var params = collect_portal_layout_params();
         $.post('<%= url_for :action => 'save_state' %>', params);
       }
