@@ -70,7 +70,7 @@ class Feed < ActiveRecord::Base
 
   def set_auth
     if self.auth_user.present? and self.auth_password.present?
-      self.auth_salt = SecureRandom.hex(64).to_s
+      self.auth_salt = SecureRandom.hex(32).to_s
       encryptor = ::ActiveSupport::MessageEncryptor.new(self.auth_salt)
       self.auth_encrypted_password = encryptor.encrypt_and_sign(self.auth_password)
     end
