@@ -1,4 +1,4 @@
-<li class="todo_actions">
-  <span style="float: left;"><%= link_to '完了', '#', :onclick => 'todos.delete_todos(this); return false;' %></span>
-  <span style="float: right;"><%= link_to '新しいタスク', '#', :onclick => 'todos.new_todo(this); return false;' %></span>
+<li class="todo_actions" data-authenticity_token="<%= form_authenticity_token %>">
+  <span style="float: left;"><%= link_to '完了', delete_todos_path, onclick: 'todos.delete_todos(this); return false;' %></span>
+  <span style="float: right;"><%= link_to '新しいタスク',  new_todo_path, onclick: 'todos.new_todo(this); return false;' %></span>
 </li>

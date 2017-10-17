@@ -20,7 +20,9 @@ todos.init = function(selector) {
 
 todos.new_todo = function(trigger) {
   var ol = $(trigger).closest('ol');
-  $.get(ol.data('url_for_new'), {format: 'html'}, function(html) {
+  var url = $(trigger).attr('href');
+
+  $.get(url, {format: 'html'}, function(html) {
     ol.find('.todo_actions').after('<li>' + html + '</li>');
   });
 };
@@ -45,13 +47,17 @@ todos.update_todo = function(trigger) {
 
 todos.delete_todos = function(trigger) {
   var ol = $(trigger).closest('ol');
+  var url = $(trigger).attr('href');
 
-  var todo_id = [];
+  var params = {};
+  params.format = 'html';
+  params.authenticity_token = $(trigger).closest('.todo_actions').data('authenticity_token');
+  params.todo_id = [];
   ol.find('li.selected').each(function() {
-    todo_id.push($(this).data('id'));
+    params.todo_id.push($(this).data('id'));
   });
 
-  $.post(ol.data('url_for_delete'), {format: 'html', 'todo_id[]': todo_id}, function(html) {
+  $.post(url, params, function(html) {
     ol.find('li.selected').hide();
   });
 };

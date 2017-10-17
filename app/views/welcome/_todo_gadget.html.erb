@@ -7,7 +7,7 @@
 
   <div>
     <div class="title"><%= gadget.title %></div>
-    <ol data-url_for_new="<%= new_todo_path %>" data-url_for_delete="<%= delete_todos_path %>">
+    <ol>
       <%= render 'todos/actions' %>
 
       <% gadget.entries.each do |todo| %>
