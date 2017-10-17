@@ -6,7 +6,7 @@
   end
 
   with_capture do
-    fill_in 'メールアドレス', :with => current_user.email
+    fill_in 'Eメール', :with => current_user.email
     fill_in 'パスワード', :with => 'testtest'
   end
   click_on 'ログイン'
