@@ -50,7 +50,7 @@ GEM
     buftok (0.2.0)
     builder (3.2.3)
     byebug (9.1.0)
-    capistrano (3.9.1)
+    capistrano (3.10.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -84,7 +84,7 @@ GEM
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
     cliver (0.3.2)
-    closer (0.5.4)
+    closer (0.5.5)
       cucumber (>= 2.4, <= 4.0)
       poltergeist (>= 1.16)
       selenium-webdriver (~> 3.0)
