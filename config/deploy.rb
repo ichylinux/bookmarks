@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.10.0'
+lock '3.10.1'
 
 set :application, 'bookmarks'
 set :repo_url, `git config --get remote.origin.url`.chomp
@@ -38,6 +38,8 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/syst
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
+
+set :passenger_restart_with_sudo, true
 
 namespace :deploy do
 
