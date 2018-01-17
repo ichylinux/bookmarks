@@ -6,6 +6,7 @@
   check 'タスクウィジェットを表示する'
   capture
   click_on '保存'
+  assert has_no_button?('保存')
 end
 
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do

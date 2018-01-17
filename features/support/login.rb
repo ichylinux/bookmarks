@@ -2,6 +2,10 @@ module Login
 
   def sign_in(user)
     visit '/users/sign_in'
+    if has_selector?('.navigation .email')
+      find('.navigation .email').click
+      click_on 'ログアウト'
+    end
     fill_in 'Eメール', :with => user.email
     fill_in 'パスワード', :with => 'testtest'
     click_on 'ログイン'

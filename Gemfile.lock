@@ -121,7 +121,7 @@ GEM
       railties (>= 4, < 5.2)
     cucumber-tag_expressions (1.1.1)
     cucumber-wire (0.0.1)
-    daddy (0.6.0)
+    daddy (0.6.1)
       capybara
       ci_reporter
       faraday
@@ -130,6 +130,7 @@ GEM
       holiday_jp
       i18n
       itamae
+      itamae-plugin-resource-pip
       ohai
       rails
     database_cleaner (1.6.2)
@@ -190,6 +191,8 @@ GEM
       schash (~> 0.1.0)
       specinfra (>= 2.64.0, < 3.0.0)
       thor
+    itamae-plugin-resource-pip (1.0.0)
+      itamae (~> 1.2)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -448,7 +451,7 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails
   capistrano-sidekiq
-  capybara (~> 2.13)
+  capybara
   closer
   coffee-rails (~> 4.2)
   cucumber-rails
