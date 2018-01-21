@@ -1,3 +1,5 @@
+require 'daddy/http_client'
+
 module FeedConst
   DEFAULT_DISPLAY_COUNT = 5
 end
