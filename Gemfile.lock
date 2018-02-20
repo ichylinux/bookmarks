@@ -85,7 +85,7 @@ GEM
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
     cliver (0.3.2)
-    closer (0.6.1)
+    closer (0.6.2)
       capybara (~> 2.16)
       cucumber (>= 3.0, <= 4.0)
       poltergeist (>= 1.16)
