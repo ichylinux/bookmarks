@@ -474,7 +474,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-twitter
   puma (~> 3.7)
-  rails (~> 5.1.4)
+  rails (~> 5.1.5)
   rails-erd
   rails-i18n
   redis (~> 3.0)
