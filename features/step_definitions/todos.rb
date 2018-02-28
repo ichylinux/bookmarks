@@ -32,11 +32,11 @@ end
     @todo_count = find('#todo').all('li').size
   
     click_on action
-    assert wait_until{ has_selector?('#new_todo') }
+    assert has_selector?('form.todo')
     capture
 
-    within '#new_todo' do
-      fill_in 'todo_title', :with => '新しいタスクの内容'
+    within 'form.todo' do
+      fill_in 'todo[title]', :with => '新しいタスクの内容'
       capture
       click_on '登録'
     end
@@ -51,9 +51,9 @@ end
   capture
 
   click_on '新しいタスク'
-  assert has_selector?('#new_todo')
+  assert has_selector?('form.todo')
   with_capture do
-    within '#new_todo' do
+    within 'form.todo' do
       selector = 'select[name*="\[priority\]"]'
       assert has_selector?(selector)
       assert Todo::PRIORITY_HIGH == first(selector).value.to_i, "優先度が #{Todo::PRIORITY_HIGH} であること"
@@ -63,10 +63,10 @@ end
 
 もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
   click_on '新しいタスク'
-  assert has_selector?('#new_todo')
+  assert has_selector?('form.todo')
   capture
 
-  within '#new_todo' do
+  within 'form.todo' do
     click_on action
   end
   
