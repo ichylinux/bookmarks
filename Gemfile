@@ -58,6 +58,7 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner', :require => false
   gem 'minitest'
+  gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'simplecov', :require => false
   gem 'simplecov-rcov', :require => false
