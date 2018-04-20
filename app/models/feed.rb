@@ -80,7 +80,12 @@ class Feed < ActiveRecord::Base
   end
 
   def encryptor
-    @encryptor ||= ::ActiveSupport::MessageEncryptor.new(auth_salt)
+    if @encryptor.nil?
+      @encrypter = ::ActiveSupport::MessageEncryptor.new(auth_salt)
+      @encrypter.rotate(cipher: 'aes-256-cbc')
+    end
+    
+    @encrypter
   end
 
   def auth_salt
