@@ -465,7 +465,7 @@ DEPENDENCIES
   database_cleaner
   devise
   devise-i18n
-  faraday (< 0.13.0)
+  faraday
   feedjira
   i18n-js
   jbuilder (~> 2.5)
