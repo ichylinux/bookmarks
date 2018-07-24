@@ -22,7 +22,6 @@ gem 'nokogiri'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
-gem 'puma', '~> 3.11'
 gem 'rails-i18n'
 gem 'redis', '~> 4.0'
 gem 'redis-namespace'
@@ -36,7 +35,7 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'selenium-webdriver'
+  gem 'puma', '~> 3.11'
 end
 
 group :development do
@@ -58,6 +57,7 @@ group :test do
   gem 'database_cleaner', require: false
   gem 'minitest'
   gem 'minitest-reporters'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'simplecov-rcov', require: false
 end
