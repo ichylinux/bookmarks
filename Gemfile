@@ -52,12 +52,12 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'ci_reporter', :require => false
-  gem 'closer'
-  gem 'cucumber-rails', :require => false
-  gem 'database_cleaner', :require => false
+  gem 'ci_reporter', require: false
+  gem 'closer', require: false
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner', require: false
   gem 'minitest'
   gem 'minitest-reporters'
-  gem 'simplecov', :require => false
-  gem 'simplecov-rcov', :require => false
+  gem 'simplecov', require: false
+  gem 'simplecov-rcov', require: false
 end
