@@ -1,5 +1,6 @@
-cucumber:
-  title: "Bookmarks"
+application: bookmarks
 
-fluentd:
-  nginx: true
+web:
+  server_name: localhost
+app:
+  type: passenger
