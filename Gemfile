@@ -51,7 +51,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara'
+  gem 'capybara', '3.10.0'
   gem 'ci_reporter', require: false
   gem 'closer', require: false
   gem 'cucumber-rails', require: false
