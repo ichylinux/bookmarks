@@ -21,7 +21,7 @@ class Feed < ActiveRecord::Base
       if basic_auth_required?
         @feed ||= retrieve_feed_with_basic_auth
       else
-        @feed ||= Feedjira::Feed.fetch_and_parse(self.feed_url)
+        @feed ||= retrieve_feed
       end
     rescue => e
       Rails.logger.error e.message
@@ -96,6 +96,12 @@ class Feed < ActiveRecord::Base
     auth_user.present?
   end
 
+  def retrieve_feed
+    client = Daddy::HttpClient.new(base_url)
+    xml = client.get(request_path, request_params)
+    Feedjira.parse(xml)
+  end
+
   def retrieve_feed_with_basic_auth
     options = {}
     if self.auth_user.present?
@@ -113,7 +119,7 @@ class Feed < ActiveRecord::Base
     end
 
     xml = client.get(request_path, request_params)
-    Feedjira::Feed.parse(xml)
+    Feedjira.parse(xml)
   end
 
   def base_url
