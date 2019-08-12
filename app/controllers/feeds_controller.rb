@@ -60,7 +60,7 @@ class FeedsController < ApplicationController
   def get_feed_title
     @feed = Feed.new(feed_params)
     if @feed.feed?
-      render :plain => @feed.feed.title
+      render plain: @feed.feed.title
     else
       head :ok
     end

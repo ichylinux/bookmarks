@@ -90,7 +90,7 @@ GEM
     choice (0.2.0)
     ci_reporter (2.0.0)
       builder (>= 2.1.2)
-    closer (0.9.4)
+    closer (0.9.5)
       capybara (>= 3.0)
       cucumber (>= 3.0, <= 4.0)
       selenium-webdriver (~> 3.0)
@@ -126,12 +126,13 @@ GEM
       railties (>= 4.2, < 7)
     cucumber-tag_expressions (1.1.1)
     cucumber-wire (0.0.1)
-    daddy (0.8.0)
+    daddy (0.8.1)
       docker-api
       highline
       i18n
       itamae
       itamae-plugin-recipe-daddy
+      itamae-plugin-recipe-redmine
       itamae-plugin-resource-pip
       ohai
     database_cleaner (1.7.0)
@@ -157,8 +158,10 @@ GEM
       tzinfo
     excon (0.66.0)
     execjs (2.7.0)
-    faraday (0.12.2)
+    faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.13.1)
+      faraday (>= 0.7.4, < 1.0)
     feedjira (3.0.0)
       loofah (>= 2.2.1)
       sax-machine (>= 1.0)
@@ -184,6 +187,9 @@ GEM
       domain_name (~> 0.5)
     http-form_data (2.1.1)
     http_parser.rb (0.6.0)
+    httparty (0.17.0)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     i18n-js (3.3.0)
@@ -197,6 +203,11 @@ GEM
       thor
     itamae-plugin-recipe-daddy (0.1.15)
       itamae (~> 1.10, >= 1.10.2)
+    itamae-plugin-recipe-postgresql (0.0.1)
+      itamae (~> 1.10, >= 1.10.2)
+    itamae-plugin-recipe-redmine (0.0.3)
+      itamae (~> 1.10, >= 1.10.2)
+      itamae-plugin-recipe-postgresql (~> 0, >= 0.0.1)
     itamae-plugin-resource-pip (1.1.0)
       itamae (~> 1.2)
     jbuilder (2.9.1)
@@ -470,9 +481,11 @@ DEPENDENCIES
   database_cleaner
   devise
   devise-i18n
-  faraday (< 0.13)
+  faraday
+  faraday_middleware
   feedjira
   holiday_jp
+  httparty
   i18n-js
   jbuilder (~> 2.5)
   jquery-rails

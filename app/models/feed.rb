@@ -41,7 +41,7 @@ class Feed < ActiveRecord::Base
     return true if feed.is_a?(Feedjira::Parser::RSS)
     return true if feed.is_a?(Feedjira::Parser::Atom)
     return true if feed.is_a?(Feedjira::Parser::RSSFeedBurner)
-    Rails.logger.info "unknow class for feed: #{feed.class.name}"
+    Rails.logger.info "unknown class for feed: #{feed.class.name}"
     false
   end
 
@@ -97,13 +97,14 @@ class Feed < ActiveRecord::Base
   end
 
   def retrieve_feed
-    client = Daddy::HttpClient.new(base_url)
+    client = Daddy::HttpClient.new(base_url, follow_redirects: true)
     xml = client.get(request_path, request_params)
+
     Feedjira.parse(xml)
   end
 
   def retrieve_feed_with_basic_auth
-    options = {}
+    options = {follow_redirects: true}
     if self.auth_user.present?
       options[:auth_user] = self.auth_user
       if self.auth_password.present?
