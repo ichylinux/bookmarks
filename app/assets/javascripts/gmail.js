@@ -36,18 +36,20 @@ gmail.listMessages = function(selector, labelNames, displayCount) {
 gmail._appendMessages = function(selector, threads) {
   var messages = new Map();
 
-  for (i = 0; i < threads.length; i++) {
-    var thread = threads[i];
-    messages.set(thread.id, null);
-
-    gapi.client.gmail.users.threads.get({
-      userId: 'me',
-      id: thread.id,
-      format: 'metadata',
-      metadataHeaders: ['From', 'Subject']
-    }).then(function(response) {
-      messages.set(response.result.id, response.result.messages[0]);
-    });
+  if (threads) {
+    for (i = 0; i < threads.length; i++) {
+      var thread = threads[i];
+      messages.set(thread.id, null);
+  
+      gapi.client.gmail.users.threads.get({
+        userId: 'me',
+        id: thread.id,
+        format: 'metadata',
+        metadataHeaders: ['From', 'Subject']
+      }).then(function(response) {
+        messages.set(response.result.id, response.result.messages[0]);
+      });
+    }
   }
 
   this._retrieveMessages(selector, messages);
