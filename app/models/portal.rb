@@ -12,7 +12,7 @@ class Portal < ApplicationRecord
     gadgets = get_gadgets
     @portal_columns = [[], [], []]
 
-    PortalLayout.where(:user_id => user.id).order('column_no, display_order').each do |pl|
+    PortalLayout.where(user_id: user.id).order('column_no, display_order').each do |pl|
       g = gadgets.delete(pl.gadget_id)
       @portal_columns[pl.column_no] << g if g
     end
@@ -21,7 +21,7 @@ class Portal < ApplicationRecord
       @portal_columns[i % 3].unshift(g[1])
     end
     
-    portal_columns
+    @portal_columns
   end
 
   def update_layout(params = {})
@@ -71,6 +71,10 @@ class Portal < ApplicationRecord
       ret[f.gadget_id] = f
     end
     
+    user.gmails.each do |g|
+      ret[g.gadget_id] = g
+    end
+
     ret
   end
 

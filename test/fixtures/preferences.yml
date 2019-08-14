@@ -7,3 +7,7 @@
   id: 2
   user_id: 2
   use_two_factor_authentication: true
+
+3:
+  user_id: 3
+  use_two_factor_authentication: false

@@ -28,7 +28,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :preferences, :only => ['index', 'create', 'update']
+  resources :gmails, except: 'show'
+
+  resources :preferences, only: ['index', 'create', 'update']
 
   resources :todos do
     collection do

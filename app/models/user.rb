@@ -10,8 +10,10 @@ class User < ActiveRecord::Base
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
 
-  has_many :portals, -> { where( :deleted => false) }
+  has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
   after_save :create_default_portal
+
+  has_many :gmails, -> { where(deleted: false) }, inverse_of: 'user'
 
   def self.from_omniauth(access_token)
     data = access_token.info

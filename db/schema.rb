@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009095445) do
+ActiveRecord::Schema.define(version: 2019_08_14_061754) do
 
-  create_table "bookmarks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "bookmarks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.string "url", null: false
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.datetime "updated_at"
   end
 
-  create_table "calendars", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "calendars", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title"
     t.boolean "deleted", default: false, null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.boolean "show_weather", default: false, null: false
   end
 
-  create_table "feeds", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "feeds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.string "feed_url", null: false
@@ -43,7 +43,17 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.integer "display_count", default: 5, null: false
   end
 
-  create_table "portal_layouts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "gmails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "title", null: false
+    t.string "labels"
+    t.boolean "deleted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "display_count", default: 0, null: false
+  end
+
+  create_table "portal_layouts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "column_no", default: 0, null: false
     t.integer "display_order", default: 0, null: false
@@ -52,7 +62,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.datetime "updated_at"
   end
 
-  create_table "portals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "portals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
     t.datetime "created_at"
@@ -60,7 +70,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.boolean "deleted", default: false, null: false
   end
 
-  create_table "preferences", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "preferences", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "theme"
     t.datetime "created_at"
@@ -70,7 +80,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.integer "default_priority"
   end
 
-  create_table "retweets", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+  create_table "retweets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.integer "tweet_id", null: false
     t.string "twitter_user_id", null: false
     t.string "twitter_user_name", null: false
@@ -79,7 +89,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "todos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.integer "priority", null: false
@@ -88,7 +98,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.datetime "updated_at"
   end
 
-  create_table "tweets", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "tweets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "tweet_id", null: false
     t.string "twitter_user_id", null: false
@@ -100,7 +110,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.integer "retweet_count", default: 0, null: false
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -129,7 +139,7 @@ ActiveRecord::Schema.define(version: 20171009095445) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "weathers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "weathers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.date "observation_day", null: false
     t.integer "prefecture_no", null: false
     t.integer "weather_type", null: false

@@ -1,0 +1,25 @@
+<%= form_with model: @gmail do |f| %>
+  <table>
+    <tr>
+      <th><%= f.label :title %></th>
+      <td>
+        <%= f.text_field :title %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :labels %></th>
+      <td>
+        <%= f.text_field :labels %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :display_count %></th>
+      <td>
+        <%= f.number_field :display_count %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><%= f.submit %></td>
+    </tr>
+  </table>
+<% end %>
