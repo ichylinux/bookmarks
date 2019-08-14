@@ -1,6 +1,6 @@
-class Portal < ActiveRecord::Base
-  belongs_to :user
-  validates :name, :presence => true
+class Portal < ApplicationRecord
+  belongs_to :user, inverse_of: 'portals'
+  validates :name, presence: true
 
   def portal_column_count
     portal_columns.size

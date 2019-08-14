@@ -4,7 +4,7 @@ module FeedConst
   DEFAULT_DISPLAY_COUNT = 5
 end
 
-class Feed < ActiveRecord::Base
+class Feed < ApplicationRecord
   include FeedConst
   include Crud::ByUser
 
