@@ -34,7 +34,7 @@
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
       <li class="email">
-        <a href="#" data-turbolinks="false"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>
+        <a href="#"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>
         <div class="menu hidden">
           <div><%= link_to '設定', preferences_path %></div>
           <div><%= link_to 'ブックマーク', bookmarks_path %></div>
@@ -43,7 +43,7 @@
           <div><%= link_to 'Gmail', gmails_path %></div>
           <div><%= link_to 'フィード', feeds_path %></div>
           <div><%= link_to 'ツイート', tweets_path %></div>
-          <div><%= link_to 'ログアウト', destroy_user_session_path, :method => 'delete' %></div>
+          <div><%= link_to 'ログアウト', destroy_user_session_path, method: 'delete' %></div>
         </div>
       </li>
     </ul>

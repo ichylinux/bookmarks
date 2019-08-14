@@ -8,14 +8,12 @@
     </ol>
 
     <script>
-      $(document).ready(function() {
-        var labelNames = [];
-        <% gadget.labels.split.each do |l| %>
-          labelNames.push('<%= l %>');
-        <% end %>
+      var labelNames = [];
+      <% gadget.labels.split.each do |l| %>
+        labelNames.push('<%= l %>');
+      <% end %>
 
-        gmail.listMessages('<%= gadget.gadget_id %>_messages', labelNames, <%= gadget.display_count %>);
-      });
+      gmail.listMessages('<%= gadget.gadget_id %>_messages', labelNames, <%= gadget.display_count %>);
     </script>
   </div>
 </div>

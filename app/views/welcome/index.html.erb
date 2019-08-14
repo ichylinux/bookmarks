@@ -61,7 +61,9 @@
       }
     }
 
-    gapi.load('client:auth2', initClient);
+    $(document).ready(function() {
+      gapi.load('client:auth2', initClient);
+    });
   </script>
 <% end %>
 
