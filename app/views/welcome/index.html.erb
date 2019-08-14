@@ -33,10 +33,42 @@
   });
 </script>
 
+<% if @portal.has_gmail? %>
+  <script>
+    var CLIENT_ID = '<%= Rails.application.secrets.omniauth_google_oauth2_client_id %>';
+    var API_KEY = '<%= Rails.application.secrets.omniauth_google_api_key %>';
+    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
+    var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+
+    function initClient() {
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(function () {
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      }, function(error) {
+        console.log(error);
+      });
+    }
+
+    function updateSigninStatus(isSignedIn) {
+      if (!isSignedIn) {
+        gapi.auth2.getAuthInstance().signIn();
+      }
+    }
+
+    gapi.load('client:auth2', initClient);
+  </script>
+<% end %>
+
 <% @portal.portal_columns.each_with_index do |gadgets, i| %>
   <div id="column_<%= i %>" class="gadgets">
     <% gadgets.each do |g| %>
-      <%= render g.class.name.underscore, :gadget => g %>
+      <%= render g.class.name.underscore, gadget: g %>
     <% end %>
   </div>
 <% end %>

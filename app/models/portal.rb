@@ -24,6 +24,10 @@ class Portal < ApplicationRecord
     @portal_columns
   end
 
+  def has_gmail?
+    !!portal_columns.flatten.find{|g| g.class == Gmail }
+  end
+
   def update_layout(params = {})
     valid_layouts = []
 

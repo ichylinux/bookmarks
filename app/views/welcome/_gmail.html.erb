@@ -1,7 +1,6 @@
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title"><%= gadget.title %></div>
-    <button id="authorize_button" style="display: none;">Authorize</button>
     <ol id="<%= gadget.gadget_id %>_messages" class="gmail">
       <li>
         <span style="line-height: <%= gadget.display_count * 2 %>em;">メッセージを取得中・・・</span>
@@ -9,142 +8,14 @@
     </ol>
 
     <script>
-      var CLIENT_ID = '<%= Rails.application.secrets.omniauth_google_oauth2_client_id %>';
-      var API_KEY = '<%= Rails.application.secrets.omniauth_google_api_key %>';
-      var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
-      var SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
-      var authorizeButton = document.getElementById('authorize_button');
+      $(document).ready(function() {
+        var labelNames = [];
+        <% gadget.labels.split.each do |l| %>
+          labelNames.push('<%= l %>');
+        <% end %>
 
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
-
-      function initClient() {
-        gapi.client.init({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          discoveryDocs: DISCOVERY_DOCS,
-          scope: SCOPES
-        }).then(function () {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-          authorizeButton.onclick = handleAuthClick;
-        }, function(error) {
-          appendMessage(JSON.stringify(error, null, 2));
-        });
-      }
-
-      function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          authorizeButton.style.display = 'none';
-          listMessages();
-        } else {
-          authorizeButton.style.display = 'block';
-        }
-      }
-
-      function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
-
-      function appendMessage(from, subject) {
-        var ol = document.getElementById('<%= gadget.gadget_id %>_messages');
-        var li = document.createElement('li');
-        var title = document.createAttribute("title");
-        title.value = from;
-        li.attributes.setNamedItem(title);
-        li.appendChild(document.createTextNode(subject));
-        ol.appendChild(li);
-      }
-      
-      function checkMessages(messages) {
-        for (var message of messages.values()) {
-          if (!message) {
-            return false;
-          }
-        }
-        
-        return true;
-      }
-      
-      function retrieveMessages(messages) {
-        if (checkMessages(messages)) {
-          var ol = document.getElementById('<%= gadget.gadget_id %>_messages');
-          while (ol.firstChild) {
-            ol.removeChild(ol.firstChild);
-          }
-
-          for (var message of messages.values()) {
-            var from = null;
-            var subject = null;
-            for (i = 0; i < message.payload.headers.length; i++) {
-              var header = message.payload.headers[i];
-              if (header.name == 'From') {
-                from = header.value;
-              }
-              if (header.name == 'Subject') {
-                subject = header.value;
-              }
-            }
-            appendMessage(from, subject);
-          }
-        } else {
-          setTimeout(function() {
-            retrieveMessages(messages);
-          }, 100);
-        }
-      }
-      
-      function appendMessages(threads) {
-        var messages = new Map();
-
-        for (i = 0; i < threads.length; i++) {
-          var thread = threads[i];
-          messages.set(thread.id, null);
-
-          gapi.client.gmail.users.threads.get({
-            userId: 'me',
-            id: thread.id,
-            format: 'metadata',
-            metadataHeaders: ['From', 'Subject']
-          }).then(function(response) {
-            messages.set(response.result.id, response.result.messages[0]);
-          });
-        }
-
-        retrieveMessages(messages);
-      }
-
-      function listMessages() {
-        gapi.client.gmail.users.labels.list({
-          userId: 'me'
-        }).then(function(response) {
-          var labels = new Map();
-          for (var i = 0; i < response.result.labels.length; i ++) {
-            var l = response.result.labels[i];
-            labels.set(l.name, l.id);
-          }
-
-          var labelIds = [];
-          <% gadget.labels.split.each do |l| %>
-            labelIds.push(labels.get('<%= l %>'));
-          <% end %>
-  
-          gapi.client.gmail.users.threads.list({
-            userId: 'me',
-            labelIds: labelIds,
-            maxResults: <%= gadget.display_count %>
-          }).then(function(response) {
-            appendMessages(response.result.threads);
-          });
-        });
-      }
-    </script>
-
-    <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+        gmail.listMessages('<%= gadget.gadget_id %>_messages', labelNames, <%= gadget.display_count %>);
+      });
     </script>
   </div>
 </div>
