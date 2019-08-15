@@ -25,6 +25,9 @@ class Portal < ApplicationRecord
   end
 
   def has_gmail?
+    return false unless Rails.application.secrets.omniauth_google_oauth2_client_id.present?
+    return false unless Rails.application.secrets.omniauth_google_api_key.present?
+
     !!portal_columns.flatten.find{|g| g.class == Gmail }
   end
 

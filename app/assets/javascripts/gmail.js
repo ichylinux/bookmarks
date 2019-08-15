@@ -1,6 +1,6 @@
 var gmail = {};
 
-gmail.listMessages = function(selector, labelNames, displayCount) {
+gmail.listMessages = function(selector, labelNames, displayCount, retryCount) {
   var self = this;
 
   if (gapi.auth2 && gapi.auth2.getAuthInstance().isSignedIn.get()) {
@@ -27,9 +27,17 @@ gmail.listMessages = function(selector, labelNames, displayCount) {
       });
     });
   } else {
-    setTimeout(function() {
-      self.listMessages(selector, labelNames, displayCount);
-    }, 100);
+    retryCount = retryCount || 10;
+    retryCount--;
+
+    if (retryCount > 0) {
+      setTimeout(function() {
+        self.listMessages(selector, labelNames, displayCount, retryCount);
+      }, 100);
+    } else {
+      self._clearMessages(selector);
+      self._appendMessage(selector, null, 'Googleに接続できませんでした。')
+    }
   }
 };
 
