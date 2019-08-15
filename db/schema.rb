@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_15_014018) do
+ActiveRecord::Schema.define(version: 2019_08_15_015135) do
 
   create_table "bookmarks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -27,7 +27,6 @@ ActiveRecord::Schema.define(version: 2019_08_15_014018) do
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "show_weather", default: false, null: false
   end
 
   create_table "feeds", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -134,14 +133,6 @@ ActiveRecord::Schema.define(version: 2019_08_15_014018) do
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
-
-  create_table "weathers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.date "observation_day", null: false
-    t.integer "prefecture_no", null: false
-    t.integer "weather_type", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
 end

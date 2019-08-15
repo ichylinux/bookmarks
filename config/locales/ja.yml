@@ -5,7 +5,6 @@ ja:
         title: タイトル
         url: URL
       calendar:
-        show_weather: 天気を表示
         title: タイトル
       feed:
         display_count: 表示件数

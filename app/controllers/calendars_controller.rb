@@ -74,7 +74,7 @@ class CalendarsController < ApplicationController
   end
 
   def calendar_params
-    params.require(:calendar).permit(:user_id, :title, :show_weather)
+    params.require(:calendar).permit(:user_id, :title)
   end
 
 end
