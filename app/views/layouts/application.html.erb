@@ -9,12 +9,16 @@
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
     <script src="https://apis.google.com/js/api.js"></script>
+
+    <%= stylesheet_pack_tag 'app', 'head_box' %>
+    <%= javascript_pack_tag 'app', 'head_box' %>
   </head>
 
   <body class="<%= favorite_theme %>">
-    <div class="head_box">
-      Bookmarks
+    <div id="header">
+      <head-box></head-box>
     </div>
+
     <div class="wrapper">
       <%= render 'common/menu' if user_signed_in? %>
       <%= yield %>

@@ -67,10 +67,12 @@
   </script>
 <% end %>
 
-<% @portal.portal_columns.each_with_index do |gadgets, i| %>
-  <div id="column_<%= i %>" class="gadgets">
-    <% gadgets.each do |g| %>
-      <%= render g.class.name.underscore, gadget: g %>
-    <% end %>
-  </div>
-<% end %>
+<div class="portal">
+  <% @portal.portal_columns.each_with_index do |gadgets, i| %>
+    <div id="column_<%= i %>" class="gadgets">
+      <% gadgets.each do |g| %>
+        <%= render g.class.name.underscore, gadget: g %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

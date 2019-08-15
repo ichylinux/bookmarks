@@ -1,22 +1,18 @@
 <template>
-  <div id="app">
-    <p>{{ message }}</p>
+  <div>
+    <md-tabs>
+      <md-tab id="tab-home" md-label="HOME"></md-tab>
+      <md-tab id="tab-lab" md-label="LAB"></md-tab>
+    </md-tabs>
   </div>
 </template>
 
 <script>
-export default {
-  data: function () {
-    return {
-      message: "Hello Vue!"
-    }
+  export default {
+    name: 'App'
   }
-}
 </script>
 
-<style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
+<style lang="scss" scoped>
+display: none;
 </style>
