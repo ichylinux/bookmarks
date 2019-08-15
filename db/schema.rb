@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_061754) do
+ActiveRecord::Schema.define(version: 2019_08_15_011816) do
 
   create_table "bookmarks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 2019_08_14_061754) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "auth_user"
-    t.string "auth_encrypted_password"
     t.string "auth_url"
     t.integer "display_count", default: 5, null: false
   end
