@@ -59,14 +59,6 @@ class Feed < ApplicationRecord
     self.display_count = DEFAULT_DISPLAY_COUNT if self.display_count.to_i == 0
   end
 
-  def auth_salt
-    Rails.application.secrets.secret_key_base[0..31]
-  end
-
-  def basic_auth_required?
-    auth_user.present?
-  end
-
   def retrieve_feed
     client = Daddy::HttpClient.new(base_url, follow_redirects: true)
     xml = client.get(request_path, request_params)

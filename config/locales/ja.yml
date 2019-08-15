@@ -8,11 +8,9 @@ ja:
         show_weather: 天気を表示
         title: タイトル
       feed:
-        auth_user: 認証ユーザ
-        auth_url: 認証用URL
         display_count: 表示件数
-        title: サイト名
         feed_url: フィードURL
+        title: サイト名
       preference:
         default_priority: タスク追加時の初期優先度
         theme: テーマ
