@@ -4,9 +4,8 @@ def bookmark(user)
   @_bookmarks[user.id]
 end
 
-def valid_bookmark_params(user)
+def bookmark_params(user)
   {
-    :user_id => user.id,
     :title => 'ブックマーク',
     :url => 'www.example.com'
   }

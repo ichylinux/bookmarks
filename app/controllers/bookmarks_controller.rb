@@ -1,7 +1,7 @@
 class BookmarksController < ApplicationController
   
   def index
-    @bookmarks = Bookmark.where(:user_id => current_user).not_deleted.order(:title)
+    @bookmarks = Bookmark.where(user_id: current_user).not_deleted.order(:title)
   end
 
   def show
@@ -16,11 +16,10 @@ class BookmarksController < ApplicationController
     @bookmark = Bookmark.new(bookmark_params)
     
     @bookmark.transaction do
-      @bookmark.user = current_user
       @bookmark.save!
     end
     
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def edit
@@ -29,13 +28,13 @@ class BookmarksController < ApplicationController
   
   def update
     @bookmark = Bookmark.find(params[:id])
+    @bookmark.attributes = bookmark_params
     
     @bookmark.transaction do
-      @bookmark.attributes = bookmark_params
       @bookmark.save!
     end
     
-    redirect_to :action => 'show', :id => @bookmark
+    redirect_to action: 'show', id: @bookmark
   end
 
   def destroy
@@ -45,36 +44,19 @@ class BookmarksController < ApplicationController
       @bookmark.destroy_logically!
     end
     
-    redirect_to :action => 'index'
-  end
-
-  def new_import
-    @bookmark_import_form = BookmarkImportForm.new
-  end
-
-  def confirm_import
-    @bookmark_import_form = BookmarkImportForm.new(params[:bookmark_import_form])
-
-    doc = Nokogiri::XML(@bookmark_import_form.bookmark_file.open)
-    @bookmark_import_form.bookmarks = doc.css('A').map { |a| Bookmark.new(:title => a.text, :url => a['HREF']) }
-  end
-
-  def import
-    @bookmark_import_form = BookmarkImportForm.new(params[:bookmark_import_form])
-    
-    Bookmark.transaction do
-      @bookmark_import_form.bookmarks.each do |b|
-        b.user = current_user
-        b.save!
-      end
-    end
-    
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   private
 
   def bookmark_params
-    params.require(:bookmark).permit(:user_id, :title, :url)
+    ret = params.require(:bookmark).permit(:title, :url)
+
+    case action_name
+    when 'create'
+      ret = ret.merge(user_id: current_user.id)
+    end
+    
+    ret
   end
 end

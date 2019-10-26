@@ -8,13 +8,7 @@ Rails.application.routes.draw do
     mount Sidekiq::Web => '/sidekiq'
   end
 
-  resources :bookmarks do
-    collection do
-      get  'new_import'
-      post 'confirm_import'
-      post 'import'
-    end
-  end
+  resources :bookmarks
 
   resources :calendars do
     member do
@@ -34,16 +28,13 @@ Rails.application.routes.draw do
 
   resources :todos do
     collection do
-      get  'new_import'
-      post 'confirm_import'
       post 'delete'
-      post 'import'
     end
   end
   
   resources :tweets
 
-  resources :welcome, :only => [] do
+  resources :welcome, only: [] do
     collection do
       post 'save_state'
     end

@@ -2,7 +2,7 @@ class TodosController < ApplicationController
   before_action :preload_todo, :only => ['edit', 'update', 'destroy']
   
   def index
-    @todos = Todo.where(:user_id => current_user).not_deleted.order(:title)
+    @todos = Todo.where(user_id: current_user).not_deleted.order(:title)
   end
 
   def new
@@ -12,7 +12,6 @@ class TodosController < ApplicationController
 
   def create
     @todo = Todo.new(todo_params)
-    @todo.user = current_user
     
     @todo.transaction do
       @todo.save!
@@ -26,8 +25,9 @@ class TodosController < ApplicationController
   end
 
   def update
+    @todo.attributes = todo_params
+
     @todo.transaction do
-      @todo.attributes = todo_params
       @todo.save!
     end
 
@@ -55,27 +55,6 @@ class TodosController < ApplicationController
     head :ok
   end
 
-  def new_import
-    @todo_import_form = TodoImportForm.new
-  end
-
-  def confirm_import
-    @todo_import_form = TodoImportForm.new(params[:todo_import_form]).build
-  end
-
-  def import
-    @todo_import_form = TodoImportForm.new(params[:todo_import_form])
-    
-    Todo.transaction do
-      @todo_import_form.todos.each do |t|
-        t.user = current_user
-        t.save!
-      end
-    end
-    
-    redirect_to :action => 'index'
-  end
-
   private
 
   def preload_todo
@@ -87,7 +66,14 @@ class TodosController < ApplicationController
   end
 
   def todo_params
-    params.require(:todo).permit(:user_id, :title, :priority)
+    ret = params.require(:todo).permit(:title, :priority)
+    
+    case action_name
+    when 'create'
+      ret = ret.merge(user_id: current_user.id)
+    end
+    
+    ret
   end
 
 end
