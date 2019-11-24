@@ -1,17 +1,18 @@
-FROM bookmarks-app:latest
-
 ARG user
+
+FROM centos:centos7.7.1908
+MAINTAINER ichylinux@gmail.com
+
 ENV USER=$user
+USER $user
 
 RUN mkdir -p app
 WORKDIR app
 
 ADD Gemfile ./
 ADD Gemfile.lock ./
-RUN sudo chown -R $USER:$USER ./
 RUN bundle install -j2 --without="development test"
 ADD  . ./
-RUN sudo chown -R $USER:$USER ./
 
 RUN rails assets:precompile RAILS_ENV=production
 
