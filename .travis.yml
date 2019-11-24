@@ -2,7 +2,6 @@ sudo: false
 language: ruby
 rvm:
   - 2.6.3
-  - 2.5.5
 cache:
   bundler: true
   directories:
@@ -10,7 +9,7 @@ cache:
   yarn: true
 env:
   - PLATFORM=Linux DRIVER=chrome
-  - PLATFORM="Windows 10" DRIVER=firefox
+  - PLATFORM="Windows 10" DRIVER=chrome
 services:
   - mysql
 addons:
