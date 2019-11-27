@@ -33,8 +33,6 @@ def test() {
 def publish() {
   junit 'test/reports/**/*.xml'
   script {
-    //step([$class: 'RailsStatsPublisher'])
-    //step([$class: 'RailsNotesPublisher'])
     step([$class: 'RcovPublisher', reportDir: "coverage/rcov"])
   }
 }
