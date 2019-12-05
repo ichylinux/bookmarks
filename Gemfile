@@ -38,7 +38,7 @@ gem 'webpacker'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'puma', '~> 3.11'
+  gem 'puma', '~> 3.12'
 end
 
 group :development do
