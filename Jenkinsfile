@@ -12,7 +12,7 @@ pipeline {
       }
       post {
         always { publish() }
-        success { sh 'git push origin release' }
+        success { sh 'git push origin HEAD:release' }
       }
     }
   }
