@@ -20,7 +20,7 @@ pipeline {
 
 def test() {
   ansiColor('xterm') {
-    sh 'bundle install --quiet'
+    sh 'bundle install -j2 --quiet'
     sh 'yarn install'
     sh 'bundle exec rails log:clear'
     sh 'bundle exec rails tmp:cache:clear'
