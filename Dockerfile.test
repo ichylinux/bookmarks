@@ -1,0 +1,3 @@
+FROM bookmarks/base:latest
+
+RUN bundle exec rake dad:setup:test
