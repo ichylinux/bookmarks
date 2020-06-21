@@ -1,4 +1,5 @@
-FROM hybitz-centos:7.8.2003
+ARG registry=docker.io
+FROM ${registry}/hybitz-centos:7.8.2003
 
 RUN sudo yum -y install mariadb-devel
 
