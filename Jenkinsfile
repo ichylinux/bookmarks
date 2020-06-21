@@ -67,10 +67,10 @@ spec:
 """
         }
       }
+      environment {
+        RAILS_ENV = 'test'
+      }
       steps {
-        environment {
-          RAILS_ENV = 'test'
-        }
         container('bookmarks') {
           test()
         }
