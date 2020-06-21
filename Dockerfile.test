@@ -1,3 +1,4 @@
 FROM bookmarks/base:latest
 
 RUN bundle exec rake dad:setup:test
+RUN bundle exec rake assets:precompile RAIL_ENV=test
