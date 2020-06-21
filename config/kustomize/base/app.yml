@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmarks
+  labels:
+    app: bookmarks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookmarks
+  template:
+    metadata:
+      labels:
+        app: bookmarks
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: bookmarks
+        image: bookmarks/app:latest
+        envFrom:
+        - configMapRef:
+            name: bookmarks-config
+        - secretRef:
+            name: bookmarks-secret
+        env:
+        - name: RAILS_LOG_TO_STDOUT
+          value: 'true'
+        - name: RAILS_SERVE_STATIC_FILES
+          value: 'true'
+        - name: PORT
+          value: '3000'
+        command: ["/usr/local/bin/bundle"]
+        args: ["exec", "rails", "s"]

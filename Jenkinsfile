@@ -101,13 +101,8 @@ spec:
 
 def test() {
   ansiColor('xterm') {
-    sh 'bundle install -j2 --quiet'
-    sh 'yarn install'
-    sh 'bundle exec rails log:clear'
-    sh 'bundle exec rails tmp:cache:clear'
-    sh 'bundle exec rake dad:setup:test'
-    sh 'bundle exec rails db:schema:load'
-    sh 'bundle exec rake test'
+    sh "bundle exec rails db:reset"
+    sh 'bundle exec rails test'
     sh 'bundle exec rake dad:test'
   }
 }
