@@ -40,7 +40,7 @@ spec:
       steps {
         container('docker') {
           ansiColor('xterm') {
-            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.base -t bookmarks/base:latest --build-arg registry=#{ECR} --network=host ."
+            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.base -t bookmarks/base:latest --build-arg registry=${ECR} --network=host ."
             sh "docker tag bookmarks/base:latest ${ECR}/bookmarks/base:latest"
             sh "docker push ${ECR}/bookmarks/base:latest"
             sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.test -t bookmarks/test:latest --network=host ."
