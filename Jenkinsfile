@@ -59,7 +59,7 @@ kind: Pod
 spec:
   containers:
   - name: bookmarks
-    image: ${ECR}/bookmarks/base:latest
+    image: ${ECR}/bookmarks/test:latest
     imagePullPolicy: Always
     command:
     - cat
