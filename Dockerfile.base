@@ -1,8 +1,6 @@
 ARG registry=docker.io
 FROM ${registry}/hybitz-centos:7.8.2003
 
-RUN sudo yum -y install mariadb-devel
-
 ADD Gemfile Gemfile.lock ./
 RUN sudo chown -R ${USER}:${USER} ./
 RUN bundle install -j2
@@ -10,6 +8,3 @@ RUN bundle install -j2
 ADD package.json yarn.lock ./
 RUN sudo chown -R ${USER}:${USER} ./
 RUN yarn install
-
-ADD  . ./
-RUN sudo chown -R ${USER}:${USER} ./
