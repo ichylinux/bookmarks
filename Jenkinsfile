@@ -68,6 +68,7 @@ spec:
         }
       }
       environment {
+        COVERAGE = 'true'
         RAILS_ENV = 'test'
       }
       steps {
