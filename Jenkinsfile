@@ -95,9 +95,11 @@ spec:
           }
         }
         container('jnlp') {
-          sh "git push origin HEAD:release"
-          sh "git tag ${RELEASE_TAG}"
-          sh "git push origin ${RELEASE_TAG}"
+          sshagent(credentials: [env.GITHUB_SSH_KEY]) {
+            sh "git push origin HEAD:release"
+            sh "git tag ${RELEASE_TAG}"
+            sh "git push origin ${RELEASE_TAG}"
+          }
         }
       }
     }
