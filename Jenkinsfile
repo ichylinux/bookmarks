@@ -86,7 +86,7 @@ spec:
         RELEASE_TAG = "v1.0.0-${BUILD_NUMBER}"
       }
       parallel {
-        stage('tagging')
+        stage('tagging') {
           container('jnlp') {
             sshagent(credentials: [env.GITHUB_SSH_KEY]) {
               sh "git push origin HEAD:release"
