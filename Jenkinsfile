@@ -69,6 +69,7 @@ spec:
       }
       environment {
         COVERAGE = 'true'
+        FORMAT = 'junit'
         RAILS_ENV = 'test'
       }
       steps {
