@@ -101,9 +101,13 @@ spec:
           steps {
             container('docker') {
               ansiColor('xterm') {
-                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --network=host ."
-                sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
+                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t bookmarks/app:latest --network=host ."
+
+                sh "docker tag bookmarks/app:latest ${ECR}/bookmarks/app:latest"
                 sh "docker push ${ECR}/bookmarks/app:latest"
+
+                sh "docker tag bookmarks/app:latest bookmarks/app:${RELEASE_TAG}"
+                sh "docker tag bookmarks/app:${RELEASE_TAG} ${ECR}/bookmarks/app:${RELEASE_TAG}"
                 sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
               }
             }
