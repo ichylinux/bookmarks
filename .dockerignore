@@ -4,4 +4,4 @@ public/packs*
 tmp
 travis
 Dockerfile*
-Jenkinsfile*
+Jenkinsfile
