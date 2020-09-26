@@ -87,21 +87,25 @@ spec:
       }
       parallel {
         stage('tagging') {
-          container('jnlp') {
-            sshagent(credentials: [env.GITHUB_SSH_KEY]) {
-              sh "git push origin HEAD:release"
-              sh "git tag ${RELEASE_TAG}"
-              sh "git push origin ${RELEASE_TAG}"
+          steps {
+            container('jnlp') {
+              sshagent(credentials: [env.GITHUB_SSH_KEY]) {
+                sh "git push origin HEAD:release"
+                sh "git tag ${RELEASE_TAG}"
+                sh "git push origin ${RELEASE_TAG}"
+              }
             }
           }
         }
         stage('artifact') {
-          container('docker') {
-            ansiColor('xterm') {
-              sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --network=host ."
-              sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
-              sh "docker push ${ECR}/bookmarks/app:latest"
-              sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
+          steps {
+            container('docker') {
+              ansiColor('xterm') {
+                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --network=host ."
+                sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
+                sh "docker push ${ECR}/bookmarks/app:latest"
+                sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
+              }
             }
           }
         }
