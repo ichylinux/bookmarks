@@ -253,7 +253,7 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.0.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.2)
     minitest-reporters (1.4.2)
       ansi
@@ -278,8 +278,9 @@ GEM
     net-ssh (6.1.0)
     net-telnet (0.1.1)
     nio4r (2.5.4)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.0)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     oauth (0.5.6)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
@@ -323,6 +324,7 @@ GEM
     puma (4.3.7)
       nio4r (~> 2.0)
     raabro (1.4.0)
+    racc (1.5.2)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
