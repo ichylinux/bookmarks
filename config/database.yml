@@ -4,7 +4,7 @@ default: &default
   charset: utf8mb4
   collation: utf8mb4_general_ci
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: <%= ENV['MYSQL_HOST'] || 'localhost' %>
+  host: <%= ENV['MYSQL_HOST'] || '127.0.0.1' %>
   username: <%= ENV['MYSQL_USERNAME'] || 'bookmarks' %>
   password: <%= ENV['MYSQL_PASSWORD'] || 'bookmarks' %>
 
