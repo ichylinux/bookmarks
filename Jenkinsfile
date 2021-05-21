@@ -6,9 +6,12 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+  - name: jnlp
+    volumeMounts:
+      - name: ssh-config
+        mountPath: /home/jenkins/.ssh/
   - name: docker
     image: ichylinux/docker:20.03
-    imagePullPolicy: Always
     command:
     - cat
     tty: true
@@ -22,16 +25,19 @@ spec:
       - name: docker-socket
         mountPath: /var/run/docker.sock
   volumes:
-    - name: docker-config
-      configMap:
-        name: docker-config
     - name: aws-secret
       secret:
         secretName: aws-secret
+    - name: docker-config
+      configMap:
+        name: docker-config
     - name: docker-socket
       hostPath:
         path: /var/run/docker.sock
         type: File
+    - name: ssh-config
+      configMap:
+        name: ssh-config
 """
     }
   }
@@ -64,6 +70,17 @@ spec:
     command:
     - cat
     tty: true
+  - name: mysql
+    image: mysql:5.7
+    env:
+    - name: MYSQL_ALLOW_EMPTY_PASSWORD
+      value: yes
+    - name: MYSQL_DATABASE
+      value: bookmarks_test
+    - name: MYSQL_USER
+      value: bookmarks
+    - name: MYSQL_PASSWORD
+      value: bookmarks
 """
         }
       }
@@ -73,6 +90,13 @@ spec:
         RAILS_ENV = 'test'
       }
       steps {
+        container('mysql') {
+          sh """
+while ! mysqladmin ping --user=root -h 127.0.0.1 --port=3306 --silent; do
+    sleep 1
+done
+"""
+        }
         container('bookmarks') {
           test()
         }
@@ -101,13 +125,9 @@ spec:
           steps {
             container('docker') {
               ansiColor('xterm') {
-                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t bookmarks/app:latest --network=host ."
-
-                sh "docker tag bookmarks/app:latest ${ECR}/bookmarks/app:latest"
+                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --network=host ."
+                sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
                 sh "docker push ${ECR}/bookmarks/app:latest"
-
-                sh "docker tag bookmarks/app:latest bookmarks/app:${RELEASE_TAG}"
-                sh "docker tag bookmarks/app:${RELEASE_TAG} ${ECR}/bookmarks/app:${RELEASE_TAG}"
                 sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
               }
             }
