@@ -28,7 +28,7 @@ install:
   - npm i -g yarn
   - yarn
 script:
-  - bundle exec rake dad:db:create DAD_MYSQL_NO_ROOT_PASSWORD=true
+  - bundle exec rake dad:db:create MYSQL_NO_ROOT_PASSWORD=true
   - bin/rails db:schema:load
   - bin/rails test
   - bundle exec rake dad:test

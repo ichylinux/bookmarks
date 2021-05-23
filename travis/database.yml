@@ -3,4 +3,3 @@ test:
   database: hyacc_test
   username: travis
   encoding: utf8
-  socket: /var/run/mysqld/mysqld.sock
