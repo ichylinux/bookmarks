@@ -1,3 +1,4 @@
+ARG registry
 FROM ${registry}/hybitz-centos:7.9.2009
 
 ADD Gemfile Gemfile.lock Rakefile ./

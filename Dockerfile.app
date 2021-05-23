@@ -1,3 +1,4 @@
+ARG registry
 FROM ${registry}/bookmarks/base:latest
 
 EXPOSE 3000
