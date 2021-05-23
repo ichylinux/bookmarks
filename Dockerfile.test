@@ -1,4 +1,4 @@
-FROM bookmarks/base:latest
+FROM ${registry}/bookmarks/base:latest
 
 RUN sudo yum -y install mariadb-devel
 

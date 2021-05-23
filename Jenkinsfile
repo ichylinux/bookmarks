@@ -46,11 +46,9 @@ spec:
       steps {
         container('docker') {
           ansiColor('xterm') {
-            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.base -t bookmarks/base:latest --build-arg registry=${ECR} --network=host ."
-            sh "docker tag bookmarks/base:latest ${ECR}/bookmarks/base:latest"
+            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.base -t ${ECR}/bookmarks/base:latest --build-arg registry=${ECR} --network=host ."
             sh "docker push ${ECR}/bookmarks/base:latest"
-            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.test -t bookmarks/test:latest --network=host ."
-            sh "docker tag bookmarks/test:latest ${ECR}/bookmarks/test:latest"
+            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.test -t ${ECR}/bookmarks/test:latest --build-arg registry=${ECR} --network=host ."
             sh "docker push ${ECR}/bookmarks/test:latest"
           }
         }
@@ -125,7 +123,7 @@ done
           steps {
             container('docker') {
               ansiColor('xterm') {
-                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --network=host ."
+                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --build-arg registry=${ECR} --network=host ."
                 sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
                 sh "docker push ${ECR}/bookmarks/app:latest"
                 sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
