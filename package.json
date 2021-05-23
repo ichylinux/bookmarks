@@ -2,10 +2,10 @@
   "name": "bookmarks",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "5.2.1",
+    "@rails/webpacker": "5.4.0",
     "rails-erb-loader": "^5.5.2",
     "vue": "^2.6.10",
-    "vue-loader": "^15.7.1",
+    "vue-loader": "^15.9.7",
     "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
