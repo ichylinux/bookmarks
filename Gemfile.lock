@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/ichylinux/devise-i18n.git
+  revision: 28af763f6d036cd32a99ef1727279ecc67ff08cf
+  specs:
+    devise-i18n (1.9.4)
+      devise (>= 4.8.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -131,8 +138,6 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-i18n (1.9.4)
-      devise (>= 4.7.1)
     diff-lcs (1.4.4)
     docile (1.4.0)
     docker-api (2.1.0)
@@ -515,7 +520,7 @@ DEPENDENCIES
   daddy
   database_cleaner
   devise
-  devise-i18n
+  devise-i18n!
   faraday
   faraday_middleware
   feedjira

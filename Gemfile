@@ -10,7 +10,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'coffee-rails', '~> 4.2'
 gem 'daddy'
 gem 'devise'
-gem 'devise-i18n'
+gem 'devise-i18n', git: 'https://github.com/ichylinux/devise-i18n.git'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'feedjira'
