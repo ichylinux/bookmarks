@@ -56,7 +56,7 @@ end
     within 'form.todo' do
       selector = 'select[name*="\[priority\]"]'
       assert has_selector?(selector)
-      assert Todo::PRIORITY_HIGH == first(selector).value.to_i, "優先度が #{Todo::PRIORITY_HIGH} であること"
+      assert_equal Todo::PRIORITY_HIGH, evaluate_script("$('#{selector}').val()").to_i, "優先度が #{Todo::PRIORITY_HIGH} であること"
     end
   end
 end

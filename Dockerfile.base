@@ -2,9 +2,10 @@ ARG registry
 FROM ${registry}/hybitz-centos:7.9.2009
 
 ADD Gemfile Gemfile.lock Rakefile ./
-RUN sudo chown -R ${USER}:${USER} ./
-RUN bundle install -j2
+RUN sudo chown -R ${USER}:${USER} ./ && \
+    bundle install -j2
 
 ADD package.json yarn.lock ./
-RUN sudo chown -R ${USER}:${USER} ./
-RUN yarn install
+RUN sudo chown -R ${USER}:${USER} ./ && \
+    yarn install && \
+    yarn cache clean
