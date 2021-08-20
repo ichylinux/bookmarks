@@ -1,11 +1,8 @@
 ARG registry
 FROM ${registry}/bookmarks/base:latest
 
-RUN sudo yum -y install mariadb-devel
-
 ENV RAILS_ENV=test
 
-ADD  config ./config
+ADD  . ./
 RUN sudo chown -R ${USER}:${USER} ./
-RUN bin/rails secret
 RUN bundle exec rake dad:setup:test
