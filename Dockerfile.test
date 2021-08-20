@@ -7,4 +7,5 @@ ENV RAILS_ENV=test
 
 ADD  config ./config
 RUN sudo chown -R ${USER}:${USER} ./
-RUN bundle exec rake dad:setup:test --trace
+RUN bin/rails secret
+RUN bundle exec rake dad:setup:test
