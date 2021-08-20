@@ -98,6 +98,7 @@ done
 def test() {
   ansiColor('xterm') {
     sh 'bundle exec rails db:reset'
+    sh 'bundle exec rake assets:precompile'
     sh 'bundle exec rails test'
     sh 'bundle exec rake dad:test'
   }
