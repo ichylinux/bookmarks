@@ -1,46 +1,5 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: jnlp
-    volumeMounts:
-      - name: ssh-config
-        mountPath: /home/jenkins/.ssh/
-  - name: docker
-    image: ichylinux/docker:20.03
-    command:
-    - cat
-    tty: true
-    securityContext:
-      privileged: true
-    volumeMounts:
-      - name: docker-config
-        mountPath: /root/.docker/
-      - name: aws-secret
-        mountPath: /root/.aws/
-      - name: docker-socket
-        mountPath: /var/run/docker.sock
-  volumes:
-    - name: aws-secret
-      secret:
-        secretName: aws-secret
-    - name: docker-config
-      configMap:
-        name: docker-config
-    - name: docker-socket
-      hostPath:
-        path: /var/run/docker.sock
-        type: File
-    - name: ssh-config
-      configMap:
-        name: ssh-config
-"""
-    }
-  }
+  agent { kubernetes { inheritFrom 'default' } }
   stages {
     stage('build') {
       steps {
