@@ -3,6 +3,8 @@ FROM ${registry}/bookmarks/base:latest
 
 EXPOSE 3000
 
+ENV RAILS_ENV=production
+
 ADD  . ./
 RUN sudo chown -R ${USER}:${USER} ./
-RUN bundle exec rake assets:precompile RAILS_ENV=production
+RUN bundle exec rake assets:precompile
