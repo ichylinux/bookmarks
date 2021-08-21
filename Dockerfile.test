@@ -5,5 +5,6 @@ ENV RAILS_ENV=test
 
 ADD  bin ./bin
 ADD  config ./config
+ADD Rakefile ./
 RUN sudo chown -R ${USER}:${USER} ./
 RUN bundle exec rake dad:setup:test
