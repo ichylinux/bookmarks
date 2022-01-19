@@ -65,7 +65,7 @@ done
     }
     stage('release') {
       environment {
-        RELEASE_TAG = "v1.0.0-${BUILD_NUMBER}"
+        RELEASE_TAG = "v1.1.0-${BUILD_NUMBER}"
       }
       parallel {
         stage('tagging') {
