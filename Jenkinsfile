@@ -1,14 +1,15 @@
 pipeline {
   agent { kubernetes { inheritFrom 'default' } }
+  environment {
+    KANIKO_OPTIONS = "--cache=${CACHE} --build-arg registry=${ECR}"
+  }
   stages {
     stage('build') {
       steps {
-        container('docker') {
+        container('kaniko') {
           ansiColor('xterm') {
-            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.base -t ${ECR}/bookmarks/base:latest --build-arg registry=${ECR} --network=host ."
-            sh "docker push ${ECR}/bookmarks/base:latest"
-            sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.test -t ${ECR}/bookmarks/test:latest --build-arg registry=${ECR} --network=host ."
-            sh "docker push ${ECR}/bookmarks/test:latest"
+            sh '/kaniko/executor -f `pwd`/Dockerfile.base -c `pwd` -d=${ECR}/bookmarks/base:latest ${KANIKO_OPTIONS}'
+            sh '/kaniko/executor -f `pwd`/Dockerfile.test -c `pwd` -d=${ECR}/bookmarks/test:latest ${KANIKO_OPTIONS}'
           }
         }
       }
@@ -80,12 +81,9 @@ done
         }
         stage('artifact') {
           steps {
-            container('docker') {
+            container('kaniko') {
               ansiColor('xterm') {
-                sh "docker build --no-cache=${NO_CACHE} -f Dockerfile.app -t ${ECR}/bookmarks/app:latest --build-arg registry=${ECR} --network=host ."
-                sh "docker tag ${ECR}/bookmarks/app:latest ${ECR}/bookmarks/app:${RELEASE_TAG}"
-                sh "docker push ${ECR}/bookmarks/app:latest"
-                sh "docker push ${ECR}/bookmarks/app:${RELEASE_TAG}"
+                sh '/kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` -d=${ECR}/bookmarks/app:${RELEASE_TAG} ${KANIKO_OPTIONS}'
               }
             }
           }
