@@ -1,7 +1,7 @@
 pipeline {
   agent { kubernetes { inheritFrom 'default' } }
   environment {
-    KANIKO_OPTIONS = "--cache=${CACHE} --build-arg registry=${ECR}"
+    KANIKO_OPTIONS = "--cache=${CACHE} --compressed-caching=false --build-arg registry=${ECR}"
   }
   stages {
     stage('build') {
