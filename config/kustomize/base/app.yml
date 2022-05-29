@@ -5,7 +5,8 @@ metadata:
   labels:
     app: bookmarks
 spec:
-  replicas: 1
+  strategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: bookmarks
