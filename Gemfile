@@ -40,7 +40,7 @@ gem 'webpacker'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'cucumber', '~> 3.2'
-  gem 'puma', '~> 4.3'
+  gem 'puma', '~> 5.6'
 end
 
 group :development do
