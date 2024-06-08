@@ -28,8 +28,6 @@ Rails.application.routes.draw do
     end
   end
   
-  resources :tweets
-
   resources :welcome, only: [] do
     collection do
       post 'save_state'

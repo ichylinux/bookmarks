@@ -57,7 +57,7 @@ class Portal < ApplicationRecord
   def get_gadgets
     ret = {}
     
-    [BookmarkGadget, TweetGadget].each do |klass|
+    [BookmarkGadget].each do |klass|
       gadget = klass.new(user)
       if gadget.visible?
         ret[gadget.gadget_id] = gadget

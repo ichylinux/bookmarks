@@ -48,13 +48,6 @@ spec:
         RAILS_ENV = 'test'
       }
       steps {
-        container('mysql') {
-          sh """
-while ! mysqladmin ping --user=root -h 127.0.0.1 --port=3306 --silent; do
-    sleep 1
-done
-"""
-        }
         container('bookmarks') {
           test()
         }
@@ -95,6 +88,7 @@ done
 
 def test() {
   ansiColor('xterm') {
+    sh 'ln -snf /var/app/current/node_modules node_modules
     sh 'bundle exec rails db:reset'
     sh 'bundle exec rake assets:precompile'
     sh 'bundle exec rails test'

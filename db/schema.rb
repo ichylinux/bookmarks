@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_15_015135) do
+ActiveRecord::Schema.define(version: 2024_06_08_042957) do
 
   create_table "bookmarks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -74,15 +74,6 @@ ActiveRecord::Schema.define(version: 2019_08_15_015135) do
     t.boolean "use_todo", default: false, null: false
     t.boolean "use_two_factor_authentication", default: false, null: false
     t.integer "default_priority"
-  end
-
-  create_table "retweets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.integer "tweet_id", null: false
-    t.string "twitter_user_id", null: false
-    t.string "twitter_user_name", null: false
-    t.string "twitter_screen_name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
