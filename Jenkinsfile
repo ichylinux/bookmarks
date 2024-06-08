@@ -88,7 +88,7 @@ spec:
 
 def test() {
   ansiColor('xterm') {
-    sh 'ln -snf /var/app/current/node_modules node_modules
+    sh 'ln -snf /var/app/current/node_modules node_modules'
     sh 'bundle exec rails db:reset'
     sh 'bundle exec rake assets:precompile'
     sh 'bundle exec rails test'
