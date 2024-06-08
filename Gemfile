@@ -7,7 +7,6 @@ ruby '>= 2.7.0', '< 3.0.0'
 gem 'rails', '~> 5.2.0'
 
 gem 'bootsnap', '>= 1.1.0', require: false
-gem 'coffee-rails', '~> 4.2'
 gem 'daddy'
 gem 'devise'
 gem 'devise-i18n'
@@ -36,7 +35,7 @@ gem 'webpacker'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'cucumber', '~> 3.2'
-  gem 'puma', '~> 4.3'
+  gem 'puma'
 end
 
 group :development do
