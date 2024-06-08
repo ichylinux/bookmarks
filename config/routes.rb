@@ -1,14 +1,7 @@
-require 'sidekiq/web'
-require 'sidekiq-scheduler/web'
-
 Rails.application.routes.draw do
   # don't load User model when building docker image
   unless ARGV.first =~ /^dad:setup(:.+)?/
     devise_for :users, :controllers => { :omniauth_callbacks => 'users/omniauth_callbacks' }
-  end
-
-  authenticate :user, lambda {|u| u.admin? } do
-    mount Sidekiq::Web => '/sidekiq'
   end
 
   resources :bookmarks
