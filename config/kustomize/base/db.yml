@@ -1,19 +1,18 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: &name bookmarks-app
+  name: &name bookmarks-db
   labels: &labels
     app: *name
 spec:
-  selector:
-    matchLabels:
-      <<: *labels
+  backoffLimit: 1
+  parallelism: 1
+  completions: 1
   template:
     metadata:
       labels:
         <<: *labels
     spec:
-      restartPolicy: Always
       containers:
       - name: *name
         image: bookmarks/app:latest
@@ -30,4 +29,4 @@ spec:
         - name: PORT
           value: '3000'
         command: ["/usr/local/bin/bundle"]
-        args: ["exec", "rails", "s"]
+        args: ["exec", "rails", "db:migrate"]
