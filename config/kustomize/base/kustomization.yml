@@ -1,3 +1,4 @@
 resources:
 - app.yml
+- db.yml
 - service.yml
