@@ -13,6 +13,7 @@ spec:
       labels:
         <<: *labels
     spec:
+      restartPolicy: Never
       containers:
       - name: *name
         image: bookmarks/app:latest
@@ -30,4 +31,3 @@ spec:
           value: '3000'
         command: ["/usr/local/bin/bundle"]
         args: ["exec", "rails", "db:migrate"]
-        restartPolicy: Never
