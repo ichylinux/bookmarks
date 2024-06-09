@@ -23,11 +23,5 @@ spec:
         - secretRef:
             name: bookmarks-secret
         env:
-        - name: RAILS_LOG_TO_STDOUT
-          value: 'true'
-        - name: RAILS_SERVE_STATIC_FILES
-          value: 'true'
-        - name: PORT
-          value: '3000'
         command: ["/usr/local/bin/bundle"]
         args: ["exec", "rails", "s"]
