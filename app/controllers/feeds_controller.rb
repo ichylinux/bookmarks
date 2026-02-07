@@ -14,7 +14,7 @@ class FeedsController < ApplicationController
     if @feed.feed?
       render :layout => ! request.xhr?
     else
-      render :text => @feed.status, :status => @feed.status
+      render plain: @feed.status, status: @feed.status
     end
   end
 

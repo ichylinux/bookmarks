@@ -1,6 +1,5 @@
 log
 node_modules
-public/packs*
 tmp
 travis
 Dockerfile*
