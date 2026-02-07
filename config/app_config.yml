@@ -1,0 +1,26 @@
+default: &default
+  otp_length: <%= ENV["BOOKMARKS_OTP_LENGTH"] || 6 %>
+  omniauth_google_oauth2_client_id: <%= ENV["GOOGLE_CLIENT_ID"] %>
+  omniauth_google_oauth2_client_secret: <%= ENV["GOOGLE_CLIENT_SECRET"] %>
+  omniauth_google_api_key: <%= ENV['GOOGLE_API_KEY'] %>
+  omniauth_twitter_client_id: <%= ENV["TWITTER_CLIENT_ID"] %>
+  omniauth_twitter_client_secret: <%= ENV["TWITTER_CLIENT_SECRET"] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  default_url_options:
+    protocol: https
+    host: <%= ENV['APP_HOST'] || 'localhost' %>
+  smtp_settings:
+    address: <%= ENV['AWS_ADDRESS'] %>
+    port: 587
+    domain: <%= ENV['AWS_DOMAIN'] %>
+    authentication: login
+    user_name: <%= ENV['AWS_ACCESS_KEY_ID'] %>
+    password: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>

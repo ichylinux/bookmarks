@@ -69,8 +69,8 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = Rails.application.secrets.default_url_options
-  config.action_mailer.smtp_settings = Rails.application.secrets.smtp_settings
+  config.action_mailer.default_url_options = Rails.application.config_for(:app_config).default_url_options.to_h
+  config.action_mailer.smtp_settings = Rails.application.config_for(:app_config).smtp_settings.to_h
   config.action_mailer.default_options = {from: ENV['SMTP_FROM'] || 'from@example.com' }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

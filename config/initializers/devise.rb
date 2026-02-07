@@ -254,13 +254,13 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :google_oauth2,
-      Rails.application.secrets.omniauth_google_oauth2_client_id,
-      Rails.application.secrets.omniauth_google_oauth2_client_secret,
+      Rails.application.config.app_config.omniauth_google_oauth2_client_id,
+      Rails.application.config.app_config.omniauth_google_oauth2_client_secret,
       scope: ['email']
 
   config.omniauth :twitter,
-      Rails.application.secrets.omniauth_twitter_client_id,
-      Rails.application.secrets.omniauth_twitter_client_secret
+      Rails.application.config.app_config.omniauth_twitter_client_id,
+      Rails.application.config.app_config.omniauth_twitter_client_secret
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
@@ -288,10 +288,10 @@ Devise.setup do |config|
   # two_factor_authentication
   config.max_login_attempts = 3  # Maximum second factor attempts count.
   config.allowed_otp_drift_seconds = 60  # Allowed TOTP time drift between client and server.
-  config.otp_length = Rails.application.secrets.otp_length  # TOTP code length
+  config.otp_length = Rails.application.config.app_config.otp_length  # TOTP code length
   config.direct_otp_valid_for = 5.minutes  # Time before direct OTP becomes invalid
-  config.direct_otp_length = Rails.application.secrets.otp_length  # Direct OTP code length
+  config.direct_otp_length = Rails.application.config.app_config.otp_length  # Direct OTP code length
   config.remember_otp_session_for_seconds = 2.hours # Time before browser has to perform 2fA again. Default is 0.
-  config.otp_secret_encryption_key = Rails.application.secrets.secret_key_base
+  config.otp_secret_encryption_key = Rails.application.secret_key_base
   config.second_factor_resource_id = 'id' # Field or method name used to set value for 2fA remember cookie
 end
