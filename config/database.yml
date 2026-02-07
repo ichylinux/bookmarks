@@ -1,4 +1,4 @@
-default: &default
+development:
   adapter: mysql2
   encoding: utf8mb4
   charset: utf8mb4
@@ -7,15 +7,26 @@ default: &default
   host: <%= ENV['MYSQL_HOST'] || '127.0.0.1' %>
   username: <%= ENV['MYSQL_USERNAME'] || 'bookmarks' %>
   password: <%= ENV['MYSQL_PASSWORD'] || 'bookmarks' %>
-
-development:
-  <<: *default
   database: bookmarks_dev
 
-test: &test
-  <<: *default
+test:
+  adapter: mysql2
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_general_ci
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['MYSQL_HOST'] || '127.0.0.1' %>
+  username: <%= ENV['MYSQL_USERNAME'] || 'bookmarks' %>
+  password: <%= ENV['MYSQL_PASSWORD'] || 'bookmarks' %>
   database: bookmarks_test
 
 production:
-  <<: *default
+  adapter: mysql2
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_general_ci
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['MYSQL_HOST'] || '127.0.0.1' %>
+  username: <%= ENV['MYSQL_USERNAME'] || 'bookmarks' %>
+  password: <%= ENV['MYSQL_PASSWORD'] || 'bookmarks' %>
   database: bookmarks_pro
