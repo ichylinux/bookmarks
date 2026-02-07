@@ -1,1 +1,3 @@
-include_recipe 'daddy::mysql::client'
+require 'daddy/itamae'
+
+include_recipe '../cookbooks/base.rb'
