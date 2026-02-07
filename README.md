@@ -22,3 +22,8 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+## JavaScript build
+
+- Development server: `bin/webpack-dev-server` or `npm run dev`
+- One-off build: `bin/webpack` or `npm run build`
