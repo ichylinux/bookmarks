@@ -25,7 +25,6 @@ gem 'puma'
 gem 'rails-i18n', '~> 7.0'
 gem 'sass-rails', '>= 6'
 gem 'twitter'
-gem 'two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 
 group :itamae do
