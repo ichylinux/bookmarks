@@ -4,7 +4,14 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '>= 2.7.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 6.1.0'
+
+# Ruby 3.3+ requires these gems explicitly (extracted from stdlib)
+gem 'abbrev'
+gem 'csv'
+gem 'drb'
+gem 'logger'
+gem 'mutex_m'
 
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'daddy'
@@ -25,7 +32,7 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter'
-gem 'rails-i18n', '~> 6.0'
+gem 'rails-i18n', '~> 7.0'
 gem 'sass-rails', '>= 6'
 gem 'twitter'
 gem 'two_factor_authentication'
