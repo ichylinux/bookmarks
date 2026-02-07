@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_07_160619) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_07_171146) do
   create_table "bookmarks", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
@@ -71,7 +71,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_160619) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "use_todo", default: false, null: false
-    t.boolean "use_two_factor_authentication", default: false, null: false
     t.integer "default_priority"
   end
 
@@ -110,18 +109,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_160619) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "admin", default: false, null: false
-    t.string "otp_secret_key"
-    t.integer "second_factor_attempts_count", default: 0
     t.string "provider"
     t.string "uid"
     t.string "token"
-    t.string "direct_otp"
-    t.datetime "direct_otp_sent_at"
-    t.datetime "totp_timestamp"
     t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
-    t.index ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 end

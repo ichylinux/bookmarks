@@ -14,7 +14,6 @@ ja:
         default_priority: タスク追加時の初期優先度
         theme: テーマ
         use_todo: タスクウィジェットを表示する
-        use_two_factor_authentication: ２段階認証を使用する
       todo:
         priority: 優先度
         title: タイトル

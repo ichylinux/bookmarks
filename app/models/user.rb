@@ -1,11 +1,9 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :two_factor_authenticatable,
+  devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          :omniauth_providers => [:google_oauth2, :twitter]
-
-  has_one_time_password
 
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
@@ -50,14 +48,6 @@ class User < ActiveRecord::Base
 
   def preference
     super || Preference.default_preference(self)
-  end
-
-  def need_two_factor_authentication?(request = nil)
-    preference.use_two_factor_authentication?
-  end
-
-  def send_two_factor_authentication_code(code)
-    LoginMailer.invoice_login(self).deliver_now
   end
 
   private
