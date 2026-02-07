@@ -1,44 +1,36 @@
 pipeline {
-  agent { kubernetes { inheritFrom 'default' } }
+  agent none
   environment {
+    APP_NAME = 'bookmarks'
     KANIKO_OPTIONS = "--cache=${CACHE} --compressed-caching=false --build-arg registry=${ECR}"
   }
   stages {
     stage('build') {
+      agent { kubernetes { inheritFrom 'kaniko' } }
       steps {
         container('kaniko') {
           ansiColor('xterm') {
-            sh '/kaniko/executor -f `pwd`/Dockerfile.base -c `pwd` -d=${ECR}/bookmarks/base:latest ${KANIKO_OPTIONS}'
-            sh '/kaniko/executor -f `pwd`/Dockerfile.test -c `pwd` -d=${ECR}/bookmarks/test:latest ${KANIKO_OPTIONS}'
+            sh '/kaniko/executor -f `pwd`/Dockerfile.base -c `pwd` -d=${ECR}/${APP_NAME}/base:latest ${KANIKO_OPTIONS}'
+            sh '/kaniko/executor -f `pwd`/Dockerfile.test -c `pwd` -d=${ECR}/${APP_NAME}/test:latest ${KANIKO_OPTIONS}'
           }
         }
       }
     }
-    stage('test') {
+    stage('unit') {
       agent {
         kubernetes {
+          inheritFrom 'default mysql'
           yaml """
 apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: bookmarks
-    image: ${ECR}/bookmarks/test:latest
+  - name: app
+    image: ${ECR}/${APP_NAME}/test:latest
     imagePullPolicy: Always
     command:
     - cat
     tty: true
-  - name: mysql
-    image: mysql:5.7
-    env:
-    - name: MYSQL_ALLOW_EMPTY_PASSWORD
-      value: yes
-    - name: MYSQL_DATABASE
-      value: bookmarks_test
-    - name: MYSQL_USER
-      value: bookmarks
-    - name: MYSQL_PASSWORD
-      value: bookmarks
 """
         }
       }
@@ -48,19 +40,24 @@ spec:
         RAILS_ENV = 'test'
       }
       steps {
-        container('bookmarks') {
-          test()
+        container('app') {
+          ansiColor('xterm') {
+            sh "bundle exec rake dad:db:create"
+            sh "bundle exec rails db:reset"
+            sh "bundle exec rails test"
+          }
         }
       }
       post {
-        always { publish() }
+        always { publishUnitResult() }
       }
     }
     stage('release') {
+      agent { kubernetes { inheritFrom 'kaniko' } }
       environment {
-        RELEASE_TAG = "v1.1.0-${BUILD_NUMBER}"
+        RELEASE_TAG = "v1.2.0-${BUILD_NUMBER}"
       }
-      parallel {
+      stages {
         stage('tagging') {
           steps {
             container('jnlp') {
@@ -76,7 +73,7 @@ spec:
           steps {
             container('kaniko') {
               ansiColor('xterm') {
-                sh '/kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` -d=${ECR}/bookmarks/app:${RELEASE_TAG} ${KANIKO_OPTIONS}'
+                sh '/kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` -d=${ECR}/${APP_NAME}/app:${RELEASE_TAG} ${KANIKO_OPTIONS}'
               }
             }
           }
@@ -86,19 +83,7 @@ spec:
   }
 }
 
-def test() {
-  ansiColor('xterm') {
-    sh 'ln -snf /var/app/current/node_modules node_modules'
-    sh 'bundle exec rails db:reset'
-    sh 'bundle exec rake assets:precompile'
-    sh 'bundle exec rails test'
-    sh 'bundle exec rake dad:test'
-  }
-}
-
-def publish() {
+def publishUnitResult() {
   junit 'test/reports/**/*.xml'
-  script {
-    step([$class: 'RcovPublisher', reportDir: "coverage/rcov"])
-  }
+  publishHTML(target: [allowMissing: true, alwaysLinkToLastBuild: true, reportDir: 'coverage', reportName: 'Coverage', reportFiles: 'index.html'])
 }
