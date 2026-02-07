@@ -6,5 +6,5 @@ EXPOSE 3000
 ENV RAILS_ENV=production
 
 ADD  . ./
-RUN sudo chown -R ${USER}:${USER} ./
-RUN bundle exec rake assets:precompile
+RUN sudo chown -R ${USER}:${USER} ./ && \
+    bundle exec rake assets:precompile SECRET_KEY_BASE=dummy
