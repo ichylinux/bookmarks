@@ -1,10 +1,10 @@
 ARG registry
 FROM ${registry}/bookmarks/base:latest
 
+ENV CI=jenkins
 ENV RAILS_ENV=test
 
-ADD bin ./bin
-ADD config ./config
 ADD Rakefile ./
-RUN sudo chown -R ${USER}:${USER} ./
-RUN bundle exec rake dad:setup:test
+ADD config ./config
+RUN sudo chown -R ${USER}:${USER} ./ && \
+    bundle exec rake dad:setup:test
