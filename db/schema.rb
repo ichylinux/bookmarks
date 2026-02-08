@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_07_171146) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
   create_table "bookmarks", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
@@ -113,6 +113,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_171146) do
     t.string "uid"
     t.string "token"
     t.string "name"
+    t.string "otp_secret", null: false
+    t.integer "consumed_timestep"
+    t.boolean "otp_required_for_login", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

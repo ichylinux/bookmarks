@@ -1,9 +1,11 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          :omniauth_providers => [:google_oauth2, :twitter]
+
+  before_create :generate_otp_secret_if_missing
 
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
@@ -50,7 +52,34 @@ class User < ActiveRecord::Base
     super || Preference.default_preference(self)
   end
 
+  def two_factor_enabled?
+    otp_required_for_login?
+  end
+
+  def enable_two_factor!
+    update!(otp_required_for_login: true)
+  end
+
+  def disable_two_factor!
+    update!(otp_required_for_login: false)
+    regenerate_otp_secret!
+  end
+
+  def regenerate_otp_secret!
+    update!(otp_secret: self.class.generate_otp_secret)
+  end
+
+  def otp_provisioning_uri
+    label = "Bookmarks:#{email}"
+    otp = ROTP::TOTP.new(otp_secret, issuer: 'Bookmarks')
+    otp.provisioning_uri(label)
+  end
+
   private
+
+  def generate_otp_secret_if_missing
+    self.otp_secret ||= self.class.generate_otp_secret
+  end
 
   def create_default_portal
     if Portal.where(:user_id => self.id).not_deleted.empty?

@@ -7,6 +7,12 @@ module Login
     fill_in 'パスワード', :with => 'testtest'
     click_on 'ログイン'
 
+    if user.two_factor_enabled?
+      totp = ROTP::TOTP.new(user.otp_secret)
+      fill_in '認証コード', :with => totp.now
+      click_on '認証する'
+    end
+
     @_current_user = user
   end
 

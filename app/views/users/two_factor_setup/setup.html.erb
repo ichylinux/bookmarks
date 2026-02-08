@@ -1,0 +1,26 @@
+<h2><%= t('two_factor.setup_title') %></h2>
+
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
+
+<p><%= t('two_factor.scan_qr_code') %></p>
+
+<div>
+  <%= @qr_code.html_safe %>
+</div>
+
+<p><%= t('two_factor.manual_entry_label') %></p>
+<code><%= current_user.otp_secret %></code>
+
+<%= form_tag(users_two_factor_setup_path, method: :post) do %>
+  <p>
+    <%= label_tag :otp_attempt, t('two_factor.code_label') %><br>
+    <%= text_field_tag :otp_attempt, nil, autofocus: true, autocomplete: 'one-time-code' %>
+  </p>
+  <p>
+    <%= submit_tag t('two_factor.enable_button') %>
+  </p>
+<% end %>
+
+<p><%= link_to t('two_factor.back_to_preferences'), preferences_path %></p>

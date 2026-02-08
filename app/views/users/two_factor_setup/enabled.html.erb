@@ -1,0 +1,11 @@
+<h2><%= t('two_factor.status_title') %></h2>
+
+<% if flash[:notice] %>
+  <p style="color: green;"><%= flash[:notice] %></p>
+<% end %>
+
+<p><%= t('two_factor.status_enabled') %></p>
+
+<%= button_to t('two_factor.disable_button'), users_two_factor_setup_path, method: :delete %>
+
+<p><%= link_to t('two_factor.back_to_preferences'), preferences_path %></p>

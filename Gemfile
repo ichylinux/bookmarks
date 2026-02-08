@@ -8,6 +8,8 @@ gem 'bootsnap', require: false
 gem 'daddy'
 gem 'devise'
 gem 'devise-i18n'
+gem 'devise-two-factor', '~> 6.0'
+gem 'rqrcode', '~> 2.0'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'feedjira'

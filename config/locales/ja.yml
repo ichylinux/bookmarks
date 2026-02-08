@@ -28,3 +28,22 @@ ja:
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'
+
+  two_factor:
+    section_title: 二段階認証
+    setup_title: 二段階認証の設定
+    status_title: 二段階認証の状態
+    verification_title: 二段階認証
+    scan_qr_code: 認証アプリでQRコードをスキャンしてください。
+    manual_entry_label: 手動入力用コード
+    code_label: 認証コード
+    verify_button: 認証する
+    enable_button: 有効にする
+    disable_button: 無効にする
+    setup_link: 二段階認証の設定
+    back_to_preferences: 設定に戻る
+    enabled: 二段階認証が有効になりました。
+    disabled: 二段階認証が無効になりました。
+    status_enabled: 二段階認証は有効です。
+    status_disabled: 二段階認証は無効です。
+    invalid_code: 認証コードが正しくありません。
