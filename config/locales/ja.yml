@@ -18,7 +18,7 @@ ja:
         priority: 優先度
         title: タイトル
       user:
-        name: Twitterアカウント
+        name: ユーザー名
 
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'
