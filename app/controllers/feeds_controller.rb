@@ -1,16 +1,11 @@
 class FeedsController < ApplicationController
+  before_action :preload_feed, only: ['show', 'edit', 'update', 'destroy']
 
   def index
     @feeds = Feed.where(user_id: current_user.id).not_deleted
   end
 
   def show
-    @feed = Feed.find(params[:id])
-    
-    unless @feed.readable_by?(current_user)
-      head :not_found and return
-    end
-
     if @feed.feed?
       render layout: !request.xhr?
     else
@@ -33,11 +28,9 @@ class FeedsController < ApplicationController
   end
 
   def edit
-    @feed = Feed.find(params[:id])
   end
 
   def update
-    @feed = Feed.find(params[:id])
     @feed.attributes = feed_params
 
     @feed.transaction do
@@ -48,8 +41,6 @@ class FeedsController < ApplicationController
   end
 
   def destroy
-    @feed = Feed.find(params[:id])
-
     @feed.transaction do
       @feed.destroy_logically!
     end
@@ -68,8 +59,16 @@ class FeedsController < ApplicationController
 
   private
 
+  def preload_feed
+    @feed = Feed.find(params[:id])
+
+    unless @feed.readable_by?(current_user)
+      head :not_found and return
+    end
+  end
+
   def feed_params
-    ret = params.require(:feed).permit(:user_id, :title, :feed_url, :display_count)
+    ret = params.require(:feed).permit(:title, :feed_url, :display_count)
 
     ret.merge!(user_id: current_user.id)
 

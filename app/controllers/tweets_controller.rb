@@ -35,7 +35,7 @@ class TweetsController < ApplicationController
   end
 
   def update
-    @tweet = Feed.find(params[:id])
+    @tweet = Tweet.find(params[:id])
 
     unless @tweet.updatable_by?(current_user)
       head :not_found and return
