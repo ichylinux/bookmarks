@@ -1,5 +1,5 @@
 <%= form_for @user, url: @user.preference do |f| %>
-  <table>
+  <table class="preferences-table">
     <% if @user.has_valid_email? %>
       <tr>
         <th><%= f.label :name %></th>
@@ -17,24 +17,28 @@
       </tr>
       <tr>
         <th><%= f.label :use_todo %></th>
-        <th><%= f.check_box :use_todo %></th>
+        <td><%= f.check_box :use_todo %></td>
       </tr>
       <tr>
         <th><%= f.label :default_priority %></th>
-        <th><%= f.select :default_priority, Todo::PRIORITIES.invert %></th>
+        <td><%= f.select :default_priority, Todo::PRIORITIES.invert %></td>
       </tr>
     <% end %>
+    <tr>
+      <th><%= t('two_factor.section_title') %></th>
+      <td>
+        <% if current_user.two_factor_enabled? %>
+          <%= t('two_factor.status_enabled') %>
+        <% else %>
+          <%= t('two_factor.status_disabled') %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <th></th>
+      <td><%= link_to t('two_factor.setup_link'), users_two_factor_setup_path %></td>
+    </tr>
   </table>
   
   <%= f.submit '保存' %>
 <% end %>
-
-<h3><%= t('two_factor.section_title') %></h3>
-<p>
-  <% if current_user.two_factor_enabled? %>
-    <%= t('two_factor.status_enabled') %>
-  <% else %>
-    <%= t('two_factor.status_disabled') %>
-  <% end %>
-</p>
-<p><%= link_to t('two_factor.setup_link'), users_two_factor_setup_path %></p>
