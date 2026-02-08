@@ -4,10 +4,19 @@ if (typeof todos === "undefined") {
 
 todos.init = function(selector) {
   $(selector).delegate('li', 'dblclick', function() {
-    var that = this;
-    $.get($(that).data('url'), {format: 'html'}, function(html) {
-      $(that).html(html);
-    });
+    var $li = $(this);
+    var $textInput = $li.find('input[type="text"]').first();
+
+    if ($textInput.length) {
+      $textInput.focus();
+      setTimeout(function() {
+        $textInput.select();
+      }, 0);
+    } else {
+      $.get($li.data('url'), {format: 'html'}, function(html) {
+        $li.html(html);
+      });
+    }
   });
 
   $(selector).delegate('li span:first-child', 'click', function() {
