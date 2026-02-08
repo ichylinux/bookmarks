@@ -38,8 +38,8 @@ class Portal < ApplicationRecord
       column_no = column.split('_').last.to_i
       
       gadget_ids.each_with_index do |gadget_id, i|
-        pl = PortalLayout.where(:user_id => user.id, :column_no => column_no, :display_order => i).first
-        pl ||= PortalLayout.new(:user_id => user.id, :column_no => column_no, :display_order => i)
+        pl = PortalLayout.where(user_id: user.id, column_no: column_no, display_order: i).first
+        pl ||= PortalLayout.new(user_id: user.id, column_no: column_no, display_order: i)
         pl.gadget_id = gadget_id
         pl.save!
         
@@ -65,12 +65,12 @@ class Portal < ApplicationRecord
     end
 
     if user.preference.use_todo?
-      todos = Todo.where(:user_id => user.id).not_deleted.order(:priority, :title)
+      todos = Todo.where(user_id: user.id).not_deleted.order(:priority, :title)
       gadget = TodoGadget.new(todos) 
       ret[gadget.gadget_id] = gadget
     end
 
-    calendars = Calendar.where(:user_id => user.id).not_deleted.each do |c|
+    calendars = Calendar.where(user_id: user.id).not_deleted.each do |c|
       ret[c.gadget_id] = c
     end
 

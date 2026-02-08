@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   # don't load User model when building docker image
   unless ARGV.first =~ /^dad:setup(:.+)?/
-    devise_for :users, :controllers => {
-      :omniauth_callbacks => 'users/omniauth_callbacks',
-      :sessions => 'users/sessions'
+    devise_for :users, controllers: {
+      omniauth_callbacks: 'users/omniauth_callbacks',
+      sessions: 'users/sessions'
     }
 
     get  'users/two_factor_authentication', to: 'users/two_factor_authentication#show', as: :users_two_factor_authentication
@@ -44,5 +44,5 @@ Rails.application.routes.draw do
     end
   end
 
-  root :to => 'welcome#index'
+  root to: 'welcome#index'
 end

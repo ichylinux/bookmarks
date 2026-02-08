@@ -1,6 +1,6 @@
 class AddColumnDisplayCountOnFeeds < ActiveRecord::Migration
   def up
-    add_column :feeds, :display_count, :integer, :null => false
+    add_column :feeds, :display_count, :integer, null: false
     Feed.all.each do |f|
       f.save!
     end

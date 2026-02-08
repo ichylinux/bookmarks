@@ -14,14 +14,14 @@ end
   click_on current_user.email
   click_on '設定'
   check 'タスクウィジェットを表示する'
-  select Todo::PRIORITIES[Todo::PRIORITY_HIGH], :from => 'タスク追加時の初期優先度'
+  select Todo::PRIORITIES[Todo::PRIORITY_HIGH], from: 'タスク追加時の初期優先度'
   capture
   click_on '保存'
 end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
   click_on 'Home'
-  assert has_selector?('#todo .title', :text => name)
+  assert has_selector?('#todo .title', text: name)
   capture
 end
 
@@ -36,12 +36,12 @@ end
     capture
 
     within 'form.todo' do
-      fill_in 'todo[title]', :with => '新しいタスクの内容'
+      fill_in 'todo[title]', with: '新しいタスクの内容'
       capture
       click_on '登録'
     end
 
-    assert find('#todo').all('li', :count => @todo_count + 1)
+    assert find('#todo').all('li', count: @todo_count + 1)
   end
 end
 

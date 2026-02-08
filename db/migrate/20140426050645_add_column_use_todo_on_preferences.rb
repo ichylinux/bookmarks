@@ -1,6 +1,6 @@
 class AddColumnUseTodoOnPreferences < ActiveRecord::Migration
   def up
-    add_column :preferences, :use_todo, :boolean, :null => false, :default => false
+    add_column :preferences, :use_todo, :boolean, null: false, default: false
   end
 
   def down

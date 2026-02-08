@@ -4,6 +4,6 @@ class RemoveColumnPrefectureCodeOnCalendars < ActiveRecord::Migration
   end
 
   def down
-    add_column :calendars, :prefecture_code, :string, :limit => 2
+    add_column :calendars, :prefecture_code, :string, limit: 2
   end
 end

@@ -13,7 +13,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    get edit_todo_path(todo), :xhr => true
+    get edit_todo_path(todo), xhr: true
     assert_response :not_found
   end
 
@@ -21,7 +21,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
-    patch todo_path(todo), :xhr => true
+    patch todo_path(todo), xhr: true
     assert_response :not_found 
   end
 

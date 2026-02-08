@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
-         :omniauth_providers => [:google_oauth2, :twitter]
+         omniauth_providers: [:google_oauth2, :twitter]
 
   before_create :generate_otp_secret_if_missing
 
@@ -20,12 +20,12 @@ class User < ActiveRecord::Base
 
     case access_token['provider'].to_sym
     when :twitter
-      user = User.where(:name => data["name"]).first
-      user ||= User.create(:name => data['name'], :email => "dummy_#{SecureRandom.uuid}@example.com", :password => Devise.friendly_token[0,20])
+      user = User.where(name: data["name"]).first
+      user ||= User.create(name: data['name'], email: "dummy_#{SecureRandom.uuid}@example.com", password: Devise.friendly_token[0,20])
       user
     else
-      user = User.where(:email => data["email"]).first
-      user ||= User.create(:email => data['email'], :password => Devise.friendly_token[0,20])
+      user = User.where(email: data["email"]).first
+      user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
       user
     end
   end
@@ -82,8 +82,8 @@ class User < ActiveRecord::Base
   end
 
   def create_default_portal
-    if Portal.where(:user_id => self.id).not_deleted.empty?
-      p = Portal.new(:user_id => self.id, :name => 'Home')
+    if Portal.where(user_id: self.id).not_deleted.empty?
+      p = Portal.new(user_id: self.id, name: 'Home')
       p.save!
     end
   end

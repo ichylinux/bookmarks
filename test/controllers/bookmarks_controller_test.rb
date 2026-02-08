@@ -27,7 +27,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
 
   def test_登録
     sign_in user
-    post bookmarks_path, :params => {bookmark: bookmark_params(user)}
+    post bookmarks_path, params: { bookmark: bookmark_params(user) }
     assert_response :redirect
   end
 
@@ -44,7 +44,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     bookmark = bookmark(user)
     sign_in user
 
-    patch bookmark_path(bookmark), :params => {bookmark: bookmark_params(user)}
+    patch bookmark_path(bookmark), params: { bookmark: bookmark_params(user) }
     assert_response :redirect
     assert_equal "/bookmarks/#{bookmark.id}", path
   end

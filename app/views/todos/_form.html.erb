@@ -5,9 +5,9 @@
       <td><%= f.text_field :title %></td>
       <td>
         <% if @todo.new_record? %>
-          <%= f.submit '登録', :onclick => 'todos.create_todo(this); return false;' %>
+          <%= f.submit '登録', onclick: 'todos.create_todo(this); return false;' %>
         <% else %>
-          <%= f.submit '更新', :onclick => 'todos.update_todo(this); return false;' %>
+          <%= f.submit '更新', onclick: 'todos.update_todo(this); return false;' %>
         <% end %>
       </td>
     </tr>

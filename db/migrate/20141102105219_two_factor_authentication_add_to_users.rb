@@ -2,14 +2,14 @@ class TwoFactorAuthenticationAddToUsers < ActiveRecord::Migration
   def up
     change_table :users do |t|
       t.string   :otp_secret_key
-      t.integer  :second_factor_attempts_count, :default => 0
+      t.integer  :second_factor_attempts_count, default: 0
     end
 
-    add_index :users, :otp_secret_key, :unique => true
+    add_index :users, :otp_secret_key, unique: true
 
     User.find_each do |user|
         key = ROTP::Base32.random_base32
-        user.update_attributes(:otp_secret_key => key)
+        user.update_attributes(otp_secret_key: key)
     end
   end
 

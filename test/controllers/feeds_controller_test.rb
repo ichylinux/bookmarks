@@ -26,7 +26,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
 
   def test_登録
     sign_in user
-    post feeds_path, :params => {:feed => feed_params}
+    post feeds_path, params: { feed: feed_params }
     assert_response :redirect
   end
 
@@ -43,7 +43,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert feed = feed_of(user)
 
     sign_in user
-    patch feed_path(feed), :params => {:feed => feed_params}
+    patch feed_path(feed), params: { feed: feed_params }
     assert_response :redirect
   end
 

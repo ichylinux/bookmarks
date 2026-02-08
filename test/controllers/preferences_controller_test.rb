@@ -9,7 +9,7 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_not_equal user.preference.default_priority, preference_param[:default_priority]
 
     sign_in user
-    patch preference_path(user), :params => {
+    patch preference_path(user), params: {
       user: {
         name: 'twitter_name',
         preference_attributes: preference_param

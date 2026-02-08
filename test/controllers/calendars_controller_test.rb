@@ -39,13 +39,13 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
 
   def test_登録
     sign_in user_without_calendar
-    post calendars_path, :params => {:calendar => valid_calendar_params(user_without_calendar)}
+    post calendars_path, params: { calendar: valid_calendar_params(user_without_calendar) }
     assert_response :redirect
   end
 
   def test_登録_入力エラー
     sign_in user_without_calendar
-    post calendars_path, :params => {:calendar => invalid_calendar_params(user_without_calendar)}
+    post calendars_path, params: { calendar: invalid_calendar_params(user_without_calendar) }
     assert_response :success
     assert_equal '/calendars', path
   end
@@ -63,7 +63,7 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     calendar = calendar(user)
     sign_in user
 
-    patch calendar_path(calendar), :params => {:calendar => valid_calendar_params(user)}
+    patch calendar_path(calendar), params: { calendar: valid_calendar_params(user) }
     assert_response :redirect
     follow_redirect!
     assert_equal "/calendars/#{calendar.id}", path
@@ -73,7 +73,7 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     calendar = calendar(user)
     sign_in user
 
-    patch calendar_path(calendar), :params => {:calendar => invalid_calendar_params(user)}
+    patch calendar_path(calendar), params: { calendar: invalid_calendar_params(user) }
     assert_response :success
     assert_equal "/calendars/#{calendar.id}", path
   end
@@ -94,7 +94,7 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     calendar = calendar(user)
     sign_in user
 
-    get get_gadget_calendar_path(calendar), :params => {:display_date => Date.today.strftime('%Y-%m-%d')}
+    get get_gadget_calendar_path(calendar), params: { display_date: Date.today.strftime('%Y-%m-%d') }
     assert_response :success
     assert_equal "/calendars/#{calendar.id}/get_gadget", path
   end

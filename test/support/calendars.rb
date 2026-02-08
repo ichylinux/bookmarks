@@ -1,19 +1,19 @@
 def calendar(user)
   @_calendars ||= {}
-  assert @_calendars[user.id] ||= Calendar.where(:user_id => user.id).first
+  assert @_calendars[user.id] ||= Calendar.where(user_id: user.id).first
   @_calendars[user.id]
 end
 
 def valid_calendar_params(user)
   {
-    :user_id => user.id,
-    :title => 'カレンダータイトル'
+    user_id: user.id,
+    title: 'カレンダータイトル'
   }
 end
 
 def invalid_calendar_params(user)
   {
-    :user_id => user.id,
-    :title => ''
+    user_id: user.id,
+    title: ''
   }
 end

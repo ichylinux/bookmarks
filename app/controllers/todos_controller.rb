@@ -1,13 +1,13 @@
 class TodosController < ApplicationController
-  before_action :preload_todo, :only => ['edit', 'update', 'destroy']
+  before_action :preload_todo, only: ['edit', 'update', 'destroy']
   
   def index
     @todos = Todo.where(user_id: current_user).not_deleted.order(:title)
   end
 
   def new
-    @todo = Todo.new(:user => current_user, :priority => current_user.preference.default_priority)
-    render :layout => ! request.xhr?
+    @todo = Todo.new(user: current_user, priority: current_user.preference.default_priority)
+    render layout: !request.xhr?
   end
 
   def create
@@ -17,11 +17,11 @@ class TodosController < ApplicationController
       @todo.save!
     end
 
-    render :partial => 'todo', :locals => {:todo => @todo}
+    render partial: 'todo', locals: { todo: @todo }
   end
 
   def edit
-    render :layout => ! request.xhr?
+    render layout: !request.xhr?
   end
 
   def update
@@ -31,7 +31,7 @@ class TodosController < ApplicationController
       @todo.save!
     end
 
-    render :partial => 'todo', :locals => {:todo => @todo}
+    render partial: 'todo', locals: { todo: @todo }
   end
 
   def destroy
@@ -39,7 +39,7 @@ class TodosController < ApplicationController
       @todo.destroy_logically!
     end
     
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def delete

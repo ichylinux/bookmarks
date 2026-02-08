@@ -1,7 +1,7 @@
 class TweetsController < ApplicationController
 
   def index
-    @tweets = Tweet.where(:user_id => current_user.id).not_deleted
+    @tweets = Tweet.where(user_id: current_user.id).not_deleted
   end
 
   def show
@@ -23,7 +23,7 @@ class TweetsController < ApplicationController
       @tweet.save!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def edit
@@ -47,7 +47,7 @@ class TweetsController < ApplicationController
       @tweet.save!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def destroy
@@ -61,7 +61,7 @@ class TweetsController < ApplicationController
       @tweet.destroy_logically!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   private

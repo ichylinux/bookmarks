@@ -2,13 +2,13 @@
   <table>
     <tr>
       <th><%= f.label :feed_url %></th>
-      <td><%= f.text_field :feed_url, :class => 'feed_url' %></td>
+      <td><%= f.text_field :feed_url, class: 'feed_url' %></td>
     </tr>
     <tr>
       <th><%= f.label :title %></th>
       <td>
         <%= f.text_field :title %>
-        <%= f.button 'フィードから取得', onclick: 'feeds.get_feed_title(this); return false;', 'data-url': url_for(:action => 'get_feed_title') %>
+        <%= f.button 'フィードから取得', onclick: 'feeds.get_feed_title(this); return false;', 'data-url': url_for(action: 'get_feed_title') %>
       </td>
     </tr>
     <tr>

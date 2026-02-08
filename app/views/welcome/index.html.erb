@@ -27,7 +27,7 @@
       },
       update: function(event, ui) {
         var params = collect_portal_layout_params();
-        $.post('<%= url_for :action => 'save_state' %>', params);
+        $.post('<%= url_for action: 'save_state' %>', params);
       }
     });
   });

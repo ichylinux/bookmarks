@@ -1,13 +1,13 @@
 class CalendarsController < ApplicationController
-  before_action :preload_calendar, :except => ['index', 'new', 'create']
+  before_action :preload_calendar, except: ['index', 'new', 'create']
 
   def index
-    @calendar = Calendar.where(:user_id => current_user).not_deleted.first
+    @calendar = Calendar.where(user_id: current_user).not_deleted.first
 
     if @calendar
-      redirect_to :action => 'show', :id => @calendar.id
+      redirect_to action: 'show', id: @calendar.id
     else
-      redirect_to :action => 'new'
+      redirect_to action: 'new'
     end
   end
 
@@ -16,11 +16,11 @@ class CalendarsController < ApplicationController
 
   def get_gadget
     @calendar.display_date = Date.parse(params[:display_date])
-    render :layout => false
+    render layout: false
   end
 
   def new
-    @calendar = Calendar.new(:user_id => current_user.id)
+    @calendar = Calendar.new(user_id: current_user.id)
   end
 
   def create
@@ -60,7 +60,7 @@ class CalendarsController < ApplicationController
       @calendar.destroy_logically!
     end
     
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   private

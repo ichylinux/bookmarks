@@ -4,7 +4,7 @@
     <div style="line-height: 30em;">
       <script>
         $(document).ready(function() {
-          $.get('<%= url_for :controller => 'calendars', :action => 'get_gadget', :id => gadget.id, :display_date => gadget.display_date %>', {format: 'html'}, function(html) {
+          $.get('<%= url_for controller: 'calendars', action: 'get_gadget', id: gadget.id, display_date: gadget.display_date %>', {format: 'html'}, function(html) {
             $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
           });
         });

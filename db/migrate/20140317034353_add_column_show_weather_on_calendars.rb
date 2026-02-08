@@ -1,6 +1,6 @@
 class AddColumnShowWeatherOnCalendars < ActiveRecord::Migration
   def up
-    add_column :calendars, :show_weather, :boolean, :null => false, :default => false
+    add_column :calendars, :show_weather, :boolean, null: false, default: false
   end
 
   def down

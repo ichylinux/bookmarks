@@ -1,7 +1,7 @@
 class FeedsController < ApplicationController
 
   def index
-    @feeds = Feed.where(:user_id => current_user.id).not_deleted
+    @feeds = Feed.where(user_id: current_user.id).not_deleted
   end
 
   def show
@@ -12,7 +12,7 @@ class FeedsController < ApplicationController
     end
 
     if @feed.feed?
-      render :layout => ! request.xhr?
+      render layout: !request.xhr?
     else
       render plain: @feed.status, status: @feed.status
     end
@@ -29,7 +29,7 @@ class FeedsController < ApplicationController
       @feed.save!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def edit
@@ -44,7 +44,7 @@ class FeedsController < ApplicationController
       @feed.save!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def destroy
@@ -54,7 +54,7 @@ class FeedsController < ApplicationController
       @feed.destroy_logically!
     end
 
-    redirect_to :action => 'index'
+    redirect_to action: 'index'
   end
 
   def get_feed_title

@@ -1,12 +1,12 @@
 <table class="calendar">
   <caption>
     <%= link_to '<<', 
-          {:controller => 'calendars', :action => 'get_gadget', :id => @calendar.id, :display_date => @calendar.display_date - 1.month},
-          :onclick => 'calendars.get_gadget(this); return false;' %>
+          {controller: 'calendars', action: 'get_gadget', id: @calendar.id, display_date: @calendar.display_date - 1.month},
+          onclick: 'calendars.get_gadget(this); return false;' %>
     <span><%= @calendar.display_year %>年<%= @calendar.display_month %>月</span>
     <%= link_to '>>',
-          {:controller => 'calendars', :action => 'get_gadget', :id => @calendar.id, :display_date => @calendar.display_date + 1.month},
-          :onclick => 'calendars.get_gadget(this); return false;' %>
+          {controller: 'calendars', action: 'get_gadget', id: @calendar.id, display_date: @calendar.display_date + 1.month},
+          onclick: 'calendars.get_gadget(this); return false;' %>
   </caption>
   <tr>
     <% 7.times do |i| %>
