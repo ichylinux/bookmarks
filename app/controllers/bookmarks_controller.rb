@@ -1,11 +1,11 @@
 class BookmarksController < ApplicationController
-  
+  before_action :preload_bookmark, only: ['show', 'edit', 'update', 'destroy']
+
   def index
     @bookmarks = Bookmark.where(user_id: current_user).not_deleted.order(:title)
   end
 
   def show
-    @bookmark = Bookmark.find(params[:id])
   end
 
   def new
@@ -23,11 +23,9 @@ class BookmarksController < ApplicationController
   end
 
   def edit
-    @bookmark = Bookmark.find(params[:id])
   end
   
   def update
-    @bookmark = Bookmark.find(params[:id])
     @bookmark.attributes = bookmark_params
     
     @bookmark.transaction do
@@ -38,8 +36,6 @@ class BookmarksController < ApplicationController
   end
 
   def destroy
-    @bookmark = Bookmark.find(params[:id])
-    
     @bookmark.transaction do
       @bookmark.destroy_logically!
     end
@@ -48,6 +44,14 @@ class BookmarksController < ApplicationController
   end
 
   private
+
+  def preload_bookmark
+    @bookmark = Bookmark.find(params[:id])
+
+    unless @bookmark.readable_by?(current_user)
+      head :not_found and return
+    end
+  end
 
   def bookmark_params
     ret = params.require(:bookmark).permit(:title, :url)
