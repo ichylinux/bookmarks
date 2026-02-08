@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_08_053724) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
@@ -36,16 +36,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "display_count", default: 5, null: false
-  end
-
-  create_table "gmails", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.string "title", null: false
-    t.string "labels"
-    t.boolean "deleted", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "display_count", default: 0, null: false
   end
 
   create_table "portal_layouts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

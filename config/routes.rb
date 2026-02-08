@@ -28,8 +28,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :gmails, except: 'show'
-
   resources :preferences, only: ['index', 'create', 'update']
 
   resources :todos do

@@ -13,8 +13,6 @@ class User < ActiveRecord::Base
   has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
   after_save :create_default_portal
 
-  has_many :gmails, -> { where(deleted: false) }, inverse_of: 'user'
-
   def self.from_omniauth(access_token)
     data = access_token.info
 

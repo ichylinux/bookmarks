@@ -24,13 +24,6 @@ class Portal < ApplicationRecord
     @portal_columns
   end
 
-  def has_gmail?
-    return false unless Rails.application.config.app_config.omniauth_google_oauth2_client_id.present?
-    return false unless Rails.application.config.app_config.omniauth_google_api_key.present?
-
-    !!portal_columns.flatten.find{|g| g.class == Gmail }
-  end
-
   def update_layout(params = {})
     valid_layouts = []
 
@@ -78,10 +71,6 @@ class Portal < ApplicationRecord
       ret[f.gadget_id] = f
     end
     
-    user.gmails.each do |g|
-      ret[g.gadget_id] = g
-    end
-
     ret
   end
 
