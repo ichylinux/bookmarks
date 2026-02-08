@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
-  create_table "bookmarks", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.string "url", null: false
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.datetime "updated_at"
   end
 
-  create_table "calendars", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "calendars", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title"
     t.boolean "deleted", default: false, null: false
@@ -28,7 +28,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.datetime "updated_at"
   end
 
-  create_table "feeds", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "feeds", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.string "feed_url", null: false
@@ -38,7 +38,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.integer "display_count", default: 5, null: false
   end
 
-  create_table "gmails", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "gmails", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.string "labels"
@@ -48,7 +48,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.integer "display_count", default: 0, null: false
   end
 
-  create_table "portal_layouts", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "portal_layouts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "column_no", default: 0, null: false
     t.integer "display_order", default: 0, null: false
@@ -57,7 +57,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.datetime "updated_at"
   end
 
-  create_table "portals", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "portals", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
     t.datetime "created_at"
@@ -65,7 +65,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.boolean "deleted", default: false, null: false
   end
 
-  create_table "preferences", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "preferences", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "theme"
     t.datetime "created_at"
@@ -74,7 +74,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.integer "default_priority"
   end
 
-  create_table "todos", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "todos", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
     t.integer "priority", null: false
@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.datetime "updated_at"
   end
 
-  create_table "tweets", charset: "utf8mb3", force: :cascade do |t|
+  create_table "tweets", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "tweet_id", null: false
     t.string "twitter_user_id", null: false
@@ -91,11 +91,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_07_173353) do
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "retweet_count", default: 0, null: false
   end
 
-  create_table "users", charset: "utf8mb3", collation: "utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
