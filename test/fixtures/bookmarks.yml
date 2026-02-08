@@ -3,3 +3,9 @@
   user_id: 1
   title: ブックマーク1
   url: 'www.example.com'
+
+2:
+  id: 2
+  user_id: 2
+  title: ブックマーク2
+  url: 'www.example2.com'

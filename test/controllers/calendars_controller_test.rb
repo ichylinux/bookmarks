@@ -90,6 +90,32 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/calendars', path
   end
 
+  def test_他人のカレンダーは編集できない
+    sign_in user
+    assert calendar = Calendar.where('user_id <> ?', user).first
+
+    get edit_calendar_path(calendar)
+    assert_response :not_found
+  end
+
+  def test_他人のカレンダーは更新できない
+    sign_in user
+    assert calendar = Calendar.where('user_id <> ?', user).first
+
+    patch calendar_path(calendar), params: { calendar: valid_calendar_params(user) }
+    assert_response :not_found
+  end
+
+  def test_他人のカレンダーは削除できない
+    sign_in user
+    assert calendar = Calendar.where('user_id <> ?', user).first
+
+    assert_no_difference 'Calendar.not_deleted.count' do
+      delete calendar_path(calendar)
+    end
+    assert_response :not_found
+  end
+
   def test_ガジェットの取得
     calendar = calendar(user)
     sign_in user

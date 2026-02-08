@@ -47,4 +47,30 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
+  def test_他人のフィードは編集できない
+    sign_in user
+    assert feed = Feed.where('user_id <> ?', user).first
+
+    get edit_feed_path(feed)
+    assert_response :not_found
+  end
+
+  def test_他人のフィードは更新できない
+    sign_in user
+    assert feed = Feed.where('user_id <> ?', user).first
+
+    patch feed_path(feed), params: { feed: feed_params }
+    assert_response :not_found
+  end
+
+  def test_他人のフィードは削除できない
+    sign_in user
+    assert feed = Feed.where('user_id <> ?', user).first
+
+    assert_no_difference 'Feed.not_deleted.count' do
+      delete feed_path(feed)
+    end
+    assert_response :not_found
+  end
+
 end
