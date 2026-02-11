@@ -26,7 +26,6 @@ gem 'omniauth-twitter'
 gem 'puma'
 gem 'rails-i18n', '~> 7.0'
 gem 'sass-rails', '>= 6'
-gem 'twitter'
 gem 'uglifier', '>= 1.3.0'
 
 group :itamae do
