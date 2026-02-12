@@ -46,15 +46,28 @@ div.gadgets {
 
 .folder-toggle {
   display: inline-block;
+  width: 12px;
 }
 
 .folder-name {
   font-weight: bold;
 }
 
+.bookmark-folder {
+  margin: 0;
+}
+
 .bookmark-list {
+  padding-left: 20px;
+  margin: 0;
+  
   &.folder-bookmarks {
     margin-left: 16px;
+  }
+  
+  &.root-bookmarks {
+    padding-left: 20px;
+    margin: 0;
   }
   
   li {
