@@ -6,7 +6,25 @@
     </tr>
     <tr>
       <th><%= f.label :url %></th>
-      <td><%= f.text_field :url %></td>
+      <td>
+        <%= f.text_field :url, placeholder: 'URL（フォルダの場合は空欄）' %>
+        <small>URLを空欄にするとフォルダとして作成されます</small>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :parent_id, '親フォルダ' %></th>
+      <td>
+        <%= f.select :parent_id, 
+            options_for_select(
+              [['なし（ルート）', nil]] + 
+              (@available_folders || Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title))
+                      .map { |f| [f.title, f.id] },
+              @bookmark.parent_id
+            ),
+            {},
+            { id: 'bookmark_parent_id' }
+        %>
+      </td>
     </tr>
   </table>
   <%= f.submit %>

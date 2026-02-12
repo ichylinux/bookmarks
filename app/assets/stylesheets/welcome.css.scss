@@ -38,3 +38,44 @@ div.gadgets {
   padding-bottom: 0px;
 }
 }
+
+.folder-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.folder-toggle {
+  display: inline-block;
+  width: 12px;
+}
+
+.folder-name {
+  font-weight: bold;
+}
+
+.bookmark-folder {
+  margin: 0;
+  
+  &:not(:first-child) {
+    margin-top: 2px;
+  }
+}
+
+.bookmark-list {
+  padding-left: 20px;
+  margin: 0;
+  
+  &.folder-bookmarks {
+    margin-left: 16px;
+  }
+  
+  &.root-bookmarks {
+    padding-left: 20px;
+    margin: 0;
+  }
+  
+  li {
+    margin: 0;
+    padding: 0;
+  }
+}

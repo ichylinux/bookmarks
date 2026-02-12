@@ -1,5 +1,5 @@
 <div class="actions">
-  <%= link_to '一覧', bookmarks_path %>
+  <%= link_to '一覧', bookmarks_path(parent_id: @bookmark.parent_id) %>
   <%= link_to '編集', edit_bookmark_path(@bookmark) %>
 </div>
 
@@ -8,8 +8,16 @@
     <th><%= Bookmark.human_attribute_name :title %></th>
     <td><%= @bookmark.title %></td>
   </tr>
-  <tr>
-    <th><%= Bookmark.human_attribute_name :url %></th>
-    <td><%= @bookmark.url %></td>
-  </tr>
+  <% unless @bookmark.folder? %>
+    <tr>
+      <th><%= Bookmark.human_attribute_name :url %></th>
+      <td><%= @bookmark.url %></td>
+    </tr>
+  <% end %>
+  <% if @bookmark.parent %>
+    <tr>
+      <th>親フォルダ</th>
+      <td><%= link_to @bookmark.parent.title, bookmarks_path(parent_id: @bookmark.parent.id) %></td>
+    </tr>
+  <% end %>
 </table>

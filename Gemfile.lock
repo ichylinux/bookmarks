@@ -74,6 +74,8 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
+    acts_as_tree (2.9.1)
+      activerecord (>= 3.0.0)
     addressable (2.8.8)
       public_suffix (>= 2.0.2, < 8.0)
     ansi (1.5.0)
@@ -552,6 +554,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts_as_tree
   bootsnap
   byebug
   capybara

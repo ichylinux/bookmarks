@@ -1,10 +1,30 @@
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title"><%= gadget.title %></div>
-    <ol>
-      <% gadget.entries.each do |bookmark| %>
-        <li><%= link_to bookmark.title, bookmark.url %></li>
+    
+    <% # フォルダとブックマークを区別せず、タイトル順で表示（フォルダは開閉可能） %>
+    <div class="bookmark-folders">
+      <% gadget.entries.each do |item| %>
+        <% if item.folder? %>
+          <div class="bookmark-folder">
+            <div class="folder-header" data-folder-id="<%= item.id %>">
+              <span class="folder-toggle">▶</span>
+              <span class="folder-name"><%= item.title %></span>
+            </div>
+            <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
+              <% item.children.where(deleted: false).order(:title).each do |bookmark| %>
+                <li><%= link_to bookmark.title, bookmark.url %></li>
+              <% end %>
+            </ol>
+          </div>
+        <% else %>
+          <div class="bookmark-folder">
+            <ol class="bookmark-list root-bookmarks">
+              <li><%= link_to item.title, item.url %></li>
+            </ol>
+          </div>
+        <% end %>
       <% end %>
-    </ol>
+    </div>
   </div>
 </div>

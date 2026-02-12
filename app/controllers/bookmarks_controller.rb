@@ -2,7 +2,11 @@ class BookmarksController < ApplicationController
   before_action :preload_bookmark, only: ['show', 'edit', 'update', 'destroy']
 
   def index
-    @bookmarks = Bookmark.where(user_id: current_user).not_deleted.order(:title)
+    @parent_id = params[:parent_id]
+    @parent = @parent_id.present? ? Bookmark.find_by(id: @parent_id, user_id: current_user.id) : nil
+
+    @bookmarks = Bookmark.where(user_id: current_user.id, parent_id: @parent_id, deleted: false).order(:title)
+
   end
 
   def show
@@ -10,6 +14,10 @@ class BookmarksController < ApplicationController
 
   def new
     @bookmark = Bookmark.new
+    @parent_id = params[:parent_id]
+    @bookmark.parent_id = @parent_id if @parent_id.present?
+    # 新規作成時はすべてのフォルダを利用可能
+    @available_folders = Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title)
   end
 
   def create
@@ -19,10 +27,15 @@ class BookmarksController < ApplicationController
       @bookmark.save!
     end
     
-    redirect_to action: 'index'
+    redirect_to action: 'index', parent_id: @bookmark.parent_id
   end
 
   def edit
+    # 編集時に循環参照を防ぐため、利用可能なフォルダリストを準備
+    @available_folders = Bookmark.where(user_id: current_user.id, deleted: false)
+                                  .folders
+                                  .where.not(id: @bookmark.id)
+                                  .order(:title)
   end
   
   def update
@@ -32,15 +45,17 @@ class BookmarksController < ApplicationController
       @bookmark.save!
     end
     
-    redirect_to action: 'show', id: @bookmark
+    redirect_to action: 'index', parent_id: @bookmark.parent_id
   end
 
   def destroy
+    parent_id = @bookmark.parent_id
+    
     @bookmark.transaction do
       @bookmark.destroy_logically!
     end
     
-    redirect_to action: 'index'
+    redirect_to action: 'index', parent_id: parent_id
   end
 
   private
@@ -54,7 +69,10 @@ class BookmarksController < ApplicationController
   end
 
   def bookmark_params
-    ret = params.require(:bookmark).permit(:title, :url)
+    ret = params.require(:bookmark).permit(:title, :url, :parent_id)
+    
+    # urlが空文字列の場合はnilに変換（フォルダの場合）
+    ret[:url] = nil if ret[:url].blank?
 
     case action_name
     when 'create'

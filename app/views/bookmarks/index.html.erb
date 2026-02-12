@@ -1,20 +1,42 @@
 <div class="actions">
-  <%= link_to '追加', new_bookmark_path %>
+  <%= link_to 'フォルダを作成', new_bookmark_path(parent_id: @parent_id), class: 'create-folder' %>
+  <%= link_to 'ブックマークを追加', new_bookmark_path(parent_id: @parent_id), class: 'create-bookmark' %>
 </div>
 
-<table>
-  <tr>
-    <th><%= Bookmark.human_attribute_name :title %></th>
-    <th colspan="2"></th>
-  </tr>
-  
-  <% @bookmarks.each do |b| %>
+<% if @parent %>
+  <div class="breadcrumbs">
+    <%= link_to 'ルート', bookmarks_path %> / <%= @parent.title %>
+  </div>
+<% end %>
+
+<table class="bookmarks-table">
+  <thead>
     <tr>
-      <td><%= link_to b.title, b.url, target: '_blank' %></td>
-      <td><%= link_to '編集', edit_bookmark_path(b) %></td>
-      <td>
-        <%= link_to '削除', bookmark_path(b), method: 'delete', data: { confirm: t('messages.confirm_delete', name: b.title) } %>
-      </td>
+      <th><%= Bookmark.human_attribute_name :title %></th>
+      <th>URL</th>
+      <th colspan="2">操作</th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @bookmarks.each do |b| %>
+      <tr class="<%= 'folder' if b.folder? %>">
+        <td>
+          <% if b.folder? %>
+            <%= link_to b.title, bookmarks_path(parent_id: b.id), class: 'folder-link' %>
+          <% else %>
+            <%= link_to b.title, b.url, target: '_blank' %>
+          <% end %>
+        </td>
+        <td>
+          <% unless b.folder? %>
+            <%= b.url %>
+          <% end %>
+        </td>
+        <td><%= link_to '編集', edit_bookmark_path(b) %></td>
+        <td>
+          <%= link_to '削除', bookmark_path(b), method: 'delete', data: { confirm: t('messages.confirm_delete', name: b.title) } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

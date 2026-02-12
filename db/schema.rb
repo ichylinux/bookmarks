@@ -10,14 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_08_053724) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_12_020622) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
-    t.string "url", null: false
+    t.string "url"
     t.boolean "deleted", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "parent_id"
   end
 
   create_table "calendars", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
