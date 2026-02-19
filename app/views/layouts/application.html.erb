@@ -3,6 +3,7 @@
   <head>
     <title>Bookmarks</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -14,7 +15,10 @@
 
   <body class="<%= favorite_theme %>">
     <div id="header">
-      <div class="head-box">Bookmarks</div>
+      <div class="head-box">
+        <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
+        Bookmarks
+      </div>
     </div>
 
     <div class="wrapper">
