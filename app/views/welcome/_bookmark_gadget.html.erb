@@ -2,7 +2,7 @@
   <div>
     <div class="title"><%= gadget.title %></div>
     
-    <% # フォルダとブックマークを区別せず、タイトル順で表示（フォルダは開閉可能） %>
+    <% # フォルダを先頭に、その後ブックマークをタイトル順で表示（フォルダは開閉可能） %>
     <div class="bookmark-folders">
       <% gadget.entries.each do |item| %>
         <% if item.folder? %>
