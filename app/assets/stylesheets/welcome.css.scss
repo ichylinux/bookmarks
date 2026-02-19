@@ -55,6 +55,11 @@ div.gadgets {
 
 .bookmark-folder {
   margin: 0;
+  
+  // フォルダ間の縦の余白を設定
+  + .bookmark-folder {
+    margin-top: 4px;
+  }
 }
 
 .bookmark-list {
@@ -63,6 +68,11 @@ div.gadgets {
   
   &.folder-bookmarks {
     margin-left: 16px;
+    
+    // フォルダ内のブックマーク間の縦の余白を設定（フォルダ間と同じ）
+    li + li {
+      margin-top: 4px;
+    }
   }
   
   &.root-bookmarks {
