@@ -25,15 +25,15 @@ a:hover {
 #header .head-box {
   font-size: large;
   background: #AAA;
-  padding: 20px;
+  padding: 12px 12px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 #header .head-box .header-icon {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   flex-shrink: 0;
 }
 
