@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '~> 3.4.0'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 8.0.0'
 
 gem 'acts_as_tree'
 gem 'bootsnap', require: false
@@ -25,7 +25,7 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-twitter'
 gem 'puma'
-gem 'rails-i18n', '~> 7.0'
+gem 'rails-i18n', '~> 8.0'
 gem 'sass-rails', '>= 6'
 gem 'uglifier', '>= 1.3.0'
 
