@@ -92,4 +92,78 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     end
     assert_response :not_found
   end
+
+  def test_ルートにいる場合のパンくず表示
+    sign_in user
+    get bookmarks_path
+
+    assert_response :success
+    assert_select 'nav.breadcrumbs', count: 1
+    assert_select 'nav.breadcrumbs ol.breadcrumbs-list', count: 1
+    assert_select 'a.breadcrumbs-link', text: 'ルート'
+    assert_select 'a.breadcrumbs-create-folder', count: 1
+    assert_select 'a.breadcrumbs-create-bookmark', count: 1
+    assert_select '.breadcrumbs-label', text: 'フォルダ'
+    assert_select '.breadcrumbs-label', text: 'ブックマーク'
+  end
+
+  def test_ルートにいる場合のフォルダ作成ボタンのリンク
+    sign_in user
+    get bookmarks_path
+
+    assert_response :success
+    assert_select 'a.breadcrumbs-create-folder[href=?]', new_bookmark_path(parent_id: nil)
+    assert_select 'a.breadcrumbs-create-folder[title=?]', 'フォルダを作成'
+  end
+
+  def test_ルートにいる場合のブックマーク追加ボタンのリンク
+    sign_in user
+    get bookmarks_path
+
+    assert_response :success
+    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: nil)
+    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
+  end
+
+  def test_フォルダ内にいる場合のパンくず表示
+    sign_in user
+    folder = Bookmark.create!(user_id: user.id, title: 'テストフォルダ', url: nil, parent_id: nil, deleted: false)
+    get bookmarks_path(parent_id: folder.id)
+
+    assert_response :success
+    assert_select 'nav.breadcrumbs', count: 1
+    assert_select 'nav.breadcrumbs ol.breadcrumbs-list', count: 1
+    assert_select 'a.breadcrumbs-link', text: 'ルート'
+    assert_select '.breadcrumbs-current', text: folder.title
+    assert_select 'a.breadcrumbs-create-folder', count: 0
+    assert_select 'a.breadcrumbs-create-bookmark', count: 1
+    assert_select '.breadcrumbs-label', text: 'ブックマーク'
+  end
+
+  def test_フォルダ内にいる場合のブックマーク追加ボタンのリンク
+    sign_in user
+    folder = Bookmark.create!(user_id: user.id, title: 'テストフォルダ', url: nil, parent_id: nil, deleted: false)
+    get bookmarks_path(parent_id: folder.id)
+
+    assert_response :success
+    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: folder.id)
+    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
+  end
+
+  def test_パンくずのルートリンクが正しい
+    sign_in user
+    get bookmarks_path
+
+    assert_response :success
+    assert_select 'a.breadcrumbs-link[href=?]', bookmarks_path
+  end
+
+  def test_フォルダ内のパンくずのルートリンクが正しい
+    sign_in user
+    folder = Bookmark.create!(user_id: user.id, title: 'テストフォルダ', url: nil, parent_id: nil, deleted: false)
+    get bookmarks_path(parent_id: folder.id)
+
+    assert_response :success
+    assert_select 'a.breadcrumbs-link[href=?]', bookmarks_path
+  end
 end
