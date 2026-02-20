@@ -1,17 +1,52 @@
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- 本のベース -->
-  <rect x="20" y="15" width="60" height="70" rx="2" fill="#4A90E2" stroke="#357ABD" stroke-width="2"/>
+<svg width="120" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100">
+  <!-- 影効果の定義 -->
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- 外枠用のフィルター -->
+    <filter id="outline" x="-20%" y="-20%" width="140%" height="140%">
+      <feMorphology operator="dilate" radius="2" in="SourceAlpha" result="thicken"/>
+      <feGaussianBlur stdDeviation="1" in="thicken" result="blurred"/>
+      <feFlood flood-color="rgba(255, 255, 255, 0.9)" result="white"/>
+      <feComposite in="white" in2="blurred" operator="in" result="whiteOutline"/>
+      <feFlood flood-color="rgba(0, 0, 0, 0.2)" result="blackOutline"/>
+      <feComposite in="blackOutline" in2="blurred" operator="in" result="blackOutline"/>
+      <feOffset dx="0" dy="1" in="blackOutline" result="offsetBlack"/>
+      <feMerge>
+        <feMergeNode in="offsetBlack"/>
+        <feMergeNode in="whiteOutline"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
   
-  <!-- 本のページ（開いた状態） -->
-  <path d="M 20 15 L 50 25 L 80 15 L 80 85 L 50 75 L 20 85 Z" fill="#FFFFFF" opacity="0.9"/>
-  <path d="M 50 25 L 50 75" stroke="#E0E0E0" stroke-width="1.5"/>
+  <!-- 本のベース（外枠付き、横長に調整） -->
+  <rect x="25" y="20" width="70" height="60" rx="2" fill="#4A90E2" stroke="#357ABD" stroke-width="2.5" filter="url(#shadow)"/>
+  <!-- 本のベースの外側輪郭 -->
+  <rect x="25" y="20" width="70" height="60" rx="2" fill="none" stroke="rgba(255, 255, 255, 0.9)" stroke-width="1.5" stroke-dasharray="none"/>
+  <rect x="24" y="19" width="72" height="62" rx="2.5" fill="none" stroke="rgba(0, 0, 0, 0.15)" stroke-width="1"/>
   
-  <!-- ブックマークリボン -->
-  <path d="M 45 15 L 45 35 L 40 40 L 45 45 L 55 45 L 60 40 L 55 35 L 55 15 Z" fill="#E74C3C"/>
-  <path d="M 50 15 L 50 35" stroke="#C0392B" stroke-width="1"/>
+  <!-- 本のページ（開いた状態、横長に調整） -->
+  <path d="M 25 20 L 60 28 L 95 20 L 95 80 L 60 72 L 25 80 Z" fill="#FFFFFF" opacity="0.9"/>
+  <path d="M 60 28 L 60 72" stroke="#E0E0E0" stroke-width="1.5"/>
   
-  <!-- 本の装飾線 -->
-  <line x1="30" y1="30" x2="70" y2="30" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
-  <line x1="30" y1="50" x2="70" y2="50" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
-  <line x1="30" y1="70" x2="70" y2="70" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
+  <!-- ブックマークリボン（外枠付き、位置調整） -->
+  <path d="M 50 20 L 50 38 L 44 44 L 50 50 L 70 50 L 76 44 L 70 38 L 70 20 Z" fill="#E74C3C" stroke="rgba(192, 57, 43, 0.8)" stroke-width="1.5"/>
+  <path d="M 50 20 L 50 38 L 44 44 L 50 50 L 70 50 L 76 44 L 70 38 L 70 20 Z" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="0.8"/>
+  <path d="M 60 20 L 60 38" stroke="#C0392B" stroke-width="1"/>
+  
+  <!-- 本の装飾線（横長に調整） -->
+  <line x1="35" y1="35" x2="85" y2="35" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
+  <line x1="35" y1="50" x2="85" y2="50" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
+  <line x1="35" y1="65" x2="85" y2="65" stroke="#357ABD" stroke-width="1" opacity="0.5"/>
 </svg>
