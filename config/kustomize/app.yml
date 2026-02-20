@@ -5,6 +5,7 @@ metadata:
   labels: &labels
     app: *name
 spec:
+  replicas: 1
   selector:
     matchLabels:
       <<: *labels
@@ -22,6 +23,4 @@ spec:
             name: bookmarks-config
         - secretRef:
             name: bookmarks-secret
-        env:
-        command: ["/usr/local/bin/bundle"]
-        args: ["exec", "rails", "s"]
+        command: ['bundle', 'exec', 'rails', 's']
