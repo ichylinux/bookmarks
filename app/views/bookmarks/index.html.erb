@@ -1,13 +1,29 @@
-<div class="actions">
-  <%= link_to 'フォルダを作成', new_bookmark_path(parent_id: @parent_id), class: 'create-folder' %>
-  <%= link_to 'ブックマークを追加', new_bookmark_path(parent_id: @parent_id), class: 'create-bookmark' %>
-</div>
-
-<% if @parent %>
-  <div class="breadcrumbs">
-    <%= link_to 'ルート', bookmarks_path %> / <%= @parent.title %>
-  </div>
-<% end %>
+<nav class="breadcrumbs" aria-label="パンくずリスト">
+  <ol class="breadcrumbs-list">
+    <li class="breadcrumbs-item">
+      <%= link_to 'ルート', bookmarks_path, class: 'breadcrumbs-link' %>
+      <% unless @parent %>
+        <span class="breadcrumbs-item-actions">
+          <%= link_to new_bookmark_path(parent_id: nil), class: 'breadcrumbs-create-folder', title: 'フォルダを作成' do %>
+            <span class="breadcrumbs-icon">📁</span><span class="breadcrumbs-label">フォルダ</span>
+          <% end %>
+        </span>
+      <% end %>
+    </li>
+    <% if @parent %>
+      <li class="breadcrumbs-item breadcrumbs-current">
+        <%= @parent.title %>
+      </li>
+    <% end %>
+    <li class="breadcrumbs-item breadcrumbs-actions">
+      <span class="breadcrumbs-item-actions">
+        <%= link_to new_bookmark_path(parent_id: @parent_id), class: 'breadcrumbs-create-bookmark', title: 'ブックマークを追加' do %>
+          <span class="breadcrumbs-icon">🔖</span><span class="breadcrumbs-label">ブックマーク</span>
+        <% end %>
+      </span>
+    </li>
+  </ol>
+</nav>
 
 <table class="bookmarks-table">
   <thead>

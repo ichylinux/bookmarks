@@ -101,6 +101,155 @@ table {
   }
 }
 
+.breadcrumbs {
+  margin: 20px;
+  background: #f5f5f5;
+  border: solid 1px #e0e0e0;
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+.breadcrumbs-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs-item {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  line-height: 1.5;
+
+  &:not(:last-child)::after {
+    content: '/';
+    margin: 0 8px;
+    color: #999;
+    font-weight: normal;
+  }
+
+  &:last-child {
+    font-weight: 500;
+    color: #595757;
+  }
+}
+
+.breadcrumbs-link {
+  color: #595757;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #333;
+    text-decoration: underline;
+  }
+
+  &:visited {
+    color: #595757;
+  }
+}
+
+.breadcrumbs-current {
+  color: #333;
+  font-weight: 500;
+}
+
+.breadcrumbs-item-actions {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.breadcrumbs-create-folder {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: solid 1px #595757;
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-decoration: none;
+  color: #595757;
+  font-size: 11px;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+
+  &:hover {
+    color: white;
+    background: #A9A9A9;
+    border-color: #A9A9A9;
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: #595757;
+  }
+
+  .breadcrumbs-icon {
+    font-size: 12px;
+  }
+
+  .breadcrumbs-label {
+    font-size: 11px;
+  }
+}
+
+.breadcrumbs-actions {
+  margin-left: 8px;
+}
+
+.breadcrumbs-create-bookmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: solid 1px #595757;
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-decoration: none;
+  color: #595757;
+  font-size: 11px;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+
+  &:hover {
+    color: white;
+    background: #A9A9A9;
+    border-color: #A9A9A9;
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: #595757;
+  }
+
+  .breadcrumbs-icon {
+    font-size: 12px;
+  }
+
+  .breadcrumbs-label {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumbs {
+    margin: 10px;
+    padding: 6px 8px;
+  }
+
+  .breadcrumbs-item {
+    font-size: 11px;
+
+    &:not(:last-child)::after {
+      margin: 0 6px;
+    }
+  }
+}
+
 .header {
   margin: 4px 10px 0 10px;
   height: 20px;
