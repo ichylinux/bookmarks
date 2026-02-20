@@ -39,7 +39,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'rack-mini-profiler'
   gem 'rails-erd'
   gem 'web-console', '>= 3.3.0'
 end
