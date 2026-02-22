@@ -5,7 +5,8 @@ class BookmarksController < ApplicationController
     @parent_id = params[:parent_id]
     @parent = @parent_id.present? ? Bookmark.find_by(id: @parent_id, user_id: current_user.id) : nil
 
-    @bookmarks = Bookmark.where(user_id: current_user.id, parent_id: @parent_id, deleted: false).order(:title)
+    # フォルダを先に、その後ブックマークをタイトル順で表示
+    @bookmarks = Bookmark.where(user_id: current_user.id, parent_id: @parent_id, deleted: false).order(Arel.sql('url IS NULL DESC'), :title)
 
   end
 
