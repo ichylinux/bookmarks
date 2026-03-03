@@ -25,6 +25,11 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore local environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+
 .project
 /.buildpath
 /coverage/*
