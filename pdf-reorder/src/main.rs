@@ -70,7 +70,26 @@ fn parse_pages(spec: &str) -> Result<Vec<u32>> {
     Ok(pages)
 }
 
+/// Warn if the input file is large enough to risk high memory usage.
+/// lopdf loads the entire PDF into memory; RAM usage is roughly equal to file size.
+fn warn_if_large(path: &PathBuf) {
+    const WARN_THRESHOLD_MB: u64 = 200;
+    if let Ok(meta) = std::fs::metadata(path) {
+        let mb = meta.len() / (1024 * 1024);
+        if mb >= WARN_THRESHOLD_MB {
+            eprintln!(
+                "Warning: '{}' is {}MB. lopdf loads the entire file into memory; \
+                 ensure sufficient RAM is available.",
+                path.display(),
+                mb
+            );
+        }
+    }
+}
+
 fn reorder_pdf(input: &PathBuf, output: &PathBuf, page_order: &[u32]) -> Result<()> {
+    warn_if_large(input);
+
     let mut doc = Document::load(input)
         .with_context(|| format!("Failed to load '{}'", input.display()))?;
 
