@@ -1,8 +1,9 @@
+<% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <div>
-  <div class="title"><%= link_to @feed.title, @feed.url %></div>
+  <div class="title"><%= link_to @feed.title, @feed.url, link_opts %></div>
   <ol>
     <% @feed.entries.each do |e| %>
-      <li><%= link_to e.title, e.url %></li>
+      <li><%= link_to e.title, e.url, link_opts %></li>
     <% end %>
   </ol>
 </div>

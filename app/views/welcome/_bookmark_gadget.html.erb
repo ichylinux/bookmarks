@@ -1,4 +1,4 @@
-<% bookmark_link_html_options = current_user.preference.open_bookmarks_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<% bookmark_link_html_options = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title"><%= gadget.title %></div>

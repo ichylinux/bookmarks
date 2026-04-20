@@ -12,7 +12,7 @@ ja:
         title: サイト名
       preference:
         default_priority: タスク追加時の初期優先度
-        open_bookmarks_in_new_tab: ブックマークを新しいタブで開く
+        open_links_in_new_tab: リンクを新しいタブで開く
         theme: テーマ
         use_todo: タスクウィジェットを表示する
       todo:

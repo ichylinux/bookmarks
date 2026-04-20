@@ -20,11 +20,11 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/', path
   end
 
-  def test_open_bookmarks_in_new_tabを保存する
+  def test_open_links_in_new_tabを保存する
     assert user.preference.persisted?
-    assert_not user.preference.open_bookmarks_in_new_tab?
+    assert_not user.preference.open_links_in_new_tab?
 
-    preference_param = preference_params(open_bookmarks_in_new_tab: true).merge(id: user.preference.id)
+    preference_param = preference_params(open_links_in_new_tab: true).merge(id: user.preference.id)
 
     sign_in user
     patch preference_path(user), params: {
@@ -34,7 +34,7 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
       }
     }
     assert_response :redirect
-    assert user.preference.reload.open_bookmarks_in_new_tab?
+    assert user.preference.reload.open_links_in_new_tab?
   end
 
 end
