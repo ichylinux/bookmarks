@@ -1,11 +1,11 @@
-if (typeof todos === "undefined") {
-  var todos = {};
-}
+// Sprockets bundle: share namespace for load order (no new globals).
+window.todos = window.todos || {};
+const todos = window.todos;
 
 todos.init = function(selector) {
   $(selector).delegate('li', 'dblclick', function() {
-    var $li = $(this);
-    var $textInput = $li.find('input[type="text"]').first();
+    const $li = $(this);
+    const $textInput = $li.find('input[type="text"]').first();
 
     if ($textInput.length) {
       $textInput.focus();
@@ -28,8 +28,8 @@ todos.init = function(selector) {
 };
 
 todos.new_todo = function(trigger) {
-  var ol = $(trigger).closest('ol');
-  var url = $(trigger).attr('href');
+  const ol = $(trigger).closest('ol');
+  const url = $(trigger).attr('href');
 
   $.get(url, {format: 'html'}, function(html) {
     ol.find('.todo_actions').after('<li>' + html + '</li>');
@@ -37,7 +37,7 @@ todos.new_todo = function(trigger) {
 };
 
 todos.create_todo = function(trigger) {
-  var form = $(trigger).closest('form');
+  const form = $(trigger).closest('form');
   if (form.find('input[type="text"]').val()) {
     $.post(form.attr('action'), form.serialize(), function(html) {
       form.closest('li').after(html).remove();
@@ -48,17 +48,17 @@ todos.create_todo = function(trigger) {
 };
 
 todos.update_todo = function(trigger) {
-  var form = $(trigger).closest('form');
+  const form = $(trigger).closest('form');
   $.post(form.attr('action'), form.serialize(), function(html) {
     form.closest('li').replaceWith(html);
   });
 };
 
 todos.delete_todos = function(trigger) {
-  var ol = $(trigger).closest('ol');
-  var url = $(trigger).attr('href');
+  const ol = $(trigger).closest('ol');
+  const url = $(trigger).attr('href');
 
-  var params = {};
+  const params = {};
   params.format = 'html';
   params.authenticity_token = $(trigger).closest('.todo_actions').data('authenticity_token');
   params.todo_id = [];

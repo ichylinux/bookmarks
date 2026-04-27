@@ -1,10 +1,10 @@
 // ブックマークガジェットのフォルダ開閉機能
-$(document).ready(function() {
-  var STORAGE_KEY = 'bookmark_expanded_folders';
+$(document).ready(() => {
+  const STORAGE_KEY = 'bookmark_expanded_folders';
   
   // localStorageから展開状態を取得
   function getExpandedFolders() {
-    var stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   }
   
@@ -15,9 +15,9 @@ $(document).ready(function() {
   
   // フォルダを展開
   function expandFolder(folderId) {
-    var $bookmarks = $('#folder-' + folderId);
-    var $header = $('.folder-header[data-folder-id="' + folderId + '"]');
-    var $toggle = $header.find('.folder-toggle');
+    const $bookmarks = $('#folder-' + folderId);
+    const $header = $('.folder-header[data-folder-id="' + folderId + '"]');
+    const $toggle = $header.find('.folder-toggle');
     
     if (!$bookmarks.is(':visible')) {
       $bookmarks.show();
@@ -26,20 +26,20 @@ $(document).ready(function() {
   }
   
   // ページ読み込み時に保存された展開状態を復元
-  var expandedFolders = getExpandedFolders();
+  const expandedFolders = getExpandedFolders();
   expandedFolders.forEach(function(folderId) {
     expandFolder(folderId);
   });
   
   // フォルダヘッダーのクリックイベント
   $('.folder-header').on('click', function() {
-    var $header = $(this);
-    var folderId = $header.data('folder-id');
-    var $bookmarks = $('#folder-' + folderId);
-    var $toggle = $header.find('.folder-toggle');
+    const $header = $(this);
+    const folderId = $header.data('folder-id');
+    const $bookmarks = $('#folder-' + folderId);
+    const $toggle = $header.find('.folder-toggle');
     
-    var expandedFolders = getExpandedFolders();
-    var index = expandedFolders.indexOf(folderId.toString());
+    const expandedFolders = getExpandedFolders();
+    const index = expandedFolders.indexOf(folderId.toString());
     
     if ($bookmarks.is(':visible')) {
       $bookmarks.slideUp();

@@ -8,6 +8,15 @@
 
 This is a Rails 8.1 application written in Ruby 3.4 with no RuboCop configuration present. Conventions are implied by Rails defaults and the `daddy` gem (a proprietary scaffolding/CRUD library). Business logic lives primarily in models with lightweight controllers; service objects are not used.
 
+## JavaScript (Sprockets 第一者スクリプト)
+
+第一者 `app/assets/javascripts/**/*.js` は jQuery 前提。次を守る:
+
+- jQuery コールバックで**要素**として `this` を使う箇所（`$(this)` や `.each` 等）は**アロー関数にせず** `function` を使う。
+- `this` を使わない短いコールバック（例: `$.get` / `$.post` のデータ受け取り）はアロー関数にしてよい。
+- グローバルに載る名前空間（例: ガジェット用オブジェクト）は `window.name = window.name || {}` と `const name = window.name` など、意図が読み取れる形にする。新たな `window` 汚染を増やさない。
+- 束縛は原則 `const` または `let`（`var` 禁止; ESLint `no-var` 準拠。例外は当該行 `eslint-disable-next-line` と理由 1 行）。
+
 ## Naming Conventions
 
 **Models:**

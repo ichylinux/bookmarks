@@ -1,8 +1,10 @@
-var calendars = {};
+// Sprockets bundle: share namespace for load order (no new globals).
+window.calendars = window.calendars || {};
+const calendars = window.calendars;
 
 calendars.get_gadget = function(link) {
-  var url = $(link).attr('href');
-  $.get(url, {format: 'html'}, function(html) {
+  const url = $(link).attr('href');
+  $.get(url, {format: 'html'}, (html) => {
     $(link).closest('.gadget').find('table').replaceWith(html);
   });
 };

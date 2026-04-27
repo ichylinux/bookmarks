@@ -9,7 +9,7 @@ Milestone **v1.1 — Modern JavaScript** delivers a repeatable lint/style baseli
 ## Phases
 
 - [x] **Phase 2: JavaScript tooling baseline** — ESLint/Prettier (or documented equivalent), npm scripts, repo rules compatible with Sprockets + Babel
-- [ ] **Phase 3: Modernize application scripts** — Apply style rules across `app/assets/javascripts/`, preserve behaviour and jQuery semantics
+- [x] **Phase 3: Modernize application scripts** — Apply style rules across `app/assets/javascripts/`, preserve behaviour and jQuery semantics (completed 2026-04-27)
 - [ ] **Phase 4: Verify and document** — Tests, smoke checks, and CONVENTIONS update for JavaScript
 
 ## Phase Details
@@ -50,12 +50,12 @@ Plans:
 3. Global/window namespace usage is explicit and limited—no new leaked globals; existing patterns (e.g. `bookmarks` object) are either kept working or refactored safely.
 4. UJS, `.js.erb` flows, and jQuery `$(document).ready` (or agreed lifecycle hooks) still behave as before in manual checks.
 
-**Plans:** TBD
+**Plans:** 2/2 plans complete
 
 Plans:
 
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [x] 03-01: TBD
+- [x] 03-02: TBD
 
 ---
 
@@ -85,7 +85,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 2. JavaScript tooling | v1.1 | 2/2 | Complete | 2026-04-27 |
-| 3. Modernize scripts | v1.1 | 0/TBD | Not started | - |
+| 3. Modernize scripts | v1.1 | 2/2 | Complete   | 2026-04-27 |
 | 4. Verify and document | v1.1 | 0/TBD | Not started | - |
 
 ---

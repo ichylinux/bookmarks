@@ -1,19 +1,19 @@
-$(document).ready(function() {
+$(document).ready(() => {
   $(document).on('blur', '#bookmark_url', function() {
-    var urlValue = $.trim($(this).val());
+    const urlValue = $.trim($(this).val());
     if (urlValue === '') {
       return;
     }
 
     $.get('/bookmarks/fetch_title', { url: urlValue })
-      .done(function(title) {
-        title = $.trim(title);
-        if (title === '') {
+      .done((title) => {
+        const t = $.trim(title);
+        if (t === '') {
           return;
         }
-        var $titleField = $('#bookmark_title');
+        const $titleField = $('#bookmark_title');
         if ($.trim($titleField.val()) === '') {
-          $titleField.val(title);
+          $titleField.val(t);
         }
       })
       .fail(function() {

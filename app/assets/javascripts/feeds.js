@@ -1,16 +1,18 @@
-var feeds = {};
+// Sprockets bundle: share namespace for load order (no new globals).
+window.feeds = window.feeds || {};
+const feeds = window.feeds;
 
 feeds.get_feed_title = function(button) {
-  var form = $(button).closest('form');
+  const form = $(button).closest('form');
 
-  var url = form.find('input[name*="feed_url"]').val();
+  const url = form.find('input[name*="feed_url"]').val();
   if (url == '') {
     alert('フィードURLを先に入力してください。');
     return;
   }
   
-  var params = form.serializeArray();
-  for (var i = 0; i < params.length; i ++) {
+  const params = form.serializeArray();
+  for (let i = 0; i < params.length; i ++) {
     if (params[i].name == 'id') {
       params[i].value = null;
     } else if (params[i].name == '_method') {
@@ -18,7 +20,7 @@ feeds.get_feed_title = function(button) {
     }
   }
 
-  $.post($(button).data('url'), params, function(title) {
+  $.post($(button).data('url'), params, (title) => {
     if ($.trim(title) == '') {
       alert('フィードを取得できませんでした。');
       return;
