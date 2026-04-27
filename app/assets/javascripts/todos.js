@@ -1,5 +1,8 @@
 // Sprockets bundle: share namespace for load order (no new globals).
 window.todos = window.todos || {};
+// NOTE: `todos` is a snapshot of the window.todos reference at parse time.
+// window.todos remains the authoritative global; never reassign it in another
+// file or the alias here will become stale.
 const todos = window.todos;
 
 todos.init = function(selector) {

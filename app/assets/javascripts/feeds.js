@@ -1,5 +1,8 @@
 // Sprockets bundle: share namespace for load order (no new globals).
 window.feeds = window.feeds || {};
+// NOTE: `feeds` is a snapshot of the window.feeds reference at parse time.
+// window.feeds remains the authoritative global; never reassign it in another
+// file or the alias here will become stale.
 const feeds = window.feeds;
 
 feeds.get_feed_title = function(button) {
