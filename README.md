@@ -1,33 +1,98 @@
-# README
+# Bookmarks
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+個人用のブックマーク・フィード・ToDo・カレンダーを一元管理する Rails アプリです。
 
-Things you may want to cover:
+## 機能
 
-* Ruby version
+- **ブックマーク** — URL を保存し、ページタイトルを自動取得。フォルダによる階層管理に対応
+- **フィード** — RSS/Atom フィードの購読と記事一覧表示
+- **ToDo** — タスク管理
+- **カレンダー** — 日本の祝日を考慮したカレンダー UI
+- **認証** — Devise によるユーザー認証・2 要素認証（TOTP）・OmniAuth 連携
 
-* System dependencies
+## 技術スタック
 
-* Configuration
+| 層 | 採用技術 |
+|---|---|
+| 言語 | Ruby 3.4 / JavaScript (ES6, Sprockets) |
+| フレームワーク | Rails 8.1 |
+| DB | MySQL (`utf8mb4`) |
+| フロントエンド | Sprockets + jQuery 4 + SCSS（SPA フレームワークなし） |
+| Web サーバー | Puma（開発）/ Passenger（本番） |
+| 認証 | Devise + devise-two-factor + OmniAuth |
+| フィード解析 | Feedjira + Nokogiri |
+| テスト | Minitest / Cucumber + Capybara + Selenium |
 
-* Database creation
+## セットアップ
 
-* Database initialization
+### 必要条件
 
-* How to run the test suite
+- Ruby 3.4（`.ruby-version` で固定）
+- Node.js 22（`.node-version` で固定）
+- MySQL
+- Yarn
 
-* Services (job queues, cache servers, search engines, etc.)
+### インストール
 
-* Deployment instructions
+```bash
+bundle install
+yarn install
+```
 
-* ...
+### データベース
 
-## JavaScript / リンター（開発時）
+```bash
+# 環境変数を設定してから実行
+# MYSQL_HOST, MYSQL_PORT, MYSQL_USERNAME, MYSQL_PASSWORD
 
-Node と Yarn のある環境で、リポジトリのルートから依存関係を入れてからリントを実行します。
+bin/rails db:create
+bin/rails db:migrate
+```
 
-* `yarn install`
-* `yarn run lint`
-* （任意）`yarn run lint:fix` や `yarn run format` で自動修正
+### サーバー起動
 
+```bash
+bin/rails server
+```
+
+## テスト
+
+```bash
+# Minitest（ユニット・結合テスト）
+bin/rails test
+
+# Cucumber（受け入れテスト）
+bundle exec cucumber
+```
+
+## JavaScript / リンター
+
+```bash
+# 依存関係のインストール
+yarn install
+
+# リント実行
+yarn run lint
+
+# 自動修正
+yarn run lint:fix
+
+# フォーマット
+yarn run format
+```
+
+ESLint 9（flat config）と Prettier を採用。設定は `eslint.config.mjs` / `.prettierrc`、規約は `.planning/codebase/CONVENTIONS.md` を参照。
+
+## Docker
+
+リポジトリルートに `Dockerfile.app` / `Dockerfile.base` / `Dockerfile.test` があります。CI は `Jenkinsfile` で管理されています。
+
+## データベース構成
+
+| 環境 | DB 名 |
+|---|---|
+| 開発 | `bookmarks_dev` |
+| テスト | `bookmarks_test` |
+| 本番 | `bookmarks_pro` |
+
+接続は環境変数（`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`）で設定します。
