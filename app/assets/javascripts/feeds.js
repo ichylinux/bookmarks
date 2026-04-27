@@ -14,7 +14,7 @@ feeds.get_feed_title = function(button) {
   const params = form.serializeArray();
   for (let i = 0; i < params.length; i ++) {
     if (params[i].name == 'id') {
-      params[i].value = null;
+      params[i].value = '';  // omit id so server treats this as a new record
     } else if (params[i].name == '_method') {
       params[i].value = 'post';
     }
