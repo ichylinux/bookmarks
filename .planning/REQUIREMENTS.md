@@ -9,8 +9,8 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 ### Tooling (TOOL)
 
-- [ ] **TOOL-01**: Project has a checkable JavaScript style baseline (ESLint and/or Prettier, or an explicitly documented alternative) that runs in development/CI or via clear documented commands, aligned with Sprockets and Babel
-- [ ] **TOOL-02**: `package.json` (or project docs) documents how to run lint/format so contributors repeat the same checks
+- [x] **TOOL-01**: Project has a checkable JavaScript style baseline (ESLint and/or Prettier, or an explicitly documented alternative) that runs in development/CI or via clear documented commands, aligned with Sprockets and Babel
+- [x] **TOOL-02**: `package.json` (or project docs) documents how to run lint/format so contributors repeat the same checks
 
 ### Code style (STYL)
 
@@ -49,8 +49,8 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TOOL-01 | Phase 2 | Pending |
-| TOOL-02 | Phase 2 | Pending |
+| TOOL-01 | Phase 2 | Complete |
+| TOOL-02 | Phase 2 | Complete |
 | STYL-01 | Phase 3 | Pending |
 | STYL-02 | Phase 3 | Pending |
 | STYL-03 | Phase 3 | Pending |

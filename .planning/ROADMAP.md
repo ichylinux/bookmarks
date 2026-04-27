@@ -8,7 +8,7 @@ Milestone **v1.1 — Modern JavaScript** delivers a repeatable lint/style baseli
 
 ## Phases
 
-- [ ] **Phase 2: JavaScript tooling baseline** — ESLint/Prettier (or documented equivalent), npm scripts, repo rules compatible with Sprockets + Babel
+- [x] **Phase 2: JavaScript tooling baseline** — ESLint/Prettier (or documented equivalent), npm scripts, repo rules compatible with Sprockets + Babel
 - [ ] **Phase 3: Modernize application scripts** — Apply style rules across `app/assets/javascripts/`, preserve behaviour and jQuery semantics
 - [ ] **Phase 4: Verify and document** — Tests, smoke checks, and CONVENTIONS update for JavaScript
 
@@ -31,8 +31,8 @@ Milestone **v1.1 — Modern JavaScript** delivers a repeatable lint/style baseli
 
 Plans:
 
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [x] 02-01: TBD
+- [x] 02-02: TBD
 
 ---
 
@@ -84,10 +84,10 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 2. JavaScript tooling | v1.1 | 0/TBD | Not started | - |
+| 2. JavaScript tooling | v1.1 | 2/2 | Complete | 2026-04-27 |
 | 3. Modernize scripts | v1.1 | 0/TBD | Not started | - |
 | 4. Verify and document | v1.1 | 0/TBD | Not started | - |
 
 ---
 *Created: 2026-04-27 — milestone v1.1*  
-*Last updated: 2026-04-27 after roadmap creation*
+*Last updated: 2026-04-27 — Phase 2 complete*

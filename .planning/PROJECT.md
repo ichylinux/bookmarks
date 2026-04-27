@@ -18,7 +18,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 ### Active (milestone v1.1)
 
 - [ ] In-repo browser JavaScript under `app/assets/javascripts/` uses a consistent, modern style (const/let, no accidental globals, clear structure) while remaining compatible with Sprockets, jQuery, and the existing Babel setup
-- [ ] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes
+- [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2:** ESLint/Prettier, `yarn run lint`, README + `package.json` scripts
 - [ ] No regressions in existing behaviour; automated tests and manual smoke paths still pass
 
 ### Out of Scope (v1.1)
@@ -73,4 +73,4 @@ This document evolves at phase transitions and milestone boundaries.
 - Update `.planning/codebase/CONVENTIONS.md` (or equivalent) for JavaScript so future work matches the new baseline
 
 ---
-*Last updated: 2026-04-27 after milestone v1.1 (Modern JavaScript) start*
+*Last updated: 2026-04-27 — Phase 2 (JavaScript tooling baseline) complete*
