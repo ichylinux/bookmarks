@@ -16,6 +16,7 @@ This is a Rails 8.1 application written in Ruby 3.4 with no RuboCop configuratio
 - `this` を使わない短いコールバック（例: `$.get` / `$.post` のデータ受け取り）はアロー関数にしてよい。
 - グローバルに載る名前空間（例: ガジェット用オブジェクト）は `window.name = window.name || {}` と `const name = window.name` など、意図が読み取れる形にする。新たな `window` 汚染を増やさない。
 - 束縛は原則 `const` または `let`（`var` 禁止; ESLint `no-var` 準拠。例外は当該行 `eslint-disable-next-line` と理由 1 行）。
+- ESLint はリポジトリルートの `eslint.config.mjs`（対象: `app/assets/javascripts/**/*.js`、`@eslint/js` recommended ＋ Prettier 連携）。代表ルールは `no-var`（error）。実行: `yarn run lint`。
 
 ## Naming Conventions
 
