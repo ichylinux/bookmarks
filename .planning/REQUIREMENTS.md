@@ -14,10 +14,10 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 ### Code style (STYL)
 
-- [ ] **STYL-01**: In-repository application scripts under `app/assets/javascripts/` (excluding vendored third-party if any) use `const`/`let` instead of `var` except where a documented exception is required
-- [ ] **STYL-02**: Event handlers and callbacks use modern patterns (e.g. arrow functions) where it reduces noise and does not break jQuery `this` semantics; document the rule for `this` usage
-- [ ] **STYL-03**: No new accidental globals; existing namespace patterns are preserved or replaced with a clear module pattern that works with the asset pipeline
-- [ ] **STYL-04**: `babel.config.js` and build expectations remain valid after style changes; production asset precompilation still succeeds
+- [x] **STYL-01**: In-repository application scripts under `app/assets/javascripts/` (excluding vendored third-party if any) use `const`/`let` instead of `var` except where a documented exception is required
+- [x] **STYL-02**: Event handlers and callbacks use modern patterns (e.g. arrow functions) where it reduces noise and does not break jQuery `this` semantics; document the rule for `this` usage
+- [x] **STYL-03**: No new accidental globals; existing namespace patterns are preserved or replaced with a clear module pattern that works with the asset pipeline
+- [x] **STYL-04**: `babel.config.js` and build expectations remain valid after style changes; production asset precompilation still succeeds
 
 ### Quality & verification (VERI)
 
@@ -51,10 +51,10 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 |-------------|-------|--------|
 | TOOL-01 | Phase 2 | Complete |
 | TOOL-02 | Phase 2 | Complete |
-| STYL-01 | Phase 3 | Pending |
-| STYL-02 | Phase 3 | Pending |
-| STYL-03 | Phase 3 | Pending |
-| STYL-04 | Phase 3 | Pending |
+| STYL-01 | Phase 3 | Complete |
+| STYL-02 | Phase 3 | Complete |
+| STYL-03 | Phase 3 | Complete |
+| STYL-04 | Phase 3 | Complete |
 | VERI-01 | Phase 4 | Pending |
 | VERI-02 | Phase 4 | Pending |
 | VERI-03 | Phase 4 | Pending |

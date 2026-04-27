@@ -85,7 +85,7 @@ Plans:
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 2. JavaScript tooling | v1.1 | 2/2 | Complete | 2026-04-27 |
-| 3. Modernize scripts | v1.1 | 2/2 | Complete   | 2026-04-27 |
+| 3. Modernize scripts | v1.1 | 2/2 | Complete    | 2026-04-27 |
 | 4. Verify and document | v1.1 | 0/TBD | Not started | - |
 
 ---
