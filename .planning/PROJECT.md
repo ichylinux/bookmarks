@@ -12,14 +12,15 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 ### Validated
 
-- [ ] User authentication and per-user data isolation (Devise, existing app behaviour)
-- [ ] Bookmarks, feeds, todos, and portal-related features work in production as currently shipped
+- [x] User authentication and per-user data isolation (Devise, existing app behaviour) — **Re-verified in Phase 4** via automated and smoke paths
+- [x] Bookmarks, feeds, todos, and portal-related features work in development as verified — **Phase 4 (VERI-01–03, manual smoke)**
+- [x] In-repo browser JavaScript under `app/assets/javascripts/` uses a consistent, modern style (`const`/`let`, no accidental globals, clear structure) while remaining compatible with Sprockets, jQuery, and Babel — **Validated in Phases 3–4** (style + verification)
+- [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2** (ESLint/Prettier, `yarn run lint`, README + `package.json`); **conventions in** `.planning/codebase/CONVENTIONS.md` **Phase 3–4 (DOCS-01)**
+- [x] No regressions in existing behaviour; automated tests and manual smoke paths pass — **Phase 4**
 
 ### Active (milestone v1.1)
 
-- [ ] In-repo browser JavaScript under `app/assets/javascripts/` uses a consistent, modern style (const/let, no accidental globals, clear structure) while remaining compatible with Sprockets, jQuery, and the existing Babel setup
-- [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2:** ESLint/Prettier, `yarn run lint`, README + `package.json` scripts
-- [ ] No regressions in existing behaviour; automated tests and manual smoke paths still pass
+*(Milestone v1.1 is complete — no open active items from this list.)*
 
 ### Out of Scope (v1.1)
 
@@ -43,7 +44,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 | Decision | Rationale | Outcome |
 |----------|-----------|--------|
-| Keep Sprockets for v1.1 | Minimize risk; style modernization is the goal, not a framework migration | — Pending |
+| Keep Sprockets for v1.1 | Minimize risk; style modernization is the goal, not a framework migration | **Held for v1.1** — no bundler migration in this milestone (Phases 2–4) |
 
 ## Evolution
 
@@ -62,15 +63,16 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current Milestone: v1.1 Modern JavaScript
+## Current Milestone: v1.1 Modern JavaScript — **complete** (2026-04-27)
 
-**Goal:** Bring in-repository JavaScript up to a maintainable, modern style without changing the overall Rails + Sprockets + jQuery architecture.
+**Goal (achieved):** In-repository JavaScript is brought to a maintainable, modern style without changing the overall Rails + Sprockets + jQuery architecture.
 
-**Target features:**
-- Adopt and apply a practical modern baseline (e.g. `const`/`let`, arrow functions where they improve clarity, avoid leaking globals, consistent formatting)
-- Add or wire tooling so style is **repeatable** (ESLint and/or Prettier, aligned with Babel and Sprockets constraints)
-- Verify behaviour: existing tests pass; critical flows (bookmarks, feeds, gadgets) manually smoke-tested
-- Update `.planning/codebase/CONVENTIONS.md` (or equivalent) for JavaScript so future work matches the new baseline
+**Delivered:**
+- Tooling and conventions (ESLint, `yarn run lint`, `CONVENTIONS.md` JavaScript section)
+- Script modernization across `app/assets/javascripts/` (Phase 3)
+- Full verification: lint, Minitest, Cucumber, and recorded manual smoke (Phase 4)
+
+**Next:** Run `/gsd-complete-milestone` or plan the next milestone when ready.
 
 ---
-*Last updated: 2026-04-27 — Phase 2 (JavaScript tooling baseline) complete*
+*Last updated: 2026-04-27 — Milestone v1.1 complete (Phase 4 verify-and-document)*

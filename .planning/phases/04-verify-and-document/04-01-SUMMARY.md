@@ -30,3 +30,7 @@ None.
 ## Verdict
 
 **PASS:** All three commands exited 0 (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`). Per D-02, no new failures attributable to Phase 3 JavaScript changes; pre-existing failure list is empty (D-03). **VERI-01** and **VERI-03** are satisfied.
+
+## Self-Check: PASSED
+
+- Plan verification greps: required sections present; VERI-01/VERI-03 updated in REQUIREMENTS.md.
