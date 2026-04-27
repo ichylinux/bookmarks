@@ -14,7 +14,11 @@ Rails.application.routes.draw do
     delete 'users/two_factor_setup', to: 'users/two_factor_setup#disable'
   end
 
-  resources :bookmarks
+  resources :bookmarks do
+    collection do
+      get 'fetch_title'
+    end
+  end
 
   resources :calendars do
     member do
