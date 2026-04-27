@@ -6,22 +6,22 @@ feeds.get_feed_title = function(button) {
   const form = $(button).closest('form');
 
   const url = form.find('input[name*="feed_url"]').val();
-  if (url == '') {
+  if (url === '') {
     alert('フィードURLを先に入力してください。');
     return;
   }
   
   const params = form.serializeArray();
   for (let i = 0; i < params.length; i ++) {
-    if (params[i].name == 'id') {
+    if (params[i].name === 'id') {
       params[i].value = '';  // omit id so server treats this as a new record
-    } else if (params[i].name == '_method') {
+    } else if (params[i].name === '_method') {
       params[i].value = 'post';
     }
   }
 
   $.post($(button).data('url'), params, (title) => {
-    if ($.trim(title) == '') {
+    if ($.trim(title) === '') {
       alert('フィードを取得できませんでした。');
       return;
     }
