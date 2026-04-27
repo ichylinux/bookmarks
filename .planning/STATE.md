@@ -2,10 +2,10 @@
 
 ## Current Position
 
-Phase: Not started (defining requirements)  
+Phase: 2 (not started)  
 Plan: —  
-Status: Defining requirements  
-Last activity: 2026-04-27 — Milestone v1.1 (Modern JavaScript) started
+Status: Roadmap ready — use `/gsd-discuss-phase 2` or `/gsd-plan-phase 2`  
+Last activity: 2026-04-27 — Milestone v1.1 roadmap created (phases 2–4)
 
 ## Project Reference
 

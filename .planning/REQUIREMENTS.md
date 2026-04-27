@@ -49,13 +49,22 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | Pending roadmap |
+| TOOL-01 | Phase 2 | Pending |
+| TOOL-02 | Phase 2 | Pending |
+| STYL-01 | Phase 3 | Pending |
+| STYL-02 | Phase 3 | Pending |
+| STYL-03 | Phase 3 | Pending |
+| STYL-04 | Phase 3 | Pending |
+| VERI-01 | Phase 4 | Pending |
+| VERI-02 | Phase 4 | Pending |
+| VERI-03 | Phase 4 | Pending |
+| DOCS-01 | Phase 4 | Pending |
 
 **Coverage:**  
-- v1 requirements: 11 total  
-- Mapped to phases: 0 (roadmap not created)  
-- Unmapped: 11 (fill after `ROADMAP.md`)
+- v1 requirements: 10 total  
+- Mapped to phases: 10  
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-27*  
-*Last updated: 2026-04-27 after initial definition*
+*Last updated: 2026-04-27 after roadmap creation*
