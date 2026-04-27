@@ -18,11 +18,11 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 - [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2** (ESLint/Prettier, `yarn run lint`, README + `package.json`); **conventions in** `.planning/codebase/CONVENTIONS.md` **Phase 3–4 (DOCS-01)**
 - [x] No regressions in existing behaviour; automated tests and manual smoke paths pass — **Phase 4**
 
-### Active (milestone v1.1)
+### Active (next milestone)
 
-*(Milestone v1.1 is complete — no open active items from this list.)*
+- [ ] *To be defined* — start with `/gsd-new-milestone` (requirements, then roadmap).
 
-### Out of Scope (v1.1)
+### Out of Scope (carried from v1.1; revisit when planning)
 
 - Introducing a new frontend framework, npm-heavy bundler migration, or replacing the asset pipeline — defer unless explicitly opened in a later milestone
 - Large UX redesigns unrelated to code style
@@ -31,8 +31,8 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 ## Context
 
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`
-- JavaScript today: ES5/ES6-style files concatenated by Sprockets; `babel.config.js` is present for transforms; jQuery 4 and Rails UJS are in the manifest
-- Legacy patterns observed: `var`, IIFE/window globals, jQuery `$(document).ready` — these should be modernized in line with the chosen style guide and tooling
+- JavaScript (post–v1.1): first-party `app/assets/javascripts/` follows ESLint + `CONVENTIONS.md`; Sprockets + Babel + jQuery 4 + Rails UJS unchanged
+- **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/MILESTONES.md`, `.planning/milestones/v1.1-ROADMAP.md`
 
 ## Constraints
 
@@ -44,7 +44,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 | Decision | Rationale | Outcome |
 |----------|-----------|--------|
-| Keep Sprockets for v1.1 | Minimize risk; style modernization is the goal, not a framework migration | **Held for v1.1** — no bundler migration in this milestone (Phases 2–4) |
+| Keep Sprockets for v1.1 | Minimize risk; style modernization is the goal, not a framework migration | **Shipped v1.1** — asset pipeline unchanged; bundler/SPA still out of scope until a later milestone opens them |
 
 ## Evolution
 
@@ -63,16 +63,15 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Current Milestone: v1.1 Modern JavaScript — **complete** (2026-04-27)
+## Shipped: v1.1 — Modern JavaScript (2026-04-27)
 
-**Goal (achieved):** In-repository JavaScript is brought to a maintainable, modern style without changing the overall Rails + Sprockets + jQuery architecture.
+**Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
-**Delivered:**
-- Tooling and conventions (ESLint, `yarn run lint`, `CONVENTIONS.md` JavaScript section)
-- Script modernization across `app/assets/javascripts/` (Phase 3)
-- Full verification: lint, Minitest, Cucumber, and recorded manual smoke (Phase 4)
+**Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
-**Next:** Run `/gsd-complete-milestone` or plan the next milestone when ready.
+## Next milestone
+
+Not started. Use `/gsd-new-milestone` to define requirements and a new roadmap (a fresh `.planning/REQUIREMENTS.md` will be created in that flow).
 
 ---
-*Last updated: 2026-04-27 — Milestone v1.1 complete (Phase 4 verify-and-document)*
+*Last updated: 2026-04-27 after v1.1 milestone archive and REQUIREMENTS.md retirement*
