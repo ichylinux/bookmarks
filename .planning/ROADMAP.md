@@ -25,7 +25,7 @@ Milestone **v1.1 — Modern JavaScript** delivers a repeatable lint/style baseli
 
 1. Running the documented lint (or check) command reports no violations in the current codebase **or** only documented auto-fixable issues that the phase resolves before completion.
 2. A new contributor can read `package.json` or project docs and know exactly how to run the JS style checks.
-3. Asset pipeline and Babel config remain valid: `RAILS_ENV=production` asset precompile (or the project’s standard compile check) succeeds after tool addition.
+3. Asset pipeline and Babel config remain valid: `RAILS_ENV=production` asset precompile (or the project's standard compile check) succeeds after tool addition.
 
 **Plans:** TBD (refined in `/gsd-plan-phase 2`)
 
@@ -46,7 +46,7 @@ Plans:
 **Success criteria** (what must be TRUE):
 
 1. No `var` in first-party app scripts except documented exceptions; `const`/`let` used consistently.
-2. Callbacks and handlers follow the project’s documented rule for arrow functions vs. `function` with respect to jQuery `this`.
+2. Callbacks and handlers follow the project's documented rule for arrow functions vs. `function` with respect to jQuery `this`.
 3. Global/window namespace usage is explicit and limited—no new leaked globals; existing patterns (e.g. `bookmarks` object) are either kept working or refactored safely.
 4. UJS, `.js.erb` flows, and jQuery `$(document).ready` (or agreed lifecycle hooks) still behave as before in manual checks.
 
@@ -73,12 +73,12 @@ Plans:
 3. No regression reported for forms, UJS, or JS-driven responses for touched areas.
 4. `CONVENTIONS.md` (or linked doc) includes a JavaScript section aligned with the linter and the patterns used in code.
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Run lint, Minitest, and Cucumber; document pre-existing failures; confirm no JS-attributable regressions (VERI-01, VERI-03)
+- [ ] 04-02-PLAN.md — Execute D-04 smoke checklist for JS-touched flows; review and confirm CONVENTIONS.md JavaScript section (VERI-02, DOCS-01)
 
 ## Progress
 
@@ -86,8 +86,8 @@ Plans:
 |-------|-----------|----------------|--------|-----------|
 | 2. JavaScript tooling | v1.1 | 2/2 | Complete | 2026-04-27 |
 | 3. Modernize scripts | v1.1 | 2/2 | Complete    | 2026-04-27 |
-| 4. Verify and document | v1.1 | 0/TBD | Not started | - |
+| 4. Verify and document | v1.1 | 0/2 | Not started | - |
 
 ---
 *Created: 2026-04-27 — milestone v1.1*  
-*Last updated: 2026-04-27 — Phase 2 complete*
+*Last updated: 2026-04-27 — Phase 4 planned*
