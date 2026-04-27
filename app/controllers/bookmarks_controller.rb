@@ -59,6 +59,25 @@ class BookmarksController < ApplicationController
     redirect_to action: 'index', parent_id: parent_id
   end
 
+  def fetch_title
+    url = params[:url].to_s.strip
+    raise ArgumentError, 'blank url' if url.blank?
+
+    conn = Faraday.new do |f|
+      f.options.timeout      = 5
+      f.options.open_timeout = 5
+      f.response :follow_redirects
+    end
+
+    response = conn.get(url)
+    title = Nokogiri::HTML(response.body).at('title')&.text&.strip
+    raise 'no title' if title.blank?
+
+    render plain: title
+  rescue StandardError
+    head :ok
+  end
+
   private
 
   def preload_bookmark
