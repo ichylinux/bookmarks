@@ -21,9 +21,9 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 ### Quality & verification (VERI)
 
-- [ ] **VERI-01**: Automated test suite (Minitest, Cucumber as applicable) passes with no new failures attributable to JavaScript changes
+- [x] **VERI-01**: Automated test suite (Minitest, Cucumber as applicable) passes with no new failures attributable to JavaScript changes
 - [ ] **VERI-02**: Critical user flows that depend on browser JS (e.g. bookmark title auto-fill, feed/todo/calendar/gadget behaviour if present) are smoke-checked after changes
-- [ ] **VERI-03**: No user-visible functional regressions in form submissions, UJS, or `.js.erb` responses related to modified scripts
+- [x] **VERI-03**: No user-visible functional regressions in form submissions, UJS, or `.js.erb` responses related to modified scripts
 
 ### Documentation (DOCS)
 
@@ -55,9 +55,9 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 | STYL-02 | Phase 3 | Complete |
 | STYL-03 | Phase 3 | Complete |
 | STYL-04 | Phase 3 | Complete |
-| VERI-01 | Phase 4 | Pending |
+| VERI-01 | Phase 4 | Complete |
 | VERI-02 | Phase 4 | Pending |
-| VERI-03 | Phase 4 | Pending |
+| VERI-03 | Phase 4 | Complete |
 | DOCS-01 | Phase 4 | Pending |
 
 **Coverage:**  

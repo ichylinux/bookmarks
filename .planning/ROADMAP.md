@@ -77,7 +77,7 @@ Plans:
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Run lint, Minitest, and Cucumber; document pre-existing failures; confirm no JS-attributable regressions (VERI-01, VERI-03)
+- [x] 04-01-PLAN.md — Run lint, Minitest, and Cucumber; document pre-existing failures; confirm no JS-attributable regressions (VERI-01, VERI-03)
 - [ ] 04-02-PLAN.md — Execute D-04 smoke checklist for JS-touched flows; review and confirm CONVENTIONS.md JavaScript section (VERI-02, DOCS-01)
 
 ## Progress
