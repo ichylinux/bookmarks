@@ -3,7 +3,7 @@ window.todos = window.todos || {};
 const todos = window.todos;
 
 todos.init = function(selector) {
-  $(selector).delegate('li', 'dblclick', function() {
+  $(selector).on('dblclick', 'li', function() {
     const $li = $(this);
     const $textInput = $li.find('input[type="text"]').first();
 
@@ -19,7 +19,7 @@ todos.init = function(selector) {
     }
   });
 
-  $(selector).delegate('li span:first-child', 'click', function() {
+  $(selector).on('click', 'li span:first-child', function() {
     if (!$(this).parent().is('.todo_actions')) {
       $(this).toggleClass('selected');
       $(this).parent().toggleClass('selected');
