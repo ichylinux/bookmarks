@@ -1,5 +1,3 @@
-var bookmarks = {};
-
 $(document).ready(function() {
   $(document).on('blur', '#bookmark_url', function() {
     var urlValue = $.trim($(this).val());

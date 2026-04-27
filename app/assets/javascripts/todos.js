@@ -66,7 +66,7 @@ todos.delete_todos = function(trigger) {
     params.todo_id.push($(this).data('id'));
   });
 
-  $.post(url, params, function(html) {
+  $.post(url, params, function () {
     ol.find('li.selected').hide();
   });
 };

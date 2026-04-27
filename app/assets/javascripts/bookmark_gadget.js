@@ -25,18 +25,6 @@ $(document).ready(function() {
     }
   }
   
-  // フォルダを折りたたみ
-  function collapseFolder(folderId) {
-    var $bookmarks = $('#folder-' + folderId);
-    var $header = $('.folder-header[data-folder-id="' + folderId + '"]');
-    var $toggle = $header.find('.folder-toggle');
-    
-    if ($bookmarks.is(':visible')) {
-      $bookmarks.hide();
-      $toggle.text('▶');
-    }
-  }
-  
   // ページ読み込み時に保存された展開状態を復元
   var expandedFolders = getExpandedFolders();
   expandedFolders.forEach(function(folderId) {
