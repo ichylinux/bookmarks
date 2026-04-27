@@ -5,7 +5,13 @@ $(document).ready(() => {
   // localStorageから展開状態を取得
   function getExpandedFolders() {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    try {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_e) {
+      return [];
+    }
   }
   
   // localStorageに展開状態を保存
