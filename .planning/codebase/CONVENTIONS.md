@@ -4,19 +4,19 @@
 
 ## Overview
 
-**JavaScript (Sprockets):** リンター/フォーマッタの手順はルート `README.md` の JavaScript セクションを正とする。
+**JavaScript (Sprockets):** The linter/formatter instructions in the JavaScript section of the root `README.md` are the authoritative reference.
 
 This is a Rails 8.1 application written in Ruby 3.4 with no RuboCop configuration present. Conventions are implied by Rails defaults and the `daddy` gem (a proprietary scaffolding/CRUD library). Business logic lives primarily in models with lightweight controllers; service objects are not used.
 
-## JavaScript (Sprockets 第一者スクリプト)
+## JavaScript (Sprockets First-Party Scripts)
 
-第一者 `app/assets/javascripts/**/*.js` は jQuery 前提。次を守る:
+First-party `app/assets/javascripts/**/*.js` files assume jQuery. Follow these rules:
 
-- jQuery コールバックで**要素**として `this` を使う箇所（`$(this)` や `.each` 等）は**アロー関数にせず** `function` を使う。
-- `this` を使わない短いコールバック（例: `$.get` / `$.post` のデータ受け取り）はアロー関数にしてよい。
-- グローバルに載る名前空間（例: ガジェット用オブジェクト）は `window.name = window.name || {}` と `const name = window.name` など、意図が読み取れる形にする。新たな `window` 汚染を増やさない。
-- 束縛は原則 `const` または `let`（`var` 禁止; ESLint `no-var` 準拠。例外は当該行 `eslint-disable-next-line` と理由 1 行）。
-- ESLint はリポジトリルートの `eslint.config.mjs`（対象: `app/assets/javascripts/**/*.js`、`@eslint/js` recommended ＋ Prettier 連携）。代表ルールは `no-var`（error）。実行: `yarn run lint`。
+- In jQuery callbacks where **`this` is used as an element** (e.g., `$(this)`, `.each`), use `function` — **do not use arrow functions**.
+- Short callbacks that do not use `this` (e.g., data handlers in `$.get` / `$.post`) may use arrow functions.
+- Global namespaces (e.g., gadget objects) must be declared in a readable form such as `window.name = window.name || {}` and `const name = window.name`. Do not introduce new `window` pollution.
+- Prefer `const` or `let` for bindings (`var` is forbidden; ESLint `no-var` rule enforced. Exceptions require `eslint-disable-next-line` on the offending line plus a one-line justification).
+- ESLint is configured in the repository root `eslint.config.mjs` (targets `app/assets/javascripts/**/*.js`; uses `@eslint/js` recommended + Prettier integration). The key enforced rule is `no-var` (error). Run with: `yarn run lint`.
 
 ## Naming Conventions
 
