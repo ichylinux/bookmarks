@@ -23,3 +23,11 @@ Things you may want to cover:
 
 * ...
 
+## JavaScript / リンター（開発時）
+
+Node と Yarn のある環境で、リポジトリのルートから依存関係を入れてからリントを実行します。
+
+* `yarn install`
+* `yarn run lint`
+* （任意）`yarn run lint:fix` や `yarn run format` で自動修正
+

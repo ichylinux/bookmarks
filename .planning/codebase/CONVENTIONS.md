@@ -4,6 +4,8 @@
 
 ## Overview
 
+**JavaScript (Sprockets):** リンター/フォーマッタの手順はルート `README.md` の JavaScript セクションを正とする。
+
 This is a Rails 8.1 application written in Ruby 3.4 with no RuboCop configuration present. Conventions are implied by Rails defaults and the `daddy` gem (a proprietary scaffolding/CRUD library). Business logic lives primarily in models with lightweight controllers; service objects are not used.
 
 ## Naming Conventions
