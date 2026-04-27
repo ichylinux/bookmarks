@@ -36,6 +36,7 @@ end
 group :development, :test do
   gem 'byebug'
   gem 'cucumber'
+  gem 'dotenv-rails'
 end
 
 group :development do

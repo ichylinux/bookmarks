@@ -184,6 +184,10 @@ GEM
     docker-api (2.4.0)
       excon (>= 0.64.0)
       multi_json
+    dotenv (3.2.0)
+    dotenv-rails (3.2.0)
+      dotenv (= 3.2.0)
+      railties (>= 6.1)
     drb (2.2.3)
     erb (6.0.4)
     erubi (1.13.1)
@@ -562,6 +566,7 @@ DEPENDENCIES
   devise
   devise-i18n
   devise-two-factor (~> 6.0)
+  dotenv-rails
   faraday
   faraday_middleware
   feedjira
