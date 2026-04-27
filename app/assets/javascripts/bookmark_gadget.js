@@ -9,7 +9,7 @@ $(document).ready(() => {
     try {
       const parsed = JSON.parse(stored);
       return Array.isArray(parsed) ? parsed : [];
-    } catch (_e) {
+    } catch {
       return [];
     }
   }
