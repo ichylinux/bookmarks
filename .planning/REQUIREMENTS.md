@@ -22,12 +22,12 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 ### Quality & verification (VERI)
 
 - [x] **VERI-01**: Automated test suite (Minitest, Cucumber as applicable) passes with no new failures attributable to JavaScript changes
-- [ ] **VERI-02**: Critical user flows that depend on browser JS (e.g. bookmark title auto-fill, feed/todo/calendar/gadget behaviour if present) are smoke-checked after changes
+- [x] **VERI-02**: Critical user flows that depend on browser JS (e.g. bookmark title auto-fill, feed/todo/calendar/gadget behaviour if present) are smoke-checked after changes
 - [x] **VERI-03**: No user-visible functional regressions in form submissions, UJS, or `.js.erb` responses related to modified scripts
 
 ### Documentation (DOCS)
 
-- [ ] **DOCS-01**: `.planning/codebase/CONVENTIONS.md` (or a dedicated `docs/` note linked from it) is updated with JavaScript conventions for this project so future code matches the milestone outcome
+- [x] **DOCS-01**: `.planning/codebase/CONVENTIONS.md` (or a dedicated `docs/` note linked from it) is updated with JavaScript conventions for this project so future code matches the milestone outcome
 
 ## v2 Requirements (deferred)
 
@@ -56,9 +56,9 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 | STYL-03 | Phase 3 | Complete |
 | STYL-04 | Phase 3 | Complete |
 | VERI-01 | Phase 4 | Complete |
-| VERI-02 | Phase 4 | Pending |
+| VERI-02 | Phase 4 | Complete |
 | VERI-03 | Phase 4 | Complete |
-| DOCS-01 | Phase 4 | Pending |
+| DOCS-01 | Phase 4 | Complete |
 
 **Coverage:**  
 - v1 requirements: 10 total  
@@ -67,4 +67,4 @@ Scope for milestone **v1.1 — Modern JavaScript**. Each item maps to roadmap ph
 
 ---
 *Requirements defined: 2026-04-27*  
-*Last updated: 2026-04-27 after roadmap creation*
+*Last updated: 2026-04-27 after Phase 4 verification close-out*
