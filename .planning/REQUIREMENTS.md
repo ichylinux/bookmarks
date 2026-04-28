@@ -56,23 +56,23 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| THEME-01 | — | Pending |
-| THEME-02 | — | Pending |
-| THEME-03 | — | Pending |
-| NAV-01 | — | Pending |
-| NAV-02 | — | Pending |
-| NAV-03 | — | Pending |
-| STYLE-01 | — | Pending |
-| STYLE-02 | — | Pending |
-| STYLE-03 | — | Pending |
-| STYLE-04 | — | Pending |
-| A11Y-01 | — | Pending |
+| THEME-01 | Phase 5 | Pending |
+| THEME-02 | Phase 5 | Pending |
+| THEME-03 | Phase 5 | Pending |
+| NAV-01 | Phase 6 | Pending |
+| NAV-02 | Phase 6, 8 | Pending |
+| NAV-03 | Phase 7, 8 | Pending |
+| STYLE-01 | Phase 9 | Pending |
+| STYLE-02 | Phase 9 | Pending |
+| STYLE-03 | Phase 9 | Pending |
+| STYLE-04 | Phase 9 | Pending |
+| A11Y-01 | Phase 7 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 11 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 11 ⚠️
+- Mapped to phases: 11 ✓
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-28*
-*Last updated: 2026-04-28 — initial definition for v1.2*
+*Last updated: 2026-04-28 — traceability filled in after v1.2 roadmap created (Phases 5–9)*
