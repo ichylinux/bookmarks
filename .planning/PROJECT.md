@@ -29,7 +29,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 ### Active (v1.2)
 
-- [ ] New `modern` theme selectable via preferences (theme string stored in DB, no migration needed)
+- [x] New `modern` theme selectable via preferences (theme string stored in DB, no migration needed) — **Validated in Phase 5** (preferences UI, modern.css.scss token stub, menu.js guard)
 - [ ] Hamburger button in modern theme header opens a side drawer with all nav links
 - [ ] Full-page modern styling: header, body typography, tables, action buttons, forms
 
@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
 ---
-*Last updated: 2026-04-28 — v1.2 Modern Theme milestone started*
+*Last updated: 2026-04-28 — Phase 5 complete: modern theme foundation (preferences UI, CSS tokens, menu.js stub)*
