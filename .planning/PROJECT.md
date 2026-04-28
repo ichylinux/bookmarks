@@ -8,6 +8,15 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 
+## Current Milestone: v1.2 Modern Theme
+
+**Goal:** Add a selectable "Modern" theme with a hamburger side-drawer nav and clean, full-page styling throughout the app.
+
+**Target features:**
+- New `modern` theme option in the preferences UI
+- Hamburger button in the header opens a side drawer with all navigation links
+- Full-page modern styling: header bar, body typography, tables, action buttons, and forms
+
 ## Requirements
 
 ### Validated
@@ -18,9 +27,11 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 - [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2** (ESLint/Prettier, `yarn run lint`, README + `package.json`); **conventions in** `.planning/codebase/CONVENTIONS.md` **Phase 3–4 (DOCS-01)**
 - [x] No regressions in existing behaviour; automated tests and manual smoke paths pass — **Phase 4**
 
-### Active (next milestone)
+### Active (v1.2)
 
-- [ ] *To be defined* — start with `/gsd-new-milestone` (requirements, then roadmap).
+- [ ] New `modern` theme selectable via preferences (theme string stored in DB, no migration needed)
+- [ ] Hamburger button in modern theme header opens a side drawer with all nav links
+- [ ] Full-page modern styling: header, body typography, tables, action buttons, forms
 
 ### Out of Scope (carried from v1.1; revisit when planning)
 
@@ -63,15 +74,13 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
-## Shipped: v1.1 — Modern JavaScript (2026-04-27)
+## Shipped
+
+### v1.1 — Modern JavaScript (2026-04-27)
 
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 **Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
-## Next milestone
-
-Not started. Use `/gsd-new-milestone` to define requirements and a new roadmap (a fresh `.planning/REQUIREMENTS.md` will be created in that flow).
-
 ---
-*Last updated: 2026-04-27 after v1.1 milestone archive and REQUIREMENTS.md retirement*
+*Last updated: 2026-04-28 — v1.2 Modern Theme milestone started*
