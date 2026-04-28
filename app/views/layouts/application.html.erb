@@ -18,6 +18,7 @@
       <div class="head-box">
         <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
         Bookmarks
+        <button class="hamburger-btn" aria-label="メニュー"></button>
       </div>
     </div>
 
@@ -25,5 +26,19 @@
       <%= render 'common/menu' if user_signed_in? %>
       <%= yield %>
     </div>
+    <% if user_signed_in? %>
+      <div class="drawer">
+        <nav>
+          <%= link_to 'Home', root_path %>
+          <%= link_to '設定', preferences_path %>
+          <%= link_to 'ブックマーク', bookmarks_path %>
+          <%= link_to 'タスク', todos_path %>
+          <%= link_to 'カレンダー', calendars_path %>
+          <%= link_to 'フィード', feeds_path %>
+          <%= link_to 'ログアウト', destroy_user_session_path, method: 'delete' %>
+        </nav>
+      </div>
+      <div class="drawer-overlay"></div>
+    <% end %>
   </body>
 </html>
