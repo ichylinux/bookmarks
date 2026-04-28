@@ -24,7 +24,10 @@
   2. `themes/modern.css.scss` is compiled by Sprockets (no asset pipeline errors); `.modern {}` root scope exists with at least the CSS custom property tokens defined as plain CSS values
   3. `menu.js` is compiled and loaded; when `body` does not have class `modern`, the file exits immediately without side effects
   4. Selecting any other theme removes the `modern` class and restores prior behaviour
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — Add モダン to theme select + create modern.css.scss with CSS custom property tokens
+- [ ] 05-02-PLAN.md — Create menu.js stub with body.modern guard
 **UI hint**: yes
 
 ### Phase 6: HTML Structure
@@ -81,7 +84,7 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Theme Foundation | v1.2 | 0/? | Not started | - |
+| 5. Theme Foundation | v1.2 | 0/2 | Not started | - |
 | 6. HTML Structure | v1.2 | 0/? | Not started | - |
 | 7. Drawer CSS + Animation | v1.2 | 0/? | Not started | - |
 | 8. Drawer JS Interaction | v1.2 | 0/? | Not started | - |
@@ -107,4 +110,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-28 — v1.2 Modern Theme roadmap created (Phases 5–9)*
+*Last updated: 2026-04-28 — Phase 5 planned (2 plans, Wave 1)*
