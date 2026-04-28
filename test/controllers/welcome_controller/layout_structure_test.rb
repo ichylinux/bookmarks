@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class LayoutStructureTest < ActionDispatch::IntegrationTest
+class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
 
   def test_モダンテーマでハンバーガーボタンが表示される
     user.preference.update!(theme: 'modern')

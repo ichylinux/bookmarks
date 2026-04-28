@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class WelcomeControllerTest < ActionDispatch::IntegrationTest
+class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
 
   def test_トップページ
     sign_in user
