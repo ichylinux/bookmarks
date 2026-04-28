@@ -27,7 +27,7 @@
 
 ### Accessibility
 
-- [ ] **A11Y-01**: Drawer slide animation is disabled when `prefers-reduced-motion` is active
+- [x] **A11Y-01**: Drawer slide animation is disabled when `prefers-reduced-motion` is active
 
 ## Future Requirements
 
@@ -66,7 +66,7 @@
 | STYLE-02 | Phase 9 | Pending |
 | STYLE-03 | Phase 9 | Pending |
 | STYLE-04 | Phase 9 | Pending |
-| A11Y-01 | Phase 7 | Pending |
+| A11Y-01 | Phase 7 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 11 total
@@ -75,4 +75,4 @@
 
 ---
 *Requirements defined: 2026-04-28*
-*Last updated: 2026-04-28 — traceability filled in after v1.2 roadmap created (Phases 5–9)*
+*Last updated: 2026-04-29 — A11Y-01 verified in Phase 7*
