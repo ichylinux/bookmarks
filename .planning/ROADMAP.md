@@ -25,9 +25,15 @@
   3. `menu.js` is compiled and loaded; when `body` does not have class `modern`, the file exits immediately without side effects
   4. Selecting any other theme removes the `modern` class and restores prior behaviour
 **Plans**: 2 plans
-Plans:
+
+**Wave 1** *(both plans are independent — can run in parallel)*
 - [ ] 05-01-PLAN.md — Add モダン to theme select + create modern.css.scss with CSS custom property tokens
 - [ ] 05-02-PLAN.md — Create menu.js stub with body.modern guard
+
+**Cross-cutting constraints:**
+- libsass: CSS custom property values must be plain hex strings (no `$variable` refs)
+- All JS must use `const`/`let` — `var` forbidden (ESLint `no-var` enforced)
+
 **UI hint**: yes
 
 ### Phase 6: HTML Structure
