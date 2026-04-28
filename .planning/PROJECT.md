@@ -26,6 +26,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 - [x] In-repo browser JavaScript under `app/assets/javascripts/` uses a consistent, modern style (`const`/`let`, no accidental globals, clear structure) while remaining compatible with Sprockets, jQuery, and Babel — **Validated in Phases 3–4** (style + verification)
 - [x] A documented baseline for JS style (lint and/or project conventions) is enforced or checkable for future changes — **Validated in Phase 2** (ESLint/Prettier, `yarn run lint`, README + `package.json`); **conventions in** `.planning/codebase/CONVENTIONS.md` **Phase 3–4 (DOCS-01)**
 - [x] No regressions in existing behaviour; automated tests and manual smoke paths pass — **Phase 4**
+- [x] Modern theme drawer **CSS** (slide, overlay fade, z-index stack, hamburger→X, `prefers-reduced-motion`) — **Phase 7**
 
 ### Active (v1.2)
 
@@ -83,4 +84,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
 ---
-*Last updated: 2026-04-28 — Phase 5 complete: modern theme foundation (preferences UI, CSS tokens, menu.js stub)*
+*Last updated: 2026-04-29 — Phase 7 complete: drawer CSS + animation (contract-tested)*
