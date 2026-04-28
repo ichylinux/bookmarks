@@ -10,7 +10,7 @@
 - [x] **Phase 5: Theme Foundation** — completed 2026-04-28 - Add `modern` to preferences; create `modern.css.scss` stub with `.modern {}` skeleton and CSS custom property tokens; create `menu.js` stub with `body.modern` guard
 - [x] **Phase 6: HTML Structure** — completed 2026-04-29 - Add hamburger button to layout; add drawer div and overlay div with all nav links to `_menu.html.erb` outside `.wrapper`
 - [x] **Phase 7: Drawer CSS + Animation** — completed 2026-04-29 - Drawer slide, backdrop fade, z-index stack, hamburger-to-X animation, `prefers-reduced-motion` support
-- [ ] **Phase 8: Drawer JS Interaction** - Wire jQuery toggle in `menu.js`: open/close handlers, backdrop click, Esc key, nav link close, stopPropagation guard
+- [x] **Phase 8: Drawer JS Interaction** — completed 2026-04-29 - Wire jQuery toggle in `menu.js`: open/close handlers, backdrop click, Esc key, nav link close, stopPropagation guard
 - [ ] **Phase 9: Full-Page Theme Styles** - Header bar, body typography, table styling, action buttons, form inputs/selects
 
 ## Phase Details
@@ -79,7 +79,12 @@
   3. Pressing the Esc key while the drawer is open closes the drawer
   4. Clicking any navigation link inside the drawer closes the drawer before navigating
   5. The existing dropdown menu on non-modern themes continues to open and dismiss correctly — no JS conflict introduced
-**Plans**: TBD
+**Plans**: 1 plan
+
+**Wave 1**
+- [x] 08-01-PLAN.md — `menu.js` drawer toggles (hamburger + stopPropagation, overlay, Esc, nav links); system tests + Devise on `ApplicationSystemTestCase`
+
+**UI hint**: yes
 
 ### Phase 9: Full-Page Theme Styles
 **Goal**: Every major UI surface in the app looks clean and intentional under the modern theme, with no gray `#AAA` header or unstyled tables/forms visible
@@ -101,7 +106,7 @@
 | 5. Theme Foundation | v1.2 | 2/2 | Complete | 2026-04-28 |
 | 6. HTML Structure | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 7. Drawer CSS + Animation | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 8. Drawer JS Interaction | v1.2 | 0/? | Not started | - |
+| 8. Drawer JS Interaction | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 9. Full-Page Theme Styles | v1.2 | 0/? | Not started | - |
 
 ## Phases (shipped: v1.1)
@@ -124,4 +129,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-29 — Phase 7 complete (drawer CSS + animation); next: Phase 8 (drawer JS)*
+*Last updated: 2026-04-29 — Phase 8 complete (drawer JS); next: Phase 9 (full-page styles)*
