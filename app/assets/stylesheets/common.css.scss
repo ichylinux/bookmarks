@@ -37,6 +37,13 @@ a:hover {
   flex-shrink: 0;
 }
 
+// Drawer UI is modern-theme only; keep hidden by default.
+#header .head-box .hamburger-btn,
+.drawer,
+.drawer-overlay {
+  display: none;
+}
+
 @media (max-width: 480px) {
 .wrapper {
   padding: 0 10px 10px 10px;
