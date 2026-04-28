@@ -45,7 +45,11 @@
   2. The drawer `<div>` and overlay `<div>` are rendered as direct children of `<body>`, outside `.wrapper` (verifiable in browser DevTools)
   3. All navigation links that exist in the existing dropdown menu are also present inside the drawer markup
   4. The existing non-modern dropdown menu and its inline `<script>` are unaffected and continue to function when a non-modern theme is active
-**Plans**: TBD
+**Plans**: 1 plan
+
+**Wave 1**
+- [ ] 06-01-PLAN.md — Add hamburger button to .head-box + drawer/overlay markup with 7 nav links after .wrapper (TDD, single layout edit + integration test)
+
 **UI hint**: yes
 
 ### Phase 7: Drawer CSS + Animation
@@ -91,7 +95,7 @@
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 5. Theme Foundation | v1.2 | 0/2 | Not started | - |
-| 6. HTML Structure | v1.2 | 0/? | Not started | - |
+| 6. HTML Structure | v1.2 | 0/1 | Not started | - |
 | 7. Drawer CSS + Animation | v1.2 | 0/? | Not started | - |
 | 8. Drawer JS Interaction | v1.2 | 0/? | Not started | - |
 | 9. Full-Page Theme Styles | v1.2 | 0/? | Not started | - |
