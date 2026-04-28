@@ -27,8 +27,8 @@
 **Plans**: 2 plans
 
 **Wave 1** *(both plans are independent — can run in parallel)*
-- [ ] 05-01-PLAN.md — Add モダン to theme select + create modern.css.scss with CSS custom property tokens
-- [ ] 05-02-PLAN.md — Create menu.js stub with body.modern guard
+- [x] 05-01-PLAN.md — Add モダン to theme select + create modern.css.scss with CSS custom property tokens
+- [x] 05-02-PLAN.md — Create menu.js stub with body.modern guard
 
 **Cross-cutting constraints:**
 - libsass: CSS custom property values must be plain hex strings (no `$variable` refs)
