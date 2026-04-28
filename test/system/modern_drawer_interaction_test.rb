@@ -53,15 +53,9 @@ class ModernDrawerInteractionTest < ApplicationSystemTestCase
     refute page.has_css?('body.drawer-open')
   end
 
-  test 'legacy email menu opens and dismisses on outside click (html click path)' do
+  test 'modern theme shows non-link email beside hamburger' do
     visit root_path
-    refute page.has_css?('body.drawer-open')
-
-    find('.email a', match: :first).click
-    assert_selector '.email .menu', visible: true
-
-    find('#header .head-box .header-icon').click
-    # .menu regains .hidden (display:none) — not visible to default Capybara filters.
-    assert_selector '.email .menu.hidden', visible: :hidden
+    assert_selector '#header .head-box .modern-user-email', text: user.display_name
+    assert_no_selector '#header .head-box .modern-user-email a'
   end
 end

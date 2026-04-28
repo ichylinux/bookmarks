@@ -69,10 +69,21 @@
   }
 
   // Hamburger — specificity beats common.css.scss; z-index above drawer
+  #header .head-box .modern-user-email {
+    margin-left: auto;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45vw;
+  }
+
   #header .head-box .hamburger-btn {
     display: inline-block;
     position: relative;
-    margin-left: auto;
+    margin-left: 8px;
     min-width: 44px;
     min-height: 44px;
     padding: 0;

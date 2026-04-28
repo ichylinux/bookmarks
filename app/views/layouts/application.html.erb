@@ -18,6 +18,9 @@
       <div class="head-box">
         <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
         Bookmarks
+        <% if user_signed_in? && favorite_theme == 'modern' %>
+          <span class="modern-user-email"><%= current_user.display_name %></span>
+        <% end %>
         <button class="hamburger-btn" aria-label="メニュー"></button>
       </div>
     </div>
