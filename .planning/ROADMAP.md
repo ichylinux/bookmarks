@@ -7,8 +7,8 @@
 
 ## Phases (v1.2 — Modern Theme)
 
-- [ ] **Phase 5: Theme Foundation** - Add `modern` to preferences; create `modern.css.scss` stub with `.modern {}` skeleton and CSS custom property tokens; create `menu.js` stub with `body.modern` guard
-- [ ] **Phase 6: HTML Structure** - Add hamburger button to layout; add drawer div and overlay div with all nav links to `_menu.html.erb` outside `.wrapper`
+- [x] **Phase 5: Theme Foundation** — completed 2026-04-28 - Add `modern` to preferences; create `modern.css.scss` stub with `.modern {}` skeleton and CSS custom property tokens; create `menu.js` stub with `body.modern` guard
+- [x] **Phase 6: HTML Structure** — completed 2026-04-29 - Add hamburger button to layout; add drawer div and overlay div with all nav links to `_menu.html.erb` outside `.wrapper`
 - [ ] **Phase 7: Drawer CSS + Animation** - Drawer slide, backdrop fade, z-index stack, hamburger-to-X animation, `prefers-reduced-motion` support
 - [ ] **Phase 8: Drawer JS Interaction** - Wire jQuery toggle in `menu.js`: open/close handlers, backdrop click, Esc key, nav link close, stopPropagation guard
 - [ ] **Phase 9: Full-Page Theme Styles** - Header bar, body typography, table styling, action buttons, form inputs/selects
@@ -48,7 +48,7 @@
 **Plans**: 1 plan
 
 **Wave 1**
-- [ ] 06-01-PLAN.md — Add hamburger button to .head-box + drawer/overlay markup with 7 nav links after .wrapper (TDD, single layout edit + integration test)
+- [x] 06-01-PLAN.md — Add hamburger button to .head-box + drawer/overlay markup with 7 nav links after .wrapper (TDD, single layout edit + integration test)
 
 **UI hint**: yes
 
@@ -94,8 +94,8 @@
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5. Theme Foundation | v1.2 | 0/2 | Not started | - |
-| 6. HTML Structure | v1.2 | 0/1 | Not started | - |
+| 5. Theme Foundation | v1.2 | 2/2 | Complete | 2026-04-28 |
+| 6. HTML Structure | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 7. Drawer CSS + Animation | v1.2 | 0/? | Not started | - |
 | 8. Drawer JS Interaction | v1.2 | 0/? | Not started | - |
 | 9. Full-Page Theme Styles | v1.2 | 0/? | Not started | - |
@@ -120,4 +120,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-28 — Phase 5 planned (2 plans, Wave 1)*
+*Last updated: 2026-04-29 — Phase 6 complete (UAT passed); ready to plan Phase 7*
