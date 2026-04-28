@@ -31,17 +31,23 @@ Source: REQUIREMENTS.md §Out of Scope ("CSS framework (Bootstrap, Tailwind, etc
 
 ## Spacing Scale
 
-Phase 6 adds no new spacing values — it is HTML-only. The tokens below are the existing project
-scale (from `common.css.scss`) that downstream phases must align with. Phase 7 will introduce
-drawer-specific spacing values inside `.modern {}` scope in `modern.css.scss`.
+### Active Design Tokens (this phase)
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| xs | 4px | Inline gaps, icon-to-text gap in `.head-box` (existing: `gap: 10px` — Phase 7 may adjust) |
-| sm | 8px | Compact element spacing (breadcrumbs padding, action link padding) |
-| md | 12px | Header `.head-box` padding (existing: `padding: 12px 12px`) |
-| lg | 20px | Table margin, `.actions` margin |
-| xl | 50px | `.wrapper` padding (existing) |
+Phase 6 introduces no new spacing values — HTML-only phase.
+
+Downstream phases must not create new usage of any token value based on this phase's output. Phase 7 will author drawer-specific spacing inside `.modern {}` scope in `modern.css.scss` and will define its own tokens at that time.
+
+### Legacy Baseline (existing — read-only)
+
+The values below are pre-existing spacing values found in `app/assets/stylesheets/common.css.scss`. They are documented here as a reference for downstream phases. They are NOT active design tokens. Downstream phases must NOT create new usages based on these values — they are read-only snapshots of the current codebase state.
+
+| Existing Value | Location in common.css.scss | Current Usage |
+|---------------|------------------------------|---------------|
+| 4px | `gap: 10px` area (Phase 7 may adjust) | Inline gaps (approximate) |
+| 8px | breadcrumbs padding, action link padding | Compact element spacing |
+| 12px | `.head-box { padding: 12px 12px }` | Header box padding |
+| 20px | table margin, `.actions` margin | Section spacing |
+| 50px | `.wrapper` padding | Page wrapper horizontal padding |
 
 Exceptions: The header icon is 48px × 48px (flex-shrink: 0) — not a spacing token, a fixed dimension. Hamburger button touch target must be at minimum 44px × 44px (accessibility); Phase 7 sets this via `min-width`/`min-height`.
 
