@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Modern Theme
 status: progressing
 last_updated: "2026-04-29T18:00:00.000Z"
-last_activity: 2026-04-29 -- Phase 7 executed (07-01 complete; VERIFICATION passed)
+last_activity: 2026-04-29 -- Phase 8 discuss-phase: 08-CONTEXT.md + 08-DISCUSSION-LOG.md
 progress:
   total_phases: 5
   completed_phases: 3
@@ -18,9 +18,9 @@ progress:
 ## Current Position
 
 Phase: 8 (next)
-Plan: TBD — run /gsd-plan-phase 8 when ready
-Status: Phase 7 complete — drawer CSS and contract test shipped
-Last activity: 2026-04-29 -- /gsd-execute-phase 7 — modern.css.scss drawer+overlay+hamburger+reduced-motion; test/assets contract
+Plan: TBD — run /gsd-plan-phase 8 when ready (**08-CONTEXT.md** present)
+Status: Phase 8 context gathered — ready to plan
+Last activity: 2026-04-29 -- /gsd-discuss-phase 8 captured drawer JS decisions (roadmap + STATE)
 
 Progress: [██████░░░░] 60% (3/5 v1.2 phases)
 
@@ -29,7 +29,7 @@ Progress: [██████░░░░] 60% (3/5 v1.2 phases)
 See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.2 — Modern Theme (Phases 5–9)
+**Current milestone:** v1.2 — Modern Theme (Phases 5–9) — Phase 8 context at `.planning/phases/08-drawer-js-interaction/08-CONTEXT.md`
 **Shipped:** v1.1 (see `.planning/MILESTONES.md`, `.planning/milestones/v1.1-ROADMAP.md`). Roadmap collapsed in `ROADMAP.md` with full detail in the milestone archive.
 
 ## Accumulated Context
@@ -55,4 +55,4 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 - See `.planning/codebase/` for stack and conventions snapshots.
 
 ---
-*State updated: 2026-04-29 — Phase 7 execution complete*
+*State updated: 2026-04-29 — Phase 8 discuss-phase complete*
