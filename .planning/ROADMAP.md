@@ -96,7 +96,15 @@
   3. Data tables have visible row padding, alternating or hover-state row styling, and no unstyled appearance
   4. Action buttons (Edit, Delete, and primary form submit buttons) are visibly styled with the modern theme color tokens
   5. Form inputs and `<select>` elements on the Preferences page and CRUD forms have visible modern styling (border, padding, focus state)
-**Plans**: TBD
+**Plans**: 1 plan
+
+**Wave 1**
+- [ ] 09-01-PLAN.md — Full-page `modern.css.scss`: header strips, 16px system type, tables, actions/forms + SCSS contract test
+
+**Cross-cutting constraints:**
+- libsass: new CSS custom property values must be plain literals (no `$variable` refs)
+- Specificity: `.modern #header .head-box` for header overrides
+
 **UI hint**: yes
 
 ## Progress Table
@@ -107,7 +115,7 @@
 | 6. HTML Structure | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 7. Drawer CSS + Animation | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 8. Drawer JS Interaction | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 9. Full-Page Theme Styles | v1.2 | 0/? | Not started | - |
+| 9. Full-Page Theme Styles | v1.2 | 0/1 | Ready to execute | - |
 
 ## Phases (shipped: v1.1)
 
@@ -129,4 +137,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-29 — Phase 8 complete (drawer JS); next: Phase 9 (full-page styles)*
+*Last updated: 2026-04-29 — Phase 9 planned (`09-01-PLAN.md` + UI-SPEC/RESEARCH/VALIDATION); ready for execute*
