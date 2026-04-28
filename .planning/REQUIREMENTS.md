@@ -15,8 +15,8 @@
 ### Navigation
 
 - [ ] **NAV-01**: User sees a hamburger button in the header when using the modern theme
-- [ ] **NAV-02**: User can open a side drawer containing all navigation links by clicking the hamburger
-- [ ] **NAV-03**: User can close the drawer via backdrop click, Esc key, or clicking a nav link
+- [x] **NAV-02**: User can open a side drawer containing all navigation links by clicking the hamburger
+- [x] **NAV-03**: User can close the drawer via backdrop click, Esc key, or clicking a nav link
 
 ### Visual Styling
 
@@ -60,8 +60,8 @@
 | THEME-02 | Phase 5 | Pending |
 | THEME-03 | Phase 5 | Pending |
 | NAV-01 | Phase 6 | Pending |
-| NAV-02 | Phase 6, 8 | Pending |
-| NAV-03 | Phase 7, 8 | Pending |
+| NAV-02 | Phase 6, 8 | Complete |
+| NAV-03 | Phase 7, 8 | Complete |
 | STYLE-01 | Phase 9 | Pending |
 | STYLE-02 | Phase 9 | Pending |
 | STYLE-03 | Phase 9 | Pending |
@@ -75,4 +75,4 @@
 
 ---
 *Requirements defined: 2026-04-28*
-*Last updated: 2026-04-29 — A11Y-01 verified in Phase 7*
+*Last updated: 2026-04-29 — NAV-02 / NAV-03 verified in Phase 8*
