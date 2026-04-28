@@ -1,10 +1,11 @@
 ---
 phase: 5
 slug: theme-foundation
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-04-28
+reviewed_at: 2026-04-28
 ---
 
 # Phase 5 — UI Design Contract
