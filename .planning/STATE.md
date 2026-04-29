@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Modern Theme
 status: milestone_complete
 last_updated: "2026-04-29T02:11:07Z"
-last_activity: 2026-04-29 - Completed quick task 260429-q01: convert rails test:system into cucumber feature
+last_activity: 2026-04-29 - Completed quick task 260429-q02: rename theme デフォルト to クラシック, make モダン default
 progress:
   total_phases: 5
   completed_phases: 5
@@ -66,6 +66,7 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260429-q01 | convert rails test:system into cucumber feature | 2026-04-29 | 7646e35 | [260429-q01-convert-system-tests-to-cucumber](./quick/260429-q01-convert-system-tests-to-cucumber/) |
+| 260429-q02 | default theme now is 'モダン', theme 'デフォルト' should be renamed to 'クラシック' | 2026-04-29 | 6fd342b | [260429-q02-rename-default-theme-to-classic](./quick/260429-q02-rename-default-theme-to-classic/) |
 
 ---
 *State updated: 2026-04-29 — Phase 9 executed and complete; v1.2 milestone delivered*
