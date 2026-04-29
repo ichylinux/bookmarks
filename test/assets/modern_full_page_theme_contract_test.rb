@@ -45,7 +45,7 @@ class ModernFullPageThemeContractTest < ActiveSupport::TestCase
 
   # STYLE-04: Form controls
   test 'modern scss includes form control styles' do
-    assert_includes @scss, 'input[type='
+    assert_includes @scss, 'input[type="'
     assert_includes @scss, 'var(--modern-bg)'
     assert_includes @scss, 'border-radius:'
   end
