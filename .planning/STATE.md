@@ -61,5 +61,10 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 - Four new tokens added as plain hex: `--modern-header-fg (#ffffff)`, `--modern-border (#d1d5db)`, `--modern-surface-alt (#f3f4f6)`, `--modern-danger (#dc2626)`.
 - Typography (STYLE-02) placed inside `.modern {}` block as property declarations since `body` carries the class.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+
 ---
 *State updated: 2026-04-29 — Phase 9 executed and complete; v1.2 milestone delivered*
