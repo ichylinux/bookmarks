@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: &name bookmarks-app
-  labels: &labels
-    app: *name
+  name: bookmarks-app
+  labels:
+    app: bookmarks-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      <<: *labels
+      app: bookmarks-app
   template:
     metadata:
       labels:
-        <<: *labels
+        app: bookmarks-app
     spec:
       restartPolicy: Always
       containers:
-      - name: *name
+      - name: bookmarks
         image: bookmarks/app:latest
         envFrom:
         - configMapRef:
