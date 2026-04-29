@@ -5,6 +5,7 @@ class Preference < ActiveRecord::Base
   def self.default_preference(user)
     ret = self.new(user: user)
     ret.default_priority = Todo::PRIORITY_NORMAL
+    ret.theme = "modern"
     ret.use_todo = true
     ret
   end
