@@ -45,6 +45,8 @@ spec:
             sh "bundle exec rake dad:db:create"
             sh "bundle exec rails db:reset"
             sh "bundle exec rails test"
+            sh "bundle exec rails test:system"
+            sh "bundle exec rake dad:test"
           }
         }
       }
