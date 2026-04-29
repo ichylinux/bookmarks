@@ -19,7 +19,7 @@ pipeline {
     stage('unit') {
       agent {
         kubernetes {
-          inheritFrom 'default mysql'
+          inheritFrom 'default mysql chrome'
           yaml """
 apiVersion: v1
 kind: Pod
