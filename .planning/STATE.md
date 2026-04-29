@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Modern Theme
 status: milestone_complete
 last_updated: "2026-04-29T02:11:07Z"
-last_activity: 2026-04-30 - Completed quick task 260430-q04: check README.md for out dated information.
+last_activity: 2026-04-30 - Corrected quick task 260430-q04: README テーマ bullet now lists all 3 themes (モダン・クラシック・シンプル)
 progress:
   total_phases: 5
   completed_phases: 5
@@ -70,4 +70,4 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 | 260430-q04 | check README.md for out dated information. | 2026-04-30 | fa1d758 | [260430-q04-check-readme-outdated-info](./quick/260430-q04-check-readme-outdated-info/) |
 
 ---
-*State updated: 2026-04-30 — Quick task 260430-q04 complete: README updated with theme feature*
+*State updated: 2026-04-30 — Quick task 260430-q04 corrected: README テーマ bullet updated to list all 3 themes*
