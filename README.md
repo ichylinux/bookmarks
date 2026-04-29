@@ -45,24 +45,24 @@ yarn install
 # 環境変数を設定してから実行
 # MYSQL_HOST, MYSQL_PORT, MYSQL_USERNAME, MYSQL_PASSWORD
 
-bin/rails db:create
-bin/rails db:migrate
+bundle exec rake dad:db:create
+rails db:reset
 ```
 
 ### サーバー起動
 
 ```bash
-bin/rails server
+rails s
 ```
 
 ## テスト
 
 ```bash
 # Minitest（ユニット・結合テスト）
-bin/rails test
+rails test
 
 # Cucumber（受け入れテスト）
-bundle exec cucumber
+bundle exec rake dad:test
 ```
 
 ## JavaScript / リンター

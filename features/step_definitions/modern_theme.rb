@@ -51,9 +51,9 @@ end
 
 もし /^ルートページを開くと、ヘッダーにリンクなしでユーザー名が表示されます。$/ do
   visit root_path
-  assert has_css?('#header .head-box .modern-user-email', text: user.display_name),
+  assert has_css?('#header .head-box .head-user-email', text: user.display_name),
          'ヘッダーにユーザー名が表示されているはずです'
-  assert !page.has_css?('#header .head-box .modern-user-email a'),
+  assert !page.has_css?('#header .head-box .head-user-email a'),
          'ユーザー名はリンクではないはずです'
   capture
 end
