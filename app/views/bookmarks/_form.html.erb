@@ -1,14 +1,17 @@
 <%= form_for @bookmark do |f| %>
   <table>
     <tr>
-      <th><%= f.label :title %></th>
-      <td><%= f.text_field :title %></td>
-    </tr>
-    <tr>
       <th><%= f.label :url %></th>
       <td>
         <%= f.text_field :url, placeholder: 'URL（フォルダの場合は空欄）' %>
         <small>URLを空欄にするとフォルダとして作成されます</small>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :title %></th>
+      <td>
+        <%= f.text_field :title %>
+        <small>URLを入力したあと、別の欄へフォーカスを移す（Tab やクリック）と、ページのタイトルが自動で入ります。タイトル欄がすでに入力されているときは上書きしません。</small>
       </td>
     </tr>
     <tr>

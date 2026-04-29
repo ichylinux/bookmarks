@@ -1,0 +1,28 @@
+form.new_bookmark,
+form.edit_bookmark {
+  box-sizing: border-box;
+  width: 100%;
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  th {
+    width: 10em;
+    min-width: 10em;
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  td input[type="text"] {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+  }
+
+  td select {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+}
