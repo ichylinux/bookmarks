@@ -17,7 +17,7 @@
     <div id="header">
       <div class="head-box">
         <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
-        Bookmarks
+        <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
         <% if user_signed_in? && favorite_theme == 'modern' %>
           <span class="modern-user-email"><%= current_user.display_name %></span>
         <% end %>

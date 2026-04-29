@@ -37,6 +37,19 @@ a:hover {
   flex-shrink: 0;
 }
 
+// トップへ戻るが、本文リンクと同じ下線・色にならないようにする
+#header .head-box .head-title {
+  color: inherit;
+  text-decoration: none;
+}
+
+#header .head-box .head-title:hover,
+#header .head-box .head-title:visited,
+#header .head-box .head-title:active {
+  color: inherit;
+  text-decoration: none;
+}
+
 // Drawer UI is modern-theme only; keep hidden by default.
 #header .head-box .hamburger-btn,
 .drawer,
