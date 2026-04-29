@@ -16,6 +16,7 @@
 
   // Drawer backdrop — below panel, above main content
   .drawer-overlay {
+    display: block;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
@@ -40,7 +41,6 @@
     // Drawer width contract: min(88vw, 320px) — libsass cannot compile min(vw, px); use vw + max-width
     width: 88vw;
     max-width: 320px;
-    max-width: 100%;
     background: var(--modern-bg);
     box-shadow:
       0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -57,10 +57,6 @@
 
   .drawer nav {
     padding: 16px 24px;
-  }
-
-  .drawer-overlay {
-    display: block;
   }
 
   .drawer nav a {
