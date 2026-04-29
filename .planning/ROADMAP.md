@@ -11,7 +11,7 @@
 - [x] **Phase 6: HTML Structure** — completed 2026-04-29 - Add hamburger button to layout; add drawer div and overlay div with all nav links to `_menu.html.erb` outside `.wrapper`
 - [x] **Phase 7: Drawer CSS + Animation** — completed 2026-04-29 - Drawer slide, backdrop fade, z-index stack, hamburger-to-X animation, `prefers-reduced-motion` support
 - [x] **Phase 8: Drawer JS Interaction** — completed 2026-04-29 - Wire jQuery toggle in `menu.js`: open/close handlers, backdrop click, Esc key, nav link close, stopPropagation guard
-- [ ] **Phase 9: Full-Page Theme Styles** - Header bar, body typography, table styling, action buttons, form inputs/selects
+- [x] **Phase 9: Full-Page Theme Styles** — completed 2026-04-29 - Header bar replaces #AAA, 16px system typography, table padding/zebra, action link and form control token styling
 
 ## Phase Details
 
@@ -99,7 +99,7 @@
 **Plans**: 1 plan
 
 **Wave 1**
-- [ ] 09-01-PLAN.md — Full-page `modern.css.scss`: header strips, 16px system type, tables, actions/forms + SCSS contract test
+- [x] 09-01-PLAN.md — Full-page `modern.css.scss`: header strips, 16px system type, tables, actions/forms + SCSS contract test
 
 **Cross-cutting constraints:**
 - libsass: new CSS custom property values must be plain literals (no `$variable` refs)
@@ -115,7 +115,7 @@
 | 6. HTML Structure | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 7. Drawer CSS + Animation | v1.2 | 1/1 | Complete | 2026-04-29 |
 | 8. Drawer JS Interaction | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 9. Full-Page Theme Styles | v1.2 | 0/1 | Ready to execute | - |
+| 9. Full-Page Theme Styles | v1.2 | 1/1 | Complete | 2026-04-29 |
 
 ## Phases (shipped: v1.1)
 
@@ -137,4 +137,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-29 — Phase 9 planned (`09-01-PLAN.md` + UI-SPEC/RESEARCH/VALIDATION); ready for execute*
+*Last updated: 2026-04-29 — Phase 9 complete (`09-01-PLAN.md` executed); v1.2 milestone delivered*

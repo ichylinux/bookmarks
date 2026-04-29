@@ -20,10 +20,10 @@
 
 ### Visual Styling
 
-- [ ] **STYLE-01**: Modern theme header bar is clean (replaces `#AAA` gray; covers both `#header` and `.header` selectors)
-- [ ] **STYLE-02**: Modern theme uses 16px base typography with system font stack and improved line-height
-- [ ] **STYLE-03**: Modern theme tables have modern row styling, padding, and hover states
-- [ ] **STYLE-04**: Modern theme action buttons and form inputs/selects are visibly styled
+- [x] **STYLE-01**: Modern theme header bar is clean (replaces `#AAA` gray; covers both `#header` and `.header` selectors)
+- [x] **STYLE-02**: Modern theme uses 16px base typography with system font stack and improved line-height
+- [x] **STYLE-03**: Modern theme tables have modern row styling, padding, and hover states
+- [x] **STYLE-04**: Modern theme action buttons and form inputs/selects are visibly styled
 
 ### Accessibility
 
@@ -62,10 +62,10 @@
 | NAV-01 | Phase 6 | Pending |
 | NAV-02 | Phase 6, 8 | Complete |
 | NAV-03 | Phase 7, 8 | Complete |
-| STYLE-01 | Phase 9 | Pending |
-| STYLE-02 | Phase 9 | Pending |
-| STYLE-03 | Phase 9 | Pending |
-| STYLE-04 | Phase 9 | Pending |
+| STYLE-01 | Phase 9 | Complete (09-01, 2026-04-29) |
+| STYLE-02 | Phase 9 | Complete (09-01, 2026-04-29) |
+| STYLE-03 | Phase 9 | Complete (09-01, 2026-04-29) |
+| STYLE-04 | Phase 9 | Complete (09-01, 2026-04-29) |
 | A11Y-01 | Phase 7 | Complete |
 
 **Coverage:**
