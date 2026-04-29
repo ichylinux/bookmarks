@@ -19,6 +19,11 @@ class ModernFullPageThemeContractTest < ActiveSupport::TestCase
     assert_includes @scss, 'var(--modern-border)'
   end
 
+  test 'modern scss offsets main wrapper below primary header when menu strip omitted' do
+    assert_includes @scss, '.modern .wrapper'
+    assert_match(/padding-top:\s*24px/, @scss)
+  end
+
   # STYLE-02: Body typography
   test 'modern scss includes 16px system font stack' do
     assert_includes @scss, 'font-size: 16px'

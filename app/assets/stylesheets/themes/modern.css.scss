@@ -160,6 +160,12 @@
   color: var(--modern-header-fg);
 }
 
+// モダン＋ログイン時は common/_menu を出さないため二次ナビ帯が無い。その分、メイン領域上端に余白と区切り線を足す。
+.modern .wrapper {
+  padding-top: 24px;
+  border-top: 1px solid var(--modern-border);
+}
+
 // STYLE-01: Secondary nav strip
 .modern .header {
   min-height: 36px;
