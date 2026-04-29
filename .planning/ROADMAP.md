@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
-- **v1.2 — Modern Theme** — Phases 5–9 (in progress)
+- ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29)
 
 ## Phases (v1.2 — Modern Theme)
 

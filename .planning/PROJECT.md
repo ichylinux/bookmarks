@@ -8,14 +8,14 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 
-## Current Milestone: v1.2 Modern Theme
+## Current Milestone: v1.2 Modern Theme — SHIPPED 2026-04-29
 
 **Goal:** Add a selectable "Modern" theme with a hamburger side-drawer nav and clean, full-page styling throughout the app.
 
 **Target features:**
-- New `modern` theme option in the preferences UI
-- Hamburger button in the header opens a side drawer with all navigation links
-- Full-page modern styling: header bar, body typography, tables, action buttons, and forms
+- [x] New `modern` theme option in the preferences UI
+- [x] Hamburger button in the header opens a side drawer with all navigation links
+- [x] Full-page modern styling: header bar, body typography, tables, action buttons, and forms
 
 ## Requirements
 
@@ -31,8 +31,8 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 ### Active (v1.2)
 
 - [x] New `modern` theme selectable via preferences (theme string stored in DB, no migration needed) — **Validated in Phase 5** (preferences UI, modern.css.scss token stub, menu.js guard)
-- [ ] Hamburger button in modern theme header opens a side drawer with all nav links
-- [ ] Full-page modern styling: header, body typography, tables, action buttons, forms
+- [x] Hamburger button in modern theme header opens a side drawer with all nav links — **Phase 6–8**
+- [x] Full-page modern styling: header, body typography, tables, action buttons, forms — **Phase 9**
 
 ### Out of Scope (carried from v1.1; revisit when planning)
 
