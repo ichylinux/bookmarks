@@ -37,7 +37,9 @@ spec:
       environment {
         COVERAGE = 'true'
         FORMAT = 'junit'
+        HEADLESS = 'true'
         RAILS_ENV = 'test'
+        REMOTE = 'true'
       }
       steps {
         container('app') {
