@@ -3,6 +3,10 @@
   --modern-bg:            #ffffff;
   --modern-text:          #1a1a1a;
   --modern-header-bg:     #1e40af;
+  --modern-header-fg:     #ffffff;
+  --modern-border:        #d1d5db;
+  --modern-surface-alt:   #f3f4f6;
+  --modern-danger:        #dc2626;
 
   // Drawer backdrop — below panel, above main content
   .drawer-overlay {
@@ -144,4 +148,46 @@
       transition: none;
     }
   }
+}
+
+// STYLE-01: Primary header bar — top-level selector for ID specificity
+// Beats common.css.scss: #header .head-box { background: #AAA }
+.modern #header .head-box {
+  background: var(--modern-header-bg);
+  color: var(--modern-header-fg);
+}
+
+// STYLE-01: Secondary nav strip
+.modern .header {
+  min-height: 36px;
+  height: auto;
+  line-height: 36px;
+  padding: 0 4px;
+  background: var(--modern-bg);
+  border-bottom: 1px solid var(--modern-border);
+}
+
+.modern .header ul.navigation li a,
+.modern .header ul.navigation li a:visited {
+  color: var(--modern-text);
+  text-decoration: none;
+}
+
+.modern .header ul.navigation li a:hover {
+  text-decoration: underline;
+  color: var(--modern-color-primary);
+}
+
+.modern .header ul.navigation li a:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
+}
+
+.modern .header .menu {
+  border: 1px solid var(--modern-border);
+  background: var(--modern-bg);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
 }
