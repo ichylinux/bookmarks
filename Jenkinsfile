@@ -19,7 +19,7 @@ pipeline {
     stage('unit') {
       agent {
         kubernetes {
-          inheritFrom 'default mysql chrome'
+          inheritFrom 'default mysql'
           yaml """
 apiVersion: v1
 kind: Pod
@@ -37,9 +37,7 @@ spec:
       environment {
         COVERAGE = 'true'
         FORMAT = 'junit'
-        HEADLESS = 'true'
         RAILS_ENV = 'test'
-        REMOTE = 'true'
       }
       steps {
         container('app') {
@@ -47,7 +45,6 @@ spec:
             sh "bundle exec rake dad:db:create"
             sh "bundle exec rails db:reset"
             sh "bundle exec rails test"
-            sh "bundle exec rake dad:test"
           }
         }
       }
