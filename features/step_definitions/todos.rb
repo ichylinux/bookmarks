@@ -20,7 +20,7 @@ end
 end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
-  click_on 'Home'
+  click_on 'Bookmarks'
   assert has_selector?('#todo .title', text: name)
   capture
 end
