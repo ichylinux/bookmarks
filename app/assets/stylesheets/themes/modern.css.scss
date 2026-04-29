@@ -166,6 +166,10 @@
   color: var(--modern-header-fg);
 }
 
+.modern #header .head-box .head-title:visited {
+  color: var(--modern-header-fg);
+}
+
 // モダン＋ログイン時は common/_menu を出さないため二次ナビ帯が無い。その分、メイン領域上端に余白と区切り線を足す。
 .modern .wrapper {
   padding-top: 24px;
