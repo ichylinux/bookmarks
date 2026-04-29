@@ -2,7 +2,7 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Modern Theme
-status: progressing
+status: milestone_complete
 last_updated: "2026-04-29T02:11:07Z"
 last_activity: 2026-04-29 -- Phase 9 executed: 09-01-PLAN complete (STYLE-01 through STYLE-04 + contract test)
 progress:
@@ -29,7 +29,7 @@ Progress: [██████████] 100% (5/5 v1.2 phases complete)
 See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.2 — Modern Theme (Phases 5–9) — Phase 9 plan at `.planning/phases/09-full-page-theme-styles/`
+**Current milestone:** v1.2 — Modern Theme — SHIPPED 2026-04-29. Planning next milestone.
 **Shipped:** v1.1 (see `.planning/MILESTONES.md`, `.planning/milestones/v1.1-ROADMAP.md`). Roadmap collapsed in `ROADMAP.md` with full detail in the milestone archive.
 
 ## Accumulated Context
