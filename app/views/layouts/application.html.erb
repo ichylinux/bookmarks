@@ -18,7 +18,7 @@
       <div class="head-box">
         <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
         <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
-        <% if user_signed_in? && favorite_theme == 'modern' %>
+        <% if user_signed_in? && (favorite_theme == 'modern' || favorite_theme == 'classic') %>
           <span class="modern-user-email"><%= current_user.display_name %></span>
         <% end %>
         <button class="hamburger-btn" aria-label="メニュー"></button>
@@ -26,7 +26,7 @@
     </div>
 
     <div class="wrapper">
-      <%= render 'common/menu' if user_signed_in? && favorite_theme != 'modern' %>
+      <%= render 'common/menu' if user_signed_in? && favorite_theme != 'modern' && favorite_theme != 'classic' %>
       <%= yield %>
     </div>
     <% if user_signed_in? %>
