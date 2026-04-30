@@ -2,13 +2,13 @@
 phase: 12-tab-ui
 slug: tab-ui
 verified_at: 2026-04-30
-status: human_needed
+status: passed
 status_note: >-
-  TAB-02 の「ページリロードなし・アドレスバー query 不変」の要件は Rails 統合テストでは直接証明できない。
-  `12-02-SUMMARY.md` にあるとおりワークフロー自動承認のみで本セッションはブラウザ実地確認を行っていない。
+  TAB-02 の「ページリロードなし・アドレスバー query 不変」は、2026-04-30 にユーザー承認済み。
+  Rails 統合テストで直接証明できない部分は `12-HUMAN-UAT.md` に記録した。
 requirements:
   TAB-01: covered_automated
-  TAB-02: human_pending
+  TAB-02: covered_human
   TAB-03: covered_automated
 ---
 
@@ -22,8 +22,9 @@ requirements:
 
 | 項目 | 判定 |
 |------|------|
-| **YAML status** | `human_needed`（下記 TAB-02 人手確認が未証明のため） |
+| **YAML status** | `passed` |
 | 自動化・静的整合 | TAB-01 / TAB-03 / ROADMAP SC4（モダン・クラシック非表示）は **満たす** |
+| 人手 UAT | TAB-02 は 2026-04-30 にユーザー承認済み（`12-HUMAN-UAT.md`） |
 
 ---
 
@@ -53,7 +54,7 @@ requirements:
 
 | 要件 ID | 内容 | 本記録での状態 |
 |---------|------|----------------|
-| **TAB-02** | タブクリックでパネル切替、**フルページリロードなし**、クリック前後でアドレスバーの query が変わらない（D-07） | **未実施（ブラウザ未観測）** — `12-02-SUMMARY.md` のチェック表はいずれも「Not manually re-run here」と明記。実装は `button` + jQuery でリロード機構がなく、レビューでも主操作がナビゲーションでないことは整合。正式サインオフには `12-VALIDATION.md` §Manual-Only の手順での実地確認を推奨。 |
+| **TAB-02** | タブクリックでパネル切替、**フルページリロードなし**、クリック前後でアドレスバーの query が変わらない（D-07） | **承認済み** — 2026-04-30 にユーザーが UAT を `approved`。`12-HUMAN-UAT.md` に記録。 |
 
 ---
 
@@ -72,14 +73,14 @@ requirements:
 | ID | 要件（要約） | 検証 |
 |----|--------------|------|
 | **TAB-01** | シンプル welcome にホーム／ノートのタブが見える | 自動: `welcome_controller_test`（`nav.simple-tabstrip`、両 `button`、`#simple-home-panel` / `#notes-tab-panel`） |
-| **TAB-02** | ノートクリックでノートパネル、ホームでポータルに戻る、**無リロード** | 実装・静的レビューは整合。**ブラウザ UAT は本フェーズ実行記録上「未人手観測」** のためフェーズ証明は `human_pending`。 |
+| **TAB-02** | ノートクリックでノートパネル、ホームでポータルに戻る、**無リロード** | 実装・静的レビューは整合。ブラウザ UAT は 2026-04-30 にユーザー承認済み。 |
 | **TAB-03** | ノート保存後にノートタブ文脈で戻る | 自動: `root_path(tab: 'notes')` リダイレクトのテスト、`GET /?tab=notes` の SSR でノート側可視クラス |
 
 ---
 
-## フェーズ達成への残作業（policy により任意）
+## フェーズ達成への残作業
 
-TAB-02 を「証明済み」にする場合: シンプルテーマでログインし `/` で「ホーム」「ノート」を往復、ネットワークで document ナビゲーションが増えないこととアドレスバー query 不変を記録する（`12-02-PLAN.md` Task 2）。
+なし。TAB-02 のブラウザ UAT は `12-HUMAN-UAT.md` で承認済み。
 
 ---
 

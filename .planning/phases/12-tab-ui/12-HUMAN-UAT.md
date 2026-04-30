@@ -1,16 +1,16 @@
 ---
-status: partial
+status: resolved
 phase: 12-tab-ui
 source: [12-VERIFICATION.md]
 started: 2026-04-30T09:00:00Z
-updated: 2026-04-30T09:00:00Z
+updated: 2026-04-30T09:18:00Z
 ---
 
 # Phase 12 — Human UAT
 
 ## Current Test
 
-Awaiting human browser verification for TAB-02 no-reload tab switching.
+TAB-02 no-reload tab switching approved by the user on 2026-04-30.
 
 ## Tests
 
@@ -22,7 +22,9 @@ expected: >
   document navigation. Clicking `ホーム` reverses the visible panel. The address
   bar query string does not change on tab clicks.
 
-result: pending
+result: passed
+approved_at: 2026-04-30T09:18:00Z
+approved_by: user
 
 steps:
   - Sign in with a user whose preference theme is `simple`.
@@ -38,9 +40,9 @@ steps:
 ## Summary
 
 total: 1
-passed: 0
+passed: 1
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 

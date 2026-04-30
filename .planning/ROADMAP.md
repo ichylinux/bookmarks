@@ -54,7 +54,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 
 - [x] **Phase 10: Data Layer** - Migration, Note model, and user ownership foundation — completed 2026-04-30
 - [x] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests (completed 2026-04-30)
-- [ ] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect (human verification pending)
+- [x] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect (completed 2026-04-30)
 - [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests
 
 ## Phase Details
@@ -122,7 +122,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 |-------|-----------|----------------|--------|-----------|
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
 | 11. Notes Controller | v1.3 | 1/1 | Complete    | 2026-04-30 |
-| 12. Tab UI | v1.3 | 2/2 | Human UAT |  |
+| 12. Tab UI | v1.3 | 2/2 | Complete    | 2026-04-30 |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
 ---
