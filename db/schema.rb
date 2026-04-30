@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_30_074727) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -71,6 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_30_074727) do
     t.boolean "open_links_in_new_tab", default: false, null: false
     t.string "theme"
     t.datetime "updated_at"
+    t.boolean "use_note", default: true, null: false
     t.boolean "use_todo", default: false, null: false
     t.integer "user_id", null: false
   end
