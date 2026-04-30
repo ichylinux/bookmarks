@@ -1,0 +1,15 @@
+# Phase 10: stub fixture for the fixture loader.
+# Two rows used by test/models/note_test.rb to verify Crud::ByUser ownership.
+# Phase 11 / 13 may extend or replace these as needed.
+
+one:
+  id: 1
+  user_id: 1
+  body: ユーザー1のメモ
+  deleted: false
+
+two:
+  id: 2
+  user_id: 2
+  body: ユーザー2のメモ
+  deleted: false
