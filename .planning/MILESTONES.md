@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.3 — Quick Note Gadget (shipped 2026-04-30)
+
+**Scope:** Phases 10–13 (10 plans) — data layer, notes controller, simple-theme tab UI, note gadget, Cucumber E2E, and drawer-gating helper. 14 files changed, 287 insertions.
+
+**Key accomplishments:**
+
+- `notes` table migration with composite `(user_id, created_at)` index; `Note` model with `Crud::ByUser`, soft-delete `destroy` override, `validates :body presence/length`, and `scope :recent`.
+- `NotesController#create` — authenticated POST, `user_id` merged server-side from `current_user`, redirects to `root_path(tab: 'notes')`; integration tests cover auth, scoping, validation failure, and redirect.
+- Simple-theme tab strip (ホーム/ノート) with jQuery switching (`notes_tabs.js`), SSR-driven initial state from `?tab=notes`, and all styles scoped under `.simple { }` — invisible on modern and classic themes.
+- `_note_gadget.html.erb` partial: textarea + Save button, empty-state message ("メモはまだありません"), and reverse-chronological note list with escaped bodies and readable timestamps.
+- `WelcomeControllerTest` extended with structure, empty-state, ordering/timestamp, and cross-user isolation coverage; 22 runs, 110 assertions, 0 failures.
+- Cucumber `features/04.ノート.feature` — Japanese E2E: simple-theme activate → textarea fill → save → redirect to `?tab=notes` → list assert.
+- `drawer_ui?` WelcomeHelper method gates hamburger + drawer blocks in layout; `layout_structure_test.rb` extended with classic drawer presence and simple-theme absence assertions.
+- Human UAT 5/5 passed (2026-04-30).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.3-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.3-REQUIREMENTS.md)
+
+---
+
 ## v1.2 — Modern Theme (shipped 2026-04-29)
 
 **Scope:** Phases 5–9 (7 plans) — theme infrastructure, hamburger drawer navigation, full-page CSS polish. 14 source files changed, 589 lines added.

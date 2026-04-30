@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.3
-milestone_name: — Quick Note Gadget
-status: shipped_pending_archive
-stopped_at: "Phase 13 UAT complete — optional: /gsd-complete-milestone"
-last_updated: "2026-04-30T13:20:00.000Z"
-last_activity: 2026-04-30 — Phase 13 conversational UAT 5/5 passed
+milestone_name: Quick Note Gadget
+status: archived
+stopped_at: "v1.3 archived 2026-05-01 — run /gsd-new-milestone to start v1.4"
+last_updated: "2026-05-01T00:00:00.000Z"
+last_activity: 2026-05-01 — v1.3 milestone archived
 progress:
   total_phases: 4
   completed_phases: 4
@@ -18,62 +18,37 @@ progress:
 
 ## Current Position
 
-Phase: 13 (complete)
-Plan: UAT complete — see `13-UAT.md`
-Status: v1.3 delivery done; run `/gsd-complete-milestone` to archive and open next version
-Last activity: 2026-04-30 — Human UAT finished for note gadget + drawer theme gates
-
-Progress: All v1.3 phases (10–13) implemented and user-verified.
+Phase: 13 (complete — archived)
+Status: v1.3 archived. No active milestone.
+Next: `/gsd-new-milestone` to define and start v1.4.
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-04-30)
+See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.3 — Quick Note Gadget — **shipped** 2026-04-30 (archive step optional).
-**Shipped:** v1.1, v1.2, v1.3 (see `.planning/MILESTONES.md`).
+**Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30)
+**Current milestone:** None — planning next.
 
 ## Accumulated Context
 
-### Key Decisions (v1.3)
+### Shipped in v1.3
 
-- Zero new dependencies: entire feature built on existing Rails/ActiveRecord/ERB/jQuery/SCSS stack.
-- Full-page POST with redirect (not AJAX) for note create — consistent with bookmarks and preferences forms.
-- Tab switching via jQuery `show()`/`hide()` + `?tab=notes` query param to survive POST/redirect cycle.
-- Theme isolation: all tab HTML wrapped in `<% if favorite_theme == 'simple' %>`; all tab CSS scoped under `.simple { }` in `welcome.css.scss`.
-- `user_id` never in strong params — merged from `current_user.id` server-side (pattern from `todos_controller.rb`).
-- Rails 8 association `user.notes.delete_all` triggers nullifying updates incompatible with NOT NULL `user_id`; tests use `Note.where(user_id: user.id).delete_all`.
+- `notes` table + `Note` model (`Crud::ByUser`, soft-delete, validations, `scope :recent`)
+- `NotesController#create` — authenticated, `user_id` merged server-side, redirects to `root_path(tab: 'notes')`
+- Simple-theme tab strip (ホーム/ノート) with jQuery switching, SSR `?tab=notes` initial state
+- `_note_gadget.html.erb` with empty-state and reverse-chrono list
+- `WelcomeControllerTest` gadget + isolation coverage; Cucumber `features/04.ノート.feature`
+- `drawer_ui?` helper gating hamburger/drawer in layout; `layout_structure_test.rb` extended
 
-### Critical Pitfalls to Track
+### Critical Pitfalls (carry forward)
 
-- NOTE-03 (user isolation): scope every query to `current_user` from day one; never use `Note.all`.
-- TAB theme leakage: both ERB guard and CSS scope required — one alone is not enough.
-- TAB-03 (post-save redirect): redirect to `root_path(tab: 'notes')`; `notes.js` reads `URLSearchParams` on DOM ready.
-- CSRF: use `form_with(local: true)` — do not copy the inline `authenticity_token` pattern from portal layout.
-
-### From v1.2
-
-- CSS specificity lesson: prefer class-based selectors scoped under theme class to avoid ID conflicts.
-- `menu.js` guard pattern (`if (!$('body').hasClass('modern')) return;`) is the model for `notes.js` tab guard.
-
-### Pending Todos
-
-- [Extract drawer_ui? helper](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — done in Phase 13-04 (close or delete todo manually).
-- [Gate drawer blocks on theme](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — done via `drawer_ui?` (close manually).
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260429-q01 | convert rails test:system into cucumber feature | 2026-04-29 | 7646e35 | [260429-q01-convert-system-tests-to-cucumber](./quick/260429-q01-convert-system-tests-to-cucumber/) |
-| 260429-q02 | default theme now is 'モダン', theme 'デフォルト' should be renamed to 'クラシック' | 2026-04-29 | 6fd342b | [260429-q02-rename-default-theme-to-classic](./quick/260429-q02-rename-default-theme-to-classic/) |
-| 260430-q05 | User notes: drop dependent: :destroy (disable-first lifecycle, avoid unbounded cascade) | 2026-04-30 | — | [260430-q05-notes-no-dependent-destroy](./quick/260430-q05-notes-no-dependent-destroy/) |
-| 260430-q04 | check README.md for out dated information. | 2026-04-30 | fa1d758 | [260430-q04-check-readme-outdated-info](./quick/260430-q04-check-readme-outdated-info/) |
-| 260430-pph | modenize JavaScript in notes_tabs.js | 2026-04-30 | be02d6f | [260430-pph-modenize-javascript-in-notes-tabs-js](./quick/260430-pph-modenize-javascript-in-notes-tabs-js/) |
-| 260430-pz0 | use English simple tab labels | 2026-04-30 | 9b27b8f | [260430-pz0-as-shown-in-tmp-ss-png-tabs-are-represen](./quick/260430-pz0-as-shown-in-tmp-ss-png-tabs-are-represen/) |
+- Rails 8.1 `has_many ... delete_all` nullify incompatibility with NOT NULL `user_id` — use `Note.where(user_id: user.id).delete_all` in tests
+- Theme leakage: both ERB guard (`favorite_theme == 'simple'`) and CSS scope (`.simple { }`) are required — one alone is insufficient
+- CSRF: use `form_with(local: true)` — do not copy inline `authenticity_token` from portal layout
 
 ## Session Continuity
 
-Last session: 2026-04-30T13:20:00.000Z
-Stopped at: Phase 13 UAT complete
-Resume file: .planning/phases/13-note-gadget-integration-tests/13-UAT.md
+Last session: 2026-05-01T00:00:00.000Z
+Stopped at: v1.3 milestone archived
+Resume: `/gsd-new-milestone` to start v1.4
