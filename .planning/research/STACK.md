@@ -1,7 +1,7 @@
 # Stack Research
 
-**Domain:** Quick Note Gadget — note-taking CRUD feature on Rails 8.1 / Sprockets / jQuery
-**Researched:** 2026-04-30
+**Domain:** Rails i18n / Bilingual (ja/en) support with per-user locale preference
+**Researched:** 2026-05-01
 **Confidence:** HIGH
 
 ## Recommended Stack
@@ -10,133 +10,129 @@
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Rails ActiveRecord | 8.1.3 (already installed) | `Note` model, migrations, user-scoped queries | Already in the app; a Note is just a persisted row with `user_id` and `body` — zero new infrastructure needed |
-| Rails form helpers (`form_with`) | 8.1.3 (already installed) | Textarea + save button for creating notes | Standard Rails server-side form; no JS framework or API endpoint required for the initial save path |
-| Rails ERB partials | 8.1.3 (already installed) | Note list rendering, note row partial | Consistent with every other view in the app; keeps the simple theme welcome page server-rendered |
-| jQuery (XHR via `$.ajax` / `rails-ujs`) | 4.6.1 (already installed) | Optional: async note submission so page does not fully reload | Already loaded globally; the existing todo gadget demonstrates the `render partial:` → XHR → DOM swap pattern |
-| SCSS (sass-rails / sassc) | 6.0.0 (already installed) | Styles for the note tab, textarea, list | Already compiled via Sprockets; a scoped `.simple .note-tab { }` block in `themes/simple.css.scss` or a new `notes.css.scss` is all that is needed |
-| MySQL via ActiveRecord | mysql2 adapter (already installed) | Persist notes with `user_id`, `body`, `created_at` | No special storage requirements; a plain `notes` table works |
+| Rails I18n framework | Built into Rails 8.1.3 (already present) | `t()` / `I18n.t()` helper, YML locale files, `I18n.with_locale` | Zero new dependencies; `config/locales/*.yml` is the Rails standard and already partially populated in this app (`ja.yml`, `en.yml` exist) |
+| `rails-i18n` gem | 8.1.0 (already in Gemfile.lock) | Provides Rails ActiveRecord/ActionView locale data (validation messages, date formats, number formats) for `:ja` and `:en` | Without this gem, Rails' built-in messages (e.g., "can't be blank") would only appear in English; the 8.1.0 release (Nov 2025) matches the app's Rails 8.1.x series exactly |
+| `devise-i18n` gem | 1.16.0 (already in Gemfile.lock) | Devise flash messages and view labels in both locales | Devise flash strings bypass normal controller locale flow via Warden middleware; this gem provides the ja/en translation keys that Devise looks up internally. Version 1.16.0 released Feb 2026. |
+| `before_action :set_locale` | Rails 8.1 built-in | Per-request locale setting in `ApplicationController` | Safer for this Devise/Warden app because failure responses can run outside an `around_action` locale scope. Set `I18n.locale` at the start of every request; never mutate `I18n.default_locale` at runtime. |
+| `users.locale` column (string) | New migration | Persists per-user language choice in the database | The `preferences` table already stores per-user boolean/string flags (theme, use_note, use_todo); locale follows the same pattern. Storing on `users` (not `preferences`) is simpler — locale is a core user attribute, not a display preference. |
 
 ### Supporting Libraries
 
-No new gems or npm packages are required.
-
 | Library | Version | Purpose | When to Use |
 |---------|---------|---------|-------------|
-| `rails-ujs` (already in application.js) | bundled with Rails 8.1 | `data-remote="true"` on the note form enables async POST without writing custom `$.ajax` | Use if XHR-based form submission (no full page reload) is desired; already loaded, zero install cost |
-| Turbo (actiontext / turbo-rails) | — | SPA-like partial updates | **DO NOT add** — Sprockets/jQuery/rails-ujs pipeline is the app's explicit constraint; adding Turbo Drive in a Sprockets app without import maps is a non-trivial migration and is out of scope per PROJECT.md |
+| `http_accept_language` gem | 2.1.1 | Parse `Accept-Language` header for unauthenticated / first-visit locale detection | Add this gem. Handles quality-value (`q=`) weighting, language subtag normalization, and matching against `I18n.available_locales`. The `compatible_language_from` method returns the best match or `nil`. Last release 2017 but stable; no known Rails 8 incompatibilities. |
+| `i18n-js` gem | 4.2.4 (already in Gemfile) | Export Rails YML translations to JSON for JavaScript consumption | **Do not configure for this milestone.** No JavaScript in the app currently calls `I18n.t()`; all `messages.confirm_delete` usages are ERB `t()` calls rendered server-side. The gem is in the Gemfile but uninitialized — leave it dormant. See "What NOT to Use" below. |
 
 ### Development Tools
 
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| ESLint + Prettier (already configured) | Lint any JS added for tab switching or note form behaviour | Run `yarn run lint` before committing; conventions in `.planning/codebase/CONVENTIONS.md` |
-| Minitest (already configured) | Controller + model unit tests for `NotesController`, `Note` model | Follow existing test naming convention (`test_一覧`, `test_作成`, etc.) |
-| Cucumber / `bundle exec rake dad:test` (already configured) | Acceptance test for note tab and list display | Follow existing feature file patterns in `features/` |
+| `rails g devise:i18n:locale ja` | Generate a custom Devise ja locale file into `config/locales/` | Run once if you need to override or extend any Devise key beyond what the gem ships. Not required if the bundled translations are sufficient. |
+| `I18n.available_locales` check in test | Guard against typo locale strings in fixtures/tests | Set `I18n.available_locales = %i[ja en]` in `config/application.rb`; `I18n.enforce_available_locales = true` (already set) will raise on unknown locales. |
+| Minitest `I18n.with_locale(:en) { }` block | Test English-locale path in controller/integration tests | Wrap assertions that check English strings inside an explicit locale block; avoids fixture-locale coupling |
 
 ## Installation
 
-No new gems or npm packages are required for this milestone.
-
 ```bash
-# Generate the migration — run once
-bundle exec rails generate migration CreateNotes user_id:integer:index body:text
-bundle exec rails db:migrate
+# Add http_accept_language to Gemfile (one new gem)
+bundle add http_accept_language
+
+# Generate migration for users.locale column
+bundle exec rails generate migration AddLocaleToUsers locale:string
+
+# (Optional) Generate custom Devise locale override files
+bundle exec rails g devise:i18n:locale ja
+bundle exec rails g devise:i18n:locale en
 ```
 
-No `Gemfile` changes. No `package.json` changes.
+No `package.json` or Sprockets changes. No Gemfile changes for `rails-i18n` or `devise-i18n` — both already present.
 
 ## Alternatives Considered
 
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
-| Plain `form_with` POST + redirect (or `data-remote` XHR) | Turbo Streams / Stimulus | Only if the project migrates to an import-maps or ESM pipeline; explicitly out of scope for this milestone |
-| Hand-rolled tab switching with jQuery `show()`/`hide()` | jQuery UI Tabs widget | jQuery UI is already installed; however, the tab requirement is two links + two `<div>` panels — jQuery UI Tabs adds event overhead and a dependency on jQuery UI theming that conflicts with the simple theme's minimal style. Hand-rolled is simpler and already proven by the modern theme drawer. |
-| CSS tab switching with `<input type="radio">` hack | Pure CSS | Would work but adds hidden radio inputs and complex `:checked` sibling selectors to a view that is otherwise straightforward ERB; harder to follow for maintainers |
-| `Note` model with `body` text column | ActionText / Trix editor | ActionText is justified for rich text; for a personal note textarea a plain `text` column is sufficient and avoids adding Active Storage complexity |
+| `locale` column on `users` table | `locale` column on `preferences` table | Use `preferences` only if locale is conceptually a display preference and you want a single migration target. `users` is cleaner: locale affects auth flows and Devise emails, not just UI display. |
+| `before_action { I18n.locale = ... }` | `around_action` + `I18n.with_locale` | `around_action` is the general Rails recommendation, but use `before_action` in this app so Devise/Warden failure messages see the resolved locale. Verify failed-login flash localization in English. |
+| `http_accept_language` gem | Manual `request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first` | Use the manual approach only in trivial apps. The gem handles quality weighting, wildcards, and nil-safety correctly. The Rails guide itself recommends using "a library like the http_accept_language gem" for production. |
+| `users.locale` as a `string` column | `users.locale` as an enum | Use enum if you want database-level constraint. For two locales, a plain `string` with application-layer validation (`validates :locale, inclusion: { in: %w[ja en] }, allow_nil: true`) is simpler and easier to extend later. |
 
 ## What NOT to Use
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| Turbo Drive / turbo-rails | Would require replacing `rails-ujs` and potentially import maps; explicit out-of-scope constraint in PROJECT.md | `data-remote="true"` + `render partial:` (existing pattern from todos and calendars) |
-| Action Text / Trix | Heavyweight rich-text infrastructure (Active Storage blobs, polymorphic `rich_text` table) for a plain textarea; adds migration complexity and a new JS dependency | Plain `body:text` column |
-| Pagination gems (Kaminari, Pagy) | Over-engineered for a personal note list; a user is unlikely to accumulate hundreds of notes before a `limit` is warranted | `Note.where(user: current_user).order(created_at: :desc).limit(50)` in the controller |
-| A separate `notes` API endpoint returning JSON | Adds a REST namespace with no benefit when the app is server-rendered and jQuery XHR can consume an HTML partial | Controller action that renders an HTML partial (same pattern as `todos#create`) |
-| `belongs_to :user, optional: true` | Leaves orphaned rows possible; notes are always user-owned | `belongs_to :user` (non-optional, default in Rails 5+) + `validates :user, presence: true` |
+| `i18n-js` v4 Sprockets integration (configuring the gem) | `i18n-js` v4 was redesigned for modern JS bundlers (webpack, esbuild, Vite). It requires a companion `i18n-js` npm package (`yarn add i18n-js`) and uses ESM `import` syntax. Wiring it into a Sprockets `application.js` manifest is unsupported and would require manual `//= require` shims that break under Uglifier minification. The gem is already in the Gemfile but unused — leave it that way. | All translatable strings in this app are rendered server-side via `t()` in ERB views. No JavaScript i18n is needed for this milestone. |
+| `globalize` / `mobility` gem (model-level translations) | These gems translate database-stored *content* (e.g., bookmark titles stored in multiple languages). This milestone translates *UI strings*, not user content. | Rails `config/locales/*.yml` for UI string translation |
+| URL-based locale (`/ja/bookmarks`, `/en/bookmarks`) | Requires routing changes, redirect logic for all existing routes, and changes to every `link_to` / `redirect_to` call in the app. Disproportionate effort for a personal app with authenticated users who have a stored preference. | Per-user `locale` column + `Accept-Language` for guests |
+| Locale stored in the session | Session-based locale is lost on sign-out and does not survive across devices/browsers. | Database column on `users` (persists per-account across sessions) |
+| Locale stored in a cookie | Cookie locale is device-local and not synced to the user account. | Database column on `users` |
 
 ## Stack Patterns
 
-**Existing pattern to follow — XHR partial swap (todos gadget):**
-
-The `TodosController#create` action renders `partial: 'todo'` rather than redirecting. The view calls the endpoint via `data-remote="true"` on the form or a jQuery `$.post`. The returned HTML fragment is inserted into the DOM. Replicate this for `NotesController#create`.
+**ApplicationController locale switching (canonical pattern):**
 
 ```ruby
-# app/controllers/notes_controller.rb
-def create
-  @note = Note.new(note_params)
-  @note.transaction { @note.save! }
-  render partial: 'note', locals: { note: @note }
+before_action :set_locale
+
+private
+
+def set_locale
+  I18n.locale = locale_for_current_request
+end
+
+def locale_for_current_request
+  if user_signed_in? && current_user.locale.present?
+    current_user.locale
+  else
+    http_accept_language.compatible_language_from(I18n.available_locales)
+  end || I18n.default_locale
 end
 ```
 
-**Tab switching — jQuery show/hide (two panels only):**
-
-Two `<div>` panels (`#tab-home`, `#tab-note`) with matching tab links. jQuery toggles `active` class on the link and `hidden` on the panels. No library needed.
-
-```javascript
-// app/assets/javascripts/welcome.js (new or extend existing)
-$(document).ready(function () {
-  $('.note-tab-link').on('click', function (e) {
-    e.preventDefault();
-    const target = $(this).data('tab');
-    $('.tab-panel').addClass('hidden');
-    $('.note-tab-link').removeClass('active');
-    $('#' + target).removeClass('hidden');
-    $(this).addClass('active');
-  });
-});
-```
-
-**Model — minimal, user-scoped:**
+**`config/application.rb` additions:**
 
 ```ruby
-# app/models/note.rb
-class Note < ApplicationRecord
-  belongs_to :user
-  validates :body, presence: true
-  scope :for_user, ->(user) { where(user: user).order(created_at: :desc) }
-end
+config.i18n.available_locales = %i[ja en]
+config.i18n.default_locale = :ja   # already set
 ```
 
-**Migration — no surprises:**
+**Devise i18n note:**
+
+Use `before_action` from the start. The `devise-i18n` README documents Warden failure-app locale issues with `around_action`; this milestone must include an English wrong-password check to prove Devise flash localization works.
+
+**`users` migration:**
 
 ```ruby
-class CreateNotes < ActiveRecord::Migration[8.1]
+class AddLocaleToUsers < ActiveRecord::Migration[8.1]
   def change
-    create_table :notes do |t|
-      t.references :user, null: false, foreign_key: true
-      t.text :body, null: false
-      t.timestamps
-    end
+    add_column :users, :locale, :string, limit: 10
   end
 end
 ```
+
+**Locale strings:** Store as `"ja"` / `"en"` (string), not symbols. Symbols cannot be stored in a string column. Cast on read: `current_user.locale&.to_sym`.
 
 ## Version Compatibility
 
 | Package | Compatible With | Notes |
 |---------|-----------------|-------|
-| Rails 8.1.3 | Ruby 3.4 | `form_with` default: `data-remote` is NOT set by default in Rails 7+ (`local: true` is the default); explicitly set `local: false` or add `data: { remote: true }` for XHR behaviour |
-| rails-ujs (bundled) | jQuery 4.6.1 | `data-remote="true"` submits via XHR and fires `ajax:success` event; jQuery `.on('ajax:success')` listener works as in existing todos JS |
-| sassc / sass-rails 6.0.0 | CSS custom properties for simple theme scoping | Same libsass constraint as v1.2: do not assign SCSS `$variables` directly to `--custom-properties`; use `#{$var}` or plain CSS values |
+| `rails-i18n` 8.1.0 | Rails 8.1.x, Ruby 3.4 | Exact version match to app's Rails series. Gemfile pin `~> 8.0` allows patch-level updates within the 8.x series — correct. |
+| `devise-i18n` 1.16.0 | Devise 5.0.3 | devise-i18n tracks Devise releases; 1.16.0 (Feb 2026) is the current release matching Devise 5. |
+| `http_accept_language` 2.1.1 | Rails 8.1 (Rack middleware) | No Rails version dependency in the gem itself; it is pure Rack middleware. Works with Puma 8 multi-threaded (thread-safe). Last release 2017 but actively used; no known Rails 8 incompatibility. |
+| `i18n` 1.14.8 | Rails 8.1 transitive dependency | Already resolved in Gemfile.lock. Do not pin independently — let Rails manage it. |
 
 ## Sources
 
-- Rails 8.1 guides (form helpers, ActiveRecord) — HIGH confidence; standard Rails patterns used throughout the existing app
-- Existing app source: `app/controllers/todos_controller.rb`, `app/assets/javascripts/todos.js`, `app/views/welcome/_todo_gadget.html.erb` — the XHR-partial pattern is already proven in this codebase
-- `.planning/codebase/STACK.md` (analysed 2026-04-27) — confirmed no Turbo, no Stimulus, Sprockets + jQuery 4 + rails-ujs pipeline
+- `/svenfuchs/rails-i18n` (Context7) — locale configuration snippets
+- `/tigrish/devise-i18n` (Context7) — `before_action` pattern, Warden bug note
+- `/fnando/i18n-js` (Context7) — v4 requires npm companion; Sprockets unsupported
+- https://guides.rubyonrails.org/i18n.html — `around_action` / `I18n.with_locale` recommendation, Accept-Language header pattern, per-user stored locale example
+- https://rubygems.org/gems/rails-i18n — version 8.1.0 confirmed (Nov 2025)
+- https://rubygems.org/gems/devise-i18n — version 1.16.0 confirmed (Feb 2026)
+- https://rubygems.org/gems/i18n-js — version 4.2.4 confirmed (Oct 2025)
+- https://rubygems.org/gems/http_accept_language — version 2.1.1 (2017, stable)
+- https://github.com/heartcombo/devise/issues/4823 — Warden failure-app locale bug report
+- Existing app Gemfile.lock — confirmed currently installed versions
 
 ---
-*Stack research for: Quick Note Gadget (Rails 8.1 / Sprockets / jQuery — v1.3)*
-*Researched: 2026-04-30*
+*Stack research for: Rails i18n bilingual (ja/en) support — v1.4*
+*Researched: 2026-05-01*

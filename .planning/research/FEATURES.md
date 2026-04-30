@@ -1,148 +1,160 @@
 # Feature Research
 
-**Domain:** Personal note-taking gadget (textarea + save + list) within an existing Rails personal bookmark app
-**Researched:** 2026-04-30
-**Confidence:** HIGH — scope is tightly constrained by the milestone definition and the existing codebase patterns are fully readable
+**Domain:** Rails i18n / bilingual UI (ja/en) for an existing personal bookmark app
+**Researched:** 2026-05-01
+**Confidence:** HIGH — scope is tightly constrained by the milestone definition; codebase is fully readable; Rails i18n API is stable and well-documented
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Features users assume exist. Missing these = product feels incomplete.
+Features that must exist for the "bilingual UI" goal to be real. Missing any one of these = the feature doesn't exist yet.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Textarea input for new note | Every note-taking surface starts with a place to type | LOW | Single `<textarea>` element; no rich-text needed for v1.3 |
-| Save button | User needs explicit confirmation the note was captured | LOW | Standard form POST; no AJAX strictly required but consistent with existing todos pattern |
-| Reverse-chronological list of saved notes | Notes are only useful if they can be reviewed; newest-first is the universal convention | LOW | `Note.where(user_id: ...).order(created_at: :desc)` |
-| Per-user data isolation | This is a logged-in personal app; notes must never be visible to another user | LOW | Already enforced by `Crud::ByUser` pattern used on every other model |
-| "Note" tab on the simple theme welcome page | Defined in milestone scope; without the tab the feature is unreachable | LOW | Tab links sit beside the existing "Home" link in the simple-theme nav; controlled by CSS show/hide or a query param |
-| Empty-state message | When no notes exist the list area must not silently show nothing | LOW | A single line of Japanese text, e.g. "メモはまだありません" |
+| Extract all hardcoded UI strings to ja.yml / en.yml | Without extraction there is no i18n — hardcoded strings can never switch | MEDIUM | ~22 view files have non-ASCII strings; layout, nav, gadgets, forms, flash messages, and one hardcoded controller alert |
+| Lazy `t()` helpers in every view | Standard Rails i18n convention; views must call `t('key')` or `t('.key')` instead of bare strings | LOW | Replace existing bare Japanese strings with `t()` calls; lazy lookup (leading dot) is idiomatic and reduces YAML key verbosity |
+| `locale` column on the `users` table | Per-user language preference can only persist if stored in the database | LOW | Single migration: `add_column :users, :locale, :string`; nullable, default nil (falls back to detection logic) |
+| Language switcher on `/preferences` | The milestone explicitly requires per-user locale selection from the preferences page | LOW | One `<select>` field (`ja` / `en`) added to the existing preferences form; wires through `PreferencesController#update` with strong-params permit |
+| Accept-Language header detection for first visit / unauthenticated | Without this, every first-time or logged-out visitor sees the app in the wrong language | LOW | `before_action :set_locale` in `ApplicationController`; priority chain: `current_user.locale` → parsed `Accept-Language` header → `I18n.default_locale` (:ja) |
+| Devise auth page translations | Sign-in, 2FA, password-reset pages use Devise-generated flash keys; untranslated = broken UX on those pages | LOW | `devise-i18n` gem is already in Gemfile and Gemfile.lock (v1.16.0); need to generate locale files (`rails generate devise:i18n:locale ja en`) and ensure Devise flash key translations exist in both locales |
+| Flash and validation error translations | Controllers emit flash messages; model validation errors use `activerecord.errors.*` keys; must work in both locales | MEDIUM | Flash messages currently mix hardcoded Japanese strings (e.g., `notes_controller` alert `'エラーが発生しました'`) and `t()` calls; all must be moved to locale files |
+| All nav/layout labels translated | The app shell (layout, drawer nav, hamburger button, menu) is the most-visible surface; one untranslated string breaks the impression of "fully bilingual" | LOW | layout.html.erb has 7 hardcoded Japanese strings; common/_menu.html.erb has 6; all have direct English equivalents |
+| All gadget UIs translated | Bookmarks, todos, feeds, calendar, and note gadgets all contain Japanese strings | MEDIUM | Mostly LOW complexity per gadget; the feed gadget has a hardcoded error string in a JS `.fail()` callback — needs JS i18n treatment (see Anti-Features) |
+| i18n fallback enabled in all environments | If a translation key exists in ja.yml but not en.yml (or vice versa), the app should not crash | LOW | `config.i18n.fallbacks = true` already in `config/environments/production.rb`; must add to `development.rb` and `test.rb` to prevent unexpected crashes in dev/test |
 
 ### Differentiators (Competitive Advantage)
 
-Features that set this tool apart within the personal app context. Not required, but improve daily value.
+Within the context of this personal app, "competitive advantage" means a noticeably smooth bilingual experience.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Note body shown in the list (not just a title) | A quick-note gadget is most useful when you can glance at the content without clicking into a detail page | LOW | Render the full `body` column in the list row; no separate show page needed for v1.3 |
-| Timestamp shown per note | Personal notes age; knowing when something was jotted is useful context | LOW | `note.created_at` formatted with `strftime` or Rails `time_ago_in_words` |
-| Delete note from the list | Captured notes accumulate; users need a way to clean up | LOW | A destroy link per list item; consistent with todo delete pattern; requires confirm dialog |
-| Auto-clear textarea after save | Improves capture flow — after saving, textarea is blank and ready for the next note | LOW | In AJAX path: clear `textarea.val('')` after success; in full-page path: redirect clears naturally |
+| `before_action :set_locale` for Devise/Warden compatibility | Devise failure flash messages render in the selected locale | LOW | Rails generally recommends `around_action`, but this app should use `before_action` because Devise/Warden failure flows can run after `around_action` resets locale |
+| Locale persisted on `users.locale` (not in session or cookie) | Locale follows the user account across devices and browsers — no re-selection needed | LOW | After login, `switch_locale` reads `current_user.locale`; the preferences form writes it back through the existing `PreferencesController#update` path |
+| Detect Accept-Language on first visit, then respect saved preference | Correct "zero-config" experience: new user sees app in their browser language immediately; then can override and have that choice stick | LOW | Priority chain in `switch_locale`: DB preference (highest) → Accept-Language header → default :ja; the `http_accept_language` gem is not installed but the header can be parsed with one line (`request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first`) |
+| `config.i18n.available_locales = [:ja, :en]` guard | Prevents unknown locale injection via URL tampering or corrupted DB values | LOW | Sanitize the value extracted from user/header against `I18n.available_locales` before assigning `I18n.locale` |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| Rich-text / Markdown editor | Users ask for formatting | Adds a JS dependency (Trix or similar), conflicts with keep-Sprockets constraint, disproportionate for a quick-note gadget | Plain `<textarea>` with `white-space: pre-wrap` CSS to preserve line breaks |
-| Edit existing note in-place | Feels complete | Doubles implementation surface (edit form, update action, JS replace); a quick-note gadget's value is speed of capture, not document editing | Delete-and-retype is acceptable for v1.3; inline edit is a v2 consideration |
-| Note categories / tags | Power-user request | Adds schema complexity (join table or serialized column), adds UI complexity, disproportionate for v1.3 | Keep notes flat; add tags only if usage data justifies it |
-| Full-text search | Useful at scale | Not needed for a personal app with a short list; adds controller and query complexity | Browser Ctrl+F works fine on a short in-page list |
-| Real-time auto-save (draft persistence) | Reduces risk of losing text | Requires debounce JS and a separate draft endpoint; overkill when save button is one click away | Standard form submit is sufficient |
+| Translate inline JS strings via i18n-js | The feed gadget has a hardcoded Japanese error string inside a JS `.fail()` callback; naturally one wants to translate it with i18n-js | The `i18n-js` gem (already in Gemfile at v4.2.4) requires a build/export step (`rails i18n:js:export`) that generates a JS file from locale YAMLs. This adds a build-time step, a generated asset to maintain, and a JS loading concern. For a single string it is disproportionate. | Move the error string to a `data-` attribute on the gadget container rendered by ERB, then read it in the JS `.fail()` callback. Zero new infrastructure. |
+| URL-based locale (e.g., `/en/bookmarks`) | Common in public-facing Rails apps; some tutorials recommend it | This is a private, always-authenticated app. URL segments for locale add route complexity (scope blocks, locale param threading through all `link_to` helpers, existing JS `.post()` calls would need updating) for no user benefit. | Store locale in the user record + Accept-Language detection. URL segments are unnecessary for a private app. |
+| Separate locale-namespaced YAML files per controller (e.g., `en/bookmarks.yml`) | Feels organized for large apps | This app has a small, stable translation surface. Splitting into many files adds lookup friction and YAML management overhead with no benefit at this scale. | Two flat files (`ja.yml`, `en.yml`) with logical grouping by section is maintainable and is exactly what the existing `ja.yml` already does. |
+| Pluralization and complex number formatting | Rails i18n supports pluralization rules (`:one`, `:other`, `:many`) | The current app has no count-sensitive strings. Adding pluralization keys for strings that don't need them clutters the YAML and creates false requirements. | Extract strings as-is; add pluralization only when a specific string genuinely needs it. |
+| Language switcher in the page header (always visible) | More discoverable | Adds visual clutter to every page for a setting that users change rarely. The preferences page is the correct home for account-level settings. | Language switcher lives on `/preferences` only, consistent with how theme selection works. |
 
 ## Feature Dependencies
 
 ```
-[Note tab UI (Home/Note links on simple theme page)]
-    └──requires──> [WelcomeController serves simple-theme tab state]
-                       └──requires──> [Note model + notes table in DB]
-                                          └──requires──> [Migration: create_notes]
+[Language switcher on /preferences]
+    └──requires──> [locale column on users table]
+                       └──requires──> [migration: add_column :users, :locale, :string]
 
-[Note list (reverse-chronological)]
-    └──requires──> [Note#create (save action) — list is only meaningful once save exists]
+[Per-user locale persistence]
+    └──requires──> [locale column on users table]
+    └──requires──> [PreferencesController strong-params: permit :locale]
 
-[Delete note from list]
-    └──requires──> [Note list — delete action appears as a link per list row]
+[before_action :set_locale in ApplicationController]
+    └──requires──> [locale column on users table (to read current_user.locale)]
+    └──requires──> [config.i18n.available_locales = [:ja, :en] guard]
 
-[Auto-clear textarea after save]
-    └──requires──> [AJAX save path — only relevant if save is done without full page reload]
+[Accept-Language detection]
+    └──enhances──> [before_action :set_locale — used as fallback when user has no saved locale]
 
-[Empty-state message]
-    └──enhances──> [Note list — renders when list is empty]
+[t() calls in views]
+    └──requires──> [ja.yml / en.yml keys extracted first]
 
-[Timestamp per note]
-    └──enhances──> [Note list — extra column in each list row]
+[Devise auth page translations]
+    └──requires──> [devise-i18n locale files generated (already gem is installed)]
+    └──requires──> [before_action :set_locale — Devise pages must respect current locale]
+
+[Flash / validation error translations]
+    └──requires──> [ja.yml / en.yml keys for all flash strings]
+    └──requires──> [before_action :set_locale — flash messages are rendered after redirect, locale must be consistent]
+
+[i18n fallback in dev/test]
+    └──enhances──> [all t() calls — prevents MissingTranslationData crashes during development]
 ```
 
 ### Dependency Notes
 
-- **Note list requires Note#create:** There is nothing to list until save exists. Create and list must be built together, or create-first then list immediately after.
-- **Delete requires list:** Delete is a per-row action and cannot exist before the list renders rows.
-- **Auto-clear requires AJAX path:** If save is a standard form submit (full page reload) the textarea clears naturally via redirect; auto-clear JS is only needed when using AJAX. The existing todos gadget uses AJAX for create; notes can follow the same pattern or use full-page submit — decide in implementation.
-- **Tab UI requires WelcomeController change:** The simple theme welcome page currently renders the portal grid unconditionally. The tab mechanism (switching between Home and Note views) must be wired into `WelcomeController#index` before any note-specific content is visible. This is the first thing to build.
+- **Migration must come first.** Every other feature depends on the `locale` column existing. Run the migration before touching the switcher, preferences form, or `switch_locale` logic.
+- **`set_locale` must land before any view string extraction.** Once the `before_action` is in place, locale switching works immediately even for partially-translated views. Extract strings incrementally after that.
+- **Devise locale files depend on `set_locale`.** Devise renders its own flash messages using whatever `I18n.locale` is set to at request time. The `before_action` must run for Devise controllers, which it will since it is in `ApplicationController`.
+- **`devise-i18n` is already installed** (v1.16.0 in Gemfile.lock). No new gem needed — only the locale file generation step is missing.
+- **`rails-i18n` is already installed** (v8.1.0). This provides `activerecord.errors.*` base translations for both ja and en for free. Do not re-translate what rails-i18n already provides.
 
 ## MVP Definition
 
-### Launch With (v1.3)
+### Launch With (v1.4)
 
-Minimum viable product for the Quick Note Gadget milestone.
+Everything needed to deliver a fully bilingual app.
 
-- [ ] Migration: `notes` table with `user_id`, `body` (text, not null), `created_at`, `updated_at`, `deleted` (boolean, consistent with other models)
-- [ ] `Note` model with `belongs_to :user`, `Crud::ByUser`, soft-delete consistent with existing models
-- [ ] `NotesController` with `create` and `destroy` actions (index not needed — list rendered via WelcomeController)
-- [ ] "Home" and "Note" tab links on the simple theme welcome page
-- [ ] Note tab view: `<textarea>` + Save button form
-- [ ] Note tab view: reverse-chronological list of saved notes showing body text and timestamp
-- [ ] Empty-state message when no notes exist
-- [ ] Per-user data isolation enforced (scoped query + `deletable_by?` guard on destroy)
+- [ ] Migration: `add_column :users, :locale, :string` (nullable, no default)
+- [ ] `config.i18n.available_locales = [:ja, :en]` in `application.rb`
+- [ ] `before_action :set_locale` in `ApplicationController` with priority chain: `current_user&.locale` → Accept-Language header → `:ja`
+- [ ] Language switcher (`<select>`) on `/preferences` form with `ja` / `en` options; wired through existing `PreferencesController#update`
+- [ ] All hardcoded UI strings in views extracted to `ja.yml` and `en.yml`; views use `t('key')` or `t('.key')` lazy lookup
+- [ ] All hardcoded flash messages / controller alerts moved to locale keys; `t('...')` used at call site
+- [ ] Devise i18n locale files generated (`rails generate devise:i18n:locale ja en`) and verified
+- [ ] `i18n.fallbacks = true` added to `development.rb` and `test.rb` (already on in production)
+- [ ] Feed gadget inline JS error string moved to a `data-` attribute on the ERB container instead of i18n-js
 
 ### Add After Validation (v1.x)
 
-Features to add once core is confirmed working.
-
-- [ ] Delete note from list — low complexity, high user value; add when list is confirmed working
-- [ ] Auto-clear textarea after save (AJAX path) — add when UX feedback indicates the page reload feels slow
+- [ ] `http_accept_language` gem — replace one-line header parse with robust gem if Accept-Language parsing proves unreliable in practice
+- [ ] `i18n-tasks` gem — detect missing/unused translation keys as project grows
 
 ### Future Consideration (v2+)
 
-Features to defer until a later milestone explicitly opens them.
-
-- [ ] Inline edit of existing notes — only if users request it; doubles action surface
-- [ ] Note categories or tags — only if note volume grows to the point where filtering is needed
-- [ ] Note search — not needed while the list is short enough to scan visually
+- [ ] i18n-js for JS-side translations — only if a future milestone adds enough JS-rendered strings to justify the build step
+- [ ] URL-based locale segment — only if the app ever becomes public/multi-user-facing
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Migration + Note model | HIGH | LOW | P1 |
-| Tab links (Home / Note) | HIGH | LOW | P1 |
-| Textarea + Save button | HIGH | LOW | P1 |
-| Reverse-chronological list | HIGH | LOW | P1 |
-| Per-user isolation | HIGH | LOW | P1 — non-negotiable |
-| Empty-state message | MEDIUM | LOW | P1 |
-| Timestamp per note | MEDIUM | LOW | P1 — include in initial list render; near-zero extra cost |
-| Delete note | HIGH | LOW | P2 |
-| Auto-clear textarea (AJAX) | MEDIUM | LOW | P2 |
-| Inline edit | MEDIUM | MEDIUM | P3 |
-| Categories / tags | LOW | HIGH | P3 |
+| Migration: locale column | HIGH | LOW | P1 — unblocks all other features |
+| `set_locale` before_action | HIGH | LOW | P1 — locale logic backbone |
+| Language switcher on /preferences | HIGH | LOW | P1 — user-facing control |
+| String extraction (views) | HIGH | MEDIUM | P1 — makes bilingual UI real |
+| Flash/error string extraction | HIGH | MEDIUM | P1 — broken flash = broken UX |
+| Devise locale files | HIGH | LOW | P1 — auth pages must work in both locales |
+| i18n fallbacks in dev/test | MEDIUM | LOW | P1 — prevents crashes during incremental extraction |
+| Accept-Language detection | MEDIUM | LOW | P1 — correct first-visit experience |
+| Feed gadget data- attribute fix | LOW | LOW | P1 — avoids i18n-js dependency |
+| available_locales guard | MEDIUM | LOW | P1 — security/correctness |
+| http_accept_language gem | LOW | LOW | P2 — header parsing is adequate without it initially |
+| i18n-tasks gem | MEDIUM | LOW | P2 — useful but not blocking launch |
 
 **Priority key:**
 - P1: Must have for launch
 - P2: Should have, add when possible
 - P3: Nice to have, future consideration
 
-## Competitor Feature Analysis
+## Internal Reference (No External Competitors)
 
-This is a personal, single-user note-taking gadget embedded inside a larger personal app, not a standalone product competing in the note-taking market. The reference point is the internal consistency of this app's existing gadgets.
+This is a private personal app, not a public product. The "competitor" reference is the expected behavior of any modern bilingual Rails app.
 
-| Feature | Todos gadget (existing) | Bookmarks gadget (existing) | Notes gadget (proposed v1.3) |
-|---------|------------------------|----------------------------|------------------------------|
-| Create item | AJAX form inline, no page reload | Full-page form | Full-page form (simplest); AJAX can be added in P2 |
-| List items | Inline in gadget panel | Separate index page | Inline in Note tab panel |
-| Delete item | AJAX, soft-delete, per-row | Full-page, soft-delete | Link per row, soft-delete (P2) |
-| Per-user scope | `Crud::ByUser` | `Crud::ByUser` | `Crud::ByUser` |
-| Edit item | Inline double-click | Separate edit page | Deferred to v2 |
-
-Using the todos gadget as the closest implementation reference keeps code patterns consistent and introduces no new conventions.
+| Feature | Rails convention | This app's current state | Gap |
+|---------|-----------------|--------------------------|-----|
+| Locale per request with Devise compatibility | `before_action :set_locale` | No locale switching at all | Must add |
+| Per-user preference | DB column + preferences form | Preferences pattern exists; no `locale` column | Migration + form field |
+| Accept-Language fallback | Parse `HTTP_ACCEPT_LANGUAGE` header | Not implemented | One method in `switch_locale` |
+| View string extraction | `t()` / `t('.')` lazy lookup | Partial — `ja.yml` has `activerecord.attributes` and `two_factor.*` keys; views still have hardcoded strings | Extract remaining strings |
+| Devise translations | `devise-i18n` gem | Gem is installed but locale files not generated | Run generator |
+| Rails model error messages | `rails-i18n` gem | Gem is installed (v8.1.0); provides ja/en base keys | Verify; no custom overrides needed |
 
 ## Sources
 
-- Codebase review: `/home/ichy/workspace/bookmarks/app/` (controllers, models, views, JS assets)
-- Schema: `/home/ichy/workspace/bookmarks/db/schema.rb`
-- Milestone definition: `/home/ichy/workspace/bookmarks/.planning/PROJECT.md`
-- Pattern reference: `app/models/concerns/gadget.rb`, `app/models/crud/by_user.rb`, `app/controllers/todos_controller.rb`, `app/assets/javascripts/todos.js`, `app/views/welcome/_todo_gadget.html.erb`
+- Codebase review: `/home/ichy/workspace/bookmarks/app/`, `config/locales/`, `config/application.rb`, `Gemfile`, `Gemfile.lock`, `db/schema.rb`
+- Milestone definition: `/home/ichy/workspace/bookmarks/.planning/PROJECT.md` (v1.4 Active requirements)
+- Rails i18n guide: https://guides.rubyonrails.org/i18n.html (locale setting patterns, Accept-Language, lazy lookup)
+- devise-i18n gem: https://github.com/tigrish/devise-i18n (locale file generator, key structure)
+- rails-i18n gem: https://github.com/svenfuchs/rails-i18n (provides base ja/en activerecord error translations)
+- Phrase Rails i18n guide: https://phrase.com/blog/posts/rails-i18n-setting-and-managing-locales/ (per-user locale pattern)
 
 ---
-*Feature research for: Quick Note Gadget (v1.3) — simple theme, personal bookmark app*
-*Researched: 2026-04-30*
+*Feature research for: Rails i18n / bilingual UI (ja/en) — v1.4 milestone, personal bookmark app*
+*Researched: 2026-05-01*

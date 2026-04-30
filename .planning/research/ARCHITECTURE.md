@@ -1,331 +1,361 @@
 # Architecture Research
 
-**Domain:** Quick Note Gadget — Rails 8.1 MVC addition to existing personal dashboard
-**Researched:** 2026-04-30
-**Confidence:** HIGH (all findings derived from direct codebase inspection)
+**Domain:** Rails i18n integration — per-user locale with Accept-Language detection
+**Researched:** 2026-05-01
+**Confidence:** HIGH (verified against Rails i18n guide and devise-i18n README)
 
 ## Standard Architecture
 
 ### System Overview
 
 ```
-Browser
-  |
-  | GET /  (WelcomeController#index)
-  v
-ApplicationLayout (app/views/layouts/application.html.erb)
-  body class="<%= favorite_theme %>"          <- simple / modern / classic
-  |
-  +-- render 'common/menu'  [IF simple theme] <- tab nav lives here for simple
-  +-- yield
-        |
-        v
-        welcome/index.html.erb               [MODIFY]
-          div.tab-nav  (ホーム | ノート)       <- new; only visible in simple theme via CSS
-          div.tab-panel#home                  <- wraps existing portal gadget grid
-            @portal.portal_columns -> render g.class.name.underscore  (unchanged)
-          div.tab-panel#notes                 <- new
-            render 'welcome/note_gadget'
-
-        welcome/_note_gadget.html.erb         [NEW]
-          form -> POST /notes
-          ul   -> @notes (reverse-chron, server-rendered)
-
-Notes resource:
-  POST   /notes      -> NotesController#create
-  DELETE /notes/:id  -> NotesController#destroy  (optional for MVP)
-
-  Note model: id, user_id, body:text, created_at, updated_at
-  User has_many :notes
+HTTP Request
+    |
+    v
+ApplicationController#set_locale (before_action)
+    |
+    +-- authenticated? --> current_user.locale (if set)
+    |                          |
+    |                     fallback to Accept-Language header
+    |                          |
+    |                     fallback to I18n.default_locale (:ja)
+    +-- not authenticated --> Accept-Language header
+                                   |
+                              fallback to I18n.default_locale (:ja)
+    |
+    v
+I18n.locale = resolved_locale
+    |
+    v
+Controller action + View (t() / I18n.t())
+    |
+    v
+config/locales/ja.yml  OR  config/locales/en.yml
+    |   (app keys)              (app keys)
+    |
+config/locales/devise.ja.yml  OR  config/locales/devise.en.yml
+    (provided by devise-i18n gem -- no copy needed unless customizing)
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| `Note` model | Persist per-user note text | `belongs_to :user`, `validates :body, presence: true` |
-| `NotesController` | Create (and optionally destroy) notes scoped to `current_user` | Thin controller; inherits `authenticate_user!`; no service layer |
-| `WelcomeController#index` | Assign `@notes` alongside `@portal` | Single added line: `@notes = current_user.notes.order(created_at: :desc)` |
-| `welcome/_note_gadget` partial | Note input form + list of existing notes | ERB partial; receives `@notes`; follows existing gadget partial placement in `app/views/welcome/` |
-| `common/_menu` | Tab navigation for simple theme | Add "ホーム" and "ノート" tab links with `data-tab` attributes |
-| `notes.js` | Tab switching behaviour | New file; `window.notes.initTabs()` namespace following `todos.js` pattern |
-| `welcome.css.scss` | Tab panel show/hide, active tab styling | Existing file; add `.tab-nav`, `.tab-panel`, `.tab-nav a.active` rules |
+| Component | Responsibility | Current State |
+|-----------|---------------|---------------|
+| `ApplicationController#set_locale` | Resolve and apply locale for every request | Does not exist yet -- must add |
+| `config/locales/ja.yml` | Japanese translations for all app UI strings | Exists, partial (has `activerecord`, `messages`, `two_factor` keys only) |
+| `config/locales/en.yml` | English translations for all app UI strings | Exists, stub only (`hello: "Hello world"`) |
+| `users` table -- `locale` column | Persist per-user language preference | Does not exist yet -- migration required |
+| `User` model | Validate and expose `locale` attribute | Exists; needs `locale` validation |
+| `PreferencesController` | Accept and persist `locale` selection | Exists; needs `locale` update path added |
+| `preferences/index.html.erb` | Language switcher UI | Exists; needs locale select row added |
+| `devise-i18n` gem | Translate all Devise views/flash messages | Already in Gemfile -- automatic, no config needed |
 
 ## Recommended Project Structure
 
 ```
-app/
-+-- controllers/
-|   +-- notes_controller.rb          [NEW] create (+ optional destroy)
-+-- models/
-|   +-- note.rb                      [NEW] belongs_to :user, validates :body
-|   +-- user.rb                      [MODIFY] add has_many :notes
-+-- views/
-|   +-- welcome/
-|   |   +-- index.html.erb           [MODIFY] wrap in tab panels; add notes panel
-|   |   +-- _note_gadget.html.erb    [NEW] form + note list
-|   +-- common/
-|       +-- _menu.html.erb           [MODIFY] add tab nav links (simple theme context)
-+-- assets/
-    +-- javascripts/
-    |   +-- notes.js                 [NEW] window.notes.initTabs(); called from welcome/index
-    +-- stylesheets/
-        +-- welcome.css.scss         [MODIFY] .tab-nav, .tab-panel, active state rules
-
 config/
-+-- routes.rb                        [MODIFY] resources :notes, only: [:create, :destroy]
+  application.rb                          # MODIFIED: add available_locales
+  locales/
+    ja.yml                                # MODIFIED: extend with all app UI keys
+    en.yml                                # MODIFIED: replace stub with all app UI keys
+
+app/
+  controllers/
+    application_controller.rb             # MODIFIED: add set_locale before_action
+  models/
+    user.rb                               # MODIFIED: locale validation
+  views/
+    preferences/
+      index.html.erb                      # MODIFIED: add locale select row
+    layouts/
+      application.html.erb                # MODIFIED: set lang attr on <html>
+    [all other views]                     # MODIFIED: replace hardcoded strings with t()
 
 db/
-+-- migrate/
-    +-- YYYYMMDDHHMMSS_create_notes.rb  [NEW]
-
-test/
-+-- controllers/
-|   +-- notes_controller_test.rb     [NEW]
-+-- fixtures/
-    +-- notes.yml                    [NEW]
+  migrate/
+    YYYYMMDDHHMMSS_add_locale_to_users.rb   # NEW
 ```
 
 ### Structure Rationale
 
-- **`_note_gadget` partial in `welcome/`**: Follows the established pattern. All gadget partials live under `app/views/welcome/` (`_bookmark_gadget`, `_todo_gadget`, `_feed`, `_calendar`). The note gadget belongs here.
-- **`NotesController` as independent resource**: Notes have their own CRUD, not a special action on `WelcomeController`. This keeps `WelcomeController` focused on portal layout state, consistent with the thin-controller convention.
-- **`WelcomeController` assigns `@notes`**: The note gadget partial is rendered inside the welcome page view, so assigning `@notes` in `WelcomeController#index` is the direct path. One extra query per homepage load — acceptable for a personal app.
-- **`notes.js` dedicated file**: Matches the one-file-per-feature convention (`todos.js`, `bookmarks.js`, `menu.js`). Sprockets `require_tree .` picks it up automatically. Participates in ESLint (`yarn run lint`).
-- **No gadget protocol object**: The existing gadget protocol (`BookmarkGadget`, `TodoGadget`) serves the draggable portal grid (`PortalLayout`, `save_state`). The note gadget lives in a separate tab outside the grid — there is nothing to drag or order. Wrapping it in the gadget protocol adds `PortalLayout` complexity with no benefit.
+- **`locale` on `users`:** `PROJECT.md` defines the v1.4 milestone scope as a `users.locale` column. Locale affects authentication, Devise/Warden failure messages, and first post-login rendering, so it belongs on the account record rather than a presentation-only preference record.
+- **`devise-i18n` locale files are not copied:** The gem auto-loads its locale files. Copying them is only needed when customizing specific strings. The gem provides correct `ja` and `en` translations for all Devise messages out of the box.
+- **No URL-based locale (`/en/bookmarks`):** This is a personal single-user-oriented app with a persistent preferences page. URL prefixing adds routing complexity for no user-facing benefit. Preference persistence + Accept-Language detection is the correct model.
 
 ## Architectural Patterns
 
-### Pattern 1: Thin Controller, Direct AR Query
+### Pattern 1: `before_action` for Locale Setting (NOT `around_action`)
 
-**What:** `NotesController` queries `Note` directly scoped via `current_user.notes`. No service object, no gadget wrapper.
-**When to use:** Any simple per-user resource with no complex business rules.
-**Trade-offs:** Fits established app conventions exactly; no added abstraction layer.
+**What:** Set `I18n.locale` in a `before_action` using direct assignment.
+**When to use:** Always, in this app. This is the only correct approach when `devise-i18n` is in use.
+**Trade-offs:** Direct `I18n.locale =` assignment can leak between requests in a threaded server if not consistently set. The `before_action` guarantee that it runs on every request is the mitigation.
 
-**Example:**
+**Critical finding from devise-i18n README:** `around_action` with `I18n.with_locale` does NOT work correctly with Devise/Warden due to a Warden bug. Some Devise error messages bypass the `with_locale` scope and remain untranslated. Use `before_action` with direct assignment. The devise-i18n README documents this explicitly.
+
 ```ruby
-class NotesController < ApplicationController
-  def create
-    @note = current_user.notes.build(note_params)
-    if @note.save
-      redirect_to root_path(tab: 'notes')
-    else
-      @portal = current_user.portals.first
-      @notes  = current_user.notes.order(created_at: :desc)
-      render 'welcome/index'
-    end
-  end
+# app/controllers/application_controller.rb
+before_action :authenticate_user!
+before_action :configure_permitted_parameters, if: :devise_controller?
+before_action :set_locale   # after existing before_actions
 
-  private
+private
 
-  def note_params
-    params.require(:note).permit(:body)
+def set_locale
+  I18n.locale = resolve_locale
+end
+
+def resolve_locale
+  if user_signed_in? && current_user.locale.present?
+    current_user.locale.to_sym
+  elsif (accept = request.env['HTTP_ACCEPT_LANGUAGE'])
+    accepted = accept.scan(/\A[a-z]{2}/).first&.to_sym
+    I18n.available_locales.include?(accepted) ? accepted : I18n.default_locale
+  else
+    I18n.default_locale
   end
 end
 ```
 
-### Pattern 2: Tab Panels via CSS Show/Hide (No SPA, No AJAX)
+### Pattern 2: `available_locales` Guard in `application.rb`
 
-**What:** Two `div.tab-panel` elements rendered server-side inside `welcome/index.html.erb`. JavaScript on `$(document).ready` hides all panels and shows the active one based on a `data-tab` query param or default.
-**When to use:** Simple two-tab UI in a server-rendered app with Sprockets/jQuery. Avoids Turbo or fetch complexity.
-**Trade-offs:** Full page content loads on every request. Fine for a personal dashboard with small data volumes. Keeps JS minimal and fully within the existing jQuery pattern.
+**What:** Declare supported locales explicitly so unknown values are rejected.
+**When to use:** Required. `I18n.config.enforce_available_locales = true` is already active; adding `available_locales` makes the allowed set explicit and prevents locale injection.
+**Trade-offs:** None. Low cost, mandatory.
 
-**Example:**
-```javascript
-// app/assets/javascripts/notes.js
-window.notes = window.notes || {};
-const notes = window.notes;
-
-notes.initTabs = function() {
-  const $tabLinks = $('.tab-nav a[data-tab]');
-  const $panels   = $('.tab-panel');
-
-  $tabLinks.on('click', function(e) {
-    e.preventDefault();
-    const target = $(this).data('tab');
-    $tabLinks.removeClass('active');
-    $(this).addClass('active');
-    $panels.hide();
-    $('#' + target).show();
-  });
-
-  // Restore tab from query param on page load (e.g. after note save redirect)
-  const params = new URLSearchParams(window.location.search);
-  const active = params.get('tab') || 'home';
-  $tabLinks.filter('[data-tab="' + active + '"]').trigger('click');
-};
+```ruby
+# config/application.rb
+config.i18n.default_locale = :ja
+config.i18n.available_locales = %i[ja en]
 ```
 
-### Pattern 3: Standard POST + Redirect (Non-AJAX)
+### Pattern 3: Locale on `users` Table with Validation
 
-**What:** The note form uses a standard HTML form POST. On success, redirect to `root_path(tab: 'notes')` so the notes tab re-activates via `initTabs`.
-**When to use:** MVP. Consistent with the app's general non-AJAX forms (bookmarks, preferences, calendars all use standard redirects).
-**Trade-offs:** Full page reload on save. Acceptable for a personal note tool. Can be upgraded to AJAX submit in a later phase if the reload feels disruptive.
+**What:** Store locale as a nullable string column in `users`, validated against the supported list.
+**When to use:** Persistent per-user locale -- the correct model for an authenticated app.
+**Trade-offs:** Requires migration. Far simpler than a session cookie and survives sign-out/sign-in.
+
+```ruby
+# Migration
+add_column :users, :locale, :string, limit: 10
+
+# app/models/user.rb
+SUPPORTED_LOCALES = %w[ja en].freeze
+validates :locale, inclusion: { in: SUPPORTED_LOCALES }, allow_nil: true
+```
+
+`allow_nil: true` means a blank/null `locale` falls back to Accept-Language then default. No backfill migration needed; existing users get browser detection until they save a preference.
+
+### Pattern 4: Lazy Lookup Scoping in Views
+
+**What:** Use `t('.key')` (dot-prefix) in views to scope keys automatically to the view path. Use top-level `t('shared.key')` for strings shared across views (save, edit, delete, back).
+**When to use:** Page-specific labels use lazy scoping. Action words reused in multiple views use `shared.*`.
+**Trade-offs:** Lazy lookups create deep key trees (`ja.bookmarks.index.title`). Slightly harder to audit but prevent key collisions across controllers.
+
+```erb
+<%# app/views/bookmarks/index.html.erb %>
+<th><%= t('.operations') %></th>  <%# resolves to ja.bookmarks.index.operations %>
+
+<%# shared action labels %>
+<%= f.submit t('shared.save') %>
+```
 
 ## Data Flow
 
-### Request Flow — Note Creation
+### Locale Resolution on Each Request
 
 ```
-User fills textarea, clicks Save
-    |
-    | POST /notes  {note: {body: "..."}}
-    v
-ApplicationController#authenticate_user!  (existing before_action)
+Browser sends request
     |
     v
-NotesController#create
+before_action :set_locale
     |
-    +-- current_user.notes.build(note_params)
-    +-- @note.save
+    +--- user signed in AND current_user.locale present?
+    |         YES --> I18n.locale = current_user.locale (e.g., :en)
+    |         NO  --> parse HTTP_ACCEPT_LANGUAGE header
+    |                     |
+    |                     +--- valid available locale found?
+    |                               YES --> I18n.locale = that locale
+    |                               NO  --> I18n.locale = :ja (default)
     |
-    +-- success -> redirect_to root_path(tab: 'notes')
-    |
-    +-- failure -> @portal = ..., @notes = ..., render 'welcome/index'
+    v
+All t() calls in controller + views use resolved locale
 ```
 
-### Request Flow — Welcome Page (with Notes tab)
+### Locale Preference Save Flow
 
 ```
-GET /  (or GET /?tab=notes after redirect)
+User selects language on /preferences
+    |
     v
-WelcomeController#index
-    @portal = current_user.portals.first      (existing)
-    @notes  = current_user.notes              (NEW — 1 extra query)
-                .order(created_at: :desc)
+POST /preferences (PreferencesController#create or #update)
+    |
+user_params permits: [:locale, { preference_attributes: [...] }]
+    |
     v
-welcome/index.html.erb
-    div.tab-nav  (ホーム | ノート)
-    div.tab-panel#home   -> portal gadget grid (existing, unchanged)
-    div.tab-panel#notes  -> render 'welcome/note_gadget',
-                               notes: @notes
+@user.locale = 'en'
+User validates inclusion in SUPPORTED_LOCALES
+    |
     v
-notes.js#initTabs()  (DOM ready: read ?tab=, show correct panel)
+@user.save! (transaction)
+    |
+    v
+redirect_to action: 'index'
+    |
+    v
+Next request: set_locale picks up current_user.locale = :en
 ```
 
-### Key Data Flows
+### Devise Auth Page Locale Flow
 
-1. **Tab activation on redirect:** `root_path(tab: 'notes')` carries a query param. `notes.initTabs()` reads `URLSearchParams` on `$(document).ready` and triggers click on the matching tab link. No server-side tab state needed.
-2. **Note list refresh:** Server-rendered in `_note_gadget` on every page load. New note appears after the save-and-redirect cycle. No polling or WebSockets.
-3. **User scoping:** `current_user.notes` association. `Note` has `user_id` foreign key. `User has_many :notes`. No global scope — consistent with how all other resources in this app are scoped (manual convention from `.planning/codebase/ARCHITECTURE.md`).
-
-## Scaling Considerations
-
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| Personal use (1-3 users) | Current approach — no changes needed |
-| Multi-user (10-1k users) | Add index on `notes(user_id, created_at)` — include in the migration from the start |
-| Many notes per user | Add `limit(50)` in `WelcomeController#index` query — not needed for MVP |
-
-### Scaling Priorities
-
-1. **First bottleneck:** `@notes` grows large for a prolific user. Mitigation: add `.limit(50)` to the query before it becomes an issue. Index on `(user_id, created_at)` keeps this fast.
-2. **Not a concern:** Tab switching is pure CSS/JS — zero server overhead.
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Adding Note Actions to WelcomeController
-
-**What people do:** Put `create_note`, `destroy_note` actions directly in `WelcomeController` to "keep notes close to the welcome page."
-**Why it's wrong:** Violates REST conventions. Bloats a controller already responsible for portal layout state. Routes become non-standard and harder to test in isolation.
-**Do this instead:** Use a dedicated `NotesController` with standard `resources :notes` routing.
-
-### Anti-Pattern 2: Wrapping Note in the Gadget Protocol
-
-**What people do:** Create a `NoteGadget` plain Ruby object following the `BookmarkGadget` / `TodoGadget` pattern and register it via `Portal#get_gadgets`.
-**Why it's wrong:** The gadget protocol exists for the draggable portal grid (`PortalLayout` rows, `save_state` AJAX, column ordering). Notes live in a fixed tab outside the grid. There is nothing to drag or reorder. Using the gadget protocol adds `PortalLayout` rows and `Portal` complexity with no benefit.
-**Do this instead:** Render the note gadget partial directly in `welcome/index.html.erb` inside the `#notes` tab panel. Assign `@notes` in `WelcomeController#index`.
-
-### Anti-Pattern 3: AJAX-First Note Submission in MVP
-
-**What people do:** Wire the note form to submit via `$.post` and re-render the list in place.
-**Why it's wrong:** Adds JS error handling complexity for a personal tool where sub-second response is not required. Deviates from the app's standard form-POST-and-redirect pattern without a user-visible benefit at MVP stage.
-**Do this instead:** Standard form POST with redirect to `root_path(tab: 'notes')`. Add AJAX in a later phase if reload feels disruptive.
-
-### Anti-Pattern 4: Tab State in Session or Database
-
-**What people do:** Store the active tab server-side (session hash or new preference column) so the tab persists across requests without a query param.
-**Why it's wrong:** Over-engineering for two tabs. Adds a round-trip or a schema change for trivial benefit.
-**Do this instead:** Pass `tab: 'notes'` as a query param in the redirect URL. Restore from `URLSearchParams` in `notes.js`. Stateless, no extra storage.
+```
+Unauthenticated request to /users/sign_in
+    |
+    v
+before_action :set_locale (runs even on Devise controllers via ApplicationController)
+    |
+    v
+Accept-Language header resolves to :en or :ja
+    |
+    v
+I18n.locale = resolved_locale (direct assignment -- bypass Warden bug)
+    |
+    v
+devise-i18n gem serves translated view (ja.yml or en.yml loaded automatically)
+    |
+    v
+Warden/Devise flash messages translated correctly
+```
 
 ## Integration Points
 
-### New vs Modified Files — Complete List
+### ApplicationController (MODIFIED)
 
-| File | Status | What Changes |
-|------|--------|--------------|
-| `app/models/note.rb` | NEW | `belongs_to :user`, `validates :body, presence: true` |
-| `app/controllers/notes_controller.rb` | NEW | `create` action; optional `destroy` |
-| `app/views/welcome/_note_gadget.html.erb` | NEW | Form (`note[body]` textarea + submit) + `<ul>` of notes |
-| `db/migrate/*_create_notes.rb` | NEW | `user_id`, `body:text`, timestamps; index on `(user_id, created_at)` |
-| `config/routes.rb` | MODIFY | Add `resources :notes, only: [:create, :destroy]` |
-| `app/models/user.rb` | MODIFY | Add `has_many :notes` |
-| `app/views/welcome/index.html.erb` | MODIFY | Wrap portal grid in `div.tab-panel#home`; add `div.tab-panel#notes` rendering `_note_gadget` |
-| `app/views/common/_menu.html.erb` | MODIFY | Add tab nav links with `data-tab` attributes above existing dropdown nav |
-| `app/assets/javascripts/notes.js` | NEW | `window.notes.initTabs()` called from welcome/index on DOM ready |
-| `app/assets/stylesheets/welcome.css.scss` | MODIFY | `.tab-nav`, `.tab-panel` (default hidden), `.tab-nav a.active` |
-| `app/controllers/welcome_controller.rb` | MODIFY | Add `@notes = current_user.notes.order(created_at: :desc)` in `#index` |
-| `test/controllers/notes_controller_test.rb` | NEW | Auth, scoping, create, optional destroy tests |
-| `test/fixtures/notes.yml` | NEW | Fixture rows for test assertions |
+Add `before_action :set_locale` after `:authenticate_user!` in the chain so `user_signed_in?` and `current_user` are available inside `resolve_locale`. Devise controller actions inherit `ApplicationController`, so the locale is set for login and registration pages too.
 
-### Unchanged Files (confirmed safe)
+**Change:** Add `before_action :set_locale` + private `set_locale` + `resolve_locale` methods.
 
-| File | Why Unchanged |
-|------|---------------|
-| `app/assets/javascripts/application.js` | `require_tree .` picks up `notes.js` automatically |
-| `app/assets/stylesheets/application.css` | `require_tree .` picks up `welcome.css.scss` changes automatically |
-| `app/helpers/welcome_helper.rb` | `favorite_theme` unchanged — tab nav is inside the simple-theme `_menu` partial |
-| `app/views/layouts/application.html.erb` | No changes needed — layout already conditionally renders `_menu` for simple theme |
-| `app/models/portal.rb`, `app/models/portal_layout.rb` | Note gadget does not participate in the portal grid |
+### `config/application.rb` (MODIFIED)
 
-### Internal Boundaries
+Add `config.i18n.available_locales = %i[ja en]` alongside the existing `config.i18n.default_locale = :ja`.
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| `WelcomeController` -> `Note` | Direct AR query via `current_user.notes` | One query added to `#index`; no coupling to `NotesController` |
-| `NotesController` -> `WelcomeController` | `redirect_to root_path(tab: 'notes')` on success | One-way; `NotesController` calls no `WelcomeController` methods |
-| `welcome/index.html.erb` -> `_note_gadget` | `render 'welcome/note_gadget'` with `@notes` in scope | Follows existing gadget partial rendering convention |
-| `notes.js` -> `_menu` tab links | Reads `data-tab` attribute on `<a>` elements | Loose coupling via HTML attribute contract |
-| Simple theme tab styles | `.simple .tab-nav`, `.simple .tab-panel` in `welcome.css.scss` | Consistent with `.simple` scoping in `themes/simple.css.scss` |
+### `users` Table / `User` Model (MODIFIED)
 
-## Recommended Build Order
+Migration adds `locale` string column (nullable, no default). `User` model gains `SUPPORTED_LOCALES` constant and inclusion validation. Nil means "detect from browser."
 
-Dependencies drive this sequence:
+### `PreferencesController` (MODIFIED)
 
-1. **Migration + `Note` model + `User has_many :notes`** — everything else depends on the `notes` table existing and the association being valid. Test with `bundle exec rails db:migrate`.
+Permit `:locale` on the user update path. No new action needed -- the existing preferences save flow can persist the account-level locale alongside preference attributes.
 
-2. **`config/routes.rb`** — add `resources :notes, only: [:create, :destroy]`. Required before controller tests can route.
+### `preferences/index.html.erb` (MODIFIED)
 
-3. **`NotesController`** — `create` action (and optional `destroy`). Verify scoping (`current_user.notes.build`) and auth (`authenticate_user!` inherited). Testable without any view changes.
+Add a locale select row to the preferences form, alongside the existing `theme` select. Render options from `I18n.available_locales` mapped to human-readable names.
 
-4. **`test/fixtures/notes.yml` + `test/controllers/notes_controller_test.rb`** — verify create scoping, auth guard, validation failure. Green tests confirm the backend is correct before wiring views.
+### `layouts/application.html.erb` (MODIFIED)
 
-5. **`WelcomeController#index`** — add `@notes = current_user.notes.order(created_at: :desc)`. One line. Confirm existing welcome tests still pass.
+Set `lang` attribute on `<html>` tag for screen reader and SEO correctness:
 
-6. **`welcome/_note_gadget.html.erb`** — note form and list partial. Can be developed and visually checked immediately since `@notes` is now assigned.
+```erb
+<html lang="<%= I18n.locale %>">
+```
 
-7. **`welcome/index.html.erb`** — wrap existing portal content in `div.tab-panel#home`; add `div.tab-panel#notes` rendering the partial. Confirm existing portal functionality is unchanged.
+### `devise-i18n` Gem (ALREADY PRESENT -- no action needed)
 
-8. **`common/_menu.html.erb`** — add tab nav links (`data-tab="home"`, `data-tab="notes"`) above the existing dropdown. Simple theme context ensures they appear correctly.
+The gem is already in the `Gemfile`. It auto-loads `devise.ja.yml` and `devise.en.yml` from its gem directory. No copy or generator step is required unless specific strings need customization. The `before_action` locale pattern ensures Devise pages are translated.
 
-9. **`notes.js`** — `window.notes.initTabs()` function; wire via `$(document).ready` call in `welcome/index.html.erb`. Tab switching is now functional.
+### `config/locales/ja.yml` + `config/locales/en.yml` (EXTENDED)
 
-10. **`welcome.css.scss`** — `.tab-nav`, `.tab-panel` (hidden by default, shown by JS), `.tab-nav a.active` styles. Visual polish; iterate after functionality is confirmed.
+`ja.yml` already has `activerecord.attributes`, `messages`, and `two_factor` keys. All remaining UI strings must be extracted and added to both files: navigation labels, flash messages, button labels, gadget headings, form labels, error messages, and breadcrumb text.
 
-11. **Welcome controller integration tests** — assert `#notes` tab panel present in response, note list partial renders, tab nav links exist, scoping correct. Follows pattern of existing `welcome_controller_test.rb`.
+## Build Order
 
-Steps 3 and 6 are independent of each other and can proceed in parallel once step 1 is complete.
+Dependencies drive this sequence. Each phase depends on the one before.
+
+```
+Phase 1: Foundation (everything depends on this)
+  - Add config.i18n.available_locales to application.rb
+  - Add set_locale before_action to ApplicationController
+  - Migration: add locale to users
+  - User model: validation, SUPPORTED_LOCALES constant
+  - PreferencesController: permit :locale in strong params
+  RATIONALE: Locale must be resolvable per-request before any t() calls
+             can be tested. The column must exist before the switcher UI
+             can save. These are the hard dependencies for all later work.
+
+Phase 2: Locale Switcher UI (depends on Phase 1)
+  - Add locale select row to preferences/index.html.erb
+  - Add lang attribute to layouts/application.html.erb
+  RATIONALE: Depends on users.locale column (Phase 1). Enables
+             manual testing of all subsequent translation extraction by
+             switching between ja and en and verifying output.
+
+Phase 3: Translation Extraction -- Core UI (depends on Phase 1)
+  - Extract navigation/layout strings (application.html.erb, _menu.html.erb)
+  - Extract preferences page strings
+  - Extract flash messages shared across controllers
+  - Populate ja.yml and en.yml with all extracted keys
+  RATIONALE: Layout and nav strings appear on every page -- extract first
+             so the bilingual scaffold is visible across the whole app.
+             Preferences page strings must exist before Phase 2 output
+             is fully bilingual. Flash messages are tested by existing
+             integration tests; keeping them green validates locale wiring.
+
+Phase 4: Translation Extraction -- Gadgets and CRUD (depends on Phase 3)
+  - Extract note gadget strings (_note_gadget.html.erb)
+  - Extract bookmark CRUD strings (index, form, show, edit)
+  - Extract todo CRUD strings
+  - Extract calendar and feed strings
+  - Add en.yml equivalents for two_factor keys already in ja.yml
+  RATIONALE: Individual feature areas are independent within this phase
+             and can proceed in any order. Devise views are auto-translated
+             by devise-i18n once locale is set -- only the custom two_factor
+             keys (already in ja.yml) need corresponding en.yml entries.
+
+Phase 5: Verification (depends on Phases 1-4)
+  - Integration tests: set_locale resolves current_user.locale for signed-in users
+  - Integration tests: Accept-Language fallback for unauthenticated pages
+  - Integration tests: Preference save persists locale, subsequent request uses it
+  - Smoke: switch preference to English, verify all pages
+  - Smoke: sign out, set Accept-Language: en, verify sign-in page in English
+```
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Using `around_action` with `I18n.with_locale`
+
+**What people do:** Follow the standard Rails guide example verbatim.
+**Why it's wrong:** Warden (Devise's foundation) processes some callbacks outside the `around_action` block. Devise flash messages (login failure, unauthenticated redirect) are set at the Warden layer and bypass the `with_locale` scope, resulting in untranslated error messages.
+**Do this instead:** Use `before_action` with `I18n.locale = resolved_locale` direct assignment. The `devise-i18n` README documents this requirement explicitly.
+
+### Anti-Pattern 2: Storing Locale in the Session
+
+**What people do:** `session[:locale] = params[:locale]` as the persistence mechanism.
+**Why it's wrong:** Sessions are tied to browser sessions, not user accounts. If a user signs in on a different device the preference is lost.
+**Do this instead:** Persist locale in `users.locale`, consistent with the v1.4 milestone scope and account-level auth behavior.
+
+### Anti-Pattern 3: Copying devise-i18n Locale Files
+
+**What people do:** Run `rails g devise:i18n:locale en` to copy locale files into `config/locales/`.
+**Why it's wrong:** Copied files will not receive upstream bug fixes when `devise-i18n` is upgraded. Translation improvements in the gem stay invisible to the app.
+**Do this instead:** Let the gem serve its own locale files. Only copy if a specific string genuinely needs overriding.
+
+### Anti-Pattern 4: Deep Lazy-Lookup Keys for Shared Strings
+
+**What people do:** Use `t('.save')` in every view, creating `ja.bookmarks.index.save`, `ja.bookmarks.new.save`, etc., all with value `保存`.
+**Why it's wrong:** Duplicate translation values across dozens of keys. Changing "save" copy requires touching every key.
+**Do this instead:** Shared action words (`保存 / Save`, `編集 / Edit`, `削除 / Delete`, `戻る / Back`) go under `ja.shared.*` / `en.shared.*`. Only page-specific labels use lazy `t('.')` scoping.
+
+### Anti-Pattern 5: Hardcoding Locale Options in the Preferences View
+
+**What people do:** `<option value="ja">日本語</option><option value="en">English</option>` inline in the form.
+**Why it's wrong:** Adding a third locale later requires a view change. The view is not the source of truth for supported locales.
+**Do this instead:** Iterate `I18n.available_locales` in the view and use a lookup hash for display names.
 
 ## Sources
 
-- Direct inspection: `app/controllers/welcome_controller.rb`, `app/views/welcome/`, `app/views/common/_menu.html.erb`, `app/views/layouts/application.html.erb`
-- Direct inspection: `.planning/codebase/ARCHITECTURE.md` (gadget protocol, portal flow, `Crud::ByUser` pattern, user-scoping conventions)
-- Direct inspection: `app/assets/javascripts/todos.js` (namespace and jQuery pattern)
-- Direct inspection: `app/assets/stylesheets/themes/simple.css.scss` (simple theme CSS scoping approach)
-- Direct inspection: `test/controllers/welcome_controller/welcome_controller_test.rb`, `test/controllers/todos_controller_test.rb` (test conventions)
-- Direct inspection: `config/routes.rb` (existing resource routing patterns)
-- Direct inspection: `app/models/todo.rb`, `app/models/crud/by_user.rb` (per-user model pattern)
+- Rails i18n Guide -- https://guides.rubyonrails.org/i18n.html (fetched 2026-05-01)
+- devise-i18n README (v1.15.0 installed locally) -- documents `before_action` requirement due to Warden bug; Warden issue referenced: https://github.com/wardencommunity/warden/issues/180
+- Codebase inspection: `app/controllers/application_controller.rb`, `app/controllers/preferences_controller.rb`, `app/models/preference.rb`, `app/models/user.rb`, `config/application.rb`, `config/locales/ja.yml`, `config/routes.rb`, `app/views/preferences/index.html.erb`, `app/views/layouts/application.html.erb`, `db/schema.rb`
 
 ---
-*Architecture research for: Quick Note Gadget (v1.3)*
-*Researched: 2026-04-30*
+*Architecture research for: Rails i18n integration (v1.4 milestone)*
+*Researched: 2026-05-01*

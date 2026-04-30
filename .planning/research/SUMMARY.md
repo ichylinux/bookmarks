@@ -1,168 +1,115 @@
 # Project Research Summary
 
-**Project:** Bookmarks v1.3 — Quick Note Gadget
-**Domain:** Server-rendered note-taking tab embedded in an existing Rails personal dashboard
-**Researched:** 2026-04-30
+**Project:** Bookmarks v1.4 — Internationalization
+**Domain:** Rails i18n / bilingual UI (ja/en) for an existing Rails personal dashboard
+**Researched:** 2026-05-01
 **Confidence:** HIGH
 
 ## Executive Summary
 
-The Quick Note Gadget is a focused addition to an existing Rails 8.1 personal bookmark app: a textarea-plus-list note-taking panel accessible via a new "ノート" tab on the simple theme welcome page. All four research areas converge on the same conclusion — no new dependencies are needed, and the implementation is a direct application of patterns already proven in this codebase. The todos gadget (AJAX partial swap, per-user scoping via `Crud::ByUser`, soft-delete) serves as the closest template; the note gadget follows the same structure but starts with a simpler full-page POST/redirect approach before optionally adding AJAX.
+v1.4 should add bilingual Japanese/English UI through Rails' built-in i18n system, with no frontend framework changes and no JavaScript translation pipeline. The app already has the right foundation: Rails 8.1, `rails-i18n`, `devise-i18n`, server-rendered ERB views, and a preferences page where account settings already live.
 
-The recommended approach is a standard Rails MVC addition: a `notes` table migration, a `Note` model scoped to `current_user`, a thin `NotesController` with `create` (and optionally `destroy`), a `_note_gadget` partial in `app/views/welcome/`, and tab switching via jQuery `show()`/`hide()` with a `?tab=notes` query param to survive redirects. The tab UI must be strictly scoped to the simple theme — both in the ERB view (`<% if favorite_theme == 'simple' %>`) and in CSS (`.simple { .tab-nav { ... } }`). No service objects, no gadget protocol, no Turbo, no ActionText.
+The recommended implementation is a small locale infrastructure layer first, followed by incremental string extraction. Locale should be persisted on `users.locale` as defined in `PROJECT.md`, resolved on every request by `ApplicationController`, and selected through `/preferences`. First visits and unauthenticated pages should fall back to a whitelisted `Accept-Language` parse, then `I18n.default_locale` (`:ja`).
 
-The primary risks are security (user ownership not enforced from day one, or `user_id` permitted in strong params), theme leakage (tab HTML or CSS visible on modern/classic themes), and tab state loss after the POST/redirect cycle. All three are easily prevented by following the existing controller patterns in the codebase and adding the `tab` query param to the redirect. Research found no ambiguities — every decision has a clear answer grounded in the existing code.
+The main risks are incomplete English coverage hidden by fallbacks, Devise/Warden messages using the wrong locale, and hardcoded strings surviving in attributes, helper-rendered HTML, JavaScript callbacks, tests, and custom 2FA views. These should be handled by phasing foundation work before extraction, adding locale-specific tests, and verifying Devise failure paths explicitly.
+
+## Reconciled Decisions
+
+### Store locale on `users.locale`
+
+`PROJECT.md` is canonical for v1.4 and explicitly calls for a `locale` column on `users`. Although one architecture note considered `preferences.locale`, this milestone should use `users.locale` because locale affects authentication, Devise/Warden messaging, first post-login rendering, and account identity more than presentation-only preferences.
+
+### Use `before_action :set_locale`
+
+Rails generally recommends `around_action` with `I18n.with_locale`, but this app uses Devise/Warden. Research flags Devise failure flows as a risk when `around_action` resets locale before Warden failure responses are rendered. Use a `before_action` that assigns `I18n.locale = resolved_locale` at the start of every request. Never mutate `I18n.default_locale` at runtime.
+
+The implementation must verify an English-locale failed-login path so Devise flash messages are proven to render in English.
+
+### Avoid new dependencies by default
+
+Manual `Accept-Language` parsing is sufficient for the two supported locales when paired with `I18n.available_locales` whitelisting. Do not add `http_accept_language` unless real browser/header behavior proves the manual parser inadequate.
+
+Do not configure `i18n-js` for v1.4. For isolated JavaScript-visible strings, render translated values into `data-*` attributes from ERB and read those attributes in JavaScript.
+
+### Rely on bundled Devise translations unless customizing
+
+`devise-i18n` is already installed. Let the gem provide default Devise messages and labels unless the app needs custom Devise copy. Custom 2FA views still need explicit `en.yml` counterparts.
 
 ## Key Findings
 
 ### Recommended Stack
 
-No new gems or npm packages are required. The entire feature is built on Rails 8.1 ActiveRecord (migration + model), `form_with` (server-rendered form), ERB partials (gadget partial), jQuery with rails-ujs (tab switching + optional AJAX), and SCSS scoped under `.simple` (tab styles). The Sprockets asset pipeline picks up new `.js` and `.css.scss` files automatically via `require_tree .`.
+No required new gems or npm packages.
 
-**Core technologies:**
-- Rails ActiveRecord 8.1.3: `Note` model and migration — already installed, plain `text` column, no ActionText needed
-- `form_with(local: true)`: standard form POST for note creation — consistent with bookmarks and preferences forms
-- jQuery 4.6.1 + rails-ujs: tab switching and optional AJAX submission — already loaded globally
-- ERB partials (`_note_gadget.html.erb`): note form and list rendering — consistent with all other gadget partials
-- SCSS in `welcome.css.scss`: tab nav and panel styles — existing file, scoped under `.simple`
+| Component | Recommendation |
+|-----------|----------------|
+| Locale files | `config/locales/ja.yml` and `config/locales/en.yml` |
+| Locale persistence | `users.locale`, nullable string, validated against `ja` / `en` |
+| Locale resolution | `ApplicationController` `before_action :set_locale` |
+| First-visit fallback | Safely parse `HTTP_ACCEPT_LANGUAGE`, whitelist against `I18n.available_locales` |
+| Devise | Use installed `devise-i18n`; verify Warden failure path |
+| JavaScript strings | Prefer ERB-rendered `data-*` translated values, not `i18n-js` |
 
-### Expected Features
+### Table Stakes
 
-**Must have (table stakes — v1.3 launch):**
-- Migration: `notes` table with `user_id`, `body` (text, not null), timestamps, index on `(user_id, created_at)`
-- `Note` model: `belongs_to :user`, `validates :body, presence: true`, `Crud::ByUser` scope
-- "ホーム" and "ノート" tab links on the simple theme welcome page
-- Textarea + Save button form (standard POST)
-- Reverse-chronological note list showing body text and timestamp
-- Empty-state message ("メモはまだありません") when no notes exist
-- Per-user data isolation enforced in all queries and on destroy
+- Add `users.locale` and validation.
+- Configure `config.i18n.available_locales = %i[ja en]`.
+- Resolve locale by priority: `current_user.locale` -> valid `Accept-Language` locale -> `I18n.default_locale`.
+- Add a language selector to `/preferences`.
+- Extract all hardcoded UI strings in both `ja.yml` and `en.yml`.
+- Translate navigation, layout, flash/error messages, bookmarks, notes, todos, feeds, calendar surfaces, custom 2FA views, ARIA/title/placeholder text, and controller alerts.
+- Verify Devise auth pages and failure flash behavior in both locales.
 
-**Should have (add when core is confirmed):**
-- Delete note from list (per-row destroy link with confirm dialog)
-- Auto-clear textarea after save (only relevant if AJAX submission is added)
+### Watch Out For
 
-**Defer (v2+):**
-- Inline edit of existing notes — doubles action surface
-- Note categories or tags — schema complexity not justified at this scale
-- Full-text search — not needed while the list is short enough to scan
+1. **Fallbacks can mask missing English keys.** Tests should explicitly exercise `:en`, and extraction work should add both locale keys together.
+2. **Devise/Warden can bypass `around_action`.** Use `before_action` and verify failed-login flash localization.
+3. **Never change `I18n.default_locale` at runtime.** It is global, not request-local.
+4. **Whitelist `Accept-Language`.** Never assign raw header values to `I18n.locale`.
+5. **Tests currently assert Japanese literals.** Update tests alongside each extracted view/controller surface.
+6. **Strings hide in attributes and JS callbacks.** Search for text in `aria-label`, `title`, `placeholder`, submit values, helpers, `.js.erb`, and JavaScript failure handlers.
 
-### Architecture Approach
+## Suggested Roadmap Phases
 
-The note gadget lives in a dedicated tab panel outside the draggable portal grid, so it does not participate in the gadget protocol (`Portal`, `PortalLayout`, `save_state`). `WelcomeController#index` assigns `@notes = current_user.notes.order(created_at: :desc)` (one extra query per homepage load). A dedicated `NotesController` handles `create` and `destroy` via standard `resources :notes` routing. Tab state survives the POST/redirect cycle via a `?tab=notes` query param read by `notes.js` on `$(document).ready`.
+### Phase 14: I18n Foundation
 
-**Major components:**
-1. `Note` model (`app/models/note.rb`) — `belongs_to :user`, body validation, user-scoped queries
-2. `NotesController` (`app/controllers/notes_controller.rb`) — `create` + optional `destroy`; inherits `authenticate_user!`; merges `user_id` from `current_user` outside `permit`
-3. `WelcomeController#index` (modified) — adds `@notes` assignment alongside existing `@portal`
-4. `welcome/_note_gadget.html.erb` (new) — `form_with` textarea + `<ul>` of notes with timestamp
-5. `welcome/index.html.erb` (modified) — wraps portal grid in `div.tab-panel#home`; adds `div.tab-panel#notes` inside `<% if favorite_theme == 'simple' %>`
-6. `common/_menu.html.erb` (modified) — adds tab nav links with `data-tab` attributes
-7. `notes.js` (new) — `window.notes.initTabs()`; reads `URLSearchParams` to restore tab on load
-8. `welcome.css.scss` (modified) — `.simple { .tab-nav { } .tab-panel { } }` styles
+Add `users.locale`, model validation, `available_locales`, safe locale resolution, and request-level tests for user preference, Accept-Language fallback, invalid locale rejection, and default `:ja` behavior.
 
-### Critical Pitfalls
+### Phase 15: Preferences Language Switcher
 
-1. **Tab UI leaks into non-simple themes** — Wrap all tab HTML in `<% if favorite_theme == 'simple' %>` in the view; wrap all tab CSS under `.simple { }` in `welcome.css.scss`. Do not add any tab styles to `common.css.scss`.
+Add ja/en selector to `/preferences`, persist to `users.locale`, and verify the selected language affects the next rendered page.
 
-2. **Note ownership not enforced** — Scope every query to `current_user.id` from the first line of code. Never permit `user_id` in strong params; merge it from `current_user.id` explicitly (pattern from `todos_controller.rb`).
+### Phase 16: Core Shell Translation
 
-3. **CSRF token broken on note form** — Use `form_with(local: true)` for the standard form POST. Do not copy the `authenticity_token: form_authenticity_token` inline pattern from `collect_portal_layout_params()` — that is a legacy approach.
+Extract layout, navigation, drawer/menu, shared buttons, preferences page labels, flash strings, and common UI copy to `ja.yml` / `en.yml`.
 
-4. **Tab state lost after POST/redirect** — Redirect to `root_path(tab: 'notes')` after a successful note save. Read `URLSearchParams` in `notes.js` on DOM ready to trigger the correct tab. This is the simplest and most testable option.
+### Phase 17: Feature Surface Translation
 
-5. **`user_id` accepted via mass assignment** — Never include `user_id` in `permit(...)`; set it via `ret.merge(user_id: current_user.id)` after building the permitted params hash (exact pattern from `todo_params` in `todos_controller.rb`).
+Extract bookmarks, notes, todos, feeds, calendar, forms, validation-facing labels, controller alerts, ARIA/title/placeholder strings, and JS-visible messages via `data-*` values.
 
-## Implications for Roadmap
+### Phase 18: Auth, 2FA, and Verification
 
-Based on research, all four files agree on a natural dependency chain. The suggested phase structure maps directly to the build order recommended in ARCHITECTURE.md.
-
-### Phase 1: Data Layer
-
-**Rationale:** Everything depends on the `notes` table and `Note` model existing. No view or controller work is testable without this. Zero risk of cascading changes — the migration is additive.
-**Delivers:** `notes` table migration (with index on `user_id, created_at`), `Note` model with `belongs_to :user` and body validation, `has_many :notes` on `User`, `resources :notes, only: [:create, :destroy]` in routes
-**Addresses:** FEATURES.md — migration + Note model (P1), per-user isolation foundation
-**Avoids:** Pitfall 2 (ownership) and Pitfall 3 (mass assignment) must be baked in here, not retrofitted
-
-### Phase 2: Controller + Backend Tests
-
-**Rationale:** Controller logic (create, scoping, auth guard, redirect) is fully testable without any view changes. Verifying the backend before wiring views prevents debugging a mixed signal from view + controller issues simultaneously.
-**Delivers:** `NotesController#create` (and `#destroy` shell), fixtures (`notes.yml`), `notes_controller_test.rb` covering auth, scoping, validation failure, and redirect
-**Addresses:** FEATURES.md — `NotesController` create action (P1); PITFALLS.md — Pitfalls 2, 3, and 5 all verified by tests before any view code exists
-**Avoids:** Pitfall 3 (mass assignment); Pitfall 5 (CSRF) — test the form POST before calling it done
-
-### Phase 3: Welcome Page Tab UI
-
-**Rationale:** Tab UI is the entry point to all note features. The `WelcomeController#index` change and the view restructuring must happen before the note gadget partial is visible. This phase also locks in the theme isolation decision.
-**Delivers:** `WelcomeController#index` with `@notes` assigned; `welcome/index.html.erb` restructured into `#home` and `#notes` tab panels inside `<% if favorite_theme == 'simple' %>`; `common/_menu.html.erb` tab nav links; `notes.js` with `window.notes.initTabs()` and `URLSearchParams` tab restore; `welcome.css.scss` tab styles scoped under `.simple`
-**Addresses:** FEATURES.md — tab links (P1); STACK.md — jQuery tab switching pattern
-**Avoids:** Pitfall 1 (theme leakage — CSS and HTML both scoped to simple); Pitfall 6 (tab state — query param approach implemented from the start); Pitfall 7 (note form only visible in simple theme view)
-
-### Phase 4: Note Gadget Partial + Integration Tests
-
-**Rationale:** With the backend verified and the tab scaffold in place, the `_note_gadget` partial is the final assembly step. Integration tests confirm the full request cycle: load page, see tab, save note, return to note tab, see note in list.
-**Delivers:** `welcome/_note_gadget.html.erb` with textarea form and reverse-chronological note list; empty-state message; timestamp per note; Cucumber/integration tests for the full flow; "looks done but isn't" checklist items verified
-**Addresses:** FEATURES.md — textarea + save (P1), reverse-chronological list (P1), empty state (P1), timestamp (P1)
-**Avoids:** Pitfall 4 (N+1 — verify single SELECT in development log); Pitfall 5 (CSRF — submit form and confirm no 422); XSS — confirm `<script>` content renders as escaped text
-
-### Phase 5: Delete Note (P2)
-
-**Rationale:** Delete is a per-row action that depends on the list existing. Deferred to P2 because it adds a destroy action and a confirm dialog without affecting MVP completeness. Low complexity — can be a fast follow after Phase 4 is confirmed working.
-**Delivers:** `NotesController#destroy` fully wired; per-row delete link in `_note_gadget`; soft-delete consistent with `Crud::ByUser`; destroy test in `notes_controller_test.rb`
-**Addresses:** FEATURES.md — delete note (P2)
-**Avoids:** Pitfall 2 (ownership on destroy — `readable_by?(current_user)` guard)
-
-### Phase Ordering Rationale
-
-- Phases 1 and 2 are ordered by strict dependency: the table must exist before the controller can be written; the controller must be tested before views are added.
-- Phases 3 and 4 are separated because the tab scaffold (Phase 3) is pure structural work that does not depend on note-specific content, while the gadget partial (Phase 4) fills in the note-specific content. This separation makes it easy to verify theme isolation before any note HTML is in the DOM.
-- Phase 5 is isolated because delete is a P2 feature that depends only on the list (Phase 4) being complete.
-- All four research files agree on this ordering. There are no circular dependencies.
-
-### Research Flags
-
-Phases with standard, well-documented patterns — skip deeper research:
-- **Phase 1 (Data Layer):** Standard Rails migration. The exact migration syntax is already in STACK.md. No research needed.
-- **Phase 2 (Controller):** Direct replication of `todos_controller.rb` pattern. All code samples verified from codebase.
-- **Phase 3 (Tab UI):** jQuery `show()`/`hide()` with `URLSearchParams`. Pattern is proven in this codebase. No research needed.
-- **Phase 4 (Gadget Partial):** ERB + Rails form helpers. Standard patterns throughout the app.
-- **Phase 5 (Delete):** Direct replication of todo delete pattern. No research needed.
-
-No phase requires a `/gsd-research-phase` deep-dive. All patterns are established within this codebase.
+Verify Devise and custom 2FA pages, failed-login flash localization, remaining hardcoded strings, English/Japanese smoke paths, and translation coverage.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All findings from direct codebase inspection; no new dependencies; todos gadget is a complete, working reference |
-| Features | HIGH | Scope tightly defined by PROJECT.md; feature table derived from existing gadget comparisons in the codebase |
-| Architecture | HIGH | All component boundaries verified by reading the actual source files; build order derives from import/render dependencies |
-| Pitfalls | HIGH | All pitfalls identified from direct inspection of affected files; no speculation |
+| Stack | HIGH | Rails i18n, rails-i18n, and devise-i18n are already present |
+| Features | HIGH | Scope is explicit in `PROJECT.md` and the app surface is small enough to audit |
+| Architecture | HIGH | Server-rendered Rails flow keeps locale resolution centralized |
+| Pitfalls | HIGH | Main risks are known Rails/Devise i18n failure modes plus extraction completeness |
 
 **Overall confidence:** HIGH
 
-### Gaps to Address
-
-No significant gaps were found. The following minor decisions can be deferred to implementation:
-
-- **AJAX vs full-page POST for note create:** Research recommends full-page POST for MVP (simpler, consistent with bookmarks/preferences), with AJAX as a P2 option. The decision does not affect Phase 1 or 2. Confirm during Phase 4 based on perceived UX.
-- **Note list limit:** Research recommends `.limit(50)` from day one, but the exact number is not critical. Confirm during Phase 2 controller implementation.
-- **Tab nav placement in `_menu.html.erb`:** The exact DOM position of tab links relative to the existing dropdown is a visual detail. Confirm during Phase 3 by visual inspection in the browser.
-
 ## Sources
 
-### Primary (HIGH confidence)
-- Direct codebase inspection: `app/controllers/todos_controller.rb`, `app/controllers/bookmarks_controller.rb`, `app/controllers/welcome_controller.rb` — controller patterns, scoping, params
-- Direct codebase inspection: `app/assets/javascripts/todos.js`, `app/views/welcome/_todo_gadget.html.erb` — XHR partial pattern, jQuery namespace convention
-- Direct codebase inspection: `app/assets/stylesheets/themes/simple.css.scss`, `app/assets/stylesheets/welcome.css.scss` — CSS scoping under `.simple`
-- Direct codebase inspection: `app/views/welcome/index.html.erb`, `app/views/common/_menu.html.erb`, `app/views/layouts/application.html.erb` — view structure and theme switching
-- Direct codebase inspection: `db/schema.rb`, `config/routes.rb`, `app/models/crud/by_user.rb` — schema, routing, user-scoping concerns
-- Rails 8.1 guides (form helpers, ActiveRecord migrations) — confirmed standard patterns match existing app usage
-
-### Secondary (MEDIUM confidence)
-- `.planning/codebase/STACK.md` (analysed 2026-04-27) — confirmed Sprockets + jQuery 4 + rails-ujs pipeline, no Turbo/Stimulus
-- `.planning/codebase/ARCHITECTURE.md` — gadget protocol description, `Crud::ByUser` pattern, portal layout flow
-- `.planning/PROJECT.md` — milestone scope definition (simple theme only, no Turbo constraint)
+- `.planning/PROJECT.md` — v1.4 milestone scope
+- `.planning/research/STACK.md`
+- `.planning/research/FEATURES.md`
+- `.planning/research/ARCHITECTURE.md`
+- `.planning/research/PITFALLS.md`
 
 ---
-*Research completed: 2026-04-30*
-*Ready for roadmap: yes*
+*Research completed: 2026-05-01*
+*Ready for requirements: yes*
