@@ -32,7 +32,8 @@
   </script>
   <div>
     <ul class="navigation">
-      <li><%= link_to 'Bookmarks', root_path %></li>
+      <li><%= link_to 'Home', root_path %></li>
+      <li><%= link_to 'Note', root_path(tab: 'notes') %></li>
       <li class="email">
         <a href="#"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>
         <div class="menu hidden">
