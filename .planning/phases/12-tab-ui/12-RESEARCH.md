@@ -262,10 +262,10 @@ Applicable surface is minimal: **`tab`** is UX state, not authorization. Threats
 | A1 | Optional SSR initial visibility from `params[:tab]` is allowed and helps FOUC — not explicitly mandated | Negligible — pure JS satisfies D-04 if SSR skipped |
 | A2 | `URLSearchParams` available in targeted browsers — acceptable modern baseline | MEDIUM for very old browsers; likely OK per existing stack |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Automation level for “no page reload” (TAB-02 / SC2)** — Integration tests cannot trivially distinguish client-side toggle from navigation without browser driver. Recommendation: markup + redirect tests automated; no-reload assertion in PLAN as system/Capybara or UAT checklist.
-2. **Partial extraction** (`_simple_tabs.html.erb`) — purely organizational; planner decides based on PLAN readability.
+1. **Automation level for “no page reload” (TAB-02 / SC2)** — Integration tests cannot trivially distinguish client-side toggle from navigation without browser driver. **RESOLVED:** Plan 12-02 uses automated markup/redirect/theme isolation tests plus a blocking manual UAT checkpoint for no-reload behavior, matching `12-VALIDATION.md`.
+2. **Partial extraction** (`_simple_tabs.html.erb`) — purely organizational. **RESOLVED:** Plan 12-01 keeps the implementation in `welcome/index.html.erb` unless the executor finds extraction necessary for readability; no separate partial is required for phase success.
 
 ## Environment Availability
 
