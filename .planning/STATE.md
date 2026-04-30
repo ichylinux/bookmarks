@@ -5,7 +5,7 @@ milestone_name: Internationalization
 status: planning
 stopped_at: ""
 last_updated: "2026-05-01T00:00:00.000Z"
-last_activity: 2026-05-01 - Milestone v1.4 started
+last_activity: 2026-05-01 - Completed quick task 260501-q04: remove table 'tweets' since there is no reference to it
 progress:
   total_phases: 0
   completed_phases: 0
@@ -21,7 +21,7 @@ progress:
 Phase: Not started (defining requirements)
 Plan: —
 Status: Defining requirements
-Last activity: 2026-05-01 — Milestone v1.4 started
+Last activity: 2026-05-01 — Completed quick task 260501-q04: remove table 'tweets' since there is no reference to it
 
 ## Project Reference
 
@@ -55,6 +55,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q01 | Replace Bookmarks nav with Home/Note in simple theme menu | 2026-05-01 | 66f2ebf |
 | 260501-q02 | Remove simple-tabstrip nav (superseded by menu links) | 2026-05-01 | f73c484, 090f7cc |
 | 260501-q03 | simple theme — Note tab visibility toggle via use_note preference | 2026-05-01 | f7b2267, bf98fd1, d8fb406 |
+| 260501-q04 | remove table 'tweets' since there is no reference to it | 2026-05-01 | 3f215d4 |
 
 ## Session Continuity
 
