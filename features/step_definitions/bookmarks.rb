@@ -2,6 +2,7 @@
   sign_in user
   visit bookmarks_path
   capture
+  assert has_selector?('a.breadcrumbs-create-bookmark')
   find('a.breadcrumbs-create-bookmark').click
   assert has_selector?('form')
   capture
