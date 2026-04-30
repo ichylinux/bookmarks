@@ -85,3 +85,57 @@ div.gadgets {
     padding: 0;
   }
 }
+
+.simple {
+  .simple-tabstrip {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 10px 4px 10px;
+  }
+
+  .simple-tab {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0 10px 0 0;
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    color: inherit;
+    cursor: pointer;
+    vertical-align: baseline;
+
+    &.simple-tab--active {
+      font-weight: 700;
+      border-bottom: 2px solid #595757;
+      padding-bottom: 0;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #595757;
+      outline-offset: 2px;
+    }
+  }
+
+  .simple-tab-panel--hidden {
+    display: none;
+  }
+
+  #notes-tab-panel {
+    h2 {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 4px 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  }
+}
