@@ -26,14 +26,12 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#bookmark_gadget a[href=?][target=?]', 'www.example.com', '_blank', count: 0
   end
 
-  def test_シンプルテーマでウェルカムにホームとノートのタブボタンが表示される
+  def test_シンプルテーマでウェルカムにホームとノートのパネルが表示される
     user.preference.update!(theme: 'simple')
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'nav.simple-tabstrip', count: 1
-    assert_select 'button.simple-tab[data-simple-tab=?]', 'home', text: /Home/, count: 1
-    assert_select 'button.simple-tab[data-simple-tab=?]', 'notes', text: /Note/, count: 1
+    assert_select 'nav.simple-tabstrip', count: 0
     assert_select '#simple-home-panel', count: 1
     assert_select '#notes-tab-panel', count: 1
   end
