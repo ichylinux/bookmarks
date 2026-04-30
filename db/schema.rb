@@ -71,7 +71,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
     t.boolean "open_links_in_new_tab", default: false, null: false
     t.string "theme"
     t.datetime "updated_at"
-    t.boolean "use_note", default: true, null: false
+    t.boolean "use_note", default: false, null: false
     t.boolean "use_todo", default: false, null: false
     t.integer "user_id", null: false
   end

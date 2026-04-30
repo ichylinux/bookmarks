@@ -3,7 +3,7 @@
 require 'uri'
 
 もし /^シンプルテーマでサインインします。$/ do
-  user.preference.update!(theme: 'simple')
+  user.preference.update!(theme: 'simple', use_note: true)
   Note.where(user_id: user.id).delete_all
   sign_in user
 end

@@ -26,8 +26,17 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#bookmark_gadget a[href=?][target=?]', 'www.example.com', '_blank', count: 0
   end
 
+  def test_シンプルテーマでuse_noteがfalseのときノートパネルが表示されない
+    user.preference.update!(theme: 'simple', use_note: false)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#simple-home-panel', count: 1
+    assert_select '#notes-tab-panel', count: 0
+  end
+
   def test_シンプルテーマでウェルカムにホームとノートのパネルが表示される
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path
     assert_response :success
@@ -36,7 +45,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマでtab_notesクエリのときノートパネルが非表示クラスでホームが隠される
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
@@ -45,7 +54,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマで不正なtabクエリはホームを表示する
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'evil')
     assert_response :success
@@ -54,7 +63,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマのノートパネルにメモフォームが表示される
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
@@ -67,7 +76,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
 
   def test_シンプルテーマでメモがないとき空状態を表示する
     Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
@@ -89,7 +98,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
       created_at: newer_time,
       updated_at: newer_time
     )
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
@@ -114,7 +123,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
       created_at: Time.zone.local(2026, 4, 30, 11, 0),
       updated_at: Time.zone.local(2026, 4, 30, 11, 0)
     )
-    user.preference.update!(theme: 'simple')
+    user.preference.update!(theme: 'simple', use_note: true)
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
