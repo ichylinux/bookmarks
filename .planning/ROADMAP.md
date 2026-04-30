@@ -53,7 +53,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 **Milestone Goal:** Add a note-taking tab to the simple theme's welcome page so users can jot and review personal notes without leaving the app.
 
 - [x] **Phase 10: Data Layer** - Migration, Note model, and user ownership foundation — completed 2026-04-30
-- [ ] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests
+- [x] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests (completed 2026-04-30)
 - [ ] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect
 - [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests
 
@@ -85,7 +85,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
   4. `user_id` is never accepted via strong params — it is always merged from `current_user.id` server-side
   5. `NotesController` tests pass: auth, scoping, validation failure, and redirect all covered in `notes_controller_test.rb`
 **Plans**: 1 plan
-- [ ] 11-01-PLAN.md — Routes create-only, `NotesController#create`, `notes_controller_test.rb`
+- [x] 11-01-PLAN.md — Routes create-only, `NotesController#create`, `notes_controller_test.rb`
 **UI hint**: no
 
 ### Phase 12: Tab UI
@@ -119,7 +119,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
-| 11. Notes Controller | v1.3 | 1/1 | Ready to execute | - |
+| 11. Notes Controller | v1.3 | 1/1 | Complete   | 2026-04-30 |
 | 12. Tab UI | v1.3 | 0/? | Not started | - |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
