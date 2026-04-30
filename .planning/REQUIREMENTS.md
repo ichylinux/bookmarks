@@ -65,31 +65,31 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| I18N-01 | Pending | Pending |
-| I18N-02 | Pending | Pending |
-| I18N-03 | Pending | Pending |
-| I18N-04 | Pending | Pending |
-| PREF-01 | Pending | Pending |
-| PREF-02 | Pending | Pending |
-| PREF-03 | Pending | Pending |
-| TRN-01 | Pending | Pending |
-| TRN-02 | Pending | Pending |
-| TRN-03 | Pending | Pending |
-| TRN-04 | Pending | Pending |
-| TRN-05 | Pending | Pending |
-| AUTHI18N-01 | Pending | Pending |
-| AUTHI18N-02 | Pending | Pending |
-| AUTHI18N-03 | Pending | Pending |
-| VERI18N-01 | Pending | Pending |
-| VERI18N-02 | Pending | Pending |
-| VERI18N-03 | Pending | Pending |
-| VERI18N-04 | Pending | Pending |
+| I18N-01 | Phase 14 | Pending |
+| I18N-02 | Phase 14 | Pending |
+| I18N-03 | Phase 14 | Pending |
+| I18N-04 | Phase 14 | Pending |
+| PREF-01 | Phase 15 | Pending |
+| PREF-02 | Phase 15 | Pending |
+| PREF-03 | Phase 15 | Pending |
+| TRN-01 | Phase 16 | Pending |
+| TRN-02 | Phase 17 | Pending |
+| TRN-03 | Phase 17 | Pending |
+| TRN-04 | Phase 16 | Pending |
+| TRN-05 | Phase 17 | Pending |
+| AUTHI18N-01 | Phase 18 | Pending |
+| AUTHI18N-02 | Phase 18 | Pending |
+| AUTHI18N-03 | Phase 18 | Pending |
+| VERI18N-01 | Phase 14 | Pending |
+| VERI18N-02 | Phase 18 | Pending |
+| VERI18N-03 | Phase 18 | Pending |
+| VERI18N-04 | Phase 18 | Pending |
 
 **Coverage:**
 - v1.4 requirements: 19 total
-- Mapped to phases: 0
-- Unmapped: 19
+- Mapped to phases: 19
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after v1.4 requirements definition*
+*Last updated: 2026-05-01 after v1.4 roadmap creation*

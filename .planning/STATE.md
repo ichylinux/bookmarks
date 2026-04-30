@@ -5,9 +5,9 @@ milestone_name: Internationalization
 status: planning
 stopped_at: ""
 last_updated: "2026-05-01T00:00:00.000Z"
-last_activity: 2026-05-01 - Completed quick task 260501-q04: remove table 'tweets' since there is no reference to it
+last_activity: 2026-05-01 - Created v1.4 roadmap; ready for Phase 14 discussion
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 14 — Locale Infrastructure
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-01 — Completed quick task 260501-q04: remove table 'tweets' since there is no reference to it
+Status: Ready for discussion
+Last activity: 2026-05-01 — Created v1.4 roadmap; ready for Phase 14 discussion
 
 ## Project Reference
 
@@ -30,6 +30,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 **Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30)
 **Current milestone:** v1.4 — Internationalization
+
+## v1.4 Roadmap
+
+| Phase | Name | Status |
+|-------|------|--------|
+| 14 | Locale Infrastructure | Not started |
+| 15 | Language Preference | Not started |
+| 16 | Core Shell & Shared Messages Translation | Not started |
+| 17 | Feature Surface Translation | Not started |
+| 18 | Auth, 2FA & Translation Verification | Not started |
 
 ## Accumulated Context
 
@@ -60,5 +70,5 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 ## Session Continuity
 
 Last session: 2026-05-01T00:00:00.000Z
-Stopped at: v1.3 milestone archived
-Resume: `/gsd-new-milestone` to start v1.4
+Stopped at: v1.4 roadmap initialized
+Resume: `/gsd-discuss-phase 14` to start Locale Infrastructure

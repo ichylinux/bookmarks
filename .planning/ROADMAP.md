@@ -5,8 +5,83 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
+- 🚧 **v1.4 — Internationalization** — Phases 14–18 (planning)
 
 ## Phases
+
+### Active Milestone: v1.4 — Internationalization
+
+**Goal:** Make the app bilingual in Japanese and English with persisted per-user locale preference and safe first-visit language detection.
+
+| Phase | Milestone | Requirements | Status | Depends on |
+|-------|-----------|--------------|--------|------------|
+| 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Not started | v1.3 complete |
+| 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Not started | Phase 14 |
+| 16. Core Shell & Shared Messages Translation | v1.4 | TRN-01, TRN-04 | Not started | Phase 15 |
+| 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
+| 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Not started | Phase 17 |
+
+#### Phase 14: Locale Infrastructure
+
+**Goal:** Users receive every request in a safe, supported locale resolved from account preference, browser language, or Japanese default.
+
+**Requirements:** I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01
+
+**Success criteria:**
+1. A signed-in user with a saved `ja` or `en` account locale sees pages rendered in that saved locale.
+2. A first-time or signed-out visitor with a valid `Accept-Language` match sees the app rendered in the matched supported locale.
+3. A visitor with no supported language match, invalid locale input, or unsupported stored locale sees Japanese as the safe fallback.
+4. The rendered `<html lang>` attribute matches the locale actually used for the request.
+5. User-facing tests prove saved locale, `Accept-Language`, invalid locale fallback/rejection, and default Japanese behavior.
+
+#### Phase 15: Language Preference
+
+**Goal:** Users can choose Japanese or English from preferences and have that choice persist across sessions.
+
+**Requirements:** PREF-01, PREF-02, PREF-03
+
+**Success criteria:**
+1. A signed-in user can select Japanese or English from the existing `/preferences` page.
+2. After saving, the selected language controls the next rendered page.
+3. The selected language persists after browser refresh, sign-out, sign-in, and future sessions.
+4. The preferences page itself renders in the newly selected language after the change.
+
+#### Phase 16: Core Shell & Shared Messages Translation
+
+**Goal:** Users can navigate the app chrome and shared UI messages in Japanese or English.
+
+**Requirements:** TRN-01, TRN-04
+
+**Success criteria:**
+1. The main layout, menus, drawer navigation, shared buttons, breadcrumbs, titles, placeholders, and ARIA labels render in Japanese or English according to the active locale.
+2. Shared flash messages and controller alerts render in the active locale.
+3. Validation-facing labels and common form text render in the active locale.
+4. Both `config/locales/ja.yml` and `config/locales/en.yml` contain matching keys for extracted shared shell and message strings.
+
+#### Phase 17: Feature Surface Translation
+
+**Goal:** Users can use the app's core bookmark, note, todo, feed, calendar, and JavaScript-visible UI in Japanese or English.
+
+**Requirements:** TRN-02, TRN-03, TRN-05
+
+**Success criteria:**
+1. Bookmark screens can be used in Japanese or English without hardcoded UI strings.
+2. Notes, todos, feeds, and calendar gadget surfaces can be used in Japanese or English without hardcoded UI strings.
+3. JavaScript-visible messages render in the active locale through server-rendered translated values such as `data-*` attributes, without adding `i18n-js` or a JavaScript i18n build pipeline.
+4. User-created content such as bookmark titles, note bodies, todos, and feed content remains unchanged and is not treated as translatable UI chrome.
+
+#### Phase 18: Auth, 2FA & Translation Verification
+
+**Goal:** Users see authentication, 2FA, and representative app flows correctly localized, with remaining translation gaps caught.
+
+**Requirements:** AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04
+
+**Success criteria:**
+1. Devise authentication pages and Devise flash/failure messages render in the active locale.
+2. Custom two-factor authentication and setup pages render in Japanese or English.
+3. A failed sign-in request resolved to English shows the first failure message in English.
+4. Representative Japanese and English UI paths cover layout, preferences, core gadgets, authentication, and 2FA surfaces.
+5. Remaining user-visible Japanese literals in views, helpers, controllers, and JavaScript are translated or explicitly documented as intentional user/content data, with matching keys present in both locale files.
 
 <details>
 <summary>✅ v1.3 — Quick Note Gadget (Phases 10–13) — SHIPPED 2026-04-30</summary>
@@ -66,4 +141,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — v1.3 archived; all milestones shipped. Run `/gsd-new-milestone` to start v1.4.*
+*Last updated: 2026-05-01 — v1.4 roadmap created; ready for Phase 14 discussion.*
