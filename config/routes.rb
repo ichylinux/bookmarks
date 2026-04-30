@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :notes, only: [:create, :destroy]
+  resources :notes, only: [:create]
 
   resources :preferences, only: ['index', 'create', 'update']
 
