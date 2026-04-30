@@ -47,6 +47,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Theme leakage: both ERB guard (`favorite_theme == 'simple'`) and CSS scope (`.simple { }`) are required — one alone is insufficient
 - CSRF: use `form_with(local: true)` — do not copy inline `authenticity_token` from portal layout
 
+## Quick Tasks Completed
+
+| # | Description | Date | Commit |
+|---|-------------|------|--------|
+| 260501-q01 | Replace Bookmarks nav with Home/Note in simple theme menu | 2026-05-01 | 66f2ebf |
+
 ## Session Continuity
 
 Last session: 2026-05-01T00:00:00.000Z
