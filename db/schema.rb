@@ -68,7 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000200) do
   create_table "preferences", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.integer "default_priority"
-    t.string "font_size", default: "medium", null: false
+    t.string "font_size"
     t.boolean "open_links_in_new_tab", default: false, null: false
     t.string "theme"
     t.datetime "updated_at"

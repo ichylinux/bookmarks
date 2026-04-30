@@ -15,14 +15,13 @@ class Preference < ActiveRecord::Base
 
   belongs_to :user, inverse_of: 'preference'
 
-  validates :font_size, inclusion: { in: FONT_SIZES }
+  validates :font_size, inclusion: { in: FONT_SIZES }, allow_nil: true
 
   def self.default_preference(user)
     ret = self.new(user: user)
     ret.default_priority = Todo::PRIORITY_NORMAL
     ret.theme = "modern"
     ret.use_todo = true
-    ret.font_size = FONT_SIZE_MEDIUM
     ret
   end
 

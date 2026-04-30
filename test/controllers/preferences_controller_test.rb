@@ -77,4 +77,14 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'body.font-size-small'
   end
 
+  def test_文字サイズ未設定ならbodyクラスはmediumにフォールバックする
+    user.preference.update!(font_size: nil)
+
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'body.font-size-medium'
+  end
+
 end
