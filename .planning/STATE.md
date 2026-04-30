@@ -54,6 +54,11 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 - CSS specificity lesson: prefer class-based selectors scoped under theme class to avoid ID conflicts.
 - `menu.js` guard pattern (`if (!$('body').hasClass('modern')) return;`) is the model for `notes.js` tab guard.
 
+### Pending Todos
+
+- [Extract drawer_ui? helper if condition grows to 4th case](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — ui
+- [Gate drawer + drawer-overlay on theme for symmetry](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — ui
+
 ### Quick Tasks Completed
 
 | # | Description | Date | Commit | Directory |
