@@ -99,7 +99,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
   4. Switching to the modern or classic theme and visiting the welcome page shows no tab links and no tab panels
   5. All tab-related CSS lives under `.simple { }` in `welcome.css.scss`; no tab styles appear in `common.css.scss`
 **Plans**: 2 plans
-- [ ] 12-01-PLAN.md — ERB 二パネル + `welcome.css.scss` の `.simple` タブスタイル + `notes_tabs.js`
+- [x] 12-01-PLAN.md — ERB 二パネル + `welcome.css.scss` の `.simple` タブスタイル + `notes_tabs.js`
 - [ ] 12-02-PLAN.md — Welcome 統合テスト（TAB-01/03/SC4）+ TAB-02 手動 UAT チェックポイント
 **UI hint**: yes
 
@@ -122,7 +122,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 |-------|-----------|----------------|--------|-----------|
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
 | 11. Notes Controller | v1.3 | 1/1 | Complete    | 2026-04-30 |
-| 12. Tab UI | v1.3 | 0/2 | Not started | - |
+| 12. Tab UI | v1.3 | 1/2 | In Progress|  |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
 ---
