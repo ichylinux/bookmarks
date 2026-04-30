@@ -1,5 +1,8 @@
 pipeline {
   agent none
+  options {
+    ansiColor('xterm')
+  }
   environment {
     APP_NAME = 'bookmarks'
     KANIKO_OPTIONS = "--cache=${CACHE} --compressed-caching=false --build-arg registry=${ECR}"
@@ -9,10 +12,8 @@ pipeline {
       agent { kubernetes { inheritFrom 'kaniko' } }
       steps {
         container('kaniko') {
-          ansiColor('xterm') {
-            sh '/kaniko/executor -f `pwd`/Dockerfile.base -c `pwd` -d=${ECR}/${APP_NAME}/base:latest ${KANIKO_OPTIONS}'
-            sh '/kaniko/executor -f `pwd`/Dockerfile.test -c `pwd` -d=${ECR}/${APP_NAME}/test:latest ${KANIKO_OPTIONS}'
-          }
+          sh '/kaniko/executor -f `pwd`/Dockerfile.base -c `pwd` -d=${ECR}/${APP_NAME}/base:latest ${KANIKO_OPTIONS}'
+          sh '/kaniko/executor -f `pwd`/Dockerfile.test -c `pwd` -d=${ECR}/${APP_NAME}/test:latest ${KANIKO_OPTIONS}'
         }
       }
     }
@@ -41,11 +42,9 @@ spec:
       }
       steps {
         container('app') {
-          ansiColor('xterm') {
-            sh "bundle exec rake dad:db:create"
-            sh "bundle exec rails db:reset"
-            sh "bundle exec rails test"
-          }
+          sh "bundle exec rake dad:db:create"
+          sh "bundle exec rails db:reset"
+          sh "bundle exec rails test"
         }
       }
       post {
@@ -55,7 +54,7 @@ spec:
     stage('release') {
       agent { kubernetes { inheritFrom 'kaniko' } }
       environment {
-        RELEASE_TAG = "v1.2.0-${BUILD_NUMBER}"
+        RELEASE_TAG = "v1.3.0-${BUILD_NUMBER}"
       }
       stages {
         stage('tagging') {
@@ -72,9 +71,7 @@ spec:
         stage('artifact') {
           steps {
             container('kaniko') {
-              ansiColor('xterm') {
-                sh '/kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` -d=${ECR}/${APP_NAME}/app:${RELEASE_TAG} ${KANIKO_OPTIONS}'
-              }
+              sh '/kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` -d=${ECR}/${APP_NAME}/app:${RELEASE_TAG} ${KANIKO_OPTIONS}'
             }
           }
         }
