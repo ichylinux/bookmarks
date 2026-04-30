@@ -69,7 +69,10 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
   3. `User` model has `has_many :notes, dependent: :destroy`
   4. `resources :notes, only: [:create, :destroy]` is present in `config/routes.rb`
   5. Running `rails db:migrate` completes without error and the schema reflects the new table
-**Plans**: TBD
+**Plans**: 3 plans
+- [ ] 10-01-PLAN.md — Migration: create notes table with composite index, run db:migrate
+- [ ] 10-02-PLAN.md — Note model + notes.yml fixture stub + model unit tests
+- [ ] 10-03-PLAN.md — User has_many :notes association + routes :notes resource
 
 ### Phase 11: Notes Controller
 **Goal**: Users can POST a new note and have it persisted to their account — the controller enforces authentication, scopes all queries to `current_user`, and rejects invalid input — verified entirely by Minitest before any view is touched.
@@ -114,10 +117,10 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 10. Data Layer | v1.3 | 0/? | Not started | - |
+| 10. Data Layer | v1.3 | 0/3 | Not started | - |
 | 11. Notes Controller | v1.3 | 0/? | Not started | - |
 | 12. Tab UI | v1.3 | 0/? | Not started | - |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
 ---
-*Last updated: 2026-04-30 — v1.3 roadmap created*
+*Last updated: 2026-04-30 — Phase 10 plans created (3 plans)*
