@@ -84,7 +84,8 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
   3. An unauthenticated POST to `/notes` is redirected to the sign-in page (Devise auth guard active)
   4. `user_id` is never accepted via strong params — it is always merged from `current_user.id` server-side
   5. `NotesController` tests pass: auth, scoping, validation failure, and redirect all covered in `notes_controller_test.rb`
-**Plans**: TBD
+**Plans**: 1 plan
+- [ ] 11-01-PLAN.md — Routes create-only, `NotesController#create`, `notes_controller_test.rb`
 **UI hint**: no
 
 ### Phase 12: Tab UI
@@ -118,9 +119,9 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
-| 11. Notes Controller | v1.3 | 0/? | Not started | - |
+| 11. Notes Controller | v1.3 | 1/1 | Ready to execute | - |
 | 12. Tab UI | v1.3 | 0/? | Not started | - |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
 ---
-*Last updated: 2026-04-30 — Phase 10 complete (UAT); current focus Phase 11*
+*Last updated: 2026-04-30 — Phase 11 planned (11-01); ready for execute*
