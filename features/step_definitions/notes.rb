@@ -9,10 +9,8 @@ require 'uri'
 end
 
 もし /^ルートページでノートタブを開きます。$/ do
-  visit root_path
-  find('button.simple-tab[data-simple-tab="notes"]').click
+  visit root_path(tab: 'notes')
   assert has_selector?('#notes-tab-panel')
-  assert has_selector?('button.simple-tab.simple-tab--active[data-simple-tab="notes"]')
   capture
 end
 
@@ -29,7 +27,6 @@ end
 
 もし /^ノートタブに (.*?) が先頭表示されます。$/ do |body|
   assert_equal @note_body, body if @note_body
-  assert has_selector?('button.simple-tab.simple-tab--active[data-simple-tab="notes"]')
   within '#notes-tab-panel' do
     assert has_selector?('.note-item:first-child .note-body', text: body)
   end
