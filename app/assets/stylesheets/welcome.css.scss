@@ -138,4 +138,70 @@ div.gadgets {
       line-height: 1.5;
     }
   }
+
+  .note-gadget {
+    margin: 0 10px 8px 10px;
+  }
+
+  .note-gadget-form {
+    margin: 0 0 12px 0;
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      line-height: 1.4;
+      resize: vertical;
+    }
+
+    input[type="submit"] {
+      margin-top: 6px;
+    }
+  }
+
+  .note-empty {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #666;
+  }
+
+  .note-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .note-item {
+    margin: 0 0 12px 0;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .note-body {
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .note-timestamp {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #777;
+  }
 }

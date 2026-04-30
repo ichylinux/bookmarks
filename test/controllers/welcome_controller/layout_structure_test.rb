@@ -42,6 +42,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_ドロワーはwrapperの外にあり_bodyの直下にある
+    user.preference.update!(theme: 'modern')
     sign_in user
     get root_path
     assert_response :success
@@ -56,6 +57,29 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '.drawer > nav', count: 1
     assert_select '.drawer > nav > a', count: 7
+  end
+
+  def test_クラシックテーマでハンバーガーとドロワーが表示される
+    user.preference.update!(theme: 'classic')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'button.hamburger-btn', count: 1
+    assert_select 'div.drawer', count: 1
+    assert_select 'div.drawer-overlay', count: 1
+  end
+
+  def test_シンプルテーマではドロワーとハンバーガーがなくシンプルメニューが表示される
+    user.preference.update!(theme: 'simple')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'button.hamburger-btn', count: 0
+    assert_select 'div.drawer', count: 0
+    assert_select 'div.drawer-overlay', count: 0
+    assert_select 'body.simple', count: 1
+    assert_select 'ul.navigation', count: 1
+    assert_select 'ul.navigation a[href=?]', root_path
   end
 
   def test_非ログイン時はドロワーが存在しない

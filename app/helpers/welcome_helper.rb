@@ -5,4 +5,8 @@ module WelcomeHelper
     return 'modern' unless current_user.preference.present?
     return current_user.preference.theme.presence || 'modern'
   end
+
+  def drawer_ui?
+    user_signed_in? && favorite_theme != 'simple'
+  end
 end

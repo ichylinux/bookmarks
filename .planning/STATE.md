@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: — Quick Note Gadget
 status: executing
-stopped_at: "Phase 13 planned — next: /gsd-execute-phase 13"
-last_updated: "2026-04-30T10:24:56.155Z"
-last_activity: 2026-04-30 -- Phase 13 planning complete
+stopped_at: "Phase 13 executed — next: /gsd-verify-work"
+last_updated: "2026-04-30T11:56:00.000Z"
+last_activity: 2026-04-30 — Phase 13 all plans summarized
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 10
-  completed_plans: 6
-  percent: 60
+  completed_plans: 10
+  percent: 100
 ---
 
 # State
@@ -19,11 +19,11 @@ progress:
 ## Current Position
 
 Phase: 13
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-04-30 -- Phase 13 planning complete
+Plan: All summaries written (13-01 — 13-04)
+Status: Ready for conversational verification (`/gsd-verify-work`)
+Last activity: 2026-04-30 — Phase 13 implementation + docs complete
 
-Progress: [███████░░░] 75% (3/4 v1.3 phases shipped in roadmap)
+Progress: Plans for Phase 13 (4/4) executed; milestone verification pending.
 
 ## Project Reference
 
@@ -42,6 +42,7 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 - Tab switching via jQuery `show()`/`hide()` + `?tab=notes` query param to survive POST/redirect cycle.
 - Theme isolation: all tab HTML wrapped in `<% if favorite_theme == 'simple' %>`; all tab CSS scoped under `.simple { }` in `welcome.css.scss`.
 - `user_id` never in strong params — merged from `current_user.id` server-side (pattern from `todos_controller.rb`).
+- Rails 8 association `user.notes.delete_all` triggers nullifying updates incompatible with NOT NULL `user_id`; tests use `Note.where(user_id: user.id).delete_all`.
 
 ### Critical Pitfalls to Track
 
@@ -57,8 +58,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 ### Pending Todos
 
-- [Extract drawer_ui? helper if condition grows to 4th case](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — ui
-- [Gate drawer + drawer-overlay on theme for symmetry](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — ui
+- [Extract drawer_ui? helper if condition grows to 4th case](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — superseded by Phase 13-04 (`drawer_ui?` landed); consider closing manually.
+- [Gate drawer + drawer-overlay on theme for symmetry](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — addressed via `drawer_ui?` + layout gates in Phase 13-04.
 
 ### Quick Tasks Completed
 
@@ -73,6 +74,6 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 ## Session Continuity
 
-Last session: 2026-04-30T10:24:56.152Z
-Stopped at: Phase 13 planned — next: /gsd-execute-phase 13
-Resume file: .planning/phases/13-note-gadget-integration-tests/13-01-PLAN.md
+Last session: 2026-04-30T11:56:00.000Z
+Stopped at: Phase 13 executed — `/gsd-verify-work`
+Resume file: .planning/phases/13-note-gadget-integration-tests/13-04-SUMMARY.md

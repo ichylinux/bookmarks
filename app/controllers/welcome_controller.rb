@@ -2,6 +2,8 @@ class WelcomeController < ApplicationController
 
   def index
     @portal = current_user.portals.first
+    @note = Note.new
+    @notes = current_user.notes.recent
   end
 
   def save_state

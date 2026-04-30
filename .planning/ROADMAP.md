@@ -55,7 +55,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 - [x] **Phase 10: Data Layer** - Migration, Note model, and user ownership foundation — completed 2026-04-30
 - [x] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests (completed 2026-04-30)
 - [x] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect (completed 2026-04-30)
-- [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests
+- [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests (implemented — pending verification)
 
 ## Phase Details
 
@@ -113,7 +113,11 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
   3. Notes are displayed in reverse-chronological order with body text and a readable timestamp per note
   4. When the user has no notes, an empty-state message ("メモはまだありません") is shown instead of an empty list
   5. Integration tests cover: load note tab, submit note form, verify note appears in list, verify another user's notes are not visible
-**Plans**: TBD
+**Plans**: 4 plans
+- [x] 13-01-PLAN.md — `_note_gadget` partial, WelcomeController data prep, scoped CSS
+- [x] 13-02-PLAN.md — `WelcomeControllerTest` gadget + isolation coverage
+- [x] 13-03-PLAN.md — Cucumber Japanese feature + notes step defs
+- [x] 13-04-PLAN.md — `drawer_ui?` helper + layout tests
 **UI hint**: yes
 
 ## Progress
@@ -123,7 +127,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
 | 11. Notes Controller | v1.3 | 1/1 | Complete    | 2026-04-30 |
 | 12. Tab UI | v1.3 | 2/2 | Complete    | 2026-04-30 |
-| 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
+| 13. Note Gadget + Integration Tests | v1.3 | 4/4 | Executed — verify next | — |
 
 ---
-*Last updated: 2026-04-30 — Phase 11 planned (11-01); ready for execute*
+*Last updated: 2026-04-30 — Phase 13 executed; run `/gsd-verify-work` for verification*

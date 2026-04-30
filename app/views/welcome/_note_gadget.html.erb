@@ -1,0 +1,20 @@
+<section class="note-gadget">
+  <h2>ノート</h2>
+  <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
+    <%= f.label :body, 'メモ' %>
+    <%= f.text_area :body, rows: 4 %>
+    <%= f.submit '保存' %>
+  <% end %>
+  <% if @notes.empty? %>
+    <p class="note-empty">メモはまだありません</p>
+  <% else %>
+    <div class="note-list">
+      <% @notes.each do |note| %>
+        <div class="note-item">
+          <div class="note-body"><%= note.body %></div>
+          <div class="note-timestamp"><%= note.created_at.strftime('%Y-%m-%d %H:%M') %></div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</section>

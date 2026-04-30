@@ -18,7 +18,7 @@
       <div class="head-box">
         <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
         <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
-        <% if user_signed_in? && favorite_theme != 'simple' %>
+        <% if drawer_ui? %>
           <span class="head-user-email"><%= current_user.display_name %></span>
           <button class="hamburger-btn" aria-label="メニュー"></button>
         <% end %>
@@ -29,7 +29,7 @@
       <%= render 'common/menu' if user_signed_in? && favorite_theme == 'simple' %>
       <%= yield %>
     </div>
-    <% if user_signed_in? %>
+    <% if drawer_ui? %>
       <div class="drawer">
         <nav>
           <%= link_to 'Home', root_path %>

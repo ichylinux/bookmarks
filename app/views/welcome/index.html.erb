@@ -53,8 +53,7 @@
   </div>
 
   <div id="notes-tab-panel" class="simple-tab-panel<%= ' simple-tab-panel--hidden' unless notes_active %>" role="tabpanel">
-    <h2>ノート</h2>
-    <p>ここにメモの一覧と入力欄が表示されます。</p>
+    <%= render 'note_gadget' %>
   </div>
 <% else %>
   <div class="portal">
