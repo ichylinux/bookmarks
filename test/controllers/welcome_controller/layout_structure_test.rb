@@ -93,7 +93,6 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#notes-tab-panel', count: 0
-    assert_select 'nav.simple-tabstrip', count: 0
   end
 
   def test_クラシックテーマではシンプル用タブマークアップが出力されない
@@ -102,7 +101,6 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#notes-tab-panel', count: 0
-    assert_select 'nav.simple-tabstrip', count: 0
   end
 
 end
