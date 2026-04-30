@@ -3,7 +3,7 @@ status: complete
 phase: 10-data-layer
 source: 10-01-SUMMARY.md, 10-02-SUMMARY.md, 10-03-SUMMARY.md
 started: 2026-04-30T07:59:50Z
-updated: 2026-04-30T12:30:00Z
+updated: 2026-04-30T14:00:00Z
 ---
 
 ## Current Test
@@ -25,7 +25,7 @@ expected: `bin/rails test test/models/note_test.rb` を実行すると 8 runs, 0
 result: pass
 
 ### 4. User アソシエーション確認
-expected: app/models/user.rb に `has_many :notes, dependent: :destroy` が存在する
+expected: app/models/user.rb に `has_many :notes` が存在し、`dependent: :destroy` は付けない（無効化が通常運用であり、ユーザー削除時の大量カスケードを避ける）
 result: pass
 
 ### 5. ルーティング確認
@@ -43,4 +43,4 @@ blocked: 0
 
 ## Gaps
 
-[none — prior issues resolved: User に `dependent: :destroy` を追加；ルート順は feeds → notes → preferences をコードで確認。旧 UAT のテスト4コメントは Report 時点の誤認に近く、Note は Bookmark と同様 `destroy_logically!` のみ]
+[none — 2026-04-30: `dependent: :destroy` を外す方針に合わせ UAT/ROADMAP を更新]

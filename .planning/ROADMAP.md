@@ -66,7 +66,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 **Success Criteria** (what must be TRUE):
   1. `db/schema.rb` contains a `notes` table with `user_id`, `body` (text, not null), `created_at`, `updated_at`, and a composite index on `(user_id, created_at)`
   2. `Note` model has `belongs_to :user`, `validates :body, presence: true`, and uses the `Crud::ByUser` concern
-  3. `User` model has `has_many :notes, dependent: :destroy`
+  3. `User` model has `has_many :notes` (no `dependent: :destroy` — account disable is normal; unbounded synchronous cascade on user destroy is avoided)
   4. `resources :notes, only: [:create, :destroy]` is present in `config/routes.rb`
   5. Running `rails db:migrate` completes without error and the schema reflects the new table
 **Plans**: 3 plans

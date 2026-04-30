@@ -10,7 +10,9 @@ class User < ActiveRecord::Base
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
 
-  has_many :notes, dependent: :destroy
+  # No dependent: :destroy — disabling an account is the normal lifecycle; a rare
+  # hard-delete of User must not synchronously load/destroy unbounded notes (see ROADMAP).
+  has_many :notes
 
   has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
   after_save :create_default_portal

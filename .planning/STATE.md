@@ -20,7 +20,7 @@ progress:
 Phase: 11 of 13 (Notes Controller) — Phase 10 shipped; plan Phase 11 next
 Plan: —
 Status: Ready for `/gsd-discuss-phase 11` or `/gsd-plan-phase 11`
-Last activity: 2026-04-30 — Phase 10 UAT complete (5/5 pass); `User` に `dependent: :destroy` を追加してロードマップ条件を満たした
+Last activity: 2026-04-30 — Phase 10 UAT complete; Phase 11 next (`has_many :notes` without dependent cascade — perf / lifecycle)
 
 Progress: [█░░░░░░░░░] 25%
 
@@ -65,6 +65,7 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 |---|-------------|------|--------|-----------|
 | 260429-q01 | convert rails test:system into cucumber feature | 2026-04-29 | 7646e35 | [260429-q01-convert-system-tests-to-cucumber](./quick/260429-q01-convert-system-tests-to-cucumber/) |
 | 260429-q02 | default theme now is 'モダン', theme 'デフォルト' should be renamed to 'クラシック' | 2026-04-29 | 6fd342b | [260429-q02-rename-default-theme-to-classic](./quick/260429-q02-rename-default-theme-to-classic/) |
+| 260430-q05 | User notes: drop dependent: :destroy (disable-first lifecycle, avoid unbounded cascade) | 2026-04-30 | — | [260430-q05-notes-no-dependent-destroy](./quick/260430-q05-notes-no-dependent-destroy/) |
 | 260430-q04 | check README.md for out dated information. | 2026-04-30 | fa1d758 | [260430-q04-check-readme-outdated-info](./quick/260430-q04-check-readme-outdated-info/) |
 
 ## Session Continuity
