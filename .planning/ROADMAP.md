@@ -119,7 +119,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
-| 11. Notes Controller | v1.3 | 1/1 | Complete   | 2026-04-30 |
+| 11. Notes Controller | v1.3 | 1/1 | Complete    | 2026-04-30 |
 | 12. Tab UI | v1.3 | 0/? | Not started | - |
 | 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
 
