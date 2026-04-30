@@ -20,10 +20,10 @@ progress:
 
 Phase: 12
 Plan: Not started
-Status: Executing Phase 11
+Status: Context gathered — ready for `/gsd-plan-phase 12`
 Last activity: 2026-04-30
 
-Progress: [█░░░░░░░░░] 25%
+Progress: [█████░░░░░] 50% (2/4 v1.3 phases shipped in roadmap)
 
 ## Project Reference
 
