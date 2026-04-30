@@ -16,6 +16,10 @@
         </td>
       </tr>
       <tr>
+        <th><%= f.label :font_size, '文字サイズ' %></th>
+        <td><%= f.select :font_size, Preference::FONT_SIZE_OPTIONS %></td>
+      </tr>
+      <tr>
         <th><%= f.label :open_links_in_new_tab %></th>
         <td><%= f.check_box :open_links_in_new_tab %></td>
       </tr>

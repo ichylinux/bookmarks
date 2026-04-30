@@ -7,6 +7,19 @@ class PreferenceTest < ActiveSupport::TestCase
 
     assert_equal Todo::PRIORITY_NORMAL, p.default_priority
     assert_equal true, p.use_todo?
+    assert_equal Preference::FONT_SIZE_MEDIUM, p.font_size
+  end
+
+  def test_文字サイズは選択肢のみ有効
+    p = Preference.default_preference(user)
+
+    Preference::FONT_SIZES.each do |font_size|
+      p.font_size = font_size
+      assert p.valid?, "#{font_size} should be valid"
+    end
+
+    p.font_size = 'extra-large'
+    assert_not p.valid?
   end
 
 end
