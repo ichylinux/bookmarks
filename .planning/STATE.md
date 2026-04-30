@@ -5,7 +5,7 @@ milestone_name: — Quick Note Gadget
 status: ready for phase 13 planning
 stopped_at: Phase 12 complete — next: /gsd-discuss-phase 13 or /gsd-plan-phase 13
 last_updated: "2026-04-30T09:30:35.149Z"
-last_activity: "2026-04-30 - Completed quick task 260430-pph: modenize JavaScript in notes_tabs.js"
+last_activity: "2026-04-30 - Completed quick task 260430-pz0: use English simple tab labels"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -21,7 +21,7 @@ progress:
 Phase: 13
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-04-30 - Completed quick task 260430-pph: modenize JavaScript in notes_tabs.js
+Last activity: 2026-04-30 - Completed quick task 260430-pz0: use English simple tab labels
 
 Progress: [███████░░░] 75% (3/4 v1.3 phases shipped in roadmap)
 
@@ -69,6 +69,7 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 | 260430-q05 | User notes: drop dependent: :destroy (disable-first lifecycle, avoid unbounded cascade) | 2026-04-30 | — | [260430-q05-notes-no-dependent-destroy](./quick/260430-q05-notes-no-dependent-destroy/) |
 | 260430-q04 | check README.md for out dated information. | 2026-04-30 | fa1d758 | [260430-q04-check-readme-outdated-info](./quick/260430-q04-check-readme-outdated-info/) |
 | 260430-pph | modenize JavaScript in notes_tabs.js | 2026-04-30 | be02d6f | [260430-pph-modenize-javascript-in-notes-tabs-js](./quick/260430-pph-modenize-javascript-in-notes-tabs-js/) |
+| 260430-pz0 | use English simple tab labels | 2026-04-30 | 9b27b8f | [260430-pz0-as-shown-in-tmp-ss-png-tabs-are-represen](./quick/260430-pz0-as-shown-in-tmp-ss-png-tabs-are-represen/) |
 
 ## Session Continuity
 
