@@ -39,7 +39,9 @@ Rails.application.routes.draw do
       post 'delete'
     end
   end
-  
+
+  resources :notes, only: [:create, :destroy]
+
   resources :welcome, only: [] do
     collection do
       post 'save_state'
