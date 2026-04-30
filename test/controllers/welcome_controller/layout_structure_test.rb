@@ -63,4 +63,22 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
+  def test_モダンテーマではシンプル用タブマークアップが出力されない
+    user.preference.update!(theme: 'modern')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#notes-tab-panel', count: 0
+    assert_select 'nav.simple-tabstrip', count: 0
+  end
+
+  def test_クラシックテーマではシンプル用タブマークアップが出力されない
+    user.preference.update!(theme: 'classic')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#notes-tab-panel', count: 0
+    assert_select 'nav.simple-tabstrip', count: 0
+  end
+
 end
