@@ -27,7 +27,7 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Modern theme selectable from preferences, activates `body.modern` — **v1.2 Phase 5**
 - ✓ Hamburger drawer nav with all links, WCAG reduced-motion support — **v1.2 Phases 6–8**
 - ✓ Full-page visual polish: header, typography, tables, action buttons, form controls — **v1.2 Phase 9**
-- ✓ Simple-theme tab navigation (ホーム/ノート) on welcome page — **v1.3 Phase 12**
+- ✓ Simple-theme tab navigation (Home/Note) on welcome page — **v1.3 Phase 12**
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
 
@@ -90,7 +90,7 @@ This document evolves at phase transitions and milestone boundaries.
 
 ### v1.3 — Quick Note Gadget (2026-04-30)
 
-**Delivered:** Notes table + model (`Crud::ByUser`, soft-delete, validations), `NotesController#create`, simple-theme tab strip (ホーム/ノート), `_note_gadget` partial with empty-state and reverse-chrono list, `WelcomeControllerTest` coverage, Cucumber E2E feature, `drawer_ui?` layout helper. Human UAT 5/5.
+**Delivered:** Notes table + model (`Crud::ByUser`, soft-delete, validations), `NotesController#create`, simple-theme tab strip (Home/Note), `_note_gadget` partial with empty-state and reverse-chrono list, `WelcomeControllerTest` coverage, Cucumber E2E feature, `drawer_ui?` layout helper. Human UAT 5/5.
 
 ### v1.2 — Modern Theme (2026-04-29)
 
