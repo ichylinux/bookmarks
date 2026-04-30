@@ -33,12 +33,37 @@
   });
 </script>
 
-<div class="portal">
-  <% @portal.portal_columns.each_with_index do |gadgets, i| %>
-    <div id="column_<%= i %>" class="gadgets">
-      <% gadgets.each do |g| %>
-        <%= render g.class.name.underscore, gadget: g %>
+<% if favorite_theme == 'simple' %>
+  <% notes_active = (params[:tab].to_s == 'notes') %>
+  <nav class="simple-tabstrip" role="tablist">
+    <button type="button" class="simple-tab <%= 'simple-tab--active' unless notes_active %>" data-simple-tab="home">ホーム</button>
+    <button type="button" class="simple-tab <%= 'simple-tab--active' if notes_active %>" data-simple-tab="notes">ノート</button>
+  </nav>
+
+  <div id="simple-home-panel" class="simple-tab-panel <%= 'simple-tab-panel--hidden' if notes_active %>">
+    <div class="portal">
+      <% @portal.portal_columns.each_with_index do |gadgets, i| %>
+        <div id="column_<%= i %>" class="gadgets">
+          <% gadgets.each do |g| %>
+            <%= render g.class.name.underscore, gadget: g %>
+          <% end %>
+        </div>
       <% end %>
     </div>
-  <% end %>
-</div>
+  </div>
+
+  <div id="notes-tab-panel" class="simple-tab-panel<%= ' simple-tab-panel--hidden' unless notes_active %>" role="tabpanel">
+    <h2>ノート</h2>
+    <p>ここにメモの一覧と入力欄が表示されます。</p>
+  </div>
+<% else %>
+  <div class="portal">
+    <% @portal.portal_columns.each_with_index do |gadgets, i| %>
+      <div id="column_<%= i %>" class="gadgets">
+        <% gadgets.each do |g| %>
+          <%= render g.class.name.underscore, gadget: g %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
