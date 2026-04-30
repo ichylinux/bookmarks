@@ -5,7 +5,7 @@
 
 **Date:** 2026-04-30
 **Phase:** 12-tab-ui
-**Areas discussed:** Labels & panels, Client switching & URL, Theme isolation, Layout (synthetic — `/gsd-next` advanced with `--auto`-equivalent defaults)
+**Areas discussed:** Labels & panels, Client switching & URL, Theme isolation, Layout (synthetic); **session 2:** URL sync on click, Tab control element (`button` vs link)
 
 ---
 
@@ -62,3 +62,28 @@
 ## Deferred Ideas
 
 - Per-note delete, note themes beyond simple — existing roadmap / REQUIREMENTS deferrals
+- Bookmarkable `?tab=` via client-side URL sync — deferred (D-07)
+
+---
+
+## URL sync on tab click (user-selected area 1)
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| Query only on full load / redirect | Tab clicks are display-only; `?tab=` comes from server redirect or initial GET | ✓ |
+| `history.pushState` on each click | URL always reflects active tab; shareable deep links | |
+
+**User's choice:** Discussed areas 1–2; locked **redirect/GET-only query** (recommended: simpler, matches ROADMAP, no history spam).
+**Notes:** Recorded as **D-07** in CONTEXT.md.
+
+---
+
+## Tab control element (user-selected area 2)
+
+| Option | Description | Selected |
+|--------|-------------|----------|
+| `button type="button"` + menu-like CSS | Accessible default action; style like `_menu` | ✓ |
+| `link_to` + preventDefault | Appearance matches links; more foot-guns | |
+
+**User's choice:** **`button`** pattern (recommended).
+**Notes:** Recorded as **D-08** in CONTEXT.md; **D-06** updated to defer to D-08.

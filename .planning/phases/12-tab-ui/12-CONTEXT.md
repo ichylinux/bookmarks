@@ -34,14 +34,16 @@ On the **simple** theme only, the welcome page (`WelcomeController#index` / `wel
 - **D-03:** **jQuery** `show()` / `hide()` (or equivalent) on the client — **no new JS dependencies** (STATE / PROJECT constraint). No full page reload for tab clicks.
 - **D-04:** Support **`?tab=notes`** (and default / `tab=home` or absence = home) so **POST → redirect** from `NotesController` re-opens the Note tab. Read on `$(document).ready` via `URLSearchParams` or equivalent (pattern noted in STATE).
 - **D-05:** Non-simple themes: **do not** render tab links or note panel markup in HTML (ROADMAP SC4) — ERB guard is mandatory; JS should **no-op** when `body` is not `.simple` (mirror `menu.js` early-return pattern).
+- **D-07:** **Client-side tab clicks do not change the browser URL** — no `history.pushState` / `replaceState` in Phase 12. The address bar’s `?tab=` is set **only by the server** on redirect (and read on full page load). Panel switching after load is **display-only** via jQuery; this satisfies “no reload on tab click” without growing history entries on every switch. If bookmarkable/shareable tab URLs after client switches become a product requirement, treat as a follow-up phase or backlog item (see Deferred Ideas).
+- **D-08:** Tab triggers are **`button type="button"`** elements, styled to match the look of simple-theme top nav in `common/_menu.html.erb` (list, spacing, affordance). Do **not** use `<a href="#">`, `javascript:`, or `link_to` + `preventDefault` as the primary pattern — reduces accidental navigation, form-submit edge cases, and focus quirks.
 
 ### Layout and placement
 
-- **D-06:** Place tab strip **above** the main welcome content inside the simple-theme-only wrapper — same visual hierarchy as `_menu`-backed navigation; planner picks exact markup (links vs buttons, roles) consistent with existing simple header.
+- **D-06:** Place tab strip **above** the main welcome content inside the simple-theme-only wrapper — same visual hierarchy as `_menu`-backed navigation; **D-08** locks the control element type while allowing CSS to mirror that nav.
 
 ### Claude's Discretion
 
-- Accessible attributes (`role="tablist"` / keyboard) — nice-to-have; not required unless planner adds low-cost wins.
+- Accessible attributes (`role="tablist"` / `aria-selected` / arrow keys) — nice-to-have layered on **D-08** buttons; not required unless planner adds low-cost wins.
 - Exact CSS for active tab underline/color under `.simple`.
 - Notes panel skeleton copy (Phase 13 may replace).
 
@@ -91,7 +93,7 @@ On the **simple** theme only, the welcome page (`WelcomeController#index` / `wel
 ### Established patterns
 
 - **Theme isolation**: ERB `<% if favorite_theme == 'simple' %>` + SCSS `.simple { }` (STATE Critical Pitfalls: both required).
-- **Full-page POST + redirect**: tab state survives only via **query string** (chosen over cookies for this flow).
+- **Full-page POST + redirect**: tab state survives via **query string on the response URL**; **in-tab clicks do not mutate the query** per **D-07**.
 
 ### Integration points
 
@@ -112,6 +114,7 @@ On the **simple** theme only, the welcome page (`WelcomeController#index` / `wel
 
 ## Deferred Ideas
 
+- **Bookmarkable tab URL after client-side switches** (`pushState` / syncing `?tab=` on every click) — explicitly **out of scope** for Phase 12 per **D-07**; promote to backlog if sharing/bookmarking tab state matters.
 - **NOTE-02** (list + gadget) — Phase 13
 - **Drawer / pending todos** (extract `drawer_ui` helper, gate drawer overlay on theme) — remain in `.planning/todos/pending/`; not folded into Phase 12
 
