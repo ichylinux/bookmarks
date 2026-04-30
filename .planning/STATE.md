@@ -1,26 +1,27 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Quick Note Gadget
-status: archived
-stopped_at: "v1.3 archived 2026-05-01 — run /gsd-new-milestone to start v1.4"
+milestone: v1.4
+milestone_name: Internationalization
+status: planning
+stopped_at: ""
 last_updated: "2026-05-01T00:00:00.000Z"
-last_activity: 2026-05-01 - Completed quick task 260501-q03: simple theme — Note tab visibility toggle via use_note preference
+last_activity: 2026-05-01 - Milestone v1.4 started
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 13 (complete — archived)
-Status: v1.3 archived. No active milestone.
-Next: `/gsd-new-milestone` to define and start v1.4.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-01 — Milestone v1.4 started
 
 ## Project Reference
 
@@ -28,7 +29,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 **Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30)
-**Current milestone:** None — planning next.
+**Current milestone:** v1.4 — Internationalization
 
 ## Accumulated Context
 

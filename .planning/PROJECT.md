@@ -8,13 +8,24 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 
+## Current Milestone: v1.4 Internationalization
+
+**Goal:** Make the app fully bilingual (ja/en) with a per-user language preference and browser Accept-Language detection on first visit.
+
+**Target features:**
+- Extract all hardcoded UI strings to `config/locales/ja.yml` and `config/locales/en.yml`
+- Add `locale` column to users table; persist selected language per account
+- Detect `Accept-Language` header on first visit as fallback default
+- Language switcher on `/preferences` page (ja / en selection)
+- Coverage: navigation/layout, flash/error messages, bookmarks/notes/todos gadgets, Devise auth pages
+
 ## Current State
 
 **Shipped:** v1.3 — Quick Note Gadget (2026-04-30)
 
 Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
-**Planning next milestone.** Run `/gsd-new-milestone` to define v1.4 scope.
+**Active milestone:** v1.4 — Internationalization
 
 ## Requirements
 
@@ -31,9 +42,14 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
 
-### Active (next milestone)
+### Active (v1.4)
 
-*(To be defined via `/gsd-new-milestone`)*
+- [ ] All UI strings extracted to `ja.yml` / `en.yml` locale files
+- [ ] `locale` column added to `users` table; persists language preference per account
+- [ ] `Accept-Language` header detection sets locale for unauthenticated / first visits
+- [ ] Language switcher (ja / en) on `/preferences` page
+- [ ] All flash messages, validation errors, and Devise pages translated in both locales
+- [ ] Navigation, layout labels, and gadget UIs (bookmarks, notes, todos) fully translated
 
 ### Out of Scope (revisit when planning)
 
@@ -101,4 +117,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-01 after v1.3 milestone*
+*Last updated: 2026-05-01 after v1.4 milestone start*
