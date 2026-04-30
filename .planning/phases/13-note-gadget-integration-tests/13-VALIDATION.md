@@ -39,7 +39,7 @@ created: 2026-04-30
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
 | 13-01-01 | 01 | 1 | NOTE-02 | — | Notes queried through `current_user.notes.recent` only | controller | `bin/rails test test/controllers/welcome_controller/welcome_controller_test.rb` | ✅ | ⬜ pending |
-| 13-02-01 | 02 | 1 | NOTE-02, NOTE-03 | — | Other users' notes do not render in the Note tab | controller | `bin/rails test test/controllers/welcome_controller/welcome_controller_test.rb` | ✅ | ⬜ pending |
+| 13-02-01 | 02 | 2 | NOTE-02, NOTE-03 | — | Other users' notes do not render in the Note tab | controller | `bin/rails test test/controllers/welcome_controller/welcome_controller_test.rb` | ✅ | ⬜ pending |
 | 13-03-01 | 03 | 2 | NOTE-02 | — | Browser save flow returns to `?tab=notes` and shows new note | cucumber | `cucumber features/04.ノート.feature` | ❌ W0 | ⬜ pending |
 | 13-04-01 | 04 | 1 | Folded todos | — | Simple theme does not render hidden drawer DOM | controller | `bin/rails test test/controllers/welcome_controller/layout_structure_test.rb` | ✅ | ⬜ pending |
 
