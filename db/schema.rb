@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_01_000100) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -82,18 +82,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_01_000000) do
     t.integer "priority", null: false
     t.string "title", null: false
     t.datetime "updated_at"
-    t.integer "user_id", null: false
-  end
-
-  create_table "tweets", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.text "content", size: :medium
-    t.datetime "created_at", null: false
-    t.boolean "deleted", default: false, null: false
-    t.integer "retweet_count", default: 0, null: false
-    t.string "tweet_id", null: false
-    t.string "twitter_user_id", null: false
-    t.string "twitter_user_name", null: false
-    t.datetime "updated_at", null: false
     t.integer "user_id", null: false
   end
 
