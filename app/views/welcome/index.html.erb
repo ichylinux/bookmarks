@@ -35,11 +35,6 @@
 
 <% if favorite_theme == 'simple' %>
   <% notes_active = (params[:tab].to_s == 'notes') %>
-  <nav class="simple-tabstrip" role="tablist">
-    <button type="button" class="simple-tab <%= 'simple-tab--active' unless notes_active %>" data-simple-tab="home">Home</button>
-    <button type="button" class="simple-tab <%= 'simple-tab--active' if notes_active %>" data-simple-tab="notes">Note</button>
-  </nav>
-
   <div id="simple-home-panel" class="simple-tab-panel <%= 'simple-tab-panel--hidden' if notes_active %>">
     <div class="portal">
       <% @portal.portal_columns.each_with_index do |gadgets, i| %>
