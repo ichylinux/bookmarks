@@ -32,16 +32,15 @@
 
 ## Traceability
 
-_Filled by roadmapper._
-
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| TAB-01 | — | — |
-| TAB-02 | — | — |
-| TAB-03 | — | — |
-| NOTE-01 | — | — |
-| NOTE-02 | — | — |
-| NOTE-03 | — | — |
+| TAB-01 | Phase 12 | — |
+| TAB-02 | Phase 12 | — |
+| TAB-03 | Phase 12 | — |
+| NOTE-01 | Phase 11 | — |
+| NOTE-02 | Phase 13 | — |
+| NOTE-03 | Phase 10 | — |
 
 ---
 *Requirements defined: 2026-04-30 — v1.3 milestone*
+*Traceability filled: 2026-04-30 — roadmap created*

@@ -4,6 +4,7 @@
 
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
+- 🚧 **v1.3 — Quick Note Gadget** — Phases 10–13 (in progress)
 
 ## Phases
 
@@ -46,4 +47,77 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-04-29 — v1.2 milestone complete and archived*
+
+### 🚧 v1.3 Quick Note Gadget (In Progress)
+
+**Milestone Goal:** Add a note-taking tab to the simple theme's welcome page so users can jot and review personal notes without leaving the app.
+
+- [ ] **Phase 10: Data Layer** - Migration, Note model, and user ownership foundation
+- [ ] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests
+- [ ] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect
+- [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests
+
+## Phase Details
+
+### Phase 10: Data Layer
+**Goal**: The `notes` table exists with correct schema, the `Note` model enforces ownership and validation, and the foundation for per-user data isolation is in place before any controller or view code is written.
+**Depends on**: Phase 9 (existing app baseline)
+**Requirements**: NOTE-03
+**Success Criteria** (what must be TRUE):
+  1. `db/schema.rb` contains a `notes` table with `user_id`, `body` (text, not null), `created_at`, `updated_at`, and a composite index on `(user_id, created_at)`
+  2. `Note` model has `belongs_to :user`, `validates :body, presence: true`, and uses the `Crud::ByUser` concern
+  3. `User` model has `has_many :notes, dependent: :destroy`
+  4. `resources :notes, only: [:create, :destroy]` is present in `config/routes.rb`
+  5. Running `rails db:migrate` completes without error and the schema reflects the new table
+**Plans**: TBD
+
+### Phase 11: Notes Controller
+**Goal**: Users can POST a new note and have it persisted to their account — the controller enforces authentication, scopes all queries to `current_user`, and rejects invalid input — verified entirely by Minitest before any view is touched.
+**Depends on**: Phase 10
+**Requirements**: NOTE-01
+**Success Criteria** (what must be TRUE):
+  1. An authenticated POST to `/notes` with valid body params creates a `Note` record owned by `current_user` and redirects to `root_path(tab: 'notes')`
+  2. A POST with a blank body does not create a record and returns a response the caller can handle (redirect with flash or unprocessable entity)
+  3. An unauthenticated POST to `/notes` is redirected to the sign-in page (Devise auth guard active)
+  4. `user_id` is never accepted via strong params — it is always merged from `current_user.id` server-side
+  5. `NotesController` tests pass: auth, scoping, validation failure, and redirect all covered in `notes_controller_test.rb`
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 12: Tab UI
+**Goal**: The simple theme welcome page shows "ホーム" and "ノート" tab links; clicking between them switches the visible panel; after saving a note the page returns to the Note tab — and none of this appears on the modern or classic themes.
+**Depends on**: Phase 11
+**Requirements**: TAB-01, TAB-02, TAB-03
+**Success Criteria** (what must be TRUE):
+  1. Visiting the simple theme welcome page shows two tab links ("ホーム" and "ノート") and the home panel is active by default
+  2. Clicking "ノート" hides the home panel and shows the notes panel; clicking "ホーム" reverses this — no page reload required
+  3. After a successful note save, the redirect lands on the welcome page with the Note tab active (not the Home tab)
+  4. Switching to the modern or classic theme and visiting the welcome page shows no tab links and no tab panels
+  5. All tab-related CSS lives under `.simple { }` in `welcome.css.scss`; no tab styles appear in `common.css.scss`
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 13: Note Gadget + Integration Tests
+**Goal**: The Note tab panel contains a working textarea form and a reverse-chronological list of the user's saved notes — and the complete request cycle (load page, save note, return to tab, see note) is verified by integration tests.
+**Depends on**: Phase 12
+**Requirements**: NOTE-02
+**Success Criteria** (what must be TRUE):
+  1. The Note tab panel shows a textarea and a Save button rendered via `_note_gadget.html.erb`
+  2. Submitting the form saves the note and the new note appears at the top of the list on the redirected page
+  3. Notes are displayed in reverse-chronological order with body text and a readable timestamp per note
+  4. When the user has no notes, an empty-state message ("メモはまだありません") is shown instead of an empty list
+  5. Integration tests cover: load note tab, submit note form, verify note appears in list, verify another user's notes are not visible
+**Plans**: TBD
+**UI hint**: yes
+
+## Progress
+
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 10. Data Layer | v1.3 | 0/? | Not started | - |
+| 11. Notes Controller | v1.3 | 0/? | Not started | - |
+| 12. Tab UI | v1.3 | 0/? | Not started | - |
+| 13. Note Gadget + Integration Tests | v1.3 | 0/? | Not started | - |
+
+---
+*Last updated: 2026-04-30 — v1.3 roadmap created*

@@ -4,9 +4,9 @@ milestone: v1.3
 milestone_name: Quick Note Gadget
 status: planning
 last_updated: "2026-04-30T00:00:00Z"
-last_activity: 2026-04-30 - Milestone v1.3 started
+last_activity: 2026-04-30 - Roadmap created for v1.3 (Phases 10–13)
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,47 +17,42 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 10 of 13 (Data Layer) — ready to plan
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-30 — Milestone v1.3 started
+Status: Ready to plan
+Last activity: 2026-04-30 — v1.3 roadmap created; Phases 10–13 defined
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.3 — Quick Note Gadget — in planning.
-**Shipped:** v1.1, v1.2 (see `.planning/MILESTONES.md`). Roadmap collapsed in `ROADMAP.md` with full detail in the milestone archives.
+**Current milestone:** v1.3 — Quick Note Gadget — Phases 10–13.
+**Shipped:** v1.1, v1.2 (see `.planning/MILESTONES.md`).
 
 ## Accumulated Context
 
-### Key Decisions (v1.2)
+### Key Decisions (v1.3)
 
-- Strictly additive approach: two new files (`themes/modern.css.scss`, `menu.js`) + targeted edits to three existing files (layout, menu partial, preferences select). No new gems or npm packages.
-- Drawer/backdrop HTML rendered unconditionally; CSS hides them when not in `.modern` theme. Existing `_menu.html.erb` inline `<script>` left intact.
-- CSS custom properties must use plain CSS values (not `$variable` assignments) due to libsass bug.
-- **Phase 7:** libsass cannot compile `min(88vw, 320px)`; drawer width implemented as `width: 88vw; max-width: 320px` with source comment documenting the `min()` contract.
-- **Phase 8:** System tests use `headless_chrome`; `test_helper` may strip `/usr/local/bin` from `PATH` when a stale `chromedriver` sits there, and prepends `ActionDispatch::SystemTesting::Browser` so `Chrome::Service.driver_path` is not reused across incompatible resolutions.
+- Zero new dependencies: entire feature built on existing Rails/ActiveRecord/ERB/jQuery/SCSS stack.
+- Full-page POST with redirect (not AJAX) for note create — consistent with bookmarks and preferences forms.
+- Tab switching via jQuery `show()`/`hide()` + `?tab=notes` query param to survive POST/redirect cycle.
+- Theme isolation: all tab HTML wrapped in `<% if favorite_theme == 'simple' %>`; all tab CSS scoped under `.simple { }` in `welcome.css.scss`.
+- `user_id` never in strong params — merged from `current_user.id` server-side (pattern from `todos_controller.rb`).
 
 ### Critical Pitfalls to Track
 
-- CSS specificity: `.modern #header .head-box` required (not `.modern .head-box`) to beat existing ID selectors in `common.css.scss`
-- Drawer `<div>` must be a direct child of `<body>`, outside `.wrapper`, to avoid clipping
-- `menu.js` must guard all logic with `if (!$('body').hasClass('modern')) return;`
-- Both `#header .head-box` (ID) and `.header` (class) header selectors must be overridden in Phase 9
-- Existing `$('html').click` handler: new drawer JS must use `e.stopPropagation()` on hamburger click
+- NOTE-03 (user isolation): scope every query to `current_user` from day one; never use `Note.all`.
+- TAB theme leakage: both ERB guard and CSS scope required — one alone is not enough.
+- TAB-03 (post-save redirect): redirect to `root_path(tab: 'notes')`; `notes.js` reads `URLSearchParams` on DOM ready.
+- CSRF: use `form_with(local: true)` — do not copy the inline `authenticity_token` pattern from portal layout.
 
-### From v1.1
+### From v1.2
 
-- Prior local GSD phase completed work on automatic bookmark title fetch (`bookmarks.js`, `BookmarksController#fetch_title`); treat that behaviour as a regression test target for JS changes.
-- See `.planning/codebase/` for stack and conventions snapshots.
-
-### Phase 9 Decisions (added 2026-04-29)
-
-- Top-level `.modern`-prefixed selectors (outside `.modern {}` block) used for STYLE-01/03/04 so literal selector strings appear in source for grep-based CI contracts.
-- Four new tokens added as plain hex: `--modern-header-fg (#ffffff)`, `--modern-border (#d1d5db)`, `--modern-surface-alt (#f3f4f6)`, `--modern-danger (#dc2626)`.
-- Typography (STYLE-02) placed inside `.modern {}` block as property declarations since `body` carries the class.
+- CSS specificity lesson: prefer class-based selectors scoped under theme class to avoid ID conflicts.
+- `menu.js` guard pattern (`if (!$('body').hasClass('modern')) return;`) is the model for `notes.js` tab guard.
 
 ### Quick Tasks Completed
 
@@ -67,5 +62,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 | 260429-q02 | default theme now is 'モダン', theme 'デフォルト' should be renamed to 'クラシック' | 2026-04-29 | 6fd342b | [260429-q02-rename-default-theme-to-classic](./quick/260429-q02-rename-default-theme-to-classic/) |
 | 260430-q04 | check README.md for out dated information. | 2026-04-30 | fa1d758 | [260430-q04-check-readme-outdated-info](./quick/260430-q04-check-readme-outdated-info/) |
 
----
-*State updated: 2026-04-30 — Quick task 260430-q04 corrected: README テーマ bullet updated to list all 3 themes*
+## Session Continuity
+
+Last session: 2026-04-30
+Stopped at: Roadmap created — ready to run `/gsd-plan-phase 10`
+Resume file: None
