@@ -66,4 +66,14 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_predicate flash[:alert], :present?
   end
+
+  def test_routing_post_notes_to_create
+    assert_routing({ path: '/notes', method: :post }, { controller: 'notes', action: 'create' })
+  end
+
+  def test_delete_notes_member_not_routed
+    assert_raises(ActionController::RoutingError) do
+      Rails.application.routes.recognize_path('/notes/1', method: :delete)
+    end
+  end
 end
