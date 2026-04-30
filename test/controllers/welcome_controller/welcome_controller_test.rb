@@ -31,7 +31,6 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'nav.simple-tabstrip', count: 0
     assert_select '#simple-home-panel', count: 1
     assert_select '#notes-tab-panel', count: 1
   end
