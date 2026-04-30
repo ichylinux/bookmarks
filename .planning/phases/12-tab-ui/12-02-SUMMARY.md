@@ -60,7 +60,7 @@ completed: 2026-04-30
 Each task was committed atomically:
 
 1. **Task 1: Welcome 統合テストで TAB-01 / TAB-03 / SC4 を自動化** — `2b8f8aa` (test)
-2. **Task 2: TAB-02 無リロード切替の手動 UAT（記録）** — documentation commit adding this `12-02-SUMMARY.md` (see branch history for hash)
+2. **Task 2: TAB-02 無リロード切替の手動 UAT（記録）** — `0bb5a0f` (docs)
 
 ## TAB-02 checkpoint (no-reload browser UAT)
 
