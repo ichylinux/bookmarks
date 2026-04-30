@@ -20,8 +20,8 @@
         <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
         <% if user_signed_in? && favorite_theme != 'simple' %>
           <span class="head-user-email"><%= current_user.display_name %></span>
+          <button class="hamburger-btn" aria-label="メニュー"></button>
         <% end %>
-        <button class="hamburger-btn" aria-label="メニュー"></button>
       </div>
     </div>
 
