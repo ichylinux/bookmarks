@@ -4,8 +4,8 @@ milestone: v1.4
 milestone_name: Internationalization
 status: planning
 stopped_at: ""
-last_updated: "2026-05-01T00:00:00.000Z"
-last_activity: 2026-05-01 - Created v1.4 roadmap; ready for Phase 14 discussion
+last_updated: "2026-04-30T17:11:37Z"
+last_activity: 2026-05-01 - Completed quick task 260501-q05 font size preference
 progress:
   total_phases: 5
   completed_phases: 0
@@ -66,9 +66,10 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q02 | Remove simple-tabstrip nav (superseded by menu links) | 2026-05-01 | f73c484, 090f7cc |
 | 260501-q03 | simple theme — Note tab visibility toggle via use_note preference | 2026-05-01 | f7b2267, bf98fd1, d8fb406 |
 | 260501-q04 | remove table 'tweets' since there is no reference to it | 2026-05-01 | 3f215d4 |
+| 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1 |
 
 ## Session Continuity
 
-Last session: 2026-05-01T00:00:00.000Z
-Stopped at: v1.4 roadmap initialized
+Last session: 2026-04-30T17:11:37Z
+Stopped at: Completed quick task 260501-q05 font size preference
 Resume: `/gsd-discuss-phase 14` to start Locale Infrastructure
