@@ -20,7 +20,9 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 ## Current State
 
-v1.3 in planning — Quick Note Gadget. Simple theme only for v1.3.
+Phase 11 shipped the **notes HTTP create path**: `POST /notes` → `NotesController#create` (create-only routes, integration tests). **Tab UI / welcome form** remains for Phase 12+.
+
+v1.3 in execution — Quick Note Gadget (Phases 11–13).
 
 ## Shipped: v1.2 Modern Theme
 
@@ -100,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
 ---
-*Last updated: 2026-04-30 — v1.3 milestone started: Quick Note Gadget*
+*Last updated: 2026-04-30 — Phase 11 complete (notes controller create path)*
