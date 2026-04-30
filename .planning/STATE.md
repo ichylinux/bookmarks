@@ -52,6 +52,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | # | Description | Date | Commit |
 |---|-------------|------|--------|
 | 260501-q01 | Replace Bookmarks nav with Home/Note in simple theme menu | 2026-05-01 | 66f2ebf |
+| 260501-q02 | Remove simple-tabstrip nav (superseded by menu links) | 2026-05-01 | f73c484 |
 
 ## Session Continuity
 
