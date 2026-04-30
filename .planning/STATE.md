@@ -53,6 +53,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 |---|-------------|------|--------|
 | 260501-q01 | Replace Bookmarks nav with Home/Note in simple theme menu | 2026-05-01 | 66f2ebf |
 | 260501-q02 | Remove simple-tabstrip nav (superseded by menu links) | 2026-05-01 | f73c484, 090f7cc |
+| 260501-q03 | simple theme — Note tab visibility toggle via use_note preference | 2026-05-01 | f7b2267, bf98fd1, d8fb406 |
 
 ## Session Continuity
 
