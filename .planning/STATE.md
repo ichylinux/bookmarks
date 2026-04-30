@@ -66,7 +66,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q02 | Remove simple-tabstrip nav (superseded by menu links) | 2026-05-01 | f73c484, 090f7cc |
 | 260501-q03 | simple theme — Note tab visibility toggle via use_note preference | 2026-05-01 | f7b2267, bf98fd1, d8fb406 |
 | 260501-q04 | remove table 'tweets' since there is no reference to it | 2026-05-01 | 3f215d4 |
-| 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1 |
+| 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1, e8608a0 |
 
 ## Session Continuity
 
