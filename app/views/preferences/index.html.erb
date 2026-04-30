@@ -24,12 +24,12 @@
         <td><%= f.check_box :use_todo %></td>
       </tr>
       <tr>
-        <th><%= f.label :use_note %></th>
-        <td><%= f.check_box :use_note %></td>
-      </tr>
-      <tr>
         <th><%= f.label :default_priority %></th>
         <td><%= f.select :default_priority, Todo::PRIORITIES.invert %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :use_note %></th>
+        <td><%= f.check_box :use_note %></td>
       </tr>
     <% end %>
     <tr>

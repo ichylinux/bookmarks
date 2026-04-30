@@ -33,7 +33,7 @@
   <div>
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
-      <% if current_user.preference&.use_note != false %>
+      <% if current_user.preference&.use_note? %>
         <li><%= link_to 'Note', root_path(tab: 'notes') %></li>
       <% end %>
       <li class="email">
