@@ -34,7 +34,8 @@
 </script>
 
 <% if favorite_theme == 'simple' %>
-  <% notes_active = (params[:tab].to_s == 'notes') %>
+  <% use_note = current_user.preference&.use_note != false %>
+  <% notes_active = use_note && (params[:tab].to_s == 'notes') %>
   <div id="simple-home-panel" class="simple-tab-panel <%= 'simple-tab-panel--hidden' if notes_active %>">
     <div class="portal">
       <% @portal.portal_columns.each_with_index do |gadgets, i| %>
@@ -47,9 +48,11 @@
     </div>
   </div>
 
-  <div id="notes-tab-panel" class="simple-tab-panel<%= ' simple-tab-panel--hidden' unless notes_active %>" role="tabpanel">
-    <%= render 'note_gadget' %>
-  </div>
+  <% if use_note %>
+    <div id="notes-tab-panel" class="simple-tab-panel<%= ' simple-tab-panel--hidden' unless notes_active %>" role="tabpanel">
+      <%= render 'note_gadget' %>
+    </div>
+  <% end %>
 <% else %>
   <div class="portal">
     <% @portal.portal_columns.each_with_index do |gadgets, i| %>

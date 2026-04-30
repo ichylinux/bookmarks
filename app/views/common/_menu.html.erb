@@ -33,7 +33,9 @@
   <div>
     <ul class="navigation">
       <li><%= link_to 'Home', root_path %></li>
-      <li><%= link_to 'Note', root_path(tab: 'notes') %></li>
+      <% if current_user.preference&.use_note != false %>
+        <li><%= link_to 'Note', root_path(tab: 'notes') %></li>
+      <% end %>
       <li class="email">
         <a href="#"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>
         <div class="menu hidden">
