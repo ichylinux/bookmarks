@@ -1,22 +1,22 @@
 # Requirements — v1.3 Quick Note Gadget
 
 **Milestone:** v1.3
-**Status:** Active
+**Status:** Shipped (2026-04-30)
 **Last updated:** 2026-04-30
 
 ## Milestone v1.3 Requirements
 
 ### Tab Navigation (simple theme only)
 
-- [ ] **TAB-01**: User sees "Home" and "Note" tab links on the simple theme welcome page
-- [ ] **TAB-02**: User can click "Note" to view the note tab panel; clicking "Home" returns to the portal grid
-- [ ] **TAB-03**: After saving a note, the page redirects back to the Note tab (not the Home tab)
+- [x] **TAB-01**: User sees "Home" and "Note" tab links on the simple theme welcome page
+- [x] **TAB-02**: User can click "Note" to view the note tab panel; clicking "Home" returns to the portal grid
+- [x] **TAB-03**: After saving a note, the page redirects back to the Note tab (not the Home tab)
 
 ### Note Gadget
 
-- [ ] **NOTE-01**: User can type text in a textarea and click Save to persist a new note
-- [ ] **NOTE-02**: User sees a reverse-chronological list of their previously saved notes below the form
-- [ ] **NOTE-03**: Notes are isolated per user — no user can read another user's notes
+- [x] **NOTE-01**: User can type text in a textarea and click Save to persist a new note
+- [x] **NOTE-02**: User sees a reverse-chronological list of their previously saved notes below the form
+- [x] **NOTE-03**: Notes are isolated per user — no user can read another user's notes
 
 ## Future Requirements
 

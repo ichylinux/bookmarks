@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: — Quick Note Gadget
-status: executing
-stopped_at: "Phase 13 executed — next: /gsd-verify-work"
-last_updated: "2026-04-30T11:56:00.000Z"
-last_activity: 2026-04-30 — Phase 13 all plans summarized
+status: shipped_pending_archive
+stopped_at: "Phase 13 UAT complete — optional: /gsd-complete-milestone"
+last_updated: "2026-04-30T13:20:00.000Z"
+last_activity: 2026-04-30 — Phase 13 conversational UAT 5/5 passed
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 10
   completed_plans: 10
   percent: 100
@@ -18,20 +18,20 @@ progress:
 
 ## Current Position
 
-Phase: 13
-Plan: All summaries written (13-01 — 13-04)
-Status: Ready for conversational verification (`/gsd-verify-work`)
-Last activity: 2026-04-30 — Phase 13 implementation + docs complete
+Phase: 13 (complete)
+Plan: UAT complete — see `13-UAT.md`
+Status: v1.3 delivery done; run `/gsd-complete-milestone` to archive and open next version
+Last activity: 2026-04-30 — Human UAT finished for note gadget + drawer theme gates
 
-Progress: Plans for Phase 13 (4/4) executed; milestone verification pending.
+Progress: All v1.3 phases (10–13) implemented and user-verified.
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.3 — Quick Note Gadget — Phases 10–13.
-**Shipped:** v1.1, v1.2 (see `.planning/MILESTONES.md`).
+**Current milestone:** v1.3 — Quick Note Gadget — **shipped** 2026-04-30 (archive step optional).
+**Shipped:** v1.1, v1.2, v1.3 (see `.planning/MILESTONES.md`).
 
 ## Accumulated Context
 
@@ -58,8 +58,8 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 ### Pending Todos
 
-- [Extract drawer_ui? helper if condition grows to 4th case](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — superseded by Phase 13-04 (`drawer_ui?` landed); consider closing manually.
-- [Gate drawer + drawer-overlay on theme for symmetry](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — addressed via `drawer_ui?` + layout gates in Phase 13-04.
+- [Extract drawer_ui? helper](./todos/pending/2026-04-30-extract-drawer-ui-helper.md) — done in Phase 13-04 (close or delete todo manually).
+- [Gate drawer blocks on theme](./todos/pending/2026-04-30-gate-drawer-blocks-on-theme.md) — done via `drawer_ui?` (close manually).
 
 ### Quick Tasks Completed
 
@@ -74,6 +74,6 @@ See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 ## Session Continuity
 
-Last session: 2026-04-30T11:56:00.000Z
-Stopped at: Phase 13 executed — `/gsd-verify-work`
-Resume file: .planning/phases/13-note-gadget-integration-tests/13-04-SUMMARY.md
+Last session: 2026-04-30T13:20:00.000Z
+Stopped at: Phase 13 UAT complete
+Resume file: .planning/phases/13-note-gadget-integration-tests/13-UAT.md

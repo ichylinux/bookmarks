@@ -4,7 +4,7 @@
 
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
-- 🚧 **v1.3 — Quick Note Gadget** — Phases 10–13 (in progress)
+- ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30)
 
 ## Phases
 
@@ -48,14 +48,14 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 
 ---
 
-### 🚧 v1.3 Quick Note Gadget (In Progress)
+### ✅ v1.3 Quick Note Gadget (Shipped 2026-04-30)
 
 **Milestone Goal:** Add a note-taking tab to the simple theme's welcome page so users can jot and review personal notes without leaving the app.
 
 - [x] **Phase 10: Data Layer** - Migration, Note model, and user ownership foundation — completed 2026-04-30
 - [x] **Phase 11: Notes Controller** - Create action, auth guard, per-user scoping, and backend tests (completed 2026-04-30)
 - [x] **Phase 12: Tab UI** - Tab nav links, panel switching, theme isolation, and post-save redirect (completed 2026-04-30)
-- [ ] **Phase 13: Note Gadget + Integration Tests** - Note form partial, reverse-chronological list, and full-cycle integration tests (implemented — pending verification)
+- [x] **Phase 13: Note Gadget + Integration Tests** — completed 2026-04-30 (UAT recorded in `.planning/phases/13-note-gadget-integration-tests/13-UAT.md`)
 
 ## Phase Details
 
@@ -127,7 +127,7 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 | 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
 | 11. Notes Controller | v1.3 | 1/1 | Complete    | 2026-04-30 |
 | 12. Tab UI | v1.3 | 2/2 | Complete    | 2026-04-30 |
-| 13. Note Gadget + Integration Tests | v1.3 | 4/4 | Executed — verify next | — |
+| 13. Note Gadget + Integration Tests | v1.3 | 4/4 | Complete | 2026-04-30 |
 
 ---
-*Last updated: 2026-04-30 — Phase 13 executed; run `/gsd-verify-work` for verification*
+*Last updated: 2026-04-30 — v1.3 Phases 10–13 complete; milestone ready to archive (`/gsd-complete-milestone`)*
