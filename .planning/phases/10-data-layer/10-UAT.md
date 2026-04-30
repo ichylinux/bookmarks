@@ -3,12 +3,12 @@ status: complete
 phase: 10-data-layer
 source: 10-01-SUMMARY.md, 10-02-SUMMARY.md, 10-03-SUMMARY.md
 started: 2026-04-30T07:59:50Z
-updated: 2026-04-30T08:10:33Z
+updated: 2026-04-30T12:30:00Z
 ---
 
 ## Current Test
 
-number: "[testing complete]"
+[testing complete]
 
 ## Tests
 
@@ -26,39 +26,21 @@ result: pass
 
 ### 4. User アソシエーション確認
 expected: app/models/user.rb に `has_many :notes, dependent: :destroy` が存在する
-result: issue
-reported: "Note model overrides destroy() for soft-delete, but Bookmark uses an explicit destroy_logically! instead — overriding the framework method is non-standard. Note should follow the same pattern."
-severity: major
+result: pass
 
 ### 5. ルーティング確認
 expected: config/routes.rb に `resources :notes, only: [:create, :destroy]` が存在し、`bin/rails routes` で `POST /notes` と `DELETE /notes/:id` が確認できる
-result: [pending]
+result: pass
 
 ## Summary
 
 total: 5
-passed: 3
-issues: 2
+passed: 5
+issues: 0
 pending: 0
 skipped: 0
 blocked: 0
 
 ## Gaps
 
-- truth: "Note model follows the same explicit soft-delete pattern as Bookmark (destroy_logically! instead of overriding destroy)"
-  status: failed
-  reason: "User reported: Note model overrides destroy() for soft-delete, but Bookmark uses an explicit destroy_logically! instead — overriding the framework method is non-standard. Note should follow the same pattern."
-  severity: major
-  test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
-- truth: "resources :notes is placed alphabetically between :feeds and :preferences in config/routes.rb"
-  status: failed
-  reason: "User reported: routes exist and work, but resources :notes should be placed alphabetically between :feeds and :preferences, not between :todos and :welcome"
-  severity: minor
-  test: 5
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+[none — prior issues resolved: User に `dependent: :destroy` を追加；ルート順は feeds → notes → preferences をコードで確認。旧 UAT のテスト4コメントは Report 時点の誤認に近く、Note は Bookmark と同様 `destroy_logically!` のみ]
