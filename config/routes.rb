@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :notes, only: [:create, :destroy]
+
   resources :preferences, only: ['index', 'create', 'update']
 
   resources :todos do
@@ -39,8 +41,6 @@ Rails.application.routes.draw do
       post 'delete'
     end
   end
-
-  resources :notes, only: [:create, :destroy]
 
   resources :welcome, only: [] do
     collection do

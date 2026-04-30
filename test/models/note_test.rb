@@ -48,11 +48,11 @@ class NoteTest < ActiveSupport::TestCase
     assert_match(/ORDER BY.*created_at.*DESC/i, sql)
   end
 
-  def test_destroy_soft_deletes
+  def test_destroy_logically_soft_deletes
     note = notes(:one)
-    note.destroy
+    note.destroy_logically!
     reloaded = Note.find(note.id)
-    assert reloaded.deleted, 'destroy should set deleted: true (soft-delete), not remove the row'
+    assert reloaded.deleted, 'destroy_logically! should set deleted: true (soft-delete), not remove the row'
   end
 
 end

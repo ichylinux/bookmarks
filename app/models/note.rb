@@ -9,7 +9,7 @@ class Note < ActiveRecord::Base
 
   scope :recent, -> { order(created_at: :desc) }
 
-  def destroy
+  def destroy_logically!
     update!(deleted: true)
   end
 
