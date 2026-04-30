@@ -1,8 +1,8 @@
 # Architecture Research
 
-**Domain:** Modern Theme — Hamburger + Side-Drawer Nav for Sprockets Rails app
-**Researched:** 2026-04-28
-**Confidence:** HIGH (all findings derived from direct source inspection)
+**Domain:** Quick Note Gadget — Rails 8.1 MVC addition to existing personal dashboard
+**Researched:** 2026-04-30
+**Confidence:** HIGH (all findings derived from direct codebase inspection)
 
 ## Standard Architecture
 
@@ -10,340 +10,322 @@
 
 ```
 Browser
-  │
-  ▼
-application.html.erb  ← body class="<%= favorite_theme %>"  (e.g. "modern")
-  │
-  ├── #header  (static HTML in layout)
-  │     └── .head-box  ← hamburger button goes here (modern theme only, hidden by default CSS)
-  │
-  └── .wrapper
-        ├── render 'common/menu'  ← drawer HTML + inline JS lives here
-        │     ├── .modern-drawer           (new: side drawer panel)
-        │     ├── .modern-drawer-overlay   (new: dimming overlay)
-        │     └── .modern-hamburger        (new: hamburger button, also rendered in header area)
-        └── yield  (page content)
+  |
+  | GET /  (WelcomeController#index)
+  v
+ApplicationLayout (app/views/layouts/application.html.erb)
+  body class="<%= favorite_theme %>"          <- simple / modern / classic
+  |
+  +-- render 'common/menu'  [IF simple theme] <- tab nav lives here for simple
+  +-- yield
+        |
+        v
+        welcome/index.html.erb               [MODIFY]
+          div.tab-nav  (ホーム | ノート)       <- new; only visible in simple theme via CSS
+          div.tab-panel#home                  <- wraps existing portal gadget grid
+            @portal.portal_columns -> render g.class.name.underscore  (unchanged)
+          div.tab-panel#notes                 <- new
+            render 'welcome/note_gadget'
 
-app/assets/stylesheets/
-  ├── application.css         (manifest — require_tree . pulls everything)
-  ├── common.css.scss         (global base styles, theme-neutral)
-  └── themes/
-        ├── simple.css.scss   (existing theme — scoped to body.simple)
-        └── modern.css.scss   (NEW — scoped to body.modern, full-page restyle + drawer)
+        welcome/_note_gadget.html.erb         [NEW]
+          form -> POST /notes
+          ul   -> @notes (reverse-chron, server-rendered)
 
-app/assets/javascripts/
-  ├── application.js          (manifest — require_tree . pulls everything)
-  ├── menu.js                 (NEW — drawer toggle logic, loaded globally, runs only on .modern body)
-  └── ...existing files...
+Notes resource:
+  POST   /notes      -> NotesController#create
+  DELETE /notes/:id  -> NotesController#destroy  (optional for MVP)
+
+  Note model: id, user_id, body:text, created_at, updated_at
+  User has_many :notes
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | File |
-|-----------|----------------|------|
-| `application.html.erb` | Sets `body.modern` class, renders layout chrome | Modified |
-| `_menu.html.erb` | Nav link list; drawer + overlay HTML; hamburger button | Modified |
-| `themes/modern.css.scss` | All modern-theme styles scoped under `.modern` | New |
-| `menu.js` | Drawer open/close toggle, overlay click to close | New |
-| `preferences/index.html.erb` | Adds "モダン" option to theme select | Modified |
-
----
+| Component | Responsibility | Typical Implementation |
+|-----------|----------------|------------------------|
+| `Note` model | Persist per-user note text | `belongs_to :user`, `validates :body, presence: true` |
+| `NotesController` | Create (and optionally destroy) notes scoped to `current_user` | Thin controller; inherits `authenticate_user!`; no service layer |
+| `WelcomeController#index` | Assign `@notes` alongside `@portal` | Single added line: `@notes = current_user.notes.order(created_at: :desc)` |
+| `welcome/_note_gadget` partial | Note input form + list of existing notes | ERB partial; receives `@notes`; follows existing gadget partial placement in `app/views/welcome/` |
+| `common/_menu` | Tab navigation for simple theme | Add "ホーム" and "ノート" tab links with `data-tab` attributes |
+| `notes.js` | Tab switching behaviour | New file; `window.notes.initTabs()` namespace following `todos.js` pattern |
+| `welcome.css.scss` | Tab panel show/hide, active tab styling | Existing file; add `.tab-nav`, `.tab-panel`, `.tab-nav a.active` rules |
 
 ## Recommended Project Structure
 
 ```
 app/
-├── assets/
-│   ├── javascripts/
-│   │   ├── application.js          (manifest — unchanged)
-│   │   └── menu.js                 (NEW — drawer toggle JS)
-│   └── stylesheets/
-│       ├── application.css         (manifest — unchanged, require_tree picks up new file)
-│       ├── common.css.scss         (unchanged — no drawer styles here)
-│       └── themes/
-│           ├── simple.css.scss     (unchanged)
-│           └── modern.css.scss     (NEW — full theme + drawer CSS)
-└── views/
-    ├── layouts/
-    │   └── application.html.erb    (modified — hamburger button inside #header > .head-box)
-    ├── common/
-    │   └── _menu.html.erb          (modified — add drawer HTML, remove old inline <script>)
-    └── preferences/
-        └── index.html.erb          (modified — add 'モダン' => 'modern' to theme select)
++-- controllers/
+|   +-- notes_controller.rb          [NEW] create (+ optional destroy)
++-- models/
+|   +-- note.rb                      [NEW] belongs_to :user, validates :body
+|   +-- user.rb                      [MODIFY] add has_many :notes
++-- views/
+|   +-- welcome/
+|   |   +-- index.html.erb           [MODIFY] wrap in tab panels; add notes panel
+|   |   +-- _note_gadget.html.erb    [NEW] form + note list
+|   +-- common/
+|       +-- _menu.html.erb           [MODIFY] add tab nav links (simple theme context)
++-- assets/
+    +-- javascripts/
+    |   +-- notes.js                 [NEW] window.notes.initTabs(); called from welcome/index
+    +-- stylesheets/
+        +-- welcome.css.scss         [MODIFY] .tab-nav, .tab-panel, active state rules
+
+config/
++-- routes.rb                        [MODIFY] resources :notes, only: [:create, :destroy]
+
+db/
++-- migrate/
+    +-- YYYYMMDDHHMMSS_create_notes.rb  [NEW]
+
+test/
++-- controllers/
+|   +-- notes_controller_test.rb     [NEW]
++-- fixtures/
+    +-- notes.yml                    [NEW]
 ```
 
 ### Structure Rationale
 
-- **`themes/modern.css.scss`:** Mirrors the existing `simple.css.scss` pattern — a single file scoped to `body.modern { ... }`. Sprockets `require_tree .` in `application.css` automatically picks it up. No manifest changes needed.
-- **`menu.js` (separate file, not inline `<script>`):** The existing inline `<script>` in `_menu.html.erb` is the pattern the old dropdown used, but v1.1 established ESLint on `app/assets/javascripts/`. Inline scripts are not linted. A separate `.js` file participates in `yarn run lint` and follows project conventions.
-- **Hamburger in layout, drawer in partial:** The layout owns structural chrome (`#header`); the partial owns nav content. Placing the hamburger button inside `#header > .head-box` in `application.html.erb` is correct because: (a) it must always be visible in the header bar, (b) it is layout-level concern. The drawer panel itself belongs in `_menu.html.erb` because it contains the nav links.
-
----
+- **`_note_gadget` partial in `welcome/`**: Follows the established pattern. All gadget partials live under `app/views/welcome/` (`_bookmark_gadget`, `_todo_gadget`, `_feed`, `_calendar`). The note gadget belongs here.
+- **`NotesController` as independent resource**: Notes have their own CRUD, not a special action on `WelcomeController`. This keeps `WelcomeController` focused on portal layout state, consistent with the thin-controller convention.
+- **`WelcomeController` assigns `@notes`**: The note gadget partial is rendered inside the welcome page view, so assigning `@notes` in `WelcomeController#index` is the direct path. One extra query per homepage load — acceptable for a personal app.
+- **`notes.js` dedicated file**: Matches the one-file-per-feature convention (`todos.js`, `bookmarks.js`, `menu.js`). Sprockets `require_tree .` picks it up automatically. Participates in ESLint (`yarn run lint`).
+- **No gadget protocol object**: The existing gadget protocol (`BookmarkGadget`, `TodoGadget`) serves the draggable portal grid (`PortalLayout`, `save_state`). The note gadget lives in a separate tab outside the grid — there is nothing to drag or order. Wrapping it in the gadget protocol adds `PortalLayout` complexity with no benefit.
 
 ## Architectural Patterns
 
-### Pattern 1: Theme-Scoped CSS in `body.{theme}` Selector
+### Pattern 1: Thin Controller, Direct AR Query
 
-**What:** All visual overrides for the modern theme are wrapped in a single `.modern { ... }` block inside `themes/modern.css.scss`. The drawer, header restyle, typography, tables, buttons, and forms are all children of this selector.
-
-**When to use:** Always, for this theme. The `body` class is set server-side via `favorite_theme` helper, so no client-side class toggling is needed for activation.
-
-**Trade-offs:** Specificity is slightly elevated, but this matches the existing `simple.css.scss` pattern and isolates the theme completely. Zero risk of leaking into other themes.
+**What:** `NotesController` queries `Note` directly scoped via `current_user.notes`. No service object, no gadget wrapper.
+**When to use:** Any simple per-user resource with no complex business rules.
+**Trade-offs:** Fits established app conventions exactly; no added abstraction layer.
 
 **Example:**
-```scss
-// app/assets/stylesheets/themes/modern.css.scss
+```ruby
+class NotesController < ApplicationController
+  def create
+    @note = current_user.notes.build(note_params)
+    if @note.save
+      redirect_to root_path(tab: 'notes')
+    else
+      @portal = current_user.portals.first
+      @notes  = current_user.notes.order(created_at: :desc)
+      render 'welcome/index'
+    end
+  end
 
-.modern {
-  // Header restyle
-  #header .head-box {
-    background: #1e293b;
-    color: #f8fafc;
-  }
+  private
 
-  // Drawer panel
-  .modern-drawer {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 280px;
-    height: 100vh;
-    background: #1e293b;
-    transition: left 0.25s ease;
-    z-index: 100;
-
-    &.open {
-      left: 0;
-    }
-  }
-
-  // Overlay
-  .modern-drawer-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 99;
-
-    &.visible {
-      display: block;
-    }
-  }
-}
+  def note_params
+    params.require(:note).permit(:body)
+  end
+end
 ```
 
-### Pattern 2: Drawer Toggle in a Dedicated JS File
+### Pattern 2: Tab Panels via CSS Show/Hide (No SPA, No AJAX)
 
-**What:** `app/assets/javascripts/menu.js` contains the `$(document).ready` handler that binds the hamburger click, overlay click, and Escape key to open/close the drawer. It guards itself with `if ($('body').hasClass('modern'))` so it is inert on non-modern themes.
-
-**When to use:** Always for new JS in this project (per v1.1 convention). Keeps the ERB partial clean; participates in ESLint.
-
-**Trade-offs:** The file is loaded globally (all pages), but the guard clause and the `if (user_signed_in?)` rendering of `_menu.html.erb` mean no-ops on other themes. Negligible overhead.
+**What:** Two `div.tab-panel` elements rendered server-side inside `welcome/index.html.erb`. JavaScript on `$(document).ready` hides all panels and shows the active one based on a `data-tab` query param or default.
+**When to use:** Simple two-tab UI in a server-rendered app with Sprockets/jQuery. Avoids Turbo or fetch complexity.
+**Trade-offs:** Full page content loads on every request. Fine for a personal dashboard with small data volumes. Keeps JS minimal and fully within the existing jQuery pattern.
 
 **Example:**
 ```javascript
-// app/assets/javascripts/menu.js
+// app/assets/javascripts/notes.js
+window.notes = window.notes || {};
+const notes = window.notes;
 
-$(document).ready(function () {
-  if (!$('body').hasClass('modern')) return;
+notes.initTabs = function() {
+  const $tabLinks = $('.tab-nav a[data-tab]');
+  const $panels   = $('.tab-panel');
 
-  const drawer = $('.modern-drawer');
-  const overlay = $('.modern-drawer-overlay');
-  const hamburger = $('.modern-hamburger');
-
-  function openDrawer() {
-    drawer.addClass('open');
-    overlay.addClass('visible');
-  }
-
-  function closeDrawer() {
-    drawer.removeClass('open');
-    overlay.removeClass('visible');
-  }
-
-  hamburger.on('click', openDrawer);
-  overlay.on('click', closeDrawer);
-
-  $(document).on('keydown', function (e) {
-    if (e.key === 'Escape') closeDrawer();
+  $tabLinks.on('click', function(e) {
+    e.preventDefault();
+    const target = $(this).data('tab');
+    $tabLinks.removeClass('active');
+    $(this).addClass('active');
+    $panels.hide();
+    $('#' + target).show();
   });
-});
+
+  // Restore tab from query param on page load (e.g. after note save redirect)
+  const params = new URLSearchParams(window.location.search);
+  const active = params.get('tab') || 'home';
+  $tabLinks.filter('[data-tab="' + active + '"]').trigger('click');
+};
 ```
 
-### Pattern 3: Hamburger Button in Layout, Drawer Panel in Partial
+### Pattern 3: Standard POST + Redirect (Non-AJAX)
 
-**What:** The hamburger `<button>` is placed inside `#header > .head-box` in `application.html.erb`. The drawer `<div>` and overlay `<div>` are placed inside `_menu.html.erb` (outside the existing `.header` nav div, before or after it, at the top of the partial).
-
-**When to use:** This split matches the existing responsibility boundary: the layout owns persistent page chrome; the partial owns navigation content.
-
-**Trade-offs:** The hamburger is always rendered in the layout for signed-in users (the layout already conditionally renders `_menu.html.erb` with `if user_signed_in?`). Hide the hamburger on non-modern themes with `.modern #header .modern-hamburger { display: inline-flex; }` and a default `display: none` in `common.css.scss` or via `.modern`-scoped rules. Alternatively, hide it with an ERB conditional — both work, but the CSS approach avoids logic in ERB and is theme-symmetric with the simple theme's `#header { display: none }` pattern.
-
----
+**What:** The note form uses a standard HTML form POST. On success, redirect to `root_path(tab: 'notes')` so the notes tab re-activates via `initTabs`.
+**When to use:** MVP. Consistent with the app's general non-AJAX forms (bookmarks, preferences, calendars all use standard redirects).
+**Trade-offs:** Full page reload on save. Acceptable for a personal note tool. Can be upgraded to AJAX submit in a later phase if the reload feels disruptive.
 
 ## Data Flow
 
-### Theme Activation Flow
+### Request Flow — Note Creation
 
 ```
-User selects "modern" in Preferences form
-    ↓
-PreferencesController saves preference.theme = "modern"
-    ↓
-Next request: WelcomeHelper#favorite_theme returns "modern"
-    ↓
-application.html.erb: <body class="modern">
-    ↓
-Sprockets-compiled application.css includes themes/modern.css.scss
-    ↓
-CSS rules under .modern { ... } activate — drawer, header, full-page styles applied
+User fills textarea, clicks Save
+    |
+    | POST /notes  {note: {body: "..."}}
+    v
+ApplicationController#authenticate_user!  (existing before_action)
+    |
+    v
+NotesController#create
+    |
+    +-- current_user.notes.build(note_params)
+    +-- @note.save
+    |
+    +-- success -> redirect_to root_path(tab: 'notes')
+    |
+    +-- failure -> @portal = ..., @notes = ..., render 'welcome/index'
 ```
 
-### Drawer Toggle Flow
+### Request Flow — Welcome Page (with Notes tab)
 
 ```
-User clicks hamburger button (.modern-hamburger)
-    ↓
-menu.js jQuery handler fires
-    ↓
-drawer.addClass('open')        → CSS transition: left 0 → slides in
-overlay.addClass('visible')    → overlay fades in
-    ↓
-User clicks overlay OR presses Escape
-    ↓
-drawer.removeClass('open')     → CSS transition: slides out
-overlay.removeClass('visible') → overlay hides
+GET /  (or GET /?tab=notes after redirect)
+    v
+WelcomeController#index
+    @portal = current_user.portals.first      (existing)
+    @notes  = current_user.notes              (NEW — 1 extra query)
+                .order(created_at: :desc)
+    v
+welcome/index.html.erb
+    div.tab-nav  (ホーム | ノート)
+    div.tab-panel#home   -> portal gadget grid (existing, unchanged)
+    div.tab-panel#notes  -> render 'welcome/note_gadget',
+                               notes: @notes
+    v
+notes.js#initTabs()  (DOM ready: read ?tab=, show correct panel)
 ```
 
-### Preferences Select — Adding "modern"
+### Key Data Flows
 
-```
-preferences/index.html.erb
-  f.select :theme, {'シンプル' => 'simple', 'モダン' => 'modern'}, include_blank: 'デフォルト'
-                                            ^^^^^^^^^^^^^^^^^^^
-                                            one-line addition
-```
+1. **Tab activation on redirect:** `root_path(tab: 'notes')` carries a query param. `notes.initTabs()` reads `URLSearchParams` on `$(document).ready` and triggers click on the matching tab link. No server-side tab state needed.
+2. **Note list refresh:** Server-rendered in `_note_gadget` on every page load. New note appears after the save-and-redirect cycle. No polling or WebSockets.
+3. **User scoping:** `current_user.notes` association. `Note` has `user_id` foreign key. `User has_many :notes`. No global scope — consistent with how all other resources in this app are scoped (manual convention from `.planning/codebase/ARCHITECTURE.md`).
 
-No model changes, no migration, no new columns. `preference.theme` already stores a string.
+## Scaling Considerations
 
----
+| Scale | Architecture Adjustments |
+|-------|--------------------------|
+| Personal use (1-3 users) | Current approach — no changes needed |
+| Multi-user (10-1k users) | Add index on `notes(user_id, created_at)` — include in the migration from the start |
+| Many notes per user | Add `limit(50)` in `WelcomeController#index` query — not needed for MVP |
 
-## New vs Modified Files
+### Scaling Priorities
 
-### New Files
+1. **First bottleneck:** `@notes` grows large for a prolific user. Mitigation: add `.limit(50)` to the query before it becomes an issue. Index on `(user_id, created_at)` keeps this fast.
+2. **Not a concern:** Tab switching is pure CSS/JS — zero server overhead.
 
-| File | Purpose |
-|------|---------|
-| `app/assets/stylesheets/themes/modern.css.scss` | Full modern theme — header, body, drawer, tables, buttons, forms. Scoped to `.modern { }`. |
-| `app/assets/javascripts/menu.js` | Drawer open/close logic. Loaded globally; guards on `body.modern`. |
+## Anti-Patterns
 
-### Modified Files
+### Anti-Pattern 1: Adding Note Actions to WelcomeController
 
-| File | What Changes |
-|------|-------------|
-| `app/views/layouts/application.html.erb` | Add hamburger `<button class="modern-hamburger">` inside `#header > .head-box`. |
-| `app/views/common/_menu.html.erb` | Add drawer `<div class="modern-drawer">` and overlay `<div class="modern-drawer-overlay">` with nav links. Remove existing inline `<script>` block (move logic to `menu.js`). |
-| `app/views/preferences/index.html.erb` | Add `'モダン' => 'modern'` to the theme select options. |
+**What people do:** Put `create_note`, `destroy_note` actions directly in `WelcomeController` to "keep notes close to the welcome page."
+**Why it's wrong:** Violates REST conventions. Bloats a controller already responsible for portal layout state. Routes become non-standard and harder to test in isolation.
+**Do this instead:** Use a dedicated `NotesController` with standard `resources :notes` routing.
+
+### Anti-Pattern 2: Wrapping Note in the Gadget Protocol
+
+**What people do:** Create a `NoteGadget` plain Ruby object following the `BookmarkGadget` / `TodoGadget` pattern and register it via `Portal#get_gadgets`.
+**Why it's wrong:** The gadget protocol exists for the draggable portal grid (`PortalLayout` rows, `save_state` AJAX, column ordering). Notes live in a fixed tab outside the grid. There is nothing to drag or reorder. Using the gadget protocol adds `PortalLayout` rows and `Portal` complexity with no benefit.
+**Do this instead:** Render the note gadget partial directly in `welcome/index.html.erb` inside the `#notes` tab panel. Assign `@notes` in `WelcomeController#index`.
+
+### Anti-Pattern 3: AJAX-First Note Submission in MVP
+
+**What people do:** Wire the note form to submit via `$.post` and re-render the list in place.
+**Why it's wrong:** Adds JS error handling complexity for a personal tool where sub-second response is not required. Deviates from the app's standard form-POST-and-redirect pattern without a user-visible benefit at MVP stage.
+**Do this instead:** Standard form POST with redirect to `root_path(tab: 'notes')`. Add AJAX in a later phase if reload feels disruptive.
+
+### Anti-Pattern 4: Tab State in Session or Database
+
+**What people do:** Store the active tab server-side (session hash or new preference column) so the tab persists across requests without a query param.
+**Why it's wrong:** Over-engineering for two tabs. Adds a round-trip or a schema change for trivial benefit.
+**Do this instead:** Pass `tab: 'notes'` as a query param in the redirect URL. Restore from `URLSearchParams` in `notes.js`. Stateless, no extra storage.
+
+## Integration Points
+
+### New vs Modified Files — Complete List
+
+| File | Status | What Changes |
+|------|--------|--------------|
+| `app/models/note.rb` | NEW | `belongs_to :user`, `validates :body, presence: true` |
+| `app/controllers/notes_controller.rb` | NEW | `create` action; optional `destroy` |
+| `app/views/welcome/_note_gadget.html.erb` | NEW | Form (`note[body]` textarea + submit) + `<ul>` of notes |
+| `db/migrate/*_create_notes.rb` | NEW | `user_id`, `body:text`, timestamps; index on `(user_id, created_at)` |
+| `config/routes.rb` | MODIFY | Add `resources :notes, only: [:create, :destroy]` |
+| `app/models/user.rb` | MODIFY | Add `has_many :notes` |
+| `app/views/welcome/index.html.erb` | MODIFY | Wrap portal grid in `div.tab-panel#home`; add `div.tab-panel#notes` rendering `_note_gadget` |
+| `app/views/common/_menu.html.erb` | MODIFY | Add tab nav links with `data-tab` attributes above existing dropdown nav |
+| `app/assets/javascripts/notes.js` | NEW | `window.notes.initTabs()` called from welcome/index on DOM ready |
+| `app/assets/stylesheets/welcome.css.scss` | MODIFY | `.tab-nav`, `.tab-panel` (default hidden), `.tab-nav a.active` |
+| `app/controllers/welcome_controller.rb` | MODIFY | Add `@notes = current_user.notes.order(created_at: :desc)` in `#index` |
+| `test/controllers/notes_controller_test.rb` | NEW | Auth, scoping, create, optional destroy tests |
+| `test/fixtures/notes.yml` | NEW | Fixture rows for test assertions |
 
 ### Unchanged Files (confirmed safe)
 
 | File | Why Unchanged |
 |------|---------------|
-| `app/assets/stylesheets/application.css` | `require_tree .` already picks up new files under `themes/`. No manifest edit needed. |
-| `app/assets/javascripts/application.js` | `require_tree .` already picks up `menu.js`. No manifest edit needed. |
-| `app/assets/stylesheets/common.css.scss` | Base styles remain global. Theme-specific overrides belong in `modern.css.scss`. The only touch needed is a default `display: none` for `.modern-hamburger` if the element is unconditionally rendered in the layout — this can live in `common.css.scss` or in `modern.css.scss` (using `.modern .modern-hamburger { display: inline-flex }` with a base `display: none` rule outside the theme scope). Prefer adding it to `common.css.scss` for clarity: `.modern-hamburger { display: none; }` (one line). |
-| `app/helpers/welcome_helper.rb` | `favorite_theme` already returns the raw string; "modern" works with no changes. |
+| `app/assets/javascripts/application.js` | `require_tree .` picks up `notes.js` automatically |
+| `app/assets/stylesheets/application.css` | `require_tree .` picks up `welcome.css.scss` changes automatically |
+| `app/helpers/welcome_helper.rb` | `favorite_theme` unchanged — tab nav is inside the simple-theme `_menu` partial |
+| `app/views/layouts/application.html.erb` | No changes needed — layout already conditionally renders `_menu` for simple theme |
+| `app/models/portal.rb`, `app/models/portal_layout.rb` | Note gadget does not participate in the portal grid |
 
----
+### Internal Boundaries
 
-## Integration Points
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| `WelcomeController` -> `Note` | Direct AR query via `current_user.notes` | One query added to `#index`; no coupling to `NotesController` |
+| `NotesController` -> `WelcomeController` | `redirect_to root_path(tab: 'notes')` on success | One-way; `NotesController` calls no `WelcomeController` methods |
+| `welcome/index.html.erb` -> `_note_gadget` | `render 'welcome/note_gadget'` with `@notes` in scope | Follows existing gadget partial rendering convention |
+| `notes.js` -> `_menu` tab links | Reads `data-tab` attribute on `<a>` elements | Loose coupling via HTML attribute contract |
+| Simple theme tab styles | `.simple .tab-nav`, `.simple .tab-panel` in `welcome.css.scss` | Consistent with `.simple` scoping in `themes/simple.css.scss` |
 
-### Sprockets Compatibility
+## Recommended Build Order
 
-**Confirmed:** `application.css` uses `*= require_tree .` which recursively includes all `.css` and `.css.scss` files in `app/assets/stylesheets/` and subdirectories. A new file at `themes/modern.css.scss` is automatically included. No manual manifest entry needed.
+Dependencies drive this sequence:
 
-**Confirmed:** `application.js` uses `//= require_tree .` which includes all `.js` files in `app/assets/javascripts/`. A new `menu.js` is automatically included. No manual manifest entry needed.
+1. **Migration + `Note` model + `User has_many :notes`** — everything else depends on the `notes` table existing and the association being valid. Test with `bundle exec rails db:migrate`.
 
-**Sprockets load order:** `require_tree .` includes files alphabetically. `common.css.scss` loads before `themes/modern.css.scss` — the base styles land first, the theme overrides second. This is the correct order.
+2. **`config/routes.rb`** — add `resources :notes, only: [:create, :destroy]`. Required before controller tests can route.
 
-### jQuery Compatibility
+3. **`NotesController`** — `create` action (and optional `destroy`). Verify scoping (`current_user.notes.build`) and auth (`authenticate_user!` inherited). Testable without any view changes.
 
-`menu.js` uses jQuery (globally available via `application.js`). The `$(document).ready` pattern and `.addClass`/`.removeClass` are jQuery 4-compatible. No jQuery UI is needed for the drawer (CSS transitions handle animation). The overlay pattern avoids `$(document).click` anti-patterns that caused issues in the existing menu.
+4. **`test/fixtures/notes.yml` + `test/controllers/notes_controller_test.rb`** — verify create scoping, auth guard, validation failure. Green tests confirm the backend is correct before wiring views.
 
-### Existing Dropdown Menu — Migration Strategy
+5. **`WelcomeController#index`** — add `@notes = current_user.notes.order(created_at: :desc)`. One line. Confirm existing welcome tests still pass.
 
-The existing `_menu.html.erb` has an inline `<script>` for the dropdown (`.email` click toggle). For the modern theme, the drawer replaces this dropdown entirely. Two options:
+6. **`welcome/_note_gadget.html.erb`** — note form and list partial. Can be developed and visually checked immediately since `@notes` is now assigned.
 
-1. **Recommended:** Keep the inline `<script>` in the partial (it handles the non-modern `.header` dropdown), and add `menu.js` for the modern drawer. The guard `if (!$('body').hasClass('modern')) return;` in `menu.js` prevents conflicts. The inline script only affects `.email` and `.menu`, which are not rendered in the modern drawer layout.
+7. **`welcome/index.html.erb`** — wrap existing portal content in `div.tab-panel#home`; add `div.tab-panel#notes` rendering the partial. Confirm existing portal functionality is unchanged.
 
-2. **Alternative:** Migrate the inline script entirely to `menu.js` (handling both themes). This is cleaner long-term but wider scope — defer to a future refactor.
+8. **`common/_menu.html.erb`** — add tab nav links (`data-tab="home"`, `data-tab="notes"`) above the existing dropdown. Simple theme context ensures they appear correctly.
 
-**Decision: Option 1 for this milestone.** Minimizes diff surface. The inline script and `menu.js` operate on different DOM elements with no overlap.
+9. **`notes.js`** — `window.notes.initTabs()` function; wire via `$(document).ready` call in `welcome/index.html.erb`. Tab switching is now functional.
 
----
+10. **`welcome.css.scss`** — `.tab-nav`, `.tab-panel` (hidden by default, shown by JS), `.tab-nav a.active` styles. Visual polish; iterate after functionality is confirmed.
 
-## Build Order (Phase Dependencies)
+11. **Welcome controller integration tests** — assert `#notes` tab panel present in response, note list partial renders, tab nav links exist, scoping correct. Follows pattern of existing `welcome_controller_test.rb`.
 
-The natural implementation order respects file-level dependencies:
-
-1. **Preferences select** (`preferences/index.html.erb`) — No dependencies. Allows switching to the new theme immediately for testing. One-line change.
-
-2. **Drawer HTML in `_menu.html.erb`** — Structural HTML that the CSS and JS target. Must exist before CSS or JS can be verified visually.
-
-3. **Hamburger button in `application.html.erb`** — Placed in layout header. CSS positions and shows/hides it. Must exist before theme CSS is meaningful.
-
-4. **`themes/modern.css.scss`** — References the HTML structure from steps 2 and 3. Full theme: header, drawer, overlay, body typography, tables, buttons, forms.
-
-5. **`menu.js`** — References `.modern-drawer`, `.modern-drawer-overlay`, `.modern-hamburger` classes established in steps 2 and 3. CSS transitions from step 4 animate the toggle.
-
-Steps 2 and 3 are independent of each other and can be done in either order.
-
----
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Putting Drawer CSS in `common.css.scss`
-
-**What people do:** Add drawer and hamburger styles to `common.css.scss` because it is already the "shared" stylesheet.
-
-**Why it's wrong:** `common.css.scss` contains theme-neutral base styles. Drawer styles are exclusively modern-theme concern. Mixing them breaks the isolation model established by `simple.css.scss` and makes it impossible to remove the theme cleanly later.
-
-**Do this instead:** All drawer styles go in `themes/modern.css.scss` scoped under `.modern { }`.
-
-### Anti-Pattern 2: Inline `<script>` in the Partial for New JS
-
-**What people do:** Add drawer toggle JS as another `<script>` block inside `_menu.html.erb`, continuing the existing pattern.
-
-**Why it's wrong:** Inline scripts bypass ESLint (`yarn run lint` only covers `app/assets/javascripts/**/*.js`). v1.1 established the linting baseline as a project requirement. Inline scripts also make the partial harder to read.
-
-**Do this instead:** Create `app/assets/javascripts/menu.js`. Use `$(document).ready` with a `body.modern` guard.
-
-### Anti-Pattern 3: Rendering Drawer HTML Conditionally in ERB
-
-**What people do:** Wrap drawer HTML in `<% if current_user.preference.theme == 'modern' %>` inside the partial.
-
-**Why it's wrong:** Bypasses the CSS-class theme system. The entire theme architecture is built around `body.{theme}` scoping — elements that should not appear simply have `display: none` in their default state and are shown by the theme CSS. ERB conditionals create a second, parallel activation mechanism that diverges from the established pattern.
-
-**Do this instead:** Render the drawer HTML unconditionally inside `_menu.html.erb`. Hide it by default with `.modern-hamburger { display: none; }` in `common.css.scss`. The `.modern` scoped rules in `modern.css.scss` show it.
-
----
-
-## Scaling Considerations
-
-This is a personal-use app (single user or small group). Scaling is not a concern for this milestone. The CSS/JS pattern chosen (theme-scoped SCSS, one small JS file) has no scalability implications.
-
----
+Steps 3 and 6 are independent of each other and can proceed in parallel once step 1 is complete.
 
 ## Sources
 
-- Direct inspection: `app/views/layouts/application.html.erb`, `app/views/common/_menu.html.erb`
-- Direct inspection: `app/assets/stylesheets/application.css`, `app/assets/stylesheets/common.css.scss`
-- Direct inspection: `app/assets/stylesheets/themes/simple.css.scss`
-- Direct inspection: `app/assets/javascripts/application.js`
-- Direct inspection: `app/views/preferences/index.html.erb`, `app/helpers/welcome_helper.rb`
-- Direct inspection: `.planning/codebase/ARCHITECTURE.md`, `.planning/codebase/CONVENTIONS.md`
-- Sprockets `require_tree` behavior: established by existing manifest files (confirmed working in project)
+- Direct inspection: `app/controllers/welcome_controller.rb`, `app/views/welcome/`, `app/views/common/_menu.html.erb`, `app/views/layouts/application.html.erb`
+- Direct inspection: `.planning/codebase/ARCHITECTURE.md` (gadget protocol, portal flow, `Crud::ByUser` pattern, user-scoping conventions)
+- Direct inspection: `app/assets/javascripts/todos.js` (namespace and jQuery pattern)
+- Direct inspection: `app/assets/stylesheets/themes/simple.css.scss` (simple theme CSS scoping approach)
+- Direct inspection: `test/controllers/welcome_controller/welcome_controller_test.rb`, `test/controllers/todos_controller_test.rb` (test conventions)
+- Direct inspection: `config/routes.rb` (existing resource routing patterns)
+- Direct inspection: `app/models/todo.rb`, `app/models/crud/by_user.rb` (per-user model pattern)
 
 ---
-
-*Architecture research for: Modern Theme — Hamburger + Side-Drawer Nav (v1.2)*
-*Researched: 2026-04-28*
+*Architecture research for: Quick Note Gadget (v1.3)*
+*Researched: 2026-04-30*

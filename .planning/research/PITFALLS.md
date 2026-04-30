@@ -1,177 +1,177 @@
 # Pitfalls Research
 
-**Domain:** Adding a CSS theme + hamburger side-drawer to an existing Rails 8.1 app (Sprockets + jQuery + SCSS)
-**Researched:** 2026-04-28
-**Confidence:** HIGH — based on direct inspection of all affected files in this repo
+**Domain:** Adding a note-taking tab + tab UI to an existing Rails 8.1 app (Sprockets + jQuery + SCSS + multi-theme)
+**Researched:** 2026-04-30
+**Confidence:** HIGH — based on direct inspection of all affected source files in this repo
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: CSS Specificity War Between common.css.scss and the Modern Theme
+### Pitfall 1: Tab UI Leaks Into Non-Simple Themes
 
 **What goes wrong:**
-`.modern {}` theme rules lose to bare element selectors in `common.css.scss`. For example, `common.css.scss` declares `table { margin: 20px; }`, `body { font-size: 12px; }`, `.header { ... }`, `.actions a { border: ... }`, etc. as flat selectors. A `.modern table { margin: 0; }` override has the same specificity as the original (one class + one element vs one element), so whichever appears later in the compiled output wins — but the theme file already appears after `common.css.scss` in the `require_tree .` traversal, so the theme wins by position — until someone adds another stylesheet after `themes/modern.css.scss` in alphabetical order. Any future stylesheet file whose name sorts after `t` will silently re-override theme rules.
+Tab markup and tab CSS added directly to `welcome/index.html.erb` or `welcome.css.scss` renders for all users regardless of their active theme. The `welcome/index.html.erb` view is shared by simple, modern, and classic themes — there is no per-theme view branching. If tab styles use bare selectors (`.tab`, `.tab-content`) without a `.simple` scope guard, those selectors activate for modern and classic theme users too, breaking their portal layout.
 
 **Why it happens:**
-`require_tree .` in `application.css` includes files in alphabetical order, including subdirectories. The current compiled order (verified from `public/assets/application-*.css`) is:
+The layout template switches themes via `<body class="<%= favorite_theme %>">`, but the view itself has no awareness of the active theme. Developers adding a new feature to the welcome page tend to write generic CSS, not realising it affects all body class variants.
+
+**How to avoid:**
+- Add all tab HTML inside a conditional: `<% if favorite_theme == 'simple' %>` in the view. The portal div (existing code) is rendered in an `else` branch or remains outside the condition for non-simple themes.
+- Scope all tab CSS under `.simple` in `welcome.css.scss` (matching the pattern already used in `themes/simple.css.scss` which scopes rules as `.simple { ... }`).
+- Do not add tab styles to `common.css.scss` — that file applies to all themes.
+
+**Warning signs:**
+- Modern or classic theme users see tab-like elements on the welcome page.
+- `welcome.css.scss` contains `.tab { ... }` without a `.simple` wrapper.
+
+**Phase to address:** Tab UI scaffolding — the very first phase, before writing any CSS.
+
+---
+
+### Pitfall 2: Note Ownership Not Enforced — Users Can Read Other Users' Notes
+
+**What goes wrong:**
+A `NotesController#index` that queries `Note.all` or `Note.where(...)` without scoping to `current_user` returns all notes from all users. Because this is a personal app with a single shared database, every user's notes are exposed to every other user. This is the same category of bug seen in the early versions of the existing `bookmarks_controller.rb` (before `readable_by?` was added).
+
+**Why it happens:**
+When adding a simple CRUD controller quickly, developers often write `@notes = Note.all` or `Note.where(id: params[:id])` for the first passing test, intending to scope later. "Later" becomes never.
+
+The existing controllers (`bookmarks_controller.rb`, `todos_controller.rb`) all follow the pattern:
+```ruby
+@records = Model.where(user_id: current_user.id)
 ```
-jquery-ui → calendars → common → feeds → welcome → devise → themes/simple → todos
-```
-`themes/` sorts before `todos`, so theme files currently come before `todos.css.scss.erb`. This is fine for current files, but the relationship to `todos` is implicit and fragile. Adding `.modern` scoping (one extra class) gives theme rules `0,1,1` specificity vs the base `0,0,1` — one point higher, which is sufficient but only by accident. Any base rule promoted to `#id` selector (e.g., `#header .head-box`) beats `.modern #header .head-box` because ID selectors outweigh class selectors.
+and include a `readable_by?(current_user)` guard on lookups. A new `NotesController` must do the same from the first line of code.
 
 **How to avoid:**
-- Scope every modern theme rule under `.modern` but also bump specificity where needed: `.modern.modern table` (doubled class) or use `:where(.modern) table` (zero-specificity wrapper, if the Sprockets Sass version supports it).
-- Better: prefix all modern theme element overrides with `.modern body` or `.modern .wrapper` to add an extra specificity point without resorting to `!important`.
-- Never use `!important` — it creates a one-way ratchet that propagates into maintenance hell.
-- Document the compiled include order explicitly in a comment at the top of `themes/modern.css.scss`.
+- Scope every query: `Note.where(user_id: current_user.id)`.
+- For `create`, merge `user_id: current_user.id` into strong params (same as `bookmark_params` and `todo_params`): do not permit `user_id` from the request.
+- There is no show/edit/destroy on notes for v1.3 (just create and index), so no `readable_by?` guard is needed for individual record access — but add it preemptively if destroy is added.
 
 **Warning signs:**
-- A base style in `common.css.scss` is visible when the modern theme is active and shouldn't be.
-- Toggling the `.modern` class in DevTools browser inspector reveals the override is not taking effect (check "Computed" tab for which rule wins).
-- Any new `.css.scss` file added to the root stylesheet directory that sorts after `t` alphabetically.
+- `@notes = Note.all` or `Note.where(id: ...)` without `user_id: current_user.id`.
+- `permit(:content, :user_id)` — `user_id` must never appear in the permitted params list.
 
-**Phase to address:** SCSS scaffolding phase (before any visual styling work begins).
+**Phase to address:** Note model + controller phase. Security must be in the first working version, not added later.
 
 ---
 
-### Pitfall 2: `$('html').click` in _menu.html.erb Fires and Closes the Side-Drawer
+### Pitfall 3: Mass Assignment — `user_id` Accepted from Request Params
 
 **What goes wrong:**
-`_menu.html.erb` has a global `$('html').click(...)` handler that hides `.menu` whenever a click falls outside `.email`. The hamburger side-drawer will be a new overlay element. Any click on the drawer backdrop, or on links inside the drawer, will bubble up to `<html>`, trigger this handler, and close the `.menu` dropdown — but more critically, if the drawer's close button or backdrop click handler also propagates, it may interfere with the existing menu close logic or vice versa.
-
-The reverse danger is worse: if the drawer's own `$('html').click` or `$(document).click` handler for closing the drawer is added naively without checking `e.target`, it will race with the existing handler and one will suppress the other.
+If the `NotesController` permits `user_id` in strong params, an attacker can POST `note[user_id]=2` and create a note attributed to another user (or claim another user's data on update/destroy). The existing controllers prevent this by explicitly building `user_id: current_user.id` outside the params hash.
 
 **Why it happens:**
-The existing menu code delegates to `$('html')` — the root of the DOM — as a catch-all dismiss handler. This is a common jQuery pattern but it means every click anywhere on the page passes through it. A second handler attached to the same target for the drawer will both fire. jQuery does not guarantee handler execution order (actually it does execute in attachment order, but both handlers run).
+A scaffold-generated controller (`rails generate scaffold Note content:text user:references`) adds `user_id` to the permitted params by default. Developers accept the scaffold output without reviewing security implications.
 
 **How to avoid:**
-- Reuse `toggle_menu()` or extract it into a named function accessible by both the existing menu code and the new drawer code.
-- For the drawer close handler, attach to `$('html')` with an explicit guard: check `$(e.target).closest('.modern-drawer, .hamburger-btn').length === 0` before closing — mirroring the pattern already used in the existing handler.
-- Move the inline `<script>` in `_menu.html.erb` to a proper JS file (e.g., `app/assets/javascripts/menu.js`) so the event handlers are defined once, not re-run if the partial is ever re-rendered by Turbolinks or similar.
-- Explicitly call `e.stopPropagation()` inside the drawer open/close toggle so the event does not reach the `$('html')` handler when toggling the drawer via the hamburger button.
+- Never include `user_id` in `permit(...)`.
+- Pattern from `todos_controller.rb` (verified in codebase):
+  ```ruby
+  def note_params
+    ret = params.require(:note).permit(:content)
+    ret = ret.merge(user_id: current_user.id) if current_user
+    ret
+  end
+  ```
 
 **Warning signs:**
-- Clicking inside the drawer closes the email dropdown (or vice versa).
-- The email dropdown closes immediately after opening when `.modern` theme is active.
-- Console shows `toggle_menu is not defined` — the inline script ran before jQuery was available (a separate but related risk of inline scripts in partials).
+- `params.require(:note).permit(:content, :user_id)` in the controller.
+- Rails scaffold output not reviewed before commit.
 
-**Phase to address:** JavaScript / drawer interaction phase.
+**Phase to address:** Note model + controller phase (same phase as ownership scoping).
 
 ---
 
-### Pitfall 3: Two Separate `.header` / `#header` Concepts in common.css.scss
+### Pitfall 4: N+1 Query When Listing Notes
 
 **What goes wrong:**
-`common.css.scss` defines two distinct header selectors that serve different roles:
-- `#header .head-box` — the static site-title bar rendered directly in `application.html.erb` (id-based, high specificity `1,1,0`).
-- `.header` — the navigation row rendered by `_menu.html.erb` (class-based, specificity `0,1,0`).
+For v1.3, notes display as a flat list under the form (no associations). However, if `user` association is accessed in the view (even accidentally, e.g., `note.user.email` in a debug line left in), each note triggers a separate `SELECT` for its user. With a personal app the scale is small, but the habit matters — and if tags, folders, or related models are added later, this becomes a real problem.
 
-A modern theme that intends to restyle the header must address both. Forgetting `.header` means the email/navigation row keeps legacy grey styling. Forgetting `#header` means the site-title bar is unstyled. Because `#header` uses an ID selector, `.modern #header` (specificity `0,1,0` + `1,0,0` = `1,1,0`) does beat `.modern .header` (`0,2,0`), so the ID rule always wins — any modern theme color applied to `#header .head-box` via a class-based rule will lose unless the theme also uses an ID selector.
+The more immediate N+1 risk: if notes ever render nested partials that call back to models (e.g., `render partial: 'note', collection: @notes` where the partial calls `note.some_association`), Rails will issue one query per note per association.
 
 **Why it happens:**
-The header was built in two pieces at different times: `#header` is a layout wrapper in the layout template; `.header` is the navigation logic in a partial. They look like one thing visually but are styled separately. New theme authors assume "header" is one element.
+`Note.where(user_id: current_user.id).order(created_at: :desc)` is a single query and safe. The N+1 appears when the view or partial navigates an association that was not eager-loaded.
 
 **How to avoid:**
-- In the modern theme stylesheet, always write overrides for both `#header .head-box` and `.modern .header` explicitly.
-- For `#header`, use `.modern #header .head-box` (specificity `1,2,0`) which safely beats the base `#header .head-box` (`1,1,0`).
-- Add a comment in `common.css.scss` near both selectors noting that they are separate header components.
+- For v1.3 (flat list, no associations on Note): use `Note.where(user_id: current_user.id).order(created_at: :desc)` — no eager loading needed.
+- Add `bullet` gem (or check with `rack-mini-profiler`) in development if associations are added later.
+- Do not call `note.user` anywhere in the note list partial.
 
 **Warning signs:**
-- The hamburger button sits inside `.header` but `.header` still has grey legacy background when `.modern` is applied.
-- The site-title bar (`#header .head-box`) looks correct but the nav row below it is unstyled.
+- Development log shows repeated `SELECT * FROM users WHERE id = ?` for each note in the list.
+- Any `note.user.xxx` call in the view layer.
 
-**Phase to address:** CSS scaffolding / theme skeleton phase.
+**Phase to address:** Note controller + list view phase.
 
 ---
 
-### Pitfall 4: Sprockets `require_tree .` Includes themes/ Files in Alphabetical Subdirectory Order — But Only If `require_tree .` Is in the Root
+### Pitfall 5: CSRF Token Missing or Broken on the Note Form
 
 **What goes wrong:**
-`application.css` uses `require_tree .` which recursively includes all files in `app/assets/stylesheets/`. The `themes/` subdirectory is included as part of this traversal. Sprockets includes subdirectories after same-level files (alphabetical within each level). The current order places `themes/simple.css.scss` between `devise.css.scss` and `todos.css.scss.erb`. Adding `themes/modern.css.scss` in the same directory will include it immediately after `themes/simple.css.scss` — which is fine.
+The note-create form uses `form_tag` or `form_with` to POST to `NotesController#create`. If the CSRF token is not included (or is included incorrectly), the controller raises `ActionController::InvalidAuthenticityToken`. This often surfaces as a redirect loop or a 422 when submitting the form after a session refresh.
 
-The pitfall: if someone creates a separate manifest file (e.g., `themes.css`) that does `require_tree ./themes` and also leaves `require_tree .` in `application.css`, the theme files are compiled TWICE. Sprockets deduplicates by default within a single manifest, but if two separate asset bundles are both served, the duplication causes bloat and possible ordering surprises.
+A secondary risk: if the form submission is handled via jQuery AJAX (rather than a standard HTML form POST), the AJAX call must include `X-CSRF-Token` from the meta tag. The existing `welcome/index.html.erb` already does inline `$.post(...)` for portal state saving and manually passes `authenticity_token` in the params hash — a non-standard approach compared to Rails UJS. Copying that pattern for note submission is error-prone.
 
 **Why it happens:**
-When a developer wants explicit control over theme loading they reach for a sub-manifest, not realising `require_tree .` already handles it.
+- Using `form_tag` with `authenticity_token: false` or manually building the form `<form action=... method=post>` without `<%= csrf_meta_tags %>`.
+- Copying the inline `$.post` pattern from `welcome/index.html.erb` without including `Rails.csrfToken()` or the meta tag token.
 
 **How to avoid:**
-- Keep `themes/modern.css.scss` as a plain SCSS file in the `themes/` subdirectory. Do not create a `themes.css` manifest. `require_tree .` in `application.css` handles inclusion automatically.
-- Verify inclusion order after adding the new file by running `bin/rake assets:precompile` locally and grep-checking the compiled output.
-- Add a comment to `application.css` noting that `require_tree .` covers subdirectories including `themes/`.
+- Use `form_with(url: notes_path, local: true)` for a standard synchronous form POST. Rails UJS handles CSRF automatically for `form_with`-generated forms.
+- If using AJAX submission, use `$.ajax` with `headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }`, or use `Rails.ajax` from rails-ujs which handles this automatically.
+- Do not copy the `authenticity_token: form_authenticity_token` inline pattern from `collect_portal_layout_params()` — that is a legacy pattern, not the standard Rails UJS approach.
 
 **Warning signs:**
-- After adding `themes/modern.css.scss`, running `rake assets:precompile` doubles the file count or produces an error about duplicate asset inclusion.
-- Chrome DevTools shows theme rules duplicated in the `application.css` source map.
+- 422 Unprocessable Entity on form submission in production (CSRF validation fails).
+- `protect_from_forgery with: :exception` in `ApplicationController` (confirmed present) — this will raise, not silently ignore, so a broken CSRF setup will be visible immediately in development.
 
-**Phase to address:** SCSS scaffolding phase.
+**Phase to address:** Note form + controller phase. Test form submission before calling it done.
 
 ---
 
-### Pitfall 5: Side-Drawer Slides Under Other Positioned Elements (z-index stack)
+### Pitfall 6: Tab State Lost on Page Reload
 
 **What goes wrong:**
-The existing `.header .menu` dropdown is `position: absolute; z-index: 1`. A side-drawer that is `position: fixed` will appear above all static content but may appear under the `.menu` popup if the drawer's z-index is also 1 or lower. On mobile, if any element in the gadget column has `overflow: hidden` set (verified: `div.gadget div` in `welcome.css.scss` has `overflow: hidden`), a drawer using `transform: translateX()` or `position: fixed` can be clipped inside that overflow context.
+Tab switching implemented with jQuery `.show()` / `.hide()` holds state only in DOM memory. On page reload (after saving a note via a full-form POST), the browser returns the default tab (Home), so users who just saved a note on the Note tab are redirected to the Home tab. This creates a confusing "where did my note go?" moment.
 
 **Why it happens:**
-`overflow: hidden` on an ancestor creates a new stacking context. A `position: fixed` child is normally immune to ancestor overflow, but `transform`, `filter`, or `will-change` on any ancestor breaks that immunity and pins `position: fixed` to that container. Even without transforms, `z-index: 1` on the existing menu popup is low — any new overlay at z-index 1 is a race.
+A redirect-after-POST (`redirect_to root_path`) re-renders `welcome#index` without any tab state. The JavaScript that showed the Note tab is gone.
 
 **How to avoid:**
-- Assign the side-drawer a z-index of at least 100 (or a clearly documented high tier, e.g., `$z-drawer: 100; $z-menu-popup: 10;`).
-- Do not apply `transform`, `filter`, or `will-change` to `body` or `.wrapper` as part of the drawer slide animation — use a wrapper `div.drawer-container` as the animation target instead.
-- The drawer overlay (backdrop) should be `position: fixed` on `body` directly, not nested inside `.wrapper`.
-- Verify on mobile: the gadget column's `overflow: hidden` should not clip the drawer. Keep drawer markup outside `.wrapper`.
+- Option A (simplest): After a successful note save, redirect to `root_path(tab: 'note')` and read that query param in JavaScript to activate the correct tab on load.
+- Option B: Use `session[:active_tab]` on the server and pass it to the view as an instance variable.
+- Option C: Use `localStorage` to persist the active tab key client-side and restore on `$(document).ready`.
+
+Option A (URL param) is the recommended approach for this app — it is compatible with full-page renders, does not require session writes, and is testable.
 
 **Warning signs:**
-- Side-drawer appears behind the existing email dropdown popup on desktop.
-- On mobile, the drawer slides in but is partially clipped at the right edge.
-- Drawer backdrop does not cover the full viewport height on iOS Safari (body height shorter than viewport).
+- After saving a note, the page returns to the Home tab.
+- No query param, session, or localStorage logic for tab state persistence.
 
-**Phase to address:** Side-drawer layout and animation phase.
+**Phase to address:** Tab switching JavaScript phase (combine tab JS implementation with the persistence decision from the start).
 
 ---
 
-### Pitfall 6: iOS Safari Mobile Viewport Height — Drawer Does Not Fill Screen
+### Pitfall 7: Note Form Renders in Non-Simple Themes Due to Route/Controller Coupling
 
 **What goes wrong:**
-`body { margin: 0; padding: 0; }` is set in `common.css.scss` but there is no `min-height: 100vh` or `min-height: -webkit-fill-available`. On iOS Safari, `100vh` includes the browser chrome (address bar height) and can cause the drawer to visually fall short of the bottom of the visible area, with a white gap beneath it.
+`NotesController` is a new resource route accessible at `/notes`. If navigation links (drawer nav in `application.html.erb`) inadvertently link to `/notes`, or if the Note model's `belongs_to :user` triggers callbacks in the user model that affect other themes, the note feature bleeds into the app broadly. More concretely: if `notes#create` redirects to `root_path` and `root_path` loads the portal view, modern/classic theme users who somehow POST to `/notes` get a confusing portal page with no note tab visible.
 
 **Why it happens:**
-iOS Safari's viewport height treatment differs from desktop browsers. `100vh` is calculated as the full viewport height including the collapsible top bar, so a fixed-height drawer covering `100vh` will overflow behind the toolbar when the page first loads, and will not reach the bottom when the toolbar is shown.
+Adding a new resource to `routes.rb` opens endpoints available to all authenticated users. The tab UI is scoped to the simple theme view, but the controller is theme-agnostic. If a user on the modern theme manually POSTs to `/notes`, they create a note but see no note list on their theme.
 
 **How to avoid:**
-- Use `min-height: 100dvh` for the drawer height (dynamic viewport height — supported in iOS 15.4+; this app's `preset-env` Babel config suggests modern browser targeting).
-- As a fallback: set `height: 100%` on `html, body` (already partially done — `html { height: 100%; }` exists in `common.css.scss`) and use `min-height: 100%` on the drawer.
-- Scope this fix inside the `.modern` theme block so it does not affect the existing theme.
+- This is acceptable behavior for v1.3 — notes are explicitly a simple-theme feature. Document it.
+- Do not add "Note" to the drawer nav in `application.html.erb` for v1.3.
+- Keep the note form only inside the `<% if favorite_theme == 'simple' %>` block in the view.
+- In `NotesController`, after create, redirect to `root_path` regardless of theme — this is safe since the note list is only visible on the simple theme.
 
 **Warning signs:**
-- On real iOS device or Safari DevTools device simulator, the drawer shows a white gap at the bottom.
-- The drawer close button is unreachable (scrolled off above the fold).
+- A "Note" link appears in the drawer nav in `application.html.erb`.
+- Modern/classic theme users see a note-related UI element.
 
-**Phase to address:** Mobile viewport testing in the side-drawer phase.
-
----
-
-### Pitfall 7: Inline `<script>` in `_menu.html.erb` Runs on Every Render — Event Handlers Stack
-
-**What goes wrong:**
-`_menu.html.erb` contains an inline `<script>` block with `$(document).ready(...)`. In a standard Rails server-rendered app without Turbolinks this fires once per full page load and is harmless. However, if Turbolinks or Hotwire Turbo is ever introduced (even accidentally via a gem), the partial will re-render without a full page reload and the `$(document).ready` block runs again, attaching a second (then third, then fourth...) set of click handlers. Each handler invocation triggers extra toggles.
-
-For the v1.2 milestone: the new drawer JS will likely also live in a `$(document).ready` block, either inline or in a separate file. If both the menu partial and the drawer file attach handlers to `$('html').click`, and the menu partial is re-rendered or the page is navigated via any cache-aware mechanism, event stacking occurs.
-
-**Why it happens:**
-Inline scripts in Rails partials are an antipattern when combined with any kind of SPA-style navigation, but they work fine with full-page renders. The risk is introduced when new JS is written assuming the same "inline in partial" pattern.
-
-**How to avoid:**
-- Move the inline script from `_menu.html.erb` to `app/assets/javascripts/menu.js` as part of the v1.2 foundation work. This is a natural moment to do it.
-- Write drawer JS in `app/assets/javascripts/modern_drawer.js` (a new dedicated file included via `require_tree .`).
-- Use `$(document).on('click', ...)` delegation patterns rather than attaching handlers inside `$(document).ready` that reference local variables captured in a closure — closures referencing DOM elements stale after navigation.
-
-**Warning signs:**
-- The email dropdown requires two clicks to open (first click closes it immediately because the second stacked handler fires).
-- `console.log` inside the click handler fires twice on first click.
-
-**Phase to address:** JavaScript foundation phase (before adding drawer interactions).
+**Phase to address:** Route + controller setup phase. Explicitly out-of-scope for non-simple themes; document the decision.
 
 ---
 
@@ -179,11 +179,11 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| `!important` overrides in modern theme to beat common.css.scss | Fast, obvious wins | Every future common.css.scss change requires a new `!important` escalation; impossible to override from user scripts | Never |
-| Leave inline script in `_menu.html.erb` and add drawer JS inline in a new partial | Keeps everything together, no refactor needed | Event handler stacking risk if Turbolinks is ever added; cognitive overhead of two inline script blocks | Only if zero Turbolinks risk and milestone is time-boxed and followed by immediate cleanup |
-| Write `.modern` overrides without a specificity convention | Faster initial writing | Unpredictable — depends on file include order, breaks silently when files are added | Never |
-| Place drawer `<div>` inside `.wrapper` | Simpler markup | Drawer is clipped by ancestor `overflow: hidden` from gadget styles; also gets theme padding | Never — keep drawer outside `.wrapper` |
-| Use `z-index: 9999` for everything | "It will always be on top" | Creates a z-index arms race; the existing `.menu` at z-index 1 will eventually need escalation too | Never |
+| Inline `<script>` for tab switching inside `welcome/index.html.erb` | No new file needed | Mixes JS logic with portal JS already in the view; adds to the already-complex inline block; hard to test | Only if tab JS is truly trivial (< 10 lines); otherwise move to `notes.js` |
+| Skip tab state persistence (always land on Home tab) | Zero extra code | Every note save snaps users back to Home tab — jarring UX | Acceptable for v1.3 only if a fast follow-up adds persistence |
+| No pagination on note list | Simple query | Note list grows unbounded; slow query and long page for heavy users | Acceptable for v1.3 (personal app, limited notes expected); add `limit` from the start: `.order(created_at: :desc).limit(50)` |
+| `Note.all` scoped later | First test passes immediately | Security hole if deployed without the scope | Never — scope on first write |
+| Copy `authenticity_token: form_authenticity_token` AJAX pattern from portal save | Consistent with existing code | Non-standard; bypasses Rails UJS CSRF handling; breaks if the meta tag approach is ever adopted | Never for new code |
 
 ---
 
@@ -191,11 +191,13 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| `_menu.html.erb` inline script + new drawer JS | Both attach `$('html').click` independently without coordinating guards | Add `e.stopPropagation()` on hamburger click; use a single shared dismiss handler that checks both `.email` and `.modern-drawer` |
-| Sprockets `require_tree .` + themes/ subdirectory | Creating a separate `themes.css` manifest file, causing double-inclusion | Drop the file directly into `themes/` and rely on `require_tree .` — verify with a test precompile |
-| `favorite_theme` helper returns `nil` for users without preferences | `<body class="<%= favorite_theme %>">` renders `class=""` which is valid, but `.modern {}` scoping never activates for nil | Confirm that `favorite_theme` returns `"modern"` (not `nil`) when a user selects the modern theme; add a test |
-| `todos.css.scss.erb` (`.erb` extension) + new SCSS variables | Attempting to import a SCSS variable file from `todos.css.scss.erb` using `@import` or `@use` fails because `.erb` is processed before SCSS | Keep SCSS variables in a plain `.scss` partial; never import into `.erb` SCSS files |
-| `position: fixed` drawer + `transform` on body | Adding a CSS `transform` to animate `body` (slide-body pattern for drawer) breaks `position: fixed` containment | Use a dedicated `div.drawer-container` for transforms; never transform `body` or `.wrapper` |
+| `welcome/index.html.erb` + tab HTML | Adding tab HTML unconditionally, affecting all themes | Wrap in `<% if favorite_theme == 'simple' %>` — only the simple theme gets tabs |
+| `welcome.css.scss` + tab styles | Adding `.tab { ... }` at root level | Wrap all tab styles under `.simple { .tab { ... } }` |
+| `NotesController` + user scoping | `Note.where(...)` without `user_id: current_user.id` | Always scope to `current_user.id` from the first line of code |
+| `form_with` + CSRF | Using `form_tag` with `authenticity_token: false` or manual AJAX without token | Use `form_with(local: true)` or include `X-CSRF-Token` header in AJAX |
+| Tab state + redirect_to after POST | `redirect_to root_path` loses active tab | `redirect_to root_path(tab: 'note')` and read param in JS on load |
+| Sprockets `require_tree .` + new `notes.js` | File is automatically included everywhere (all pages, all themes) | Acceptable — keep tab/note JS guarded by checking for `$('.note-tab')` existence before binding handlers |
+| `favorite_theme` helper in `welcome_helper.rb` | Calling `favorite_theme` outside WelcomeHelper scope (e.g., in a NotesController redirect) | `favorite_theme` is a view helper — do not call from controller; use `current_user.preference.theme` in controller logic |
 
 ---
 
@@ -203,8 +205,9 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| All theme SCSS in one large `modern.css.scss` file | SCSS compilation slows; entire file recompiles on any change | Split into `themes/_modern-base.scss`, `themes/_modern-nav.scss` etc.; import from `modern.css.scss` | Not an issue at this scale — this is a personal app; acceptable as a single file for v1.2 |
-| Drawer open/close on every `$('html').click` re-evaluating `closest()` | Slight jank on low-end mobile if DOM is deep | Guard with a boolean `drawerOpen` state variable; avoid repeated DOM traversal in hot path | Not a real risk at this scale |
+| Unbounded note list query | Page slow to load as notes accumulate | Add `.limit(50)` to the note index query from day one | Not a real risk for a personal app with one user; preventive habit only |
+| N+1 if note associations added | Slow page load with many notes | Do not call `note.user` in view; eager-load with `.includes(:user)` only if needed | Would break at ~100 notes with an association in the partial |
+| Tab switching with many DOM elements | jQuery `.show()` / `.hide()` on a large note list is instant | Not a concern at this scale | Not a real risk |
 
 ---
 
@@ -212,8 +215,10 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Mistake | Risk | Prevention |
 |---------|------|------------|
-| Hamburger drawer renders navigation links before checking `user_signed_in?` | Nav links visible in HTML source to unauthenticated users (links present, not just hidden by CSS) | Wrap drawer markup in `<% if user_signed_in? %>` same as existing `render 'common/menu'` guard in `application.html.erb` |
-| Inline theme value written directly into `<body class="">` without sanitization | Stored XSS if `preference.theme` is not validated to an allowlist | Validate `theme` column on the `Preference` model to an enum or allowlist (`["", "simple", "modern"]`) before storing; already implicitly safe if using a `select` form field but explicit validation is required |
+| `user_id` in permitted params | Attacker creates notes as another user | Never permit `user_id`; set it from `current_user.id` in the controller |
+| No `user_id` scope on index query | All users' notes returned | `Note.where(user_id: current_user.id)` always |
+| CSRF disabled on note form | CSRF forgery attack creates notes on behalf of logged-in user | Use `form_with` or verify `X-CSRF-Token` is present in AJAX headers |
+| Note content not sanitized in view | XSS if note content is rendered with `html_safe` | Use `<%= note.content %>` (default ERB escaping) — never `<%= note.content.html_safe %>` |
 
 ---
 
@@ -221,24 +226,25 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Drawer does not close on `Escape` key | Keyboard/accessibility users cannot dismiss the drawer without clicking the close button or backdrop | Bind `$(document).on('keydown', ...)` checking `e.key === 'Escape'` to close the drawer |
-| Drawer backdrop blocks scroll but body scrolls behind it | Mobile users see content scrolling behind the open drawer overlay | Apply `overflow: hidden` to `body` (scoped to `.modern.drawer-open body`) when drawer is open; remove on close |
-| No `aria-expanded` / `aria-controls` on hamburger button | Screen readers cannot announce drawer state | Add `aria-expanded="false"` to the button; toggle to `"true"` when drawer opens; add `aria-controls="modern-drawer"` |
-| Hamburger button appears in all themes (not just `.modern`) | The hamburger button is confusing when the full navigation bar is already visible | Only render or show the hamburger button when `body.modern` is active — either conditionally in ERB or via CSS `display: none` in non-modern themes |
-| Existing `.header` nav (rendered by `_menu.html.erb`) still visible alongside the drawer in modern theme | Two navigation systems on screen at once | Hide `.header` navigation in `.modern` theme via `.modern .header { display: none; }` (same pattern as `.simple #header { display: none; }` in `simple.css.scss`) |
+| No feedback after saving a note | User unsure if the note was saved | Flash message (`flash[:notice] = "メモを保存しました"`) shown on redirect; or redirect to Note tab to show the new note in the list |
+| Textarea not cleared after save | User sees their old note content still in the form after redirect | Standard redirect-after-POST (PRG pattern) clears the form automatically since the page reloads; no extra JS needed |
+| Note list shows all notes (no limit indicator) | User does not know older notes are truncated | Show count or "最新50件" label if limiting the list |
+| Tab links look like navigation links | User navigates away from the page when clicking a tab | Implement tab switching with JavaScript (no `href` navigation); use `<button>` or `<a href="#note">` with `e.preventDefault()` |
+| Active tab style missing or too subtle | User cannot tell which tab is active | Add a clear `.active` class with visible styling scoped under `.simple` |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Modern theme body class:** `favorite_theme` returns `"modern"` (not `nil` or `"default"`) after selecting modern in preferences — verify by checking the helper and the DB value written by the form.
-- [ ] **Existing `.header` nav hidden:** When `.modern` is active, the old navigation row (email dropdown, Home link) is hidden or replaced — not showing both old and new nav simultaneously.
-- [ ] **Drawer closes on three triggers:** hamburger re-click, backdrop click, and Escape key — all three must work.
-- [ ] **Asset precompile clean:** Run `rake assets:clobber && rake assets:precompile` — zero errors, `themes/modern.css.scss` appears in the compiled output only once.
-- [ ] **No `!important` in theme file:** grep the compiled CSS for `!important` rules sourced from `themes/modern.css.scss`.
-- [ ] **simple theme unbroken:** After adding modern theme, verify `.simple` theme still hides `#header` correctly — the new file must not introduce a rule that re-shows `#header` globally.
-- [ ] **Inline script moved:** The inline `<script>` in `_menu.html.erb` is either removed (logic moved to `menu.js`) or verified not to interfere with drawer handlers.
-- [ ] **Preference form updated:** The theme `<select>` in `preferences/index.html.erb` includes `'Modern' => 'modern'` as an option alongside the existing `'シンプル' => 'simple'`.
+- [ ] **Theme isolation:** Switch to modern theme — zero tab UI elements visible on the welcome page.
+- [ ] **Note ownership:** Log in as user B; confirm user A's notes do not appear in user B's note list.
+- [ ] **Mass assignment guard:** POST `note[user_id]=99` to `/notes` — confirm the note is created with `current_user.id`, not `99`.
+- [ ] **CSRF:** Disable JavaScript and submit the note form — verify it works (standard form POST with token). Enable JS and submit via AJAX — verify token is sent.
+- [ ] **Tab state after save:** Save a note on the Note tab — confirm the page returns to the Note tab, not the Home tab.
+- [ ] **Empty note:** Submit the form with blank content — confirm it does not create an empty note (model validation present).
+- [ ] **Notes JS guard:** Confirm no JS errors on pages other than welcome (e.g., bookmarks index) — the `notes.js` handlers must check for element existence before binding.
+- [ ] **N+1 check:** Verify development log shows a single `SELECT` for the note list, not one per note.
+- [ ] **XSS check:** Save a note with content `<script>alert(1)</script>` — confirm it renders as escaped text, not executed script.
 
 ---
 
@@ -246,11 +252,12 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Specificity war — base styles bleed into modern theme | MEDIUM | Audit all common.css.scss selectors; increase theme selector specificity systematically; do not patch one-by-one with `!important` |
-| jQuery event handler stacking after partial re-render | LOW–MEDIUM | Move inline script to `menu.js`; add `.off('click')` before `.on('click')` as a guard; or namespace events: `.on('click.menu', ...)` so `.off('.menu')` cleanly removes only menu handlers |
-| Drawer clipped by overflow:hidden ancestor | LOW | Move drawer `<div>` to be a direct child of `<body>`, outside `#header` and `.wrapper` |
-| themes/modern.css.scss compiled twice | LOW | Remove any sub-manifest that duplicates `require_tree .` coverage; run `rake assets:clobber && rake assets:precompile` to confirm |
-| iOS Safari drawer height gap | LOW | Replace `height: 100vh` with `height: 100dvh` on the drawer element; test on iOS simulator |
+| Tab UI visible in non-simple themes | LOW | Add `<% if favorite_theme == 'simple' %>` wrapper to view; move CSS under `.simple { }` in `welcome.css.scss` |
+| Note ownership not scoped | LOW (before production) / HIGH (after users have data) | Add `where(user_id: current_user.id)` to all queries; audit whether any cross-user notes were created; delete or reassign as appropriate |
+| Mass assignment `user_id` accepted | LOW | Remove `user_id` from `permit(...)`; verify no notes have wrong `user_id` in DB |
+| Tab state lost after save | LOW | Add `tab` query param to redirect; add JS to read and activate on load |
+| CSRF broken | LOW | Switch to `form_with(local: true)`; verify 200 response on submit |
+| N+1 on note list | LOW | Add `.includes(:user)` or remove `note.user` from view |
 
 ---
 
@@ -258,25 +265,25 @@ Inline scripts in Rails partials are an antipattern when combined with any kind 
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| CSS specificity war (common vs theme) | SCSS scaffolding — define `.modern` selector convention before writing any rules | Toggle `.modern` class in DevTools on every page type; confirm no base style bleeds through |
-| `$('html').click` handler conflict | JS foundation — move inline script, establish drawer handler pattern | Open email dropdown and drawer simultaneously; verify they dismiss independently |
-| Two header selectors (`#header` vs `.header`) | SCSS scaffolding — document both, style both | Visual review with `.modern` active: both header elements properly styled |
-| `require_tree .` double-inclusion | SCSS scaffolding | `rake assets:precompile`; grep compiled file for `themes/modern` — appears exactly once |
-| z-index stack / drawer under menu popup | Side-drawer layout phase | Open both email dropdown and side-drawer; drawer must be on top |
-| iOS Safari viewport height | Side-drawer mobile phase | Test on iOS Safari device or simulator at 375px width |
-| Inline script event stacking | JS foundation phase | Add console.log to click handler; verify single invocation per click |
-| Drawer visible outside `.modern` theme | CSS scaffolding | Switch to default theme; confirm hamburger button and drawer are invisible |
+| Tab UI leaks into non-simple themes | Tab UI scaffolding (first phase) | Switch to modern theme; confirm zero tab UI present |
+| Note ownership not enforced | Note model + controller setup | Sign in as a second user; confirm note list is empty |
+| Mass assignment `user_id` | Note model + controller setup | POST with `note[user_id]=99`; verify record has `current_user.id` |
+| N+1 query on note list | Note controller + view phase | Check development log for single query |
+| CSRF token missing | Note form phase | Submit form; check for 422 errors; verify token in request |
+| Tab state lost on page reload | Tab switching JS phase | Save note; confirm Note tab is active on return |
+| Note form renders in non-simple themes | Route/controller + view phase | Modern theme: no form element visible |
+| XSS via note content | Note list view phase | Render `<script>alert(1)</script>` as content; verify escaped |
 
 ---
 
 ## Sources
 
-- Direct inspection: `app/assets/stylesheets/common.css.scss`, `app/assets/stylesheets/themes/simple.css.scss`, `app/views/common/_menu.html.erb`, `app/views/layouts/application.html.erb`, `app/assets/stylesheets/application.css`, `app/assets/javascripts/application.js`
-- Compiled asset order verified from: `public/assets/application-*.css` (line-number source comments)
-- Sprockets `require_tree` traversal behavior: documented in Sprockets README (alphabetical, subdirectories included recursively)
-- iOS Safari `100dvh` support: iOS 15.4+ (CSS Working Group dynamic viewport units spec)
-- jQuery event handler stacking: standard jQuery `.on()` accumulation behavior (jQuery API docs)
+- Direct inspection: `app/views/welcome/index.html.erb`, `app/controllers/welcome_controller.rb`, `app/controllers/bookmarks_controller.rb`, `app/controllers/todos_controller.rb`, `app/helpers/welcome_helper.rb`, `app/assets/stylesheets/welcome.css.scss`, `app/assets/stylesheets/themes/simple.css.scss`, `app/views/layouts/application.html.erb`, `config/routes.rb`, `db/schema.rb`
+- Existing security patterns: `bookmark_params` and `todo_params` in respective controllers (user_id merge pattern)
+- Theme scoping pattern: `.simple { }` wrapper in `themes/simple.css.scss`; `favorite_theme` helper in `welcome_helper.rb`
+- CSRF: `protect_from_forgery with: :exception` confirmed in `application_controller.rb`
+- PRG pattern (Post/Redirect/Get): standard Rails redirect after create
 
 ---
-*Pitfalls research for: v1.2 Modern Theme — Rails 8.1 + Sprockets + jQuery SCSS*
-*Researched: 2026-04-28*
+*Pitfalls research for: v1.3 Quick Note Gadget — note-taking tab + tab UI on Rails 8.1 + Sprockets + jQuery + multi-theme*
+*Researched: 2026-04-30*
