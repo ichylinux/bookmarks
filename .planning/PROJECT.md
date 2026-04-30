@@ -8,9 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 
+## Current Milestone: v1.3 Quick Note Gadget
+
+**Goal:** Add a note-taking tab to the simple theme's welcome page so users can jot and review personal notes without leaving the app.
+
+**Target features:**
+- "Home" and "Note" tab links on the simple theme welcome page
+- Tab switching between the existing home view and new note view
+- Note gadget: textarea + save button for capturing a new note
+- List of previously saved notes displayed below the form (reverse-chronological)
+
 ## Current State
 
-v1.2 — Modern Theme shipped 2026-04-29. All 11/11 requirements complete. Next milestone TBD.
+v1.3 in planning — Quick Note Gadget. Simple theme only for v1.3.
 
 ## Shipped: v1.2 Modern Theme
 
@@ -38,7 +48,7 @@ v1.2 — Modern Theme shipped 2026-04-29. All 11/11 requirements complete. Next 
 - ✓ Hamburger drawer nav with all links, WCAG reduced-motion support — **v1.2 Phases 6–8**
 - ✓ Full-page visual polish: header, typography, tables, action buttons, form controls — **v1.2 Phase 9**
 
-### Active (v1.3 — TBD)
+### Active (v1.3 — Quick Note Gadget)
 
 ### Out of Scope (carried from v1.1; revisit when planning)
 
@@ -90,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Delivered:** ESLint/Prettier + docs; `app/assets/javascripts/` refactor; Minitest, Cucumber, and D-04 smoke; `CONVENTIONS.md` JS section.
 
 ---
-*Last updated: 2026-04-29 — Phase 7 complete: drawer CSS + animation (contract-tested)*
+*Last updated: 2026-04-30 — v1.3 milestone started: Quick Note Gadget*

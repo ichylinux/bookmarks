@@ -1,36 +1,34 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Modern Theme
-status: milestone_complete
-last_updated: "2026-04-29T02:11:07Z"
-last_activity: 2026-04-30 - Corrected quick task 260430-q04: README テーマ bullet now lists all 3 themes (モダン・クラシック・シンプル)
+milestone: v1.3
+milestone_name: Quick Note Gadget
+status: planning
+last_updated: "2026-04-30T00:00:00Z"
+last_activity: 2026-04-30 - Milestone v1.3 started
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 7
-  completed_plans: 6
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 9 (complete)
-Plan: **09-01** — `.planning/phases/09-full-page-theme-styles/09-01-PLAN.md`
-Status: Complete — all plans executed; v1.2 milestone delivered
-Last activity: 2026-04-29 -- `09-01-PLAN.md` executed (STYLE-01–04 + contract test; 89 tests, 0 failures)
-
-Progress: [██████████] 100% (5/5 v1.2 phases complete)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-30 — Milestone v1.3 started
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-04-28)
+See: `.planning/PROJECT.md` (updated 2026-04-30)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Current milestone:** v1.2 — Modern Theme — SHIPPED 2026-04-29. Planning next milestone.
-**Shipped:** v1.1 (see `.planning/MILESTONES.md`, `.planning/milestones/v1.1-ROADMAP.md`). Roadmap collapsed in `ROADMAP.md` with full detail in the milestone archive.
+**Current milestone:** v1.3 — Quick Note Gadget — in planning.
+**Shipped:** v1.1, v1.2 (see `.planning/MILESTONES.md`). Roadmap collapsed in `ROADMAP.md` with full detail in the milestone archives.
 
 ## Accumulated Context
 
