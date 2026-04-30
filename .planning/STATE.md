@@ -5,7 +5,7 @@ milestone_name: Quick Note Gadget
 status: archived
 stopped_at: "v1.3 archived 2026-05-01 — run /gsd-new-milestone to start v1.4"
 last_updated: "2026-05-01T00:00:00.000Z"
-last_activity: 2026-05-01 — v1.3 milestone archived
+last_activity: 2026-05-01 - Completed quick task 260501-q03: simple theme — Note tab visibility toggle via use_note preference
 progress:
   total_phases: 4
   completed_phases: 4
