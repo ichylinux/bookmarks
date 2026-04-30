@@ -12,7 +12,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 **Shipped:** v1.3 — Quick Note Gadget (2026-04-30)
 
-Simple theme welcome page now has a "ホーム/ノート" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
+Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
 **Planning next milestone.** Run `/gsd-new-milestone` to define v1.4 scope.
 
