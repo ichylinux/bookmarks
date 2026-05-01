@@ -143,6 +143,17 @@ Plans:
 
 **Requirements:** AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04
 
+**Plans:** 3 plans
+
+Plans:
+
+**Wave 1**
+- [ ] 18-01-PLAN.md — devise.sessions.invalid locale key (ja + en) + flash[:alert] in application layout + .flash-alert CSS rule
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 18-02-PLAN.md — New sessions_controller_test.rb (4 tests: sign-in page ja/en + failed flash ja/en) + 2FA OTP locale tests (extend existing test file)
+- [ ] 18-03-PLAN.md — Full phase gate (lint + minitest + dad:test) + VERI18N-03 audit sign-off checkpoint
+
 **Success criteria:**
 1. Devise authentication pages and Devise flash/failure messages render in the active locale.
 2. Custom two-factor authentication and setup pages render in Japanese or English.
@@ -208,4 +219,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 17 complete (5/5 plans; lint, Minitest 181/1043, dad:test 9/28, code review clean).*
+*Last updated: 2026-05-01 — Phase 18 planned (3/3 plans; wave structure defined; ready to execute).*
