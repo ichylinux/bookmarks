@@ -38,4 +38,24 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'ja'
   end
 
+  def test_chromeはja_localeでホームと設定とメニューariaを含む
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'a', text: 'ホーム'
+    assert_select 'a', text: '設定'
+    assert_select 'button.hamburger-btn[aria-label=?]', 'メニュー'
+  end
+
+  def test_chromeはen_localeでHomeとPreferencesとMenuariaを含む
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'a', text: 'Home'
+    assert_select 'a', text: 'Preferences'
+    assert_select 'button.hamburger-btn[aria-label=?]', 'Menu'
+  end
+
 end
