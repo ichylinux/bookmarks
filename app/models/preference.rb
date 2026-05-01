@@ -7,13 +7,13 @@ class Preference < ActiveRecord::Base
     FONT_SIZE_MEDIUM,
     FONT_SIZE_SMALL
   ].freeze
-  FONT_SIZE_OPTIONS = {
-    '大' => FONT_SIZE_LARGE,
-    '中' => FONT_SIZE_MEDIUM,
-    '小' => FONT_SIZE_SMALL
-  }.freeze
 
   SUPPORTED_LOCALES = %w[ja en].freeze
+  LOCALE_OPTIONS = {
+    '自動' => nil,
+    '日本語' => 'ja',
+    'English' => 'en'
+  }.freeze
 
   belongs_to :user, inverse_of: 'preference'
 
