@@ -24,8 +24,64 @@ ja:
       user:
         name: ユーザー名
 
+  actions:
+    add: 追加
+    edit: 編集
+    delete: 削除
+    list: 一覧
+    back_to_list: 一覧に戻る
+    show: 表示
+    create: 作成
+    update: 更新
+    save: 保存
+
   messages:
     confirm_delete: '%{name} を削除します。よろしいですか？'
+
+  gadgets:
+    bookmark:
+      title: ブックマーク
+    todo:
+      title: タスク
+
+  todos:
+    priorities:
+      high: 高
+      normal: 中
+      low: 低
+    actions:
+      complete: 完了
+      new_task: タスクを追加
+    form:
+      create: 登録
+      update: 更新
+
+  date:
+    formats:
+      calendar_month: "%Y年%-m月"
+
+  bookmarks:
+    index:
+      breadcrumbs_aria: パンくずリスト
+      root: ルート
+      create_folder: フォルダを作成
+      folder: フォルダ
+      add_bookmark: ブックマークを追加
+      bookmark: ブックマーク
+      actions: 操作
+    form:
+      url_placeholder: URL（フォルダの場合は空欄）
+      folder_help: URLを空欄にするとフォルダとして作成されます
+      title_help: タイトルを空欄にするとURLから自動取得します
+      parent_folder: 親フォルダ
+      no_parent: なし（ルート）
+      submit_create_bookmark: ブックマークを追加
+      submit_create_folder: フォルダを作成
+      submit_update: 更新
+    show:
+      parent_folder: 親フォルダ
+    edit:
+      title: 編集
 
   two_factor:
     section_title: 二段階認証
@@ -73,3 +129,39 @@ ja:
   flash:
     errors:
       generic: エラーが発生しました
+
+  welcome:
+    note_gadget:
+      title: ノート
+      body_label: メモ
+      submit: メモを保存
+      empty: メモはまだありません
+    feed:
+      loading: フィードを取得中・・・
+      fetch_failed: フィードを取得できませんでした。
+    calendar:
+      loading: "%{title}を取得中・・・"
+
+  feeds:
+    index:
+      add: 追加
+      empty: 1件も登録されていません。
+      actions: 操作
+    form:
+      fetch_from_feed: フィードから取得
+      feed_url_required: フィードURLを先に入力してください。
+      feed_fetch_failed: フィードを取得できませんでした。
+      submit_create: 登録
+      submit_update: 更新
+
+  calendars:
+    get_gadget:
+      previous_month: 前の月
+      next_month: 次の月
+    form:
+      submit_create: 登録
+      submit_update: 更新
+    actions:
+      view: カレンダーを表示
+    edit:
+      title: 編集
