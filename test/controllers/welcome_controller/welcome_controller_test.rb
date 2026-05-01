@@ -26,6 +26,40 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#bookmark_gadget a[href=?][target=?]', 'www.example.com', '_blank', count: 0
   end
 
+  def test_ダッシュボードが日本語ロケールで固定ガジェット名を翻訳しレコード名は変えない
+    feed = feed_of(user)
+    calendar = calendar(user)
+    feed.update!(title: '日本語フィード 17-05')
+    calendar.update!(title: '日本語カレンダー 17-05')
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get root_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select '#bookmark_gadget .title', text: 'ブックマーク', count: 1
+    assert_select '#bookmark_gadget a', text: 'ブックマーク1'
+    assert_select "#feed_#{feed.id} .title", text: feed.title, count: 1
+    assert_select "#calendar_#{calendar.id} .title", text: calendar.title, count: 1
+  end
+
+  def test_ダッシュボードが英語ロケールで固定ガジェット名を翻訳しレコード名は変えない
+    feed = feed_of(user)
+    calendar = calendar(user)
+    feed.update!(title: '日本語フィード 17-05')
+    calendar.update!(title: '日本語カレンダー 17-05')
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get root_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#bookmark_gadget .title', text: 'Bookmarks', count: 1
+    assert_select '#bookmark_gadget a', text: 'ブックマーク1'
+    assert_select "#feed_#{feed.id} .title", text: feed.title, count: 1
+    assert_select "#calendar_#{calendar.id} .title", text: calendar.title, count: 1
+  end
+
   def test_Todoガジェットが日本語ロケールで日本語表示される
     todo = Todo.where(user_id: user.id).first
     todo.update!(priority: Todo::PRIORITY_HIGH)

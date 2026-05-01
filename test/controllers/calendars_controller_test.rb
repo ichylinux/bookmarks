@@ -84,6 +84,20 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[name=?][value=?]', 'calendar[title]', calendar.title, count: 1
     assert_select 'input[type=submit][value=?]', 'Update', count: 1
   end
+
+  def test_編集画面が日本語ロケールでカレンダー固有の参照actionを表示する
+    calendar = calendar(user)
+    calendar.update!(title: '日本語カレンダー 17-05')
+    user.preference.update!(locale: 'ja')
+    sign_in user
+
+    get edit_calendar_path(calendar)
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select '.actions a', text: 'カレンダーを表示', count: 1
+    assert_select 'input[name=?][value=?]', 'calendar[title]', calendar.title, count: 1
+  end
   
   def test_更新
     calendar = calendar(user)
