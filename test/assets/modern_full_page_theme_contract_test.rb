@@ -55,6 +55,12 @@ class ModernFullPageThemeContractTest < ActiveSupport::TestCase
     assert_includes @scss, 'border-radius:'
   end
 
+  # STYLE-05: Gadget title bars
+  test 'modern scss keeps gadget title links white after visit' do
+    assert_includes @scss, '.modern div.gadgets div.gadget div div.title a:visited'
+    assert_match(/\.modern div\.gadgets div\.gadget div div\.title a:focus-visible[\s\S]*color:\s*#ffffff/, @scss)
+  end
+
   # Token presence
   test 'modern scss declares Phase 9 tokens' do
     assert_includes @scss, '--modern-border'

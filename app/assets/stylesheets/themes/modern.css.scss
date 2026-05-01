@@ -324,3 +324,11 @@
   background: var(--modern-color-primary);
   color: #ffffff;
 }
+
+.modern div.gadgets div.gadget div div.title a,
+.modern div.gadgets div.gadget div div.title a:visited,
+.modern div.gadgets div.gadget div div.title a:hover,
+.modern div.gadgets div.gadget div div.title a:active,
+.modern div.gadgets div.gadget div div.title a:focus-visible {
+  color: #ffffff;
+}
