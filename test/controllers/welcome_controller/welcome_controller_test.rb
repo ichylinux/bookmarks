@@ -26,6 +26,36 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#bookmark_gadget a[href=?][target=?]', 'www.example.com', '_blank', count: 0
   end
 
+  def test_Todoガジェットが日本語ロケールで日本語表示される
+    todo = Todo.where(user_id: user.id).first
+    todo.update!(priority: Todo::PRIORITY_HIGH)
+    user.preference.update!(use_todo: true, locale: 'ja')
+    sign_in user
+    get root_path
+
+    assert_response :success
+    assert_select '#todo .title', text: 'タスク', count: 1
+    assert_select '#todo .todo_actions a', text: '完了', count: 1
+    assert_select '#todo .todo_actions a', text: 'タスクを追加', count: 1
+    assert_select '#todo span.priority_1', text: '高', count: 1
+  end
+
+  def test_Todoガジェットが英語ロケールで英語表示されタイトルは変わらない
+    todo = Todo.where(user_id: user.id).first
+    todo.update!(title: '日本語タスク 17-03', priority: Todo::PRIORITY_HIGH)
+    user.preference.update!(use_todo: true, locale: 'en')
+    sign_in user
+    get root_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#todo .title', text: 'Tasks', count: 1
+    assert_select '#todo .todo_actions a', text: 'Complete', count: 1
+    assert_select '#todo .todo_actions a', text: 'Add Task', count: 1
+    assert_select '#todo span.priority_1', text: 'High', count: 1
+    assert_includes response.body, todo.title
+  end
+
   def test_シンプルテーマでuse_noteがfalseのときノートパネルが表示されない
     user.preference.update!(theme: 'simple', use_note: false)
     sign_in user

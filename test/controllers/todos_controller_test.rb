@@ -73,6 +73,19 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[type=submit][value=?]', 'Create', count: 1
   end
 
+  def test_編集フォームが英語ロケールで更新ボタンを表示しタイトルは変わらない
+    todo = Todo.where(user_id: user.id).first
+    todo.update!(title: '編集対象タスク 17-03', priority: Todo::PRIORITY_NORMAL)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get edit_todo_path(todo), xhr: true
+
+    assert_response :success
+    assert_select 'option[value=?][selected=?]', Todo::PRIORITY_NORMAL.to_s, 'selected', text: 'Normal', count: 1
+    assert_select 'input[name=?][value=?]', 'todo[title]', todo.title, count: 1
+    assert_select 'input[type=submit][value=?]', 'Update', count: 1
+  end
+
   def test_英語ロケールで優先度表示は翻訳されタイトルと数値は変わらない
     user.preference.update!(locale: 'en')
     sign_in user

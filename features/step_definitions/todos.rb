@@ -46,7 +46,7 @@ end
   assert has_selector?('.todo_actions')
   capture
 
-  click_on '新しいタスク'
+  click_on 'タスクを追加'
   assert has_selector?('form.todo')
   with_capture do
     within 'form.todo' do
@@ -58,7 +58,7 @@ end
 end
 
 もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
-  click_on '新しいタスク'
+  click_on 'タスクを追加'
   assert has_selector?('form.todo')
   capture
 
