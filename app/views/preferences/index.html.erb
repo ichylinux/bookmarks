@@ -12,12 +12,16 @@
         <th><%= f.label :theme %></th>
         <td>
           <%= f.hidden_field :id %>
-          <%= f.select :theme, {'モダン' => 'modern', 'クラシック' => 'classic', 'シンプル' => 'simple'} %>
+          <%= f.select :theme, { t('.theme_options.modern') => 'modern', t('.theme_options.classic') => 'classic', t('.theme_options.simple') => 'simple' } %>
         </td>
       </tr>
       <tr>
-        <th><%= f.label :font_size, '文字サイズ' %></th>
-        <td><%= f.select :font_size, Preference::FONT_SIZE_OPTIONS, selected: (@user.preference.font_size.presence || Preference::FONT_SIZE_MEDIUM) %></td>
+        <th><%= f.label :locale %></th>
+        <td><%= f.select :locale, Preference::LOCALE_OPTIONS, { include_blank: false, selected: @user.preference.locale } %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :font_size %></th>
+        <td><%= f.select :font_size, Preference::FONT_SIZES.map { |size| [t(".font_size_options.#{size}"), size] }, selected: (@user.preference.font_size.presence || Preference::FONT_SIZE_MEDIUM) %></td>
       </tr>
       <tr>
         <th><%= f.label :open_links_in_new_tab %></th>
@@ -52,5 +56,5 @@
     </tr>
   </table>
   
-  <%= f.submit '保存' %>
+  <%= f.submit t('.submit') %>
 <% end %>
