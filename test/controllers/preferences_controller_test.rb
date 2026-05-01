@@ -17,7 +17,7 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     }
     assert_response :redirect
     follow_redirect!
-    assert_equal '/', path
+    assert_equal '/preferences', path
   end
 
   def test_open_links_in_new_tabを保存する
