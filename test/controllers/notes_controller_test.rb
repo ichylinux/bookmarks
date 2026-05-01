@@ -33,6 +33,16 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_predicate flash[:alert], :present?
   end
 
+  def test_flash_errors_genericはjaで日本語になる
+    ja = I18n.with_locale(:ja) { I18n.t('flash.errors.generic') }
+    assert_equal 'エラーが発生しました', ja
+  end
+
+  def test_flash_errors_genericはenで英語になる
+    en = I18n.with_locale(:en) { I18n.t('flash.errors.generic') }
+    assert_equal 'Something went wrong.', en
+  end
+
   def test_unauthenticated_redirects_to_sign_in
     assert_no_difference('Note.count') do
       post notes_path, params: { note: { body: 'hack' } }
