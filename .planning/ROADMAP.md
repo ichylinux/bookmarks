@@ -63,6 +63,20 @@ Plans:
 3. The selected language persists after browser refresh, sign-out, sign-in, and future sessions.
 4. The preferences page itself renders in the newly selected language after the change.
 
+**Plans (planned 2026-05-01):**
+
+**Wave 1** *(parallel — no shared files)*
+- `15-01` Backend wiring — `Preference::LOCALE_OPTIONS` 定数、controller の `:locale` permit + 空文字 nil 化 + `redirect_to preferences_path`、既存 test_更新 redirect URL 更新。`FONT_SIZE_OPTIONS` Hash 削除（D-09 Plan 段階決定）
+- `15-02` I18n catalog — `ja.yml` に `preference.locale / preference.font_size / preferences.{theme_options, font_size_options, submit}` 追加、`en.yml` を Phase 15 スコープでフル構築
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- `15-03` View + integration tests — `f.select :locale`、theme/font_size の `t` 化、`f.submit t('.submit')`、`f.label :font_size` override 削除、`preference_params` helper 拡張、PREF-01..03 を証明する 8 件の Minitest 統合テスト追加
+
+**Cross-cutting constraints:**
+- ロケールセレクタ ラベル（`自動 / 日本語 / English`）は **native 表記固定**で i18n を経由しない（D-02）
+- `nil` は first-class state として保持（フォーム送信で空文字 → `.presence` で nil 正規化、D-04..D-06）
+- `redirect_to preferences_path` は locale 変更時に限らず **一律変更**（D-11、Plan 15-01 と Plan 15-03 のテストの両方に整合）
+
 #### Phase 16: Core Shell & Shared Messages Translation
 
 **Goal:** Users can navigate the app chrome and shared UI messages in Japanese or English.

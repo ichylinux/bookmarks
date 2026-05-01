@@ -1,28 +1,29 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.4
-milestone_name: Internationalization
-status: ready-to-plan
-stopped_at: "Phase 15 context gathered"
-last_updated: "2026-05-01T02:45:00Z"
-last_activity: 2026-05-01 - Phase 15 (Language Preference) discuss complete; 15 decisions locked in CONTEXT.md
+milestone_name: — Internationalization
+status: ready-to-execute
+stopped_at: Phase 15 planned — 3 plans across 2 waves; ready for /gsd-execute-phase 15
+last_updated: "2026-05-01T03:27:38.812Z"
+last_activity: 2026-05-01 — Phase 15 planning complete (3 plans: 15-01 backend, 15-02 i18n catalog, 15-03 view+tests)
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 3
+  total_plans: 6
   completed_plans: 3
-  percent: 20
+  percent: 50
 ---
 
 # State
 
 ## Current Position
 
-Phase: 15 — Language Preference (CONTEXT gathered, ready to plan)
+Phase: 15 (Language Preference) — READY TO EXECUTE
+Plans: 3 (15-01, 15-02, 15-03)
 Last completed: Phase 14 — Locale Infrastructure (3/3 plans, 2026-05-01)
-Status: Phase 15 discuss session complete — 15 decisions locked (D-01..D-15) covering selector design, nil state handling, translation scope, post-save redirect; Claude's discretion items recorded
-Last activity: 2026-05-01 — Phase 15 CONTEXT.md + DISCUSSION-LOG.md created
-Resume: `/gsd-plan-phase 15` — plan Phase 15 with locked context
+Status: Phase 15 plans created, awaiting execution
+Last activity: 2026-05-01 — Phase 15 plans written (15-01 backend wiring, 15-02 i18n catalogs, 15-03 view+tests)
+Resume: `/gsd-execute-phase 15` — execute Phase 15 plans
 
 ## Project Reference
 
@@ -37,7 +38,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | Phase | Name | Status |
 |-------|------|--------|
 | 14 | Locale Infrastructure | Complete (2026-05-01) |
-| 15 | Language Preference | Discuss complete (2026-05-01); ready to plan |
+| 15 | Language Preference | Planned (2026-05-01); 3 plans, ready to execute |
 | 16 | Core Shell & Shared Messages Translation | Not started |
 | 17 | Feature Surface Translation | Not started |
 | 18 | Auth, 2FA & Translation Verification | Not started |
@@ -73,7 +74,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-05-01T02:45:00Z
-Stopped at: Phase 15 discuss complete — CONTEXT.md captures 15 implementation decisions
-Resume: `/gsd-plan-phase 15` — plan Phase 15 with locked CONTEXT (recommended)
-        or `/gsd-discuss-phase 15` — re-discuss with `--update` to revise decisions
+Last session: 2026-05-01T03:27:00Z
+Stopped at: Phase 15 plans written — 3 PLAN.md across 2 waves (15-01 + 15-02 parallel, 15-03 depends on both)
+Resume: `/gsd-execute-phase 15` — execute Phase 15 plans (recommended)
+        or `/gsd-plan-phase 15 --reviews` — replan with cross-AI review feedback
