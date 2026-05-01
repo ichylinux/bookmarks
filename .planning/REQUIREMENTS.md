@@ -8,7 +8,7 @@
 ### Locale Infrastructure
 
 - [x] **I18N-01**: User can have a persisted `locale` value on their account limited to supported locales (`ja` / `en`). *(Phase 14, 2026-05-01)*
-- [x] **I18N-02**: User sees every request rendered with locale resolved in this order: saved account locale, valid `Accept-Language` match, then default Japanese. *(Phase 14, 2026-05-01)*
+- [ ] **I18N-02**: User sees every request rendered with locale resolved in this order: saved account locale, valid `Accept-Language` match, then default Japanese. *(Phase 14 validated core paths; Phase 18.1 closes pending-OTP saved-locale gap)*
 - [x] **I18N-03**: User cannot force an unsupported locale through headers, params, or stored data. *(Phase 14, 2026-05-01)*
 - [x] **I18N-04**: Assistive technologies receive the correct page language via the rendered `<html lang>` attribute. *(Phase 14, 2026-05-01)*
 
@@ -29,13 +29,13 @@
 ### Authentication and Account Flows
 
 - [x] **AUTHI18N-01**: User sees Devise authentication pages and Devise flash/failure messages in the active locale. *(Phase 18, 2026-05-02)*
-- [x] **AUTHI18N-02**: User sees custom two-factor authentication and setup pages in Japanese or English. *(Phase 18, 2026-05-02)*
+- [ ] **AUTHI18N-02**: User sees custom two-factor authentication and setup pages in Japanese or English. *(Phase 18 validated default/Accept-Language paths; Phase 18.1 closes saved-locale OTP gap)*
 - [x] **AUTHI18N-03**: User sees the first failed sign-in message in English when their request resolves to English. *(Phase 18, 2026-05-02)*
 
 ### Verification and Safety
 
 - [x] **VERI18N-01**: User-facing tests cover saved user locale, Accept-Language fallback, invalid locale fallback/rejection, and default Japanese behavior. *(Phase 14, 2026-05-01)*
-- [x] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces. *(Phase 18, 2026-05-02)*
+- [ ] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces. *(Phase 18 validated representative paths; Phase 18.1 adds saved-locale OTP regression coverage)*
 - [x] **VERI18N-03**: User-visible Japanese literals remaining in views, helpers, controllers, and JavaScript are either translated or explicitly documented as intentional user content. *(Phase 18, 2026-05-02)*
 - [x] **VERI18N-04**: User-visible translation keys are present in both `ja.yml` and `en.yml` for every extracted string. *(Phase 18, 2026-05-02)*
 
@@ -66,7 +66,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | I18N-01 | Phase 14 | Complete (2026-05-01) |
-| I18N-02 | Phase 14 | Complete (2026-05-01) |
+| I18N-02 | Phase 14 + Phase 18.1 | Pending gap closure |
 | I18N-03 | Phase 14 | Complete (2026-05-01) |
 | I18N-04 | Phase 14 | Complete (2026-05-01) |
 | PREF-01 | Phase 15 | Complete (2026-05-01) |
@@ -78,10 +78,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRN-04 | Phase 16 | Complete |
 | TRN-05 | Phase 17 | Complete (2026-05-01) |
 | AUTHI18N-01 | Phase 18 | Complete (2026-05-02) |
-| AUTHI18N-02 | Phase 18 | Complete (2026-05-02) |
+| AUTHI18N-02 | Phase 18 + Phase 18.1 | Pending gap closure |
 | AUTHI18N-03 | Phase 18 | Complete (2026-05-02) |
 | VERI18N-01 | Phase 14 | Complete (2026-05-01) |
-| VERI18N-02 | Phase 18 | Complete (2026-05-02) |
+| VERI18N-02 | Phase 18 + Phase 18.1 | Pending gap closure |
 | VERI18N-03 | Phase 18 | Complete (2026-05-02) |
 | VERI18N-04 | Phase 18 | Complete (2026-05-02) |
 
@@ -89,7 +89,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1.4 requirements: 19 total
 - Mapped to phases: 19
 - Unmapped: 0
+- Complete: 16
+- Pending gap closure: 3
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-02 — Phase 18 complete: auth/2FA localization and verification requirements validated; v1.4 requirements complete.*
+*Last updated: 2026-05-02 — v1.4 milestone audit found pending OTP saved-locale gap; I18N-02, AUTHI18N-02, and VERI18N-02 assigned to Phase 18.1 gap closure.*

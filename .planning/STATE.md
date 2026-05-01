@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: milestone_complete
-stopped_at: Phase 18 complete — v1.4 Internationalization complete
-last_updated: "2026-05-02T00:59:00.000+09:00"
+status: ready_to_plan
+stopped_at: Phase 18.1 gap closure created — pending OTP saved-locale gap
+last_updated: "2026-05-02T01:06:00.000+09:00"
 last_activity: 2026-05-02
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 5
-  total_plans: 17
+  total_plans: 18
   completed_plans: 17
-  percent: 100
+  percent: 94
 ---
 
 # State
 
 ## Current Position
 
-Phase: 18 (Auth, 2FA & Translation Verification) — complete
-Plan: Complete
-Plans: 3/3 complete
+Phase: 18.1 (2FA Pending Locale Resolution) — ready to plan
+Plan: Not started
+Plans: 0/1 planned gap-closure phase
 Last completed: Phase 18 — Auth, 2FA & Translation Verification (3/3 plans, 2026-05-02)
-Status: v1.4 Internationalization complete
-Last activity: 2026-05-02 - Completed Phase 18 Auth, 2FA & Translation Verification (3/3 plans, code review clean, full gate green)
-Resume: `/gsd-complete-milestone` — archive v1.4 Internationalization and prepare the next milestone
+Status: v1.4 audit gap closure required before milestone archive
+Last activity: 2026-05-02 - v1.4 milestone audit found pending OTP saved-locale gap; Phase 18.1 created
+Resume: `/gsd-plan-phase 18.1` — plan 2FA Pending Locale Resolution gap closure
 
 ## Project Reference
 
@@ -32,7 +32,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
 **Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30)
-**Current milestone:** v1.4 — Internationalization
+**Current milestone:** v1.4 — Internationalization (gap closure)
 
 ## v1.4 Roadmap
 
@@ -43,6 +43,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
 | 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
 | 18 | Auth, 2FA & Translation Verification | Complete (2026-05-02) — 3/3 plans, full lint/Minitest/dad:test gate green |
+| 18.1 | 2FA Pending Locale Resolution | Not started — closes v1.4 audit gap |
 
 ## Accumulated Context
 
@@ -67,6 +68,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 17 planning artifacts ready: `17-RESEARCH.md`, `17-PATTERNS.md`, approved `17-UI-SPEC.md`, approved `17-VALIDATION.md`, and five execution plans covering TRN-02/TRN-03/TRN-05
 - Phase 17 translated feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages; `BookmarkGadget#title`, `TodoGadget#title`, Todo priority labels, Calendar weekdays/month captions, and feed `data-*` messages are locale-aware while user/external content stays unchanged; final gate green: lint, `bin/rails test` 181/1043, `dad:test` 9/28; code review clean after fix `309965e`
 - Phase 18 completed auth/2FA localization verification: `devise.sessions.invalid` exists in ja/en, failed sign-in alerts render via shared `.flash-alert`, auth/OTP/setup tests cover localized paths, VERI18N-03 audit approved with only native labels and `holiday_jp` as intentional exceptions; final gate green: lint, `bin/rails test` 187/1069, `dad:test` 9/28; code review clean after duplicate 2FA alert fixes
+- v1.4 milestone audit found one blocking integration gap: while `session[:otp_user_id]` identifies a pending 2FA user, `Localization#saved_locale` only reads `current_user` when `user_signed_in?`, so saved `preference.locale` does not affect the OTP challenge page. Phase 18.1 will close this before milestone archive.
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 
