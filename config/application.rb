@@ -33,5 +33,6 @@ module Bookmarks
 
     I18n.config.enforce_available_locales = true
     config.i18n.default_locale = :ja
+    config.i18n.available_locales = %i[ja en] # mirrors Preference::SUPPORTED_LOCALES
   end
 end
