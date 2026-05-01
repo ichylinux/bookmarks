@@ -1,6 +1,15 @@
 en:
   activerecord:
     attributes:
+      bookmark:
+        title: Title
+        url: URL
+      calendar:
+        title: Title
+      feed:
+        display_count: Display count
+        feed_url: Feed URL
+        title: Site name
       preference:
         default_priority: Default priority
         font_size: Font size
@@ -9,6 +18,9 @@ en:
         theme: Theme
         use_note: Show note tab
         use_todo: Show todo widget
+      todo:
+        priority: Priority
+        title: Title
       user:
         name: Username
 
