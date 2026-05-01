@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
 status: ready_to_plan
-stopped_at: Phase 17 complete — feature surfaces translated and verified; ready to discuss/plan Phase 18
-last_updated: "2026-05-01T11:45:00.000Z"
+stopped_at: Phase 18 context gathered — ready to plan
+last_updated: "2026-05-01T12:00:00.000Z"
 last_activity: 2026-05-01
 progress:
   total_phases: 5
@@ -24,7 +24,7 @@ Plans: 0/? (planning not yet started)
 Last completed: Phase 17 — Feature Surface Translation (5/5 plans, 2026-05-01)
 Status: Ready to discuss/plan Phase 18
 Last activity: 2026-05-01 - Completed Phase 17 Feature Surface Translation (5/5 plans, code review clean, full gate green)
-Resume: `/gsd-discuss-phase 18` — gather context for Phase 18 Auth, 2FA & Translation Verification
+Resume: `/gsd-plan-phase 18` — plan Phase 18 Auth, 2FA & Translation Verification
 
 ## Project Reference
 
