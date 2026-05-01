@@ -25,7 +25,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
-**Active milestone:** v1.4 — Internationalization (Phase 17 complete 2026-05-01: locale infrastructure, persisted language preference, core shell/shared messages, and core feature surfaces are translated; Phase 18 will cover auth/2FA and remaining translation verification)
+**Completed milestone:** v1.4 — Internationalization (Phase 18 complete 2026-05-02: locale infrastructure, persisted language preference, shell/shared messages, core feature surfaces, auth/2FA surfaces, and remaining translation verification are complete)
 
 ## Requirements
 
@@ -45,17 +45,19 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Preferences language switcher persists `locale` and translates the preferences page labels/options — **v1.4 Phase 15**
 - ✓ Core shell navigation, drawer/menu chrome, and shared generic flash fallback render through ja/en locale keys — **v1.4 Phase 16**
 - ✓ Core feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages render through ja/en locale keys while user/external content remains unchanged — **v1.4 Phase 17**
+- ✓ Auth and 2FA surfaces render in Japanese and English; failed sign-in and invalid OTP alerts use shared localized flash rendering — **v1.4 Phase 18**
+- ✓ Translation verification is complete: representative ja/en paths are covered, locale key parity is enforced, and remaining Japanese literals are documented intentional exceptions — **v1.4 Phase 18**
 
 ### Active (v1.4)
 
-- [ ] All UI strings extracted to `ja.yml` / `en.yml` locale files
+- [x] All UI strings extracted to `ja.yml` / `en.yml` locale files, with intentional native/external-data exceptions documented — **v1.4 Phases 14–18**
 - [x] `locale` column added to `preferences` table; persists language preference per account — **v1.4 Phase 14**
 - [x] `Accept-Language` header detection sets locale for unauthenticated / first visits — **v1.4 Phase 14**
 - [x] Language switcher (ja / en) on `/preferences` page — **v1.4 Phase 15**
 - [x] Navigation, layout labels, and core feature UIs (bookmarks, notes, todos, feeds, calendars) translated — **v1.4 Phases 16–17**
 - [x] JavaScript-visible feed messages supplied via server-rendered translated `data-*` attributes, without a JS i18n build pipeline — **v1.4 Phase 17**
-- [ ] All flash messages, validation errors, and Devise pages translated in both locales
-- [ ] Auth/2FA surfaces and remaining translation verification completed
+- [x] All flash messages, validation errors, and Devise pages translated in both locales — **v1.4 Phases 16–18**
+- [x] Auth/2FA surfaces and remaining translation verification completed — **v1.4 Phase 18**
 
 ### Out of Scope (revisit when planning)
 
@@ -74,7 +76,7 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/milestones/v1.1-ROADMAP.md`
 - **Shipped v1.2 (2026-04-29):** modern theme with hamburger drawer nav and full-page CSS polish (Phases 5–9). Details: `.planning/milestones/v1.2-ROADMAP.md`
 - **Shipped v1.3 (2026-04-30):** quick note gadget — data layer, controller, tab UI, note gadget partial, Cucumber E2E, drawer-gating helper (Phases 10–13). Details: `.planning/milestones/v1.3-ROADMAP.md`
-- **v1.4 through Phase 17 (2026-05-01):** Locale resolution/preferences, shell/shared messages, and core feature surfaces are ja/en localized. Feed JavaScript-visible messages use server-rendered `data-*` attributes; user/external content remains untranslated by design.
+- **v1.4 complete (2026-05-02):** Locale resolution/preferences, shell/shared messages, core feature surfaces, auth/2FA, Devise failure flashes, representative ja/en verification paths, and locale key parity are complete. Feed JavaScript-visible messages use server-rendered `data-*` attributes; user/external content remains untranslated by design.
 
 ## Constraints
 
@@ -128,4 +130,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-01 — Phase 17 complete (core feature surface translation: bookmarks, notes, todos, feeds, calendars, JS-visible feed messages, ja/en gate green).*
+*Last updated: 2026-05-02 — Phase 18 complete (auth/2FA localization, translation audit, code review clean, full gate green); v1.4 Internationalization complete.*

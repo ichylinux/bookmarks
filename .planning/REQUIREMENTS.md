@@ -28,16 +28,16 @@
 
 ### Authentication and Account Flows
 
-- [ ] **AUTHI18N-01**: User sees Devise authentication pages and Devise flash/failure messages in the active locale.
-- [ ] **AUTHI18N-02**: User sees custom two-factor authentication and setup pages in Japanese or English.
-- [ ] **AUTHI18N-03**: User sees the first failed sign-in message in English when their request resolves to English.
+- [x] **AUTHI18N-01**: User sees Devise authentication pages and Devise flash/failure messages in the active locale. *(Phase 18, 2026-05-02)*
+- [x] **AUTHI18N-02**: User sees custom two-factor authentication and setup pages in Japanese or English. *(Phase 18, 2026-05-02)*
+- [x] **AUTHI18N-03**: User sees the first failed sign-in message in English when their request resolves to English. *(Phase 18, 2026-05-02)*
 
 ### Verification and Safety
 
 - [x] **VERI18N-01**: User-facing tests cover saved user locale, Accept-Language fallback, invalid locale fallback/rejection, and default Japanese behavior. *(Phase 14, 2026-05-01)*
-- [ ] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces.
-- [ ] **VERI18N-03**: User-visible Japanese literals remaining in views, helpers, controllers, and JavaScript are either translated or explicitly documented as intentional user content.
-- [ ] **VERI18N-04**: User-visible translation keys are present in both `ja.yml` and `en.yml` for every extracted string.
+- [x] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces. *(Phase 18, 2026-05-02)*
+- [x] **VERI18N-03**: User-visible Japanese literals remaining in views, helpers, controllers, and JavaScript are either translated or explicitly documented as intentional user content. *(Phase 18, 2026-05-02)*
+- [x] **VERI18N-04**: User-visible translation keys are present in both `ja.yml` and `en.yml` for every extracted string. *(Phase 18, 2026-05-02)*
 
 ## Future Requirements
 
@@ -77,13 +77,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRN-03 | Phase 17 | Complete (2026-05-01) |
 | TRN-04 | Phase 16 | Complete |
 | TRN-05 | Phase 17 | Complete (2026-05-01) |
-| AUTHI18N-01 | Phase 18 | Pending |
-| AUTHI18N-02 | Phase 18 | Pending |
-| AUTHI18N-03 | Phase 18 | Pending |
+| AUTHI18N-01 | Phase 18 | Complete (2026-05-02) |
+| AUTHI18N-02 | Phase 18 | Complete (2026-05-02) |
+| AUTHI18N-03 | Phase 18 | Complete (2026-05-02) |
 | VERI18N-01 | Phase 14 | Complete (2026-05-01) |
-| VERI18N-02 | Phase 18 | Pending |
-| VERI18N-03 | Phase 18 | Pending |
-| VERI18N-04 | Phase 18 | Pending |
+| VERI18N-02 | Phase 18 | Complete (2026-05-02) |
+| VERI18N-03 | Phase 18 | Complete (2026-05-02) |
+| VERI18N-04 | Phase 18 | Complete (2026-05-02) |
 
 **Coverage:**
 - v1.4 requirements: 19 total
@@ -92,4 +92,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 — Phase 17 complete: TRN-02, TRN-03, TRN-05 validated.*
+*Last updated: 2026-05-02 — Phase 18 complete: auth/2FA localization and verification requirements validated; v1.4 requirements complete.*

@@ -5,7 +5,7 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
-- 🚧 **v1.4 — Internationalization** — Phases 14–18 (planning)
+- ✅ **v1.4 — Internationalization** — Phases 14–18 (completed 2026-05-02)
 
 ## Phases
 
@@ -19,7 +19,7 @@
 | 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Complete (3/3 plans, 2026-05-01) | Phase 14 |
 | 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete    | 2026-05-01 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Complete (5/5 plans, 2026-05-01) | Phase 16 |
-| 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Not started | Phase 17 |
+| 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Complete (3/3 plans, 2026-05-02) | Phase 17 |
 
 #### Phase 14: Locale Infrastructure
 
@@ -148,11 +148,11 @@ Plans:
 Plans:
 
 **Wave 1**
-- [ ] 18-01-PLAN.md — devise.sessions.invalid locale key (ja + en) + flash[:alert] in application layout + .flash-alert CSS rule
+- [x] 18-01-PLAN.md — devise.sessions.invalid locale key (ja + en) + flash[:alert] in application layout + .flash-alert CSS rule (completed 2026-05-02)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 18-02-PLAN.md — New sessions_controller_test.rb (4 tests: sign-in page ja/en + failed flash ja/en) + 2FA OTP locale tests (extend existing test file)
-- [ ] 18-03-PLAN.md — Full phase gate (lint + minitest + dad:test) + VERI18N-03 audit sign-off checkpoint
+- [x] 18-02-PLAN.md — New sessions_controller_test.rb (4 tests: sign-in page ja/en + failed flash ja/en) + 2FA OTP locale tests (extend existing test file) (completed 2026-05-02)
+- [x] 18-03-PLAN.md — Full phase gate (lint + minitest + dad:test) + VERI18N-03 audit sign-off checkpoint (completed 2026-05-02)
 
 **Success criteria:**
 1. Devise authentication pages and Devise flash/failure messages render in the active locale.
@@ -219,4 +219,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 18 planned (3/3 plans; wave structure defined; ready to execute).*
+*Last updated: 2026-05-02 — Phase 18 complete (3/3 plans, code review clean, full gate green); v1.4 Internationalization complete.*

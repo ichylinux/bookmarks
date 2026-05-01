@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: ready_to_execute
-stopped_at: Phase 18 planned — 3 plans ready to execute
-last_updated: "2026-05-01T13:00:00.000Z"
-last_activity: 2026-05-01
+status: milestone_complete
+stopped_at: Phase 18 complete — v1.4 Internationalization complete
+last_updated: "2026-05-02T00:59:00.000+09:00"
+last_activity: 2026-05-02
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 17
-  completed_plans: 14
-  percent: 82
+  completed_plans: 17
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 18 (Auth, 2FA & Translation Verification) — ready to execute
-Plan: Not started
-Plans: 0/3 (3 plans ready, execution not yet started)
-Last completed: Phase 17 — Feature Surface Translation (5/5 plans, 2026-05-01)
-Status: Ready to discuss/plan Phase 18
-Last activity: 2026-05-01 - Completed Phase 17 Feature Surface Translation (5/5 plans, code review clean, full gate green)
-Resume: `/gsd-plan-phase 18` — plan Phase 18 Auth, 2FA & Translation Verification
+Phase: 18 (Auth, 2FA & Translation Verification) — complete
+Plan: Complete
+Plans: 3/3 complete
+Last completed: Phase 18 — Auth, 2FA & Translation Verification (3/3 plans, 2026-05-02)
+Status: v1.4 Internationalization complete
+Last activity: 2026-05-02 - Completed Phase 18 Auth, 2FA & Translation Verification (3/3 plans, code review clean, full gate green)
+Resume: `/gsd-complete-milestone` — archive v1.4 Internationalization and prepare the next milestone
 
 ## Project Reference
 
@@ -42,7 +42,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 15 | Language Preference | Complete (2026-05-01) — 3/3 plans, 8 new integration tests |
 | 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
 | 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
-| 18 | Auth, 2FA & Translation Verification | Not started |
+| 18 | Auth, 2FA & Translation Verification | Complete (2026-05-02) — 3/3 plans, full lint/Minitest/dad:test gate green |
 
 ## Accumulated Context
 
@@ -66,6 +66,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - `test/controllers/application_controller_test.rb` covers ja/en chrome rendering; `test/controllers/notes_controller_test.rb` covers `flash.errors.generic`; final gate green: lint, `bin/rails test` 142/716, `dad:test` 9/28 (Phase 16)
 - Phase 17 planning artifacts ready: `17-RESEARCH.md`, `17-PATTERNS.md`, approved `17-UI-SPEC.md`, approved `17-VALIDATION.md`, and five execution plans covering TRN-02/TRN-03/TRN-05
 - Phase 17 translated feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages; `BookmarkGadget#title`, `TodoGadget#title`, Todo priority labels, Calendar weekdays/month captions, and feed `data-*` messages are locale-aware while user/external content stays unchanged; final gate green: lint, `bin/rails test` 181/1043, `dad:test` 9/28; code review clean after fix `309965e`
+- Phase 18 completed auth/2FA localization verification: `devise.sessions.invalid` exists in ja/en, failed sign-in alerts render via shared `.flash-alert`, auth/OTP/setup tests cover localized paths, VERI18N-03 audit approved with only native labels and `holiday_jp` as intentional exceptions; final gate green: lint, `bin/rails test` 187/1069, `dad:test` 9/28; code review clean after duplicate 2FA alert fixes
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 
