@@ -1,6 +1,11 @@
 module Login
 
   def sign_in(user)
+    if current_user and current_user.email != user.email
+      Capybara.reset_sessions!
+      @_current_user = nil
+    end
+    
     visit '/users/sign_in'
 
     fill_in 'user[email]', with: user.email
