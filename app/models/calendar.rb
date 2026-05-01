@@ -14,8 +14,7 @@ class Calendar < ActiveRecord::Base
   end
 
   def day_of_week(index)
-    @names ||= %w{ 日 月 火 水 木 金 土 }
-    @names[index]
+    I18n.t('date.abbr_day_names')[index]
   end
   
   def display_date
