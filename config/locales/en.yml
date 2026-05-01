@@ -1,33 +1,46 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   'true': 'foo'
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
-
 en:
-  hello: "Hello world"
+  activerecord:
+    attributes:
+      preference:
+        default_priority: Default priority
+        font_size: Font size
+        locale: Language
+        open_links_in_new_tab: Open links in new tab
+        theme: Theme
+        use_note: Show note tab
+        use_todo: Show todo widget
+      user:
+        name: Username
+
+  messages:
+    confirm_delete: 'Delete %{name}. Are you sure?'
+
+  two_factor:
+    section_title: Two-factor authentication
+    setup_title: Two-factor authentication setup
+    status_title: Two-factor authentication status
+    verification_title: Two-factor authentication
+    scan_qr_code: Scan the QR code with your authenticator app.
+    manual_entry_label: Manual entry code
+    code_label: Verification code
+    verify_button: Verify
+    enable_button: Enable
+    disable_button: Disable
+    setup_link: Two-factor authentication setup
+    back_to_preferences: Back to preferences
+    enabled: Two-factor authentication has been enabled.
+    disabled: Two-factor authentication has been disabled.
+    status_enabled: Two-factor authentication is enabled.
+    status_disabled: Two-factor authentication is disabled.
+    invalid_code: The verification code is invalid.
+
+  preferences:
+    theme_options:
+      modern: Modern
+      classic: Classic
+      simple: Simple
+    font_size_options:
+      large: Large
+      medium: Medium
+      small: Small
+    submit: Save
