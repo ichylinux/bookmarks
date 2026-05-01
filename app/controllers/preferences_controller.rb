@@ -17,6 +17,7 @@ class PreferencesController < ApplicationController
       @user.save!
     end
 
+    flash[:notice] = t('preferences.saved')
     redirect_to preferences_path
   end
 
@@ -32,6 +33,7 @@ class PreferencesController < ApplicationController
       @user.save!
     end
 
+    flash[:notice] = t('preferences.saved')
     redirect_to preferences_path
   end
 

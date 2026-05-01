@@ -47,6 +47,7 @@ en:
     invalid_code: The verification code is invalid.
 
   preferences:
+    saved: Preferences saved.
     index:
       theme_options:
         modern: Modern

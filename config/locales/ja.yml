@@ -47,6 +47,7 @@ ja:
     invalid_code: 認証コードが正しくありません。
 
   preferences:
+    saved: 設定を保存しました。
     index:
       theme_options:
         modern: モダン

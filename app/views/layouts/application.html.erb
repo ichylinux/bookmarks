@@ -27,6 +27,9 @@
 
     <div class="wrapper">
       <%= render 'common/menu' if user_signed_in? && favorite_theme == 'simple' %>
+      <% if flash[:notice].present? %>
+        <div class="flash-notice"><%= flash[:notice] %></div>
+      <% end %>
       <%= yield %>
     </div>
     <% if drawer_ui? %>
