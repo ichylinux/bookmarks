@@ -165,3 +165,7 @@ ja:
       view: カレンダーを表示
     edit:
       title: 編集
+
+  devise:
+    sessions:
+      invalid: "%{authentication_keys}またはパスワードが違います。"

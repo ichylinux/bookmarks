@@ -30,6 +30,9 @@
       <% if flash[:notice].present? %>
         <div class="flash-notice"><%= flash[:notice] %></div>
       <% end %>
+      <% if flash[:alert].present? %>
+        <div class="flash-alert"><%= flash[:alert] %></div>
+      <% end %>
       <%= yield %>
     </div>
     <% if drawer_ui? %>

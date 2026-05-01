@@ -11,7 +11,7 @@ class Users::SessionsController < Devise::SessionsController
         respond_with user, location: after_sign_in_path_for(user)
       end
     else
-      set_flash_message!(:alert, :invalid)
+      set_flash_message!(:alert, :invalid, authentication_keys: User.human_attribute_name(:email))
       redirect_to new_user_session_path
     end
   end

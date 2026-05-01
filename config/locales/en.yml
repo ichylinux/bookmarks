@@ -165,3 +165,7 @@ en:
       view: View Calendar
     edit:
       title: Edit Calendar
+
+  devise:
+    sessions:
+      invalid: "Invalid %{authentication_keys} or password."
