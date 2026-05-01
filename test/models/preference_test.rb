@@ -25,4 +25,22 @@ class PreferenceTest < ActiveSupport::TestCase
     assert_not p.valid?
   end
 
+  def test_localeはsupported_localesのみ有効
+    p = Preference.default_preference(user)
+
+    Preference::SUPPORTED_LOCALES.each do |locale|
+      p.locale = locale
+      assert p.valid?, "#{locale} should be valid"
+    end
+
+    p.locale = nil
+    assert p.valid?, 'nil locale should be valid (未指定を許可)'
+
+    p.locale = 'fr'
+    assert_not p.valid?, "'fr' should be invalid"
+
+    p.locale = 'zh'
+    assert_not p.valid?, "'zh' should be invalid"
+  end
+
 end

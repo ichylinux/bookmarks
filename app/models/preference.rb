@@ -13,9 +13,12 @@ class Preference < ActiveRecord::Base
     '小' => FONT_SIZE_SMALL
   }.freeze
 
+  SUPPORTED_LOCALES = %w[ja en].freeze
+
   belongs_to :user, inverse_of: 'preference'
 
   validates :font_size, inclusion: { in: FONT_SIZES }, allow_nil: true
+  validates :locale, inclusion: { in: SUPPORTED_LOCALES }, allow_nil: true
 
   def self.default_preference(user)
     ret = self.new(user: user)
