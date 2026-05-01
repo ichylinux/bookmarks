@@ -465,17 +465,13 @@ pass after new keys are added with parity.
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **`authentication_keys` interpolation value in flash assertion**
-   - What we know: `I18n.t('devise.sessions.invalid', authentication_keys: ...)` — the value passed is whatever Devise resolves for the model's `authentication_keys` (defaults to `email` humanized).
-   - What's unclear: The exact humanized value Devise passes — it may be `"Email"` (en) or `"Eメール"` (ja, from devise-i18n's `activerecord.attributes.user.email`).
-   - Recommendation: Test assertions should use `I18n.t('devise.sessions.invalid', authentication_keys: User.human_attribute_name(:email), locale: :xx)` to avoid hardcoding the humanized key name, OR assert that flash[:alert] is present and non-empty rather than asserting the exact string.
+1. **`authentication_keys` interpolation value in flash assertion** — RESOLVED
+   - Use `I18n.t('devise.sessions.invalid', authentication_keys: User.human_attribute_name(:email), locale: :en)` in test assertions to avoid hardcoding the humanized key name. Plan 18-02 T1 applies this pattern.
 
-2. **CSS styling for `flash-alert`**
-   - What we know: `flash-notice` has an existing CSS class in the app stylesheets.
-   - What's unclear: Whether `flash-alert` needs a styled rule or just a plain div.
-   - Recommendation: Add a minimal `flash-alert` CSS rule (red/warning color) alongside the existing `flash-notice` rule. Check `app/assets/stylesheets/` for the existing flash CSS.
+2. **CSS styling for `flash-alert`** — RESOLVED
+   - Add `.flash-alert { background: #f2dede; border: 1px solid #ebccd1; color: #a94442; }` alongside existing `flash-notice` rule in `app/assets/stylesheets/common.css.scss`. Plan 18-01 T2 applies this pattern.
 
 ---
 
