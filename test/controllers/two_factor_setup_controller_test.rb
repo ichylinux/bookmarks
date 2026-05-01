@@ -39,6 +39,7 @@ class TwoFactorSetupControllerTest < ActionDispatch::IntegrationTest
 
     post users_two_factor_setup_path, params: { otp_attempt: '000000' }
     assert_response :success
+    assert_select '.flash-alert', text: I18n.t('two_factor.invalid_code', locale: :ja), count: 1
     assert_not user.reload.two_factor_enabled?
   end
 
