@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: phase-complete
-stopped_at: Phase 15 complete — 3 plans, 8 new tests, full suite 135/0; Phase 16 ready to plan
-last_updated: "2026-05-01T03:55:00.000Z"
-last_activity: 2026-05-01 — Quick 260501-jmn — fix cucumber regression from Phase 15-01 redirect; add CLAUDE.md phase-verification policy
+status: phase-context-gathered
+stopped_at: Phase 16 context gathered — flash & alert pattern locked (top-level flash.* namespace, name: interpolation, flash.errors.generic fallback, rails-i18n activation for ja+en); ready for /gsd-plan-phase 16
+last_updated: "2026-05-01T04:30:00.000Z"
+last_activity: 2026-05-01 — Phase 16 discuss-phase: 1 gray area (Flash & alert translation pattern) discussed end-to-end, 4 sub-decisions locked; 3 other areas deferred to researcher/planner
 progress:
   total_phases: 5
   completed_phases: 2
@@ -18,12 +18,12 @@ progress:
 
 ## Current Position
 
-Phase: 15 (Language Preference) — COMPLETE (2026-05-01)
-Plans: 3/3 (15-01, 15-02, 15-03 — all complete)
+Phase: 16 (Core Shell & Shared Messages Translation) — context gathered (2026-05-01)
+Plans: 0/? (planning not yet started)
 Last completed: Phase 15 — Language Preference (3/3 plans, 2026-05-01)
-Status: Phase 15 fully verified (25/25 must_haves, 4/4 success criteria, PREF-01..03 traceable)
-Last activity: 2026-05-01 — Phase 15 全 plans 完了、全 suite green (135 runs / 694 assertions / 0 failures)
-Resume: `/gsd-discuss-phase 16` — discuss Phase 16 (Core Shell & Shared Messages Translation)
+Status: Phase 16 CONTEXT.md written — Flash & alert pattern decided (top-level `flash.*` namespace, `name:` interpolation, `flash.errors.generic` fallback, `rails-i18n` activation for ja+en). Other gray areas (key namespace for non-flash shell strings, P16/P17 boundary on shared form text, test coverage approach, page title strategy, hardcoded literal sweep) deferred to researcher/planner.
+Last activity: 2026-05-01 — Phase 16 discuss-phase: CONTEXT.md + DISCUSSION-LOG.md written
+Resume: `/gsd-plan-phase 16` — research + plan Phase 16
 
 ## Project Reference
 
