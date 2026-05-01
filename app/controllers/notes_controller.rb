@@ -5,7 +5,8 @@ class NotesController < ApplicationController
     if @note.save
       redirect_to root_path(tab: 'notes')
     else
-      redirect_to root_path(tab: 'notes'), alert: @note.errors.full_messages.to_sentence.presence || 'エラーが発生しました'
+      redirect_to root_path(tab: 'notes'),
+                  alert: @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic')
     end
   end
 
