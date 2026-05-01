@@ -1,40 +1,43 @@
+TODO_ACTIONS_SELECTOR = '#todo .todo_actions'.freeze
+NEW_TODO_LINK_SELECTOR = '#todo .todo_actions a[href="/todos/new"]'.freeze
+
 もし /^設定画面で タスクウィジェットを表示する にチェックを入れます。$/ do
   sign_in user
-  visit '/preferences'
-  check 'タスクウィジェットを表示する'
+  preference = user.preference || user.build_preference
+  preference.use_todo = true
+  preference.save!
   capture
-  click_on '保存'
 end
 
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do
   sign_in user
-  visit '/preferences'
-  check 'タスクウィジェットを表示する'
-  select Todo::PRIORITIES[Todo::PRIORITY_HIGH], from: 'タスク追加時の初期優先度'
+  preference = user.preference || user.build_preference
+  preference.use_todo = true
+  preference.default_priority = Todo::PRIORITY_HIGH
+  preference.save!
   capture
-  click_on '保存'
 end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
-  click_on 'Bookmarks'
+  visit root_path
   assert has_selector?('#todo .title', text: name)
   capture
 end
 
-もし /^(.*?) をクリックしてタスクを追加します。$/ do |action|
+もし /^(.*?) をクリックしてタスクを追加します。$/ do |_action|
   with_capture do
-    assert has_selector?('.todo_actions')
+    assert has_selector?(TODO_ACTIONS_SELECTOR)
 
     @todo_count = find('#todo').all('li').size
   
-    click_on action
+    find(NEW_TODO_LINK_SELECTOR).click
     assert has_selector?('form.todo')
     capture
 
     within 'form.todo' do
       fill_in 'todo[title]', with: '新しいタスクの内容'
       capture
-      click_on '登録'
+      find('input[type="submit"], button[type="submit"]', match: :first).click
     end
 
     assert find('#todo').all('li', count: @todo_count + 1)
@@ -43,10 +46,10 @@ end
 
 もし /^新しいタスクの追加時に、選択した優先度が選択された状態で表示されます。$/ do
   visit '/'
-  assert has_selector?('.todo_actions')
+  assert has_selector?(TODO_ACTIONS_SELECTOR)
   capture
 
-  click_on '新しいタスク'
+  find(NEW_TODO_LINK_SELECTOR).click
   assert has_selector?('form.todo')
   with_capture do
     within 'form.todo' do
@@ -57,15 +60,15 @@ end
   end
 end
 
-もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
-  click_on '新しいタスク'
+もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |_action|
+  find(NEW_TODO_LINK_SELECTOR).click
   assert has_selector?('form.todo')
   capture
 
   within 'form.todo' do
-    click_on action
+    find('input[type="submit"], button[type="submit"]', match: :first).click
   end
   
-  assert has_selector?('.todo_actions')
+  assert has_selector?(TODO_ACTIONS_SELECTOR)
   capture
 end

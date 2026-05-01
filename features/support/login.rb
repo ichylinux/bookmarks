@@ -3,14 +3,17 @@ module Login
   def sign_in(user)
     visit '/users/sign_in'
 
-    fill_in 'Eメール', with: user.email
-    fill_in 'パスワード', with: 'testtest'
-    click_on 'ログイン'
+    # When already authenticated, Devise redirects from /users/sign_in.
+    if has_selector?('input[name="user[email]"]')
+      fill_in 'user[email]', with: user.email
+      fill_in 'user[password]', with: 'testtest'
+      find('input[type="submit"], button[type="submit"]', match: :first).click
+    end
 
-    if user.two_factor_enabled?
+    if user.two_factor_enabled? && has_selector?('input[name="user[otp_attempt]"]')
       totp = ROTP::TOTP.new(user.otp_secret)
-      fill_in '認証コード', with: totp.now
-      click_on '認証する'
+      fill_in 'user[otp_attempt]', with: totp.now
+      find('input[type="submit"], button[type="submit"]', match: :first).click
     end
 
     @_current_user = user
