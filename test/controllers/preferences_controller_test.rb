@@ -87,4 +87,121 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'body.font-size-medium'
   end
 
+  def test_言語セレクタを表示する
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'label[for=?]', 'user_preference_attributes_locale'
+    assert_select 'select[name=?]', 'user[preference_attributes][locale]' do
+      assert_select 'option[value=?]', '', text: '自動'
+      assert_select 'option[value=?]', 'ja', text: '日本語'
+      assert_select 'option[value=?]', 'en', text: 'English'
+    end
+  end
+
+  def test_localeをjaに更新できる
+    user.preference.update!(locale: nil)
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: 'ja').merge(id: user.preference.id)
+      }
+    }
+
+    assert_response :redirect
+    assert_equal 'ja', user.preference.reload.locale
+  end
+
+  def test_localeをenに更新できる
+    user.preference.update!(locale: nil)
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: 'en').merge(id: user.preference.id)
+      }
+    }
+
+    assert_response :redirect
+    assert_equal 'en', user.preference.reload.locale
+  end
+
+  def test_localeをnilに戻せる
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: '').merge(id: user.preference.id)
+      }
+    }
+
+    assert_response :redirect
+    assert_nil user.preference.reload.locale
+  end
+
+  def test_保存後preferences_pathにリダイレクトされる
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params.merge(id: user.preference.id)
+      }
+    }
+
+    assert_redirected_to preferences_path
+  end
+
+  def test_設定画面が日本語ロケールで日本語表示される
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select 'th', text: 'テーマ'
+    assert_select 'th', text: '言語'
+    assert_select 'th', text: '文字サイズ'
+    assert_select 'option', text: 'モダン'
+    assert_select 'option', text: '大'
+    assert_select 'input[type=submit][value=?]', '保存'
+  end
+
+  def test_設定画面が英語ロケールで英語表示される
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'th', text: 'Theme'
+    assert_select 'th', text: 'Language'
+    assert_select 'th', text: 'Font size'
+    assert_select 'option', text: 'Modern'
+    assert_select 'option', text: 'Large'
+    assert_select 'input[type=submit][value=?]', 'Save'
+    assert_select 'option', text: '自動'
+    assert_select 'option', text: '日本語'
+    assert_select 'option', text: 'English'
+  end
+
+  def test_localeはサインアウト後も保持される
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: 'en').merge(id: user.preference.id)
+      }
+    }
+    assert_redirected_to preferences_path
+    assert_equal 'en', user.preference.reload.locale
+
+    sign_out user
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'select[name=?]', 'user[preference_attributes][locale]' do
+      assert_select 'option[value=?][selected=?]', 'en', 'selected', text: 'English'
+    end
+  end
+
 end
