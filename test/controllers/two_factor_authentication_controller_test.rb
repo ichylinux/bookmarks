@@ -47,4 +47,27 @@ class TwoFactorAuthenticationControllerTest < ActionDispatch::IntegrationTest
     post user_session_path, params: { user: { email: user.email, password: 'wrongpassword' } }
     assert_redirected_to new_user_session_path
   end
+
+  # AUTHI18N-02: OTP page renders in Japanese (default locale)
+  def test_OTPページが日本語でレンダリングされる
+    user.enable_two_factor!
+    post user_session_path, params: { user: { email: user.email, password: 'testtest' } }
+    get users_two_factor_authentication_path
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select 'label', text: I18n.t('two_factor.code_label', locale: :ja)
+  end
+
+  # AUTHI18N-02: OTP page renders in English via Accept-Language
+  def test_OTPページが英語でレンダリングされる
+    user.enable_two_factor!
+    post user_session_path,
+      params: { user: { email: user.email, password: 'testtest' } },
+      headers: { 'Accept-Language' => 'en' }
+    get users_two_factor_authentication_path,
+      headers: { 'Accept-Language' => 'en' }
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'label', text: I18n.t('two_factor.code_label', locale: :en)
+  end
 end
