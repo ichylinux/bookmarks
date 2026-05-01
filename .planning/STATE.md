@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: ready_to_execute
-stopped_at: Phase 18.1 planned — 1 gap-closure plan ready to execute
-last_updated: "2026-05-02T01:10:00.000+09:00"
+status: ready_for_milestone_audit
+stopped_at: Phase 18.1 complete — pending OTP saved-locale gap closed
+last_updated: "2026-05-02T01:20:00.000+09:00"
 last_activity: 2026-05-02
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 18
-  completed_plans: 17
-  percent: 94
+  completed_plans: 18
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 18.1 (2FA Pending Locale Resolution) — ready to execute
-Plan: 18.1-01-PLAN.md
-Plans: 1/1 planned
-Last completed: Phase 18 — Auth, 2FA & Translation Verification (3/3 plans, 2026-05-02)
-Status: Phase 18.1 ready to execute; milestone archive still blocked until gap closure is implemented and audit passes
-Last activity: 2026-05-02 - Planned Phase 18.1 pending OTP saved-locale gap closure (1/1 plan)
-Resume: `/gsd-execute-phase 18.1` — execute 2FA Pending Locale Resolution gap closure
+Phase: 18.1 (2FA Pending Locale Resolution) — complete
+Plan: Complete
+Plans: 1/1 complete
+Last completed: Phase 18.1 — 2FA Pending Locale Resolution (1/1 plan, 2026-05-02)
+Status: v1.4 gap closure complete; re-run milestone audit before archive
+Last activity: 2026-05-02 - Completed Phase 18.1 pending OTP saved-locale gap closure (1/1 plan, full gate green, code review clean)
+Resume: `/gsd-audit-milestone` — verify v1.4 Internationalization can be archived
 
 ## Project Reference
 
@@ -43,7 +43,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
 | 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
 | 18 | Auth, 2FA & Translation Verification | Complete (2026-05-02) — 3/3 plans, full lint/Minitest/dad:test gate green |
-| 18.1 | 2FA Pending Locale Resolution | Ready to execute — 1/1 plan |
+| 18.1 | 2FA Pending Locale Resolution | Complete (2026-05-02) — 1/1 plan, full lint/Minitest/dad:test gate green |
 
 ## Accumulated Context
 
@@ -68,7 +68,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 17 planning artifacts ready: `17-RESEARCH.md`, `17-PATTERNS.md`, approved `17-UI-SPEC.md`, approved `17-VALIDATION.md`, and five execution plans covering TRN-02/TRN-03/TRN-05
 - Phase 17 translated feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages; `BookmarkGadget#title`, `TodoGadget#title`, Todo priority labels, Calendar weekdays/month captions, and feed `data-*` messages are locale-aware while user/external content stays unchanged; final gate green: lint, `bin/rails test` 181/1043, `dad:test` 9/28; code review clean after fix `309965e`
 - Phase 18 completed auth/2FA localization verification: `devise.sessions.invalid` exists in ja/en, failed sign-in alerts render via shared `.flash-alert`, auth/OTP/setup tests cover localized paths, VERI18N-03 audit approved with only native labels and `holiday_jp` as intentional exceptions; final gate green: lint, `bin/rails test` 187/1069, `dad:test` 9/28; code review clean after duplicate 2FA alert fixes
-- Phase 18.1 planned one gap-closure plan: add saved-locale OTP regression tests, extend `Localization#saved_locale` to consider `session[:otp_user_id]` without signing in early, run focused tests plus the full lint/Minitest/dad:test gate, and create `18.1-01-SUMMARY.md` for the milestone audit rerun.
+- Phase 18.1 closed the v1.4 audit gap: `Localization#saved_locale` now considers the pending 2FA user from `session[:otp_user_id]` when no Devise user is signed in, without signing in early and while preserving the `Preference::SUPPORTED_LOCALES` whitelist. Regression tests cover saved English OTP and stale unsupported locale fallback; full gate green: lint, `bin/rails test` 189/1085, `dad:test` 9/28; code review clean.
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 

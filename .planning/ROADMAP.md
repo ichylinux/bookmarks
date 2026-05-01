@@ -5,7 +5,7 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
-- 🚧 **v1.4 — Internationalization** — Phases 14–18.1 (gap closure after milestone audit)
+- ✅ **v1.4 — Internationalization** — Phases 14–18.1 (gap closure complete; audit rerun pending)
 
 ## Phases
 
@@ -20,7 +20,7 @@
 | 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete    | 2026-05-01 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Complete (5/5 plans, 2026-05-01) | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Complete (3/3 plans, 2026-05-02) | Phase 17 |
-| 18.1. 2FA Pending Locale Resolution | v1.4 | I18N-02, AUTHI18N-02, VERI18N-02 | Not started — gap closure | Phase 18 + v1.4 audit |
+| 18.1. 2FA Pending Locale Resolution | v1.4 | I18N-02, AUTHI18N-02, VERI18N-02 | Complete (1/1 plan, 2026-05-02) | Phase 18 + v1.4 audit |
 
 #### Phase 14: Locale Infrastructure
 
@@ -175,7 +175,7 @@ Plans:
 Plans:
 
 **Wave 1**
-- [ ] 18.1-01-PLAN.md — Pending 2FA saved-locale resolution + OTP regression tests + full verification gate
+- [x] 18.1-01-PLAN.md — Pending 2FA saved-locale resolution + OTP regression tests + full verification gate (completed 2026-05-02)
 
 **Cross-cutting constraints:**
 - `Localization` must not sign the user in before OTP validation.
@@ -245,4 +245,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-02 — v1.4 milestone audit found one 2FA pending-locale gap; Phase 18.1 added for closure before archive.*
+*Last updated: 2026-05-02 — Phase 18.1 complete; pending OTP saved-locale gap closed and ready for milestone audit rerun.*
