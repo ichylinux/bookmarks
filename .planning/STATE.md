@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: executing
-stopped_at: Phase 15 完了 — Wave 1 (15-01 backend, 15-02 i18n) と Wave 2 (15-03 view + 8 tests) を sequential inline 実行。途中 Plan 15-02 の lazy lookup namespace ミスを Plan 15-03 で補修。最終 suite 135/694/0
+status: ready_to_plan
+stopped_at: Phase 16 complete — core shell/shared messages translated and verified; ready to discuss/plan Phase 17
 last_updated: "2026-05-01T07:20:44.536Z"
 last_activity: 2026-05-01
 progress:
@@ -18,13 +18,13 @@ progress:
 
 ## Current Position
 
-Phase: 17
+Phase: 17 (Feature Surface Translation) — ready to discuss/plan
 Plan: Not started
 Plans: 0/? (planning not yet started)
-Last completed: Phase 15 — Language Preference (3/3 plans, 2026-05-01)
-Status: Executing Phase 16
+Last completed: Phase 16 — Core Shell & Shared Messages Translation (3/3 plans, 2026-05-01)
+Status: Ready to discuss/plan Phase 17
 Last activity: 2026-05-01
-Resume: `/gsd-plan-phase 16` — research + plan Phase 16
+Resume: `/gsd-discuss-phase 17` — gather context for Phase 17 Feature Surface Translation
 
 ## Project Reference
 
@@ -40,7 +40,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 |-------|------|--------|
 | 14 | Locale Infrastructure | Complete (2026-05-01) |
 | 15 | Language Preference | Complete (2026-05-01) — 3/3 plans, 8 new integration tests |
-| 16 | Core Shell & Shared Messages Translation | Not started |
+| 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
 | 17 | Feature Surface Translation | Not started |
 | 18 | Auth, 2FA & Translation Verification | Not started |
 
@@ -61,6 +61,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - `config/locales/ja.yml` / `config/locales/en.yml` — `activerecord.attributes.preference.{font_size, locale}` + `preferences.index.{theme_options, font_size_options, submit}` (Phase 15)
 - `test/controllers/preferences_controller_test.rb` — 14 tests (6 既存 + 8 新規) で PREF-01..03 を網羅 (Phase 15)
 - `test/controllers/application_controller_test.rb` covers all 4 VERI18N-01 paths via integration tests asserting `<html lang>` attribute (Phase 14)
+- `nav.*` + `flash.errors.generic` locale catalog in `config/locales/ja.yml` / `config/locales/en.yml` with ja/en key parity test coverage (Phase 16)
+- `app/views/layouts/application.html.erb` drawer nav, `app/views/common/_menu.html.erb` simple-theme menu, and `NotesController#create` generic fallback now consume shared `t(...)` keys (Phase 16)
+- `test/controllers/application_controller_test.rb` covers ja/en chrome rendering; `test/controllers/notes_controller_test.rb` covers `flash.errors.generic`; final gate green: lint, `bin/rails test` 142/716, `dad:test` 9/28 (Phase 16)
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 
@@ -84,6 +87,6 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-05-01T03:55:00Z
-Stopped at: Phase 15 完了 — Wave 1 (15-01 backend, 15-02 i18n) と Wave 2 (15-03 view + 8 tests) を sequential inline 実行。途中 Plan 15-02 の lazy lookup namespace ミスを Plan 15-03 で補修。最終 suite 135/694/0
-Resume: `/gsd-discuss-phase 16` — Phase 16 (Core Shell & Shared Messages Translation) に進む
+Last session: 2026-05-01T07:20:44Z
+Stopped at: Phase 16 complete — 3/3 plans executed, verification passed, code review clean, final gate green
+Resume: `/gsd-discuss-phase 17` — Phase 17 (Feature Surface Translation) に進む
