@@ -5,7 +5,7 @@ milestone_name: — Internationalization
 status: phase-complete
 stopped_at: Phase 15 complete — 3 plans, 8 new tests, full suite 135/0; Phase 16 ready to plan
 last_updated: "2026-05-01T03:55:00.000Z"
-last_activity: 2026-05-01 — Phase 15 execution complete (3/3 plans, full Minitest suite green: 135 runs / 694 assertions / 0 failures)
+last_activity: 2026-05-01 — Quick 260501-jmn — fix cucumber regression from Phase 15-01 redirect; add CLAUDE.md phase-verification policy
 progress:
   total_phases: 5
   completed_phases: 2
@@ -79,6 +79,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q03 | simple theme — Note tab visibility toggle via use_note preference | 2026-05-01 | f7b2267, bf98fd1, d8fb406 |
 | 260501-q04 | remove table 'tweets' since there is no reference to it | 2026-05-01 | 3f215d4 |
 | 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1, e8608a0 |
+| 260501-jmn | Fix cucumber regression from Phase 15-01 redirect (`features/step_definitions/todos.rb:7`); add CLAUDE.md phase-verification policy requiring `bundle exec rake dad:test` green | 2026-05-01 | d5311a6, 03c892c |
 
 ## Session Continuity
 
