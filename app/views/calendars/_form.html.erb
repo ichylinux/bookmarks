@@ -12,5 +12,5 @@
       <td><%= f.text_field :title %></td>
     </tr>
   </table>
-  <%= f.submit %>
+  <%= f.submit @calendar.new_record? ? t('.submit_create') : t('.submit_update') %>
 <% end %>

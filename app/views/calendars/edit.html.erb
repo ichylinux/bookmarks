@@ -1,5 +1,7 @@
 <div class="actions">
-  <%= link_to '参照', calendar_path(@calendar) %>
+  <%= link_to t('calendars.actions.view'), calendar_path(@calendar) %>
 </div>
+
+<h1><%= t('.title') %></h1>
 
 <%= render 'form' %>
