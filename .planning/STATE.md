@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: phase-context-gathered
-stopped_at: Phase 16 context gathered — flash & alert pattern locked (top-level flash.* namespace, name: interpolation, flash.errors.generic fallback, rails-i18n activation for ja+en); ready for /gsd-plan-phase 16
-last_updated: "2026-05-01T04:30:00.000Z"
-last_activity: 2026-05-01 — Phase 16 discuss-phase: 1 gray area (Flash & alert translation pattern) discussed end-to-end, 4 sub-decisions locked; 3 other areas deferred to researcher/planner
+status: executing
+stopped_at: Phase 15 完了 — Wave 1 (15-01 backend, 15-02 i18n) と Wave 2 (15-03 view + 8 tests) を sequential inline 実行。途中 Plan 15-02 の lazy lookup namespace ミスを Plan 15-03 で補修。最終 suite 135/694/0
+last_updated: "2026-05-01T06:53:11.998Z"
+last_activity: 2026-05-01 -- Phase 16 planning complete
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 6
+  total_plans: 9
   completed_plans: 6
-  percent: 100
+  percent: 67
 ---
 
 # State
@@ -21,8 +21,8 @@ progress:
 Phase: 16 (Core Shell & Shared Messages Translation) — context gathered (2026-05-01)
 Plans: 0/? (planning not yet started)
 Last completed: Phase 15 — Language Preference (3/3 plans, 2026-05-01)
-Status: Phase 16 CONTEXT.md written — Flash & alert pattern decided (top-level `flash.*` namespace, `name:` interpolation, `flash.errors.generic` fallback, `rails-i18n` activation for ja+en). Other gray areas (key namespace for non-flash shell strings, P16/P17 boundary on shared form text, test coverage approach, page title strategy, hardcoded literal sweep) deferred to researcher/planner.
-Last activity: 2026-05-01 — Phase 16 discuss-phase: CONTEXT.md + DISCUSSION-LOG.md written
+Status: Ready to execute
+Last activity: 2026-05-01 -- Phase 16 planning complete
 Resume: `/gsd-plan-phase 16` — research + plan Phase 16
 
 ## Project Reference

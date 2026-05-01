@@ -89,6 +89,19 @@ Plans:
 3. Validation-facing labels and common form text render in the active locale.
 4. Both `config/locales/ja.yml` and `config/locales/en.yml` contain matching keys for extracted shared shell and message strings.
 
+**Plans:** 3 plans
+
+Plans:
+
+**Wave 1**
+- [ ] 16-01-PLAN.md — yml catalog (nav.* + flash.errors.generic) + parity test + rails-i18n smoke test
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 16-02-PLAN.md — Layout + simple-theme menu substitutions + notes_controller flash substitution
+
+**Wave 3** *(blocked on Wave 2)*
+- [ ] 16-03-PLAN.md — Integration tests (TRN-01 chrome ja+en, TRN-04 flash.errors.generic ja+en) + full CLAUDE.md verification gate
+
 #### Phase 17: Feature Surface Translation
 
 **Goal:** Users can use the app's core bookmark, note, todo, feed, calendar, and JavaScript-visible UI in Japanese or English.
