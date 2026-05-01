@@ -3,14 +3,11 @@ module Login
   def sign_in(user)
     visit '/users/sign_in'
 
-    # When already authenticated, Devise redirects from /users/sign_in.
-    if has_selector?('input[name="user[email]"]')
-      fill_in 'user[email]', with: user.email
-      fill_in 'user[password]', with: 'testtest'
-      find('input[type="submit"], button[type="submit"]', match: :first).click
-    end
+    fill_in 'user[email]', with: user.email
+    fill_in 'user[password]', with: 'testtest'
+    find('input[type="submit"], button[type="submit"]', match: :first).click
 
-    if user.two_factor_enabled? && has_selector?('input[name="user[otp_attempt]"]')
+    if user.two_factor_enabled?
       totp = ROTP::TOTP.new(user.otp_secret)
       fill_in 'user[otp_attempt]', with: totp.now
       find('input[type="submit"], button[type="submit"]', match: :first).click

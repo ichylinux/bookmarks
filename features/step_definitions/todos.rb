@@ -1,20 +1,41 @@
 TODO_ACTIONS_SELECTOR = '#todo .todo_actions'.freeze
 NEW_TODO_LINK_SELECTOR = '#todo .todo_actions a[href="/todos/new"]'.freeze
+PREFERENCE_USE_TODO_SELECTOR = '#user_preference_attributes_use_todo'.freeze
+PREFERENCE_DEFAULT_PRIORITY_SELECTOR = '#user_preference_attributes_default_priority'.freeze
+
+def open_preferences_and_find_todo_checkbox
+  retries = 0
+  begin
+    sign_in user
+    visit '/preferences'
+
+    checkbox = first(PREFERENCE_USE_TODO_SELECTOR, visible: :all, wait: 3)
+    return checkbox if checkbox
+
+    raise Capybara::ElementNotFound, "Unable to find #{PREFERENCE_USE_TODO_SELECTOR}"
+  rescue Capybara::ElementNotFound
+    retries += 1
+    raise if retries > 1
+
+    Capybara.reset_sessions!
+    @_current_user = nil
+    retry
+  end
+end
 
 もし /^設定画面で タスクウィジェットを表示する にチェックを入れます。$/ do
-  sign_in user
-  preference = user.preference || user.build_preference
-  preference.use_todo = true
-  preference.save!
+  checkbox = open_preferences_and_find_todo_checkbox
+  checkbox.set(true)
+  find('input[type="submit"], button[type="submit"]', match: :first).click
   capture
 end
 
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do
-  sign_in user
-  preference = user.preference || user.build_preference
-  preference.use_todo = true
-  preference.default_priority = Todo::PRIORITY_HIGH
-  preference.save!
+  checkbox = open_preferences_and_find_todo_checkbox
+  checkbox.set(true)
+  priority_select = find(PREFERENCE_DEFAULT_PRIORITY_SELECTOR)
+  priority_select.find("option[value='#{Todo::PRIORITY_HIGH}']").select_option
+  find('input[type="submit"], button[type="submit"]', match: :first).click
   capture
 end
 
