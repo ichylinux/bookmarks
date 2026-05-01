@@ -15,7 +15,7 @@
 
 | Phase | Milestone | Requirements | Status | Depends on |
 |-------|-----------|--------------|--------|------------|
-| 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Not started | v1.3 complete |
+| 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Planned (3 plans) | v1.3 complete |
 | 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Not started | Phase 14 |
 | 16. Core Shell & Shared Messages Translation | v1.4 | TRN-01, TRN-04 | Not started | Phase 15 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
@@ -30,9 +30,19 @@
 **Plans:** 3 plans
 
 Plans:
+
+**Wave 1**
 - [ ] 14-01-PLAN.md — Data layer: migration + Preference model constants/validation + I18n available_locales config
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 14-02-PLAN.md — Localization concern + ApplicationController wiring + html lang layout attribute
+
+**Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 14-03-PLAN.md — Integration tests: 4 VERI18N-01 paths in ApplicationControllerTest
+
+**Cross-cutting constraints:**
+- `Preference::SUPPORTED_LOCALES` (defined in 14-01) is the single source of truth referenced by both the concern (14-02) and tests (14-03)
+- Whitelist guard `SUPPORTED_LOCALES.include?(candidate.to_s)` must run before every `I18n.with_locale` call (14-01 defines, 14-02 enforces)
 
 **Success criteria:**
 1. A signed-in user with a saved `ja` or `en` account locale sees pages rendered in that saved locale.

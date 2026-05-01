@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Internationalization
-status: planning
-stopped_at: "Phase 14 context gathered"
-last_updated: "2026-04-30T17:55:00Z"
-last_activity: 2026-05-01 - Phase 14 (Locale Infrastructure) discussion complete; CONTEXT.md ready for planning
+status: ready-to-execute
+stopped_at: "Phase 14 planned"
+last_updated: "2026-05-01T00:00:00Z"
+last_activity: 2026-05-01 - Phase 14 (Locale Infrastructure) planned; 3 plans ready to execute
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
+  total_plans: 3
   completed_plans: 0
   percent: 0
 ---
@@ -19,9 +19,9 @@ progress:
 ## Current Position
 
 Phase: 14 — Locale Infrastructure
-Plan: —
-Status: Ready for planning (CONTEXT.md captured)
-Last activity: 2026-05-01 — Phase 14 議論完了 (D-01〜D-04 確定、領域 2〜4 は Claude 裁量で記録)
+Plan: — (3 plans ready)
+Status: Ready to execute (3 plans: 14-01 data layer, 14-02 concern+wiring, 14-03 tests)
+Last activity: 2026-05-01 — Phase 14 planning complete; 14-01/14-02/14-03 PLAN.md files created
 
 ## Project Reference
 
@@ -70,6 +70,6 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-04-30T17:55:00Z
-Stopped at: Phase 14 context gathered (commit 39cd48f)
-Resume: `/gsd-plan-phase 14` to draft the Locale Infrastructure implementation plan
+Last session: 2026-05-01T00:00:00Z
+Stopped at: Phase 14 planning complete (3 plans)
+Resume: `/gsd-execute-phase 14` to execute the Locale Infrastructure plans
