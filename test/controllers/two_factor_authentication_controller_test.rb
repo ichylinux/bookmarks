@@ -71,4 +71,32 @@ class TwoFactorAuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'en'
     assert_select 'label', text: I18n.t('two_factor.code_label', locale: :en)
   end
+
+  # I18N-02 + AUTHI18N-02: pending OTP user keeps saved English locale.
+  def test_保存済みlocaleがenのユーザはOTPページを英語で表示する
+    user.preference.update!(locale: 'en')
+    user.enable_two_factor!
+
+    post user_session_path, params: { user: { email: user.email, password: 'testtest' } }
+    assert_redirected_to users_two_factor_authentication_path
+
+    get users_two_factor_authentication_path
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'label', text: I18n.t('two_factor.code_label', locale: :en)
+  end
+
+  # I18N-03: stale unsupported saved locale still falls back safely.
+  def test_保存済みlocaleが未対応値のOTPページはデフォルト日本語にフォールバックする
+    user.preference.update_column(:locale, 'fr')
+    user.enable_two_factor!
+
+    post user_session_path, params: { user: { email: user.email, password: 'testtest' } }
+    assert_redirected_to users_two_factor_authentication_path
+
+    get users_two_factor_authentication_path
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select 'label', text: I18n.t('two_factor.code_label', locale: :ja)
+  end
 end
