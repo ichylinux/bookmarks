@@ -20,10 +20,10 @@
 
 ### Translation Coverage
 
-- [ ] **TRN-01**: User can navigate the app shell in Japanese or English, including layout, menu, drawer navigation, shared buttons, breadcrumbs, ARIA labels, titles, and placeholders.
+- [x] **TRN-01**: User can navigate the app shell in Japanese or English, including layout, menu, drawer navigation, shared buttons, breadcrumbs, ARIA labels, titles, and placeholders.
 - [ ] **TRN-02**: User can use bookmarks screens in Japanese or English without hardcoded UI strings.
 - [ ] **TRN-03**: User can use notes, todos, feeds, and calendar gadget surfaces in Japanese or English without hardcoded UI strings.
-- [ ] **TRN-04**: User sees flash messages, controller alerts, and validation-facing labels in the active locale.
+- [x] **TRN-04**: User sees flash messages, controller alerts, and validation-facing labels in the active locale.
 - [ ] **TRN-05**: User sees JavaScript-visible messages in the active locale without introducing a JavaScript i18n build pipeline.
 
 ### Authentication and Account Flows
@@ -72,10 +72,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PREF-01 | Phase 15 | Complete (2026-05-01) |
 | PREF-02 | Phase 15 | Complete (2026-05-01) |
 | PREF-03 | Phase 15 | Complete (2026-05-01) |
-| TRN-01 | Phase 16 | Pending |
+| TRN-01 | Phase 16 | Complete |
 | TRN-02 | Phase 17 | Pending |
 | TRN-03 | Phase 17 | Pending |
-| TRN-04 | Phase 16 | Pending |
+| TRN-04 | Phase 16 | Complete |
 | TRN-05 | Phase 17 | Pending |
 | AUTHI18N-01 | Phase 18 | Pending |
 | AUTHI18N-02 | Phase 18 | Pending |

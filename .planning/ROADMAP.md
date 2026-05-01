@@ -17,7 +17,7 @@
 |-------|-----------|--------------|--------|------------|
 | 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Complete (3/3 plans, 2026-05-01) | v1.3 complete |
 | 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Complete (3/3 plans, 2026-05-01) | Phase 14 |
-| 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete   | 2026-05-01 |
+| 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete    | 2026-05-01 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Not started | Phase 17 |
 
@@ -89,7 +89,7 @@ Plans:
 3. Validation-facing labels and common form text render in the active locale.
 4. Both `config/locales/ja.yml` and `config/locales/en.yml` contain matching keys for extracted shared shell and message strings.
 
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 
