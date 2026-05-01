@@ -2,7 +2,7 @@ class BookmarkGadget
   include Gadget
   
   def title
-    'Bookmark'
+    I18n.t('gadgets.bookmark.title')
   end
   
   def entries

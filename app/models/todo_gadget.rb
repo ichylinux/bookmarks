@@ -9,7 +9,7 @@ class TodoGadget
   end
 
   def title
-    'Todo'
+    I18n.t('gadgets.todo.title')
   end
   
   def entries
