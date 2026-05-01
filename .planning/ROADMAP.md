@@ -170,7 +170,16 @@ Plans:
 
 **Gap Closure:** Closes `otp-saved-locale-gap` from `.planning/v1.4-MILESTONE-AUDIT.md`.
 
-**Plans:** To be planned
+**Plans:** 1 plan
+
+Plans:
+
+**Wave 1**
+- [ ] 18.1-01-PLAN.md — Pending 2FA saved-locale resolution + OTP regression tests + full verification gate
+
+**Cross-cutting constraints:**
+- `Localization` must not sign the user in before OTP validation.
+- Every locale candidate, including pending OTP user preference, must still pass `Preference::SUPPORTED_LOCALES.include?(candidate.to_s)` before `I18n.with_locale`.
 
 **Success criteria:**
 1. Locale resolution considers the pending OTP user identified by `session[:otp_user_id]` when no user is signed in.
