@@ -25,7 +25,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
-**Current milestone status:** v1.4 — Internationalization gap closure is complete. Phase 18.1 fixed saved-locale resolution on the pending 2FA OTP challenge page; milestone archive is pending audit rerun.
+**Current milestone status:** v1.4 — Internationalization gap closure in progress. Phase 18.1 fixed saved-locale resolution on the pending 2FA OTP challenge page; Phase 18.2 is queued to fix the remaining preferences locale-change save flash gap before archive.
 
 ## Requirements
 
@@ -42,11 +42,11 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
 - ✓ Persisted per-user `locale` (ja/en) on `preferences`, three-stage resolution (saved → Accept-Language → :ja default), `<html lang>` rendered from resolved locale, including pending 2FA OTP challenge requests — **v1.4 Phases 14 + 18.1**
-- ✓ Preferences language switcher persists `locale` and translates the preferences page labels/options — **v1.4 Phase 15**
-- ✓ Core shell navigation, drawer/menu chrome, and shared generic flash fallback render through ja/en locale keys — **v1.4 Phase 16**
+- ◐ Preferences language switcher persists `locale` and translates the preferences page labels/options; post-change save flash must still be fixed for the newly active locale — **v1.4 Phases 15 + 18.2**
+- ◐ Core shell navigation, drawer/menu chrome, and shared generic flash fallback render through ja/en locale keys; preferences save flash has one locale-change integration gap — **v1.4 Phases 16 + 18.2**
 - ✓ Core feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages render through ja/en locale keys while user/external content remains unchanged — **v1.4 Phase 17**
 - ✓ Auth and 2FA surfaces render in Japanese and English; failed sign-in and invalid OTP alerts use shared localized flash rendering; pending OTP challenge honors saved locale — **v1.4 Phases 18 + 18.1**
-- ✓ Translation verification is complete: representative ja/en paths are covered, locale key parity is enforced, remaining Japanese literals are documented intentional exceptions, and saved-locale OTP regression coverage exists.
+- ◐ Translation verification is nearly complete: representative ja/en paths are covered, locale key parity is enforced, remaining Japanese literals are documented intentional exceptions, and saved-locale OTP regression coverage exists. Phase 18.2 adds the missing preferences locale-change flash regression coverage.
 
 ### Active (v1.4)
 
@@ -56,8 +56,9 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - [x] Language switcher (ja / en) on `/preferences` page — **v1.4 Phase 15**
 - [x] Navigation, layout labels, and core feature UIs (bookmarks, notes, todos, feeds, calendars) translated — **v1.4 Phases 16–17**
 - [x] JavaScript-visible feed messages supplied via server-rendered translated `data-*` attributes, without a JS i18n build pipeline — **v1.4 Phase 17**
-- [x] All flash messages, validation errors, and Devise pages translated in both locales — **v1.4 Phases 16–18**
+- [ ] All flash messages, validation errors, and Devise pages translated in both locales — **v1.4 Phases 16–18.2** *(pending preferences locale-change save flash fix)*
 - [x] Pending 2FA OTP challenge uses saved account locale before the user is fully signed in — **v1.4 Phase 18.1**
+- [ ] Preferences save notice uses the newly active locale immediately after a language change — **v1.4 Phase 18.2**
 
 ### Out of Scope (revisit when planning)
 
@@ -76,7 +77,7 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/milestones/v1.1-ROADMAP.md`
 - **Shipped v1.2 (2026-04-29):** modern theme with hamburger drawer nav and full-page CSS polish (Phases 5–9). Details: `.planning/milestones/v1.2-ROADMAP.md`
 - **Shipped v1.3 (2026-04-30):** quick note gadget — data layer, controller, tab UI, note gadget partial, Cucumber E2E, drawer-gating helper (Phases 10–13). Details: `.planning/milestones/v1.3-ROADMAP.md`
-- **v1.4 gap closure complete (2026-05-02):** Locale resolution/preferences, shell/shared messages, core feature surfaces, auth/2FA, Devise failure flashes, representative ja/en verification paths, and locale key parity are implemented. Phase 18.1 closed the pending OTP saved-locale gap by resolving `session[:otp_user_id]` through `Localization` without signing in early. Feed JavaScript-visible messages use server-rendered `data-*` attributes; user/external content remains untranslated by design.
+- **v1.4 gap closure in progress (2026-05-02):** Locale resolution/preferences, shell/shared messages, core feature surfaces, auth/2FA, Devise failure flashes, representative ja/en verification paths, and locale key parity are implemented. Phase 18.1 closed the pending OTP saved-locale gap by resolving `session[:otp_user_id]` through `Localization` without signing in early. A remaining Phase 18.2 gap covers preferences save flashes that can be translated before a locale-changing redirect. Feed JavaScript-visible messages use server-rendered `data-*` attributes; user/external content remains untranslated by design.
 
 ## Constraints
 

@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: ready_for_milestone_audit
-stopped_at: Phase 18.1 complete — pending OTP saved-locale gap closed
-last_updated: "2026-05-02T01:20:00.000+09:00"
+status: ready_to_plan
+stopped_at: Phase 18.2 gap closure created
+last_updated: "2026-05-02T01:31:00.000+09:00"
 last_activity: 2026-05-02
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 18
+  total_plans: 19
   completed_plans: 18
-  percent: 100
+  percent: 95
 ---
 
 # State
 
 ## Current Position
 
-Phase: 18.1 (2FA Pending Locale Resolution) — complete
-Plan: Complete
-Plans: 1/1 complete
+Phase: 18.2 (Preferences Locale Change Flash) — ready to plan
+Plan: Not planned
+Plans: 0/1 planned
 Last completed: Phase 18.1 — 2FA Pending Locale Resolution (1/1 plan, 2026-05-02)
-Status: v1.4 gap closure complete; re-run milestone audit before archive
-Last activity: 2026-05-02 - Completed Phase 18.1 pending OTP saved-locale gap closure (1/1 plan, full gate green, code review clean)
-Resume: `/gsd-audit-milestone` — verify v1.4 Internationalization can be archived
+Status: Phase 18.2 created to close preferences locale-change flash gap
+Last activity: 2026-05-02 - Created Phase 18.2 gap closure for preferences save flash old-locale issue
+Resume: `/gsd-plan-phase 18.2` — plan preferences locale-change flash closure
 
 ## Project Reference
 
@@ -44,6 +44,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
 | 18 | Auth, 2FA & Translation Verification | Complete (2026-05-02) — 3/3 plans, full lint/Minitest/dad:test gate green |
 | 18.1 | 2FA Pending Locale Resolution | Complete (2026-05-02) — 1/1 plan, full lint/Minitest/dad:test gate green |
+| 18.2 | Preferences Locale Change Flash | Ready to plan — closes preferences save flash old-locale audit gap |
 
 ## Accumulated Context
 
@@ -69,6 +70,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - Phase 17 translated feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages; `BookmarkGadget#title`, `TodoGadget#title`, Todo priority labels, Calendar weekdays/month captions, and feed `data-*` messages are locale-aware while user/external content stays unchanged; final gate green: lint, `bin/rails test` 181/1043, `dad:test` 9/28; code review clean after fix `309965e`
 - Phase 18 completed auth/2FA localization verification: `devise.sessions.invalid` exists in ja/en, failed sign-in alerts render via shared `.flash-alert`, auth/OTP/setup tests cover localized paths, VERI18N-03 audit approved with only native labels and `holiday_jp` as intentional exceptions; final gate green: lint, `bin/rails test` 187/1069, `dad:test` 9/28; code review clean after duplicate 2FA alert fixes
 - Phase 18.1 closed the v1.4 audit gap: `Localization#saved_locale` now considers the pending 2FA user from `session[:otp_user_id]` when no Devise user is signed in, without signing in early and while preserving the `Preference::SUPPORTED_LOCALES` whitelist. Regression tests cover saved English OTP and stale unsupported locale fallback; full gate green: lint, `bin/rails test` 189/1085, `dad:test` 9/28; code review clean.
+- Phase 18.2 is queued to close the remaining v1.4 audit gap: `PreferencesController#create/update` materializes `flash[:notice] = t('preferences.saved')` before redirect while the request still uses the previous locale, so a language-change redirect can render page chrome in the new locale with one save notice from the old locale.
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 

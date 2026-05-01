@@ -16,14 +16,14 @@
 
 - [x] **PREF-01**: User can choose Japanese or English from the existing `/preferences` page. *(Phase 15, 2026-05-01)*
 - [x] **PREF-02**: User's language choice persists across sign-out, sign-in, browser refresh, and future sessions. *(Phase 15, 2026-05-01)*
-- [x] **PREF-03**: User sees the preferences page itself translated after changing language. *(Phase 15, 2026-05-01)*
+- [ ] **PREF-03**: User sees the preferences page itself translated after changing language. *(Phase 15 validated page chrome; Phase 18.2 closes locale-change save flash gap)*
 
 ### Translation Coverage
 
 - [x] **TRN-01**: User can navigate the app shell in Japanese or English, including layout, menu, drawer navigation, shared buttons, breadcrumbs, ARIA labels, titles, and placeholders.
 - [x] **TRN-02**: User can use bookmarks screens in Japanese or English without hardcoded UI strings. *(Phase 17, 2026-05-01)*
 - [x] **TRN-03**: User can use notes, todos, feeds, and calendar gadget surfaces in Japanese or English without hardcoded UI strings. *(Phase 17, 2026-05-01)*
-- [x] **TRN-04**: User sees flash messages, controller alerts, and validation-facing labels in the active locale.
+- [ ] **TRN-04**: User sees flash messages, controller alerts, and validation-facing labels in the active locale. *(Phase 18.2 closes preferences save flash old-locale gap)*
 - [x] **TRN-05**: User sees JavaScript-visible messages in the active locale without introducing a JavaScript i18n build pipeline. *(Phase 17, 2026-05-01)*
 
 ### Authentication and Account Flows
@@ -35,7 +35,7 @@
 ### Verification and Safety
 
 - [x] **VERI18N-01**: User-facing tests cover saved user locale, Accept-Language fallback, invalid locale fallback/rejection, and default Japanese behavior. *(Phase 14, 2026-05-01)*
-- [x] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces. *(Phase 18 validated representative paths; Phase 18.1 added saved-locale OTP regression coverage, 2026-05-02)*
+- [ ] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces. *(Phase 18 validated representative paths; Phase 18.1 added saved-locale OTP regression coverage; Phase 18.2 adds locale-change flash regression coverage)*
 - [x] **VERI18N-03**: User-visible Japanese literals remaining in views, helpers, controllers, and JavaScript are either translated or explicitly documented as intentional user content. *(Phase 18, 2026-05-02)*
 - [x] **VERI18N-04**: User-visible translation keys are present in both `ja.yml` and `en.yml` for every extracted string. *(Phase 18, 2026-05-02)*
 
@@ -71,17 +71,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | I18N-04 | Phase 14 | Complete (2026-05-01) |
 | PREF-01 | Phase 15 | Complete (2026-05-01) |
 | PREF-02 | Phase 15 | Complete (2026-05-01) |
-| PREF-03 | Phase 15 | Complete (2026-05-01) |
+| PREF-03 | Phase 15 + Phase 18.2 | Pending gap closure |
 | TRN-01 | Phase 16 | Complete |
 | TRN-02 | Phase 17 | Complete (2026-05-01) |
 | TRN-03 | Phase 17 | Complete (2026-05-01) |
-| TRN-04 | Phase 16 | Complete |
+| TRN-04 | Phase 16 + Phase 18.2 | Pending gap closure |
 | TRN-05 | Phase 17 | Complete (2026-05-01) |
 | AUTHI18N-01 | Phase 18 | Complete (2026-05-02) |
 | AUTHI18N-02 | Phase 18 + Phase 18.1 | Complete (2026-05-02) |
 | AUTHI18N-03 | Phase 18 | Complete (2026-05-02) |
 | VERI18N-01 | Phase 14 | Complete (2026-05-01) |
-| VERI18N-02 | Phase 18 + Phase 18.1 | Complete (2026-05-02) |
+| VERI18N-02 | Phase 18 + Phase 18.1 + Phase 18.2 | Pending gap closure |
 | VERI18N-03 | Phase 18 | Complete (2026-05-02) |
 | VERI18N-04 | Phase 18 | Complete (2026-05-02) |
 
@@ -89,9 +89,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1.4 requirements: 19 total
 - Mapped to phases: 19
 - Unmapped: 0
-- Complete: 19
-- Pending gap closure: 0
+- Complete: 16
+- Pending gap closure: 3
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-02 — Phase 18.1 closed the pending OTP saved-locale gap; v1.4 requirements are complete pending milestone audit rerun.*
+*Last updated: 2026-05-02 — v1.4 audit found preferences locale-change flash gap; PREF-03, TRN-04, and VERI18N-02 are pending Phase 18.2 gap closure.*

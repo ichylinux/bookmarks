@@ -5,7 +5,7 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
-- ✅ **v1.4 — Internationalization** — Phases 14–18.1 (gap closure complete; audit rerun pending)
+- 🚧 **v1.4 — Internationalization** — Phases 14–18.2 (audit gap closure: preferences locale-change flash)
 
 ## Phases
 
@@ -21,6 +21,7 @@
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Complete (5/5 plans, 2026-05-01) | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Complete (3/3 plans, 2026-05-02) | Phase 17 |
 | 18.1. 2FA Pending Locale Resolution | v1.4 | I18N-02, AUTHI18N-02, VERI18N-02 | Complete (1/1 plan, 2026-05-02) | Phase 18 + v1.4 audit |
+| 18.2. Preferences Locale Change Flash | v1.4 | PREF-03, TRN-04, VERI18N-02 | Not started — gap closure | Phase 18.1 + v1.4 audit |
 
 #### Phase 14: Locale Infrastructure
 
@@ -187,6 +188,23 @@ Plans:
 3. Existing signed-in saved-locale, Accept-Language, default `:ja`, and invalid-locale fallback behavior remains unchanged.
 4. Targeted auth/localization tests and the full lint/Minitest/dad:test gate pass.
 
+#### Phase 18.2: Preferences Locale Change Flash
+
+**Goal:** When a user changes their language preference, the redirected preferences page and its save notice both render in the newly active locale.
+
+**Requirements:** PREF-03, TRN-04, VERI18N-02
+
+**Gap Closure:** Closes `preferences-locale-change-flash-old-locale` from `.planning/v1.4-MILESTONE-AUDIT.md`.
+
+**Plans:** To be planned
+
+**Success criteria:**
+1. Updating `preference.locale` from `ja` to `en` redirects to `/preferences` with `<html lang="en">`.
+2. The post-redirect `.flash-notice` text is `I18n.t('preferences.saved', locale: :en)`.
+3. Updating `preference.locale` from `en` to `ja` redirects to `/preferences` with `<html lang="ja">`.
+4. The post-redirect `.flash-notice` text is `I18n.t('preferences.saved', locale: :ja)`.
+5. Existing preferences save behavior, locale persistence, and full lint/Minitest/dad:test gate remain green.
+
 <details>
 <summary>✅ v1.3 — Quick Note Gadget (Phases 10–13) — SHIPPED 2026-04-30</summary>
 
@@ -245,4 +263,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-02 — Phase 18.1 complete; pending OTP saved-locale gap closed and ready for milestone audit rerun.*
+*Last updated: 2026-05-02 — Phase 18.2 added to close preferences locale-change flash gap before archive.*
