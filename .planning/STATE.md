@@ -3,28 +3,28 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
 status: ready_to_plan
-stopped_at: Phase 16 complete — core shell/shared messages translated and verified; ready to discuss/plan Phase 17
-last_updated: "2026-05-01T07:20:44.536Z"
+stopped_at: Phase 17 complete — feature surfaces translated and verified; ready to discuss/plan Phase 18
+last_updated: "2026-05-01T11:45:00.000Z"
 last_activity: 2026-05-01
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  completed_phases: 4
+  total_plans: 14
+  completed_plans: 14
+  percent: 80
 ---
 
 # State
 
 ## Current Position
 
-Phase: 17 (Feature Surface Translation) — ready to discuss/plan
+Phase: 18 (Auth, 2FA & Translation Verification) — ready to discuss/plan
 Plan: Not started
 Plans: 0/? (planning not yet started)
-Last completed: Phase 16 — Core Shell & Shared Messages Translation (3/3 plans, 2026-05-01)
-Status: Ready to discuss/plan Phase 17
-Last activity: 2026-05-01 - Completed quick task 260501-qlk: fix gadget title link visited color
-Resume: `/gsd-discuss-phase 17` — gather context for Phase 17 Feature Surface Translation
+Last completed: Phase 17 — Feature Surface Translation (5/5 plans, 2026-05-01)
+Status: Ready to discuss/plan Phase 18
+Last activity: 2026-05-01 - Completed Phase 17 Feature Surface Translation (5/5 plans, code review clean, full gate green)
+Resume: `/gsd-discuss-phase 18` — gather context for Phase 18 Auth, 2FA & Translation Verification
 
 ## Project Reference
 
@@ -41,7 +41,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 14 | Locale Infrastructure | Complete (2026-05-01) |
 | 15 | Language Preference | Complete (2026-05-01) — 3/3 plans, 8 new integration tests |
 | 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
-| 17 | Feature Surface Translation | Not started |
+| 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
 | 18 | Auth, 2FA & Translation Verification | Not started |
 
 ## Accumulated Context
@@ -64,6 +64,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 - `nav.*` + `flash.errors.generic` locale catalog in `config/locales/ja.yml` / `config/locales/en.yml` with ja/en key parity test coverage (Phase 16)
 - `app/views/layouts/application.html.erb` drawer nav, `app/views/common/_menu.html.erb` simple-theme menu, and `NotesController#create` generic fallback now consume shared `t(...)` keys (Phase 16)
 - `test/controllers/application_controller_test.rb` covers ja/en chrome rendering; `test/controllers/notes_controller_test.rb` covers `flash.errors.generic`; final gate green: lint, `bin/rails test` 142/716, `dad:test` 9/28 (Phase 16)
+- Phase 17 planning artifacts ready: `17-RESEARCH.md`, `17-PATTERNS.md`, approved `17-UI-SPEC.md`, approved `17-VALIDATION.md`, and five execution plans covering TRN-02/TRN-03/TRN-05
+- Phase 17 translated feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages; `BookmarkGadget#title`, `TodoGadget#title`, Todo priority labels, Calendar weekdays/month captions, and feed `data-*` messages are locale-aware while user/external content stays unchanged; final gate green: lint, `bin/rails test` 181/1043, `dad:test` 9/28; code review clean after fix `309965e`
 
 ### Critical Pitfalls (carry forward to Phase 16+)
 
@@ -90,6 +92,6 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-05-01T07:20:44Z
-Stopped at: Phase 16 complete — 3/3 plans executed, verification passed, code review clean, final gate green
-Resume: `/gsd-discuss-phase 17` — Phase 17 (Feature Surface Translation) に進む
+Last session: 2026-05-01T11:45:00Z
+Stopped at: Phase 17 complete — 5/5 plans executed, verification passed, code review clean, final gate green
+Resume: `/gsd-discuss-phase 18` — Phase 18 (Auth, 2FA & Translation Verification) に進む

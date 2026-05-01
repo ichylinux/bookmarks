@@ -96,14 +96,16 @@ Done in 0.97s.
 
 ```text
 bin/rails test
-PASS: 181 runs, 1041 assertions, 0 failures, 0 errors, 0 skips
+PASS: 181 runs, 1043 assertions, 0 failures, 0 errors, 0 skips
 ```
 
 ```text
 bundle exec rake dad:test
 PASS: 9 scenarios, 28 steps, 0 failed
-Randomized with seed 47729
+Randomized with seed 11772
 ```
+
+Post-review rerun after `309965e` (`fix(17-04): localize feed form wrapper navigation`) confirmed the same full gate remains green.
 
 ## Targeted Validation Result
 
@@ -140,7 +142,7 @@ None - plan executed exactly as written.
 
 ## Issues Encountered
 
-None.
+Code review found one feed wrapper translation gap after the initial full gate: `app/views/feeds/new.html.erb` and `app/views/feeds/edit.html.erb` still rendered `一覧へ` directly. Fixed in `309965e` by using `t('actions.back_to_list')` and adding feed controller assertions for English `Back to list` and Japanese `一覧に戻る`; targeted feed tests and the full gate passed afterward.
 
 ## User Setup Required
 
@@ -155,7 +157,7 @@ Phase 17 implementation and validation evidence are ready for orchestrator state
 - Summary file exists at `.planning/phases/17-feature-surface-translation/17-05-SUMMARY.md`.
 - Representative validation test commit exists in git history: `444ccf9`.
 - Targeted representative Minitest passed.
-- Full `CLAUDE.md` gate passed: `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test`.
+- Full `CLAUDE.md` gate passed after the post-review fix: `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test`.
 - No shared tracking files were modified by this plan.
 
 ---

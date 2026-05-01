@@ -18,7 +18,7 @@
 | 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Complete (3/3 plans, 2026-05-01) | v1.3 complete |
 | 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Complete (3/3 plans, 2026-05-01) | Phase 14 |
 | 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete    | 2026-05-01 |
-| 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
+| 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Complete (5/5 plans, 2026-05-01) | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Not started | Phase 17 |
 
 #### Phase 14: Locale Infrastructure
@@ -114,6 +114,29 @@ Plans:
 3. JavaScript-visible messages render in the active locale through server-rendered translated values such as `data-*` attributes, without adding `i18n-js` or a JavaScript i18n build pipeline.
 4. User-created content such as bookmark titles, note bodies, todos, and feed content remains unchanged and is not treated as translatable UI chrome.
 
+**Plans:** 5 plans
+
+Plans:
+
+**Wave 1**
+- [x] 17-01-PLAN.md — Locale catalog + translation primitives (ja/en key skeleton, fixed gadget titles, Todo priority helpers, Calendar weekday/month primitives)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 17-02-PLAN.md — Bookmark feature surface translation with bookmark/folder user content preserved
+- [x] 17-03-PLAN.md — Note and Todo feature surfaces, Todo priority display, and default priority preference select
+
+**Wave 3** *(blocked on Wave 1 completion)*
+- [x] 17-04-PLAN.md — Feed, Calendar, and JavaScript-visible strings via server-rendered translated values
+
+**Wave 4** *(blocked on Waves 2 and 3 completion)*
+- [x] 17-05-PLAN.md — Representative bilingual validation and full lint/Minitest/dad:test gate
+
+**Cross-cutting constraints:**
+- Fixed app UI labels translate; user-created/external content remains unchanged (`BookmarkGadget#title` and `TodoGadget#title` localize, Feed/Calendar record titles do not).
+- Todo priority labels localize at display time while stored numeric values remain unchanged.
+- Calendar month/year and weekday labels localize; `holiday_jp` holiday names remain intentionally Japanese external data.
+- JavaScript-visible strings use server-rendered translated values such as `data-*`; no `i18n-js`, JS translation registry, or new build pipeline.
+
 #### Phase 18: Auth, 2FA & Translation Verification
 
 **Goal:** Users see authentication, 2FA, and representative app flows correctly localized, with remaining translation gaps caught.
@@ -185,4 +208,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 16 complete (3/3 plans; lint, Minitest 142/716, and dad:test 9/28 green); Phase 17 ready to discuss/plan.*
+*Last updated: 2026-05-01 — Phase 17 complete (5/5 plans; lint, Minitest 181/1043, dad:test 9/28, code review clean).*
