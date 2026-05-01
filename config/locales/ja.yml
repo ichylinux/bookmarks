@@ -12,6 +12,8 @@ ja:
         title: サイト名
       preference:
         default_priority: タスク追加時の初期優先度
+        font_size: 文字サイズ
+        locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
         theme: テーマ
         use_note: ノートタブを表示する
@@ -43,3 +45,14 @@ ja:
     status_enabled: 二段階認証は有効です。
     status_disabled: 二段階認証は無効です。
     invalid_code: 認証コードが正しくありません。
+
+  preferences:
+    theme_options:
+      modern: モダン
+      classic: クラシック
+      simple: シンプル
+    font_size_options:
+      large: 大
+      medium: 中
+      small: 小
+    submit: 保存
