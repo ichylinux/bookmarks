@@ -85,7 +85,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1, e8608a0 |
 | 260501-jmn | Fix cucumber regression from Phase 15-01 redirect (`features/step_definitions/todos.rb:7`); add CLAUDE.md phase-verification policy requiring `bundle exec rake dad:test` green | 2026-05-01 | d5311a6, 03c892c |
 | 260501-nyc | modern theme — gadget title bars use primary blue (#3b82f6) instead of classic grey | 2026-05-01 | fb43b2c |
-| 260501-onx | stabilize flaky features/02.タスク.feature:5 (task widget scenario) | 2026-05-01 | 60c134b |
+| 260501-onx | stabilize flaky features/02.タスク.feature:5 (task widget scenario) | 2026-05-01 | 60c134b, 93d16db |
 
 ## Session Continuity
 
