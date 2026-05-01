@@ -1,16 +1,16 @@
 <div class="actions">
-  <%= link_to '追加', new_feed_path %>
+  <%= link_to t('feeds.index.add'), new_feed_path %>
 </div>
 
 <% unless @feeds.present? %>
-  <div>1件も登録されていません。</div>
+  <div><%= t('feeds.index.empty') %></div>
 <% else %>
   <table class="feeds">
     <tr>
-      <th>サイト名</th>
-      <th>表示件数</th>
-      <th>フィードURL</th>
-      <th colspan="2"></th>
+      <th><%= Feed.human_attribute_name :title %></th>
+      <th><%= Feed.human_attribute_name :display_count %></th>
+      <th><%= Feed.human_attribute_name :feed_url %></th>
+      <th colspan="2"><%= t('feeds.index.actions') %></th>
     </tr>
     
     <% @feeds.each do |feed| %>
@@ -18,8 +18,8 @@
         <td><%= feed.title %></td>
         <td class="center"><%= feed.display_count %></td>
         <td><div class="feed_url"><%= feed.feed_url %></div></td>
-        <td><%= link_to '編集', edit_feed_path(feed) %></td>
-        <td><%= link_to '削除', feed_path(feed), method: 'delete', confirm: t('messages.confirm_delete', name: feed.title) %></td>
+        <td><%= link_to t('actions.edit'), edit_feed_path(feed) %></td>
+        <td><%= link_to t('actions.delete'), feed_path(feed), method: 'delete', confirm: t('messages.confirm_delete', name: feed.title) %></td>
       </tr>
     <% end %>
   </table>

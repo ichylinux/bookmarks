@@ -10,7 +10,7 @@ feeds.get_feed_title = function(button) {
 
   const url = form.find('input[name*="feed_url"]').val();
   if (url === '') {
-    alert('フィードURLを先に入力してください。');
+    alert($(button).data('feedUrlRequiredMessage'));
     return;
   }
   
@@ -25,7 +25,7 @@ feeds.get_feed_title = function(button) {
 
   $.post($(button).data('url'), params, (title) => {
     if ($.trim(title) === '') {
-      alert('フィードを取得できませんでした。');
+      alert($(button).data('feedFetchFailedMessage'));
       return;
     }
     form.find('input[name*="title"]').val(title);

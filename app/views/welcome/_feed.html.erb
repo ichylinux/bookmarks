@@ -4,17 +4,18 @@
       $('#feed_<%= gadget.id %>').html(html);
     })
     .fail(function(xhr, status, error) {
-      $('#feed_<%= gadget.id %>').find('ol li span').first().text('フィードを取得できませんでした。(' + xhr.status + ')'); 
+      const container = $('#feed_<%= gadget.id %>');
+      container.find('ol li span').first().text(container.data('fetchFailedMessage') + '(' + xhr.status + ')');
     });
   });
 </script>
 
-<div id="<%= gadget.gadget_id %>" class="gadget">
+<div id="<%= gadget.gadget_id %>" class="gadget" data-fetch-failed-message="<%= t('.fetch_failed') %>">
   <div>
     <div class="title"><%= gadget.title %></div>
     <ol>
       <li>
-        <span style="line-height: <%= gadget.display_count * 1.5 %>em;">フィードを取得中・・・</span>
+        <span style="line-height: <%= gadget.display_count * 1.5 %>em;"><%= t('.loading') %></span>
       </li>
     </ol>
   </div>

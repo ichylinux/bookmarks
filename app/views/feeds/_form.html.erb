@@ -8,7 +8,11 @@
       <th><%= f.label :title %></th>
       <td>
         <%= f.text_field :title %>
-        <%= f.button 'フィードから取得', onclick: 'feeds.get_feed_title(this); return false;', 'data-url': url_for(action: 'get_feed_title') %>
+        <%= f.button t('.fetch_from_feed'),
+              onclick: 'feeds.get_feed_title(this); return false;',
+              'data-url': url_for(action: 'get_feed_title'),
+              'data-feed-url-required-message': t('.feed_url_required'),
+              'data-feed-fetch-failed-message': t('.feed_fetch_failed') %>
       </td>
     </tr>
     <tr>
@@ -16,7 +20,7 @@
       <td><%= f.number_field :display_count, class: 'display_count' %></td>
     </tr>
     <tr>
-      <td colspan="2"><%= f.submit %></td>
+      <td colspan="2"><%= f.submit @feed.new_record? ? t('.submit_create') : t('.submit_update') %></td>
     </tr>
   </table>
 <% end %>
