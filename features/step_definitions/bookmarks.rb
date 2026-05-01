@@ -17,8 +17,8 @@ end
   capture
 end
 
-もし /^登録ボタンをクリックしてブックマークを保存すると、トップページに表示されるようになります。$/ do
-  click_on '登録する'
+もし /^ブックマークを追加ボタンをクリックしてブックマークを保存すると、トップページに表示されるようになります。$/ do
+  click_on 'ブックマークを追加'
   visit '/'
   assert has_selector?('.root-bookmarks', text: @bookmark_title)
   capture

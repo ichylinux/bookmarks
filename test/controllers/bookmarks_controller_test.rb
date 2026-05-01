@@ -159,6 +159,29 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select '.breadcrumbs-label', text: 'ブックマーク'
   end
 
+  def test_一覧が英語ロケールで表示されユーザー作成内容は変わらない
+    folder = Bookmark.create!(user_id: user.id, title: '日本語フォルダ17-02-index', url: nil, parent_id: nil, deleted: false)
+    bookmark = Bookmark.create!(user_id: user.id, title: '日本語ブックマーク17-02-index', url: 'https://example.com/17-02', parent_id: nil, deleted: false)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get bookmarks_path
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'nav.breadcrumbs[aria-label=?]', 'Breadcrumbs'
+    assert_select 'a.breadcrumbs-link', text: 'Root'
+    assert_select 'a.breadcrumbs-create-folder[title=?]', 'Create Folder'
+    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'Add Bookmark'
+    assert_select '.breadcrumbs-label', text: 'Folder'
+    assert_select '.breadcrumbs-label', text: 'Bookmark'
+    assert_select 'th', text: 'Actions'
+    assert_select 'a', text: 'Edit'
+    assert_select 'a[data-confirm=?]', "Delete #{bookmark.title}. Are you sure?"
+    assert_includes response.body, folder.title
+    assert_includes response.body, bookmark.title
+    assert_includes response.body, bookmark.url
+  end
+
   def test_ルートにいる場合のフォルダ作成ボタンのリンク
     sign_in user
     get bookmarks_path
@@ -190,6 +213,48 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a.breadcrumbs-create-folder', count: 0
     assert_select 'a.breadcrumbs-create-bookmark', count: 1
     assert_select '.breadcrumbs-label', text: 'ブックマーク'
+  end
+
+  def test_フォルダ内一覧が英語ロケールでも親フォルダ名を変えない
+    folder = Bookmark.create!(user_id: user.id, title: '日本語フォルダ17-02-parent', url: nil, parent_id: nil, deleted: false)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get bookmarks_path(parent_id: folder.id)
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'a.breadcrumbs-link', text: 'Root'
+    assert_select '.breadcrumbs-current', text: folder.title
+    assert_select 'a.breadcrumbs-create-folder', count: 0
+    assert_select '.breadcrumbs-label', text: 'Bookmark'
+  end
+
+  def test_詳細が英語ロケールで表示されブックマーク内容と親フォルダ名は変わらない
+    folder = Bookmark.create!(user_id: user.id, title: '日本語親フォルダ17-02', url: nil, parent_id: nil, deleted: false)
+    bookmark = Bookmark.create!(user_id: user.id, title: '日本語ブックマーク17-02-show', url: 'https://example.com/show-17-02', parent_id: folder.id, deleted: false)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get bookmark_path(bookmark)
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '.actions a', text: 'Back to list'
+    assert_select '.actions a', text: 'Edit'
+    assert_select 'th', text: 'Parent folder'
+    assert_includes response.body, bookmark.title
+    assert_includes response.body, bookmark.url
+    assert_includes response.body, folder.title
+  end
+
+  def test_編集が英語ロケールで一覧リンクを翻訳する
+    bookmark = bookmark(user)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get edit_bookmark_path(bookmark)
+
+    assert_response :success
+    assert_select 'h1', text: 'Edit Bookmark'
+    assert_select '.actions a', text: 'Back to list'
   end
 
   def test_フォルダ内にいる場合のブックマーク追加ボタンのリンク
