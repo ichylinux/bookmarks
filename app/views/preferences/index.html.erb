@@ -33,7 +33,7 @@
       </tr>
       <tr>
         <th><%= f.label :default_priority %></th>
-        <td><%= f.select :default_priority, Todo::PRIORITIES.invert %></td>
+        <td><%= f.select :default_priority, Todo.priority_options %></td>
       </tr>
       <tr>
         <th><%= f.label :use_note %></th>

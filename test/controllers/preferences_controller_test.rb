@@ -183,6 +183,32 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'option', text: 'English'
   end
 
+  def test_設定画面のdefault_priority_selectが日本語ロケールで数値値を保つ
+    user.preference.update!(locale: 'ja', default_priority: Todo::PRIORITY_HIGH)
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'select[name=?]', 'user[preference_attributes][default_priority]' do
+      assert_select 'option[value=?][selected=?]', Todo::PRIORITY_HIGH.to_s, 'selected', text: '高', count: 1
+      assert_select 'option[value=?]', Todo::PRIORITY_NORMAL.to_s, text: '中', count: 1
+      assert_select 'option[value=?]', Todo::PRIORITY_LOW.to_s, text: '低', count: 1
+    end
+  end
+
+  def test_設定画面のdefault_priority_selectが英語ロケールで数値値を保つ
+    user.preference.update!(locale: 'en', default_priority: Todo::PRIORITY_LOW)
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'select[name=?]', 'user[preference_attributes][default_priority]' do
+      assert_select 'option[value=?]', Todo::PRIORITY_HIGH.to_s, text: 'High', count: 1
+      assert_select 'option[value=?]', Todo::PRIORITY_NORMAL.to_s, text: 'Normal', count: 1
+      assert_select 'option[value=?][selected=?]', Todo::PRIORITY_LOW.to_s, 'selected', text: 'Low', count: 1
+    end
+  end
+
   def test_localeはサインアウト後も保持される
     sign_in user
     patch preference_path(user), params: {

@@ -1,13 +1,13 @@
 <%= form_with model: @todo, html: {class: 'todo'} do |f| %>
   <table>
     <tr>
-      <td><%= f.select :priority, Todo::PRIORITIES.invert %></td>
+      <td><%= f.select :priority, Todo.priority_options %></td>
       <td><%= f.text_field :title %></td>
       <td>
         <% if @todo.new_record? %>
-          <%= f.submit '登録', onclick: 'todos.create_todo(this); return false;' %>
+          <%= f.submit t('.create'), onclick: 'todos.create_todo(this); return false;' %>
         <% else %>
-          <%= f.submit '更新', onclick: 'todos.update_todo(this); return false;' %>
+          <%= f.submit t('.update'), onclick: 'todos.update_todo(this); return false;' %>
         <% end %>
       </td>
     </tr>
