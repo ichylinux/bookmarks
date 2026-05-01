@@ -45,3 +45,18 @@ en:
         medium: Medium
         small: Small
       submit: Save
+
+  nav:
+    home: Home
+    note: Note
+    preferences: Preferences
+    bookmarks: Bookmarks
+    todos: Tasks
+    calendars: Calendars
+    feeds: Feeds
+    sign_out: Sign out
+    menu_aria: Menu
+
+  flash:
+    errors:
+      generic: Something went wrong.
