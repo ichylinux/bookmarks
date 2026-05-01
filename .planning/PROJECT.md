@@ -25,7 +25,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
-**Active milestone:** v1.4 — Internationalization (Phase 14 complete 2026-05-01: locale infrastructure foundation in place — `preferences.locale` column, `Localization` controller concern with thread-safe `around_action :set_locale`, `<html lang>` bound to `I18n.locale`, full VERI18N-01 test coverage)
+**Active milestone:** v1.4 — Internationalization (Phase 16 complete 2026-05-01: locale infrastructure, persisted language preference, preferences language switcher, and core shell/shared message translation are in place; Phase 17 will translate feature surfaces)
 
 ## Requirements
 
@@ -42,13 +42,15 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
 - ✓ Persisted per-user `locale` (ja/en) on `preferences`, three-stage resolution (saved → Accept-Language → :ja default), `<html lang>` rendered from resolved locale — **v1.4 Phase 14**
+- ✓ Preferences language switcher persists `locale` and translates the preferences page labels/options — **v1.4 Phase 15**
+- ✓ Core shell navigation, drawer/menu chrome, and shared generic flash fallback render through ja/en locale keys — **v1.4 Phase 16**
 
 ### Active (v1.4)
 
 - [ ] All UI strings extracted to `ja.yml` / `en.yml` locale files
 - [x] `locale` column added to `preferences` table; persists language preference per account — **v1.4 Phase 14**
 - [x] `Accept-Language` header detection sets locale for unauthenticated / first visits — **v1.4 Phase 14**
-- [ ] Language switcher (ja / en) on `/preferences` page
+- [x] Language switcher (ja / en) on `/preferences` page — **v1.4 Phase 15**
 - [ ] All flash messages, validation errors, and Devise pages translated in both locales
 - [ ] Navigation, layout labels, and gadget UIs (bookmarks, notes, todos) fully translated
 
@@ -122,4 +124,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-01 — Phase 14 complete (locale infrastructure foundation: data layer, controller concern, layout binding, VERI18N-01 tests).*
+*Last updated: 2026-05-01 — Phase 16 complete (core shell/shared message translation: nav chrome, menu labels, generic flash fallback, ja/en parity and verification tests).*
