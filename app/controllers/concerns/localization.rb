@@ -19,8 +19,14 @@ module Localization
   end
 
   def saved_locale
-    return nil unless user_signed_in?
-    current_user.preference&.locale
+    saved_locale_user&.preference&.locale
+  end
+
+  def saved_locale_user
+    return current_user if user_signed_in?
+    return nil if session[:otp_user_id].blank?
+
+    User.find_by(id: session[:otp_user_id])
   end
 
   def accept_language_match
