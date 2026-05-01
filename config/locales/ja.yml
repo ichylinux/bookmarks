@@ -57,3 +57,18 @@ ja:
         medium: 中
         small: 小
       submit: 保存
+
+  nav:
+    home: ホーム
+    note: Note
+    preferences: 設定
+    bookmarks: ブックマーク
+    todos: タスク
+    calendars: カレンダー
+    feeds: フィード
+    sign_out: ログアウト
+    menu_aria: メニュー
+
+  flash:
+    errors:
+      generic: エラーが発生しました
