@@ -14,7 +14,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 **Target features:**
 - Extract all hardcoded UI strings to `config/locales/ja.yml` and `config/locales/en.yml`
-- Add `locale` column to users table; persist selected language per account
+- Add `locale` column to `preferences` table; persist selected language per account
 - Detect `Accept-Language` header on first visit as fallback default
 - Language switcher on `/preferences` page (ja / en selection)
 - Coverage: navigation/layout, flash/error messages, bookmarks/notes/todos gadgets, Devise auth pages
@@ -25,7 +25,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
 
-**Active milestone:** v1.4 — Internationalization
+**Active milestone:** v1.4 — Internationalization (Phase 14 complete 2026-05-01: locale infrastructure foundation in place — `preferences.locale` column, `Localization` controller concern with thread-safe `around_action :set_locale`, `<html lang>` bound to `I18n.locale`, full VERI18N-01 test coverage)
 
 ## Requirements
 
@@ -41,12 +41,13 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Simple-theme tab navigation (Home/Note) on welcome page — **v1.3 Phase 12**
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
+- ✓ Persisted per-user `locale` (ja/en) on `preferences`, three-stage resolution (saved → Accept-Language → :ja default), `<html lang>` rendered from resolved locale — **v1.4 Phase 14**
 
 ### Active (v1.4)
 
 - [ ] All UI strings extracted to `ja.yml` / `en.yml` locale files
-- [ ] `locale` column added to `users` table; persists language preference per account
-- [ ] `Accept-Language` header detection sets locale for unauthenticated / first visits
+- [x] `locale` column added to `preferences` table; persists language preference per account — **v1.4 Phase 14**
+- [x] `Accept-Language` header detection sets locale for unauthenticated / first visits — **v1.4 Phase 14**
 - [ ] Language switcher (ja / en) on `/preferences` page
 - [ ] All flash messages, validation errors, and Devise pages translated in both locales
 - [ ] Navigation, layout labels, and gadget UIs (bookmarks, notes, todos) fully translated
@@ -85,6 +86,10 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 | Tab state via query param (`?tab=notes`) not History API | Survives POST/redirect cycle; no pushState complexity | ✓ Good — simple and reliable |
 | `user_id` never in strong params — merged server-side | Security: never trust client for ownership | ✓ Good — matches todos_controller pattern |
 | `Note.where(user_id: ...).delete_all` in tests | Rails 8.1 association `delete_all` issues nullifying UPDATE; NOT NULL constraint rejects it | ✓ Good — pragmatic workaround documented |
+| `locale` column on `preferences`, not `users` (Phase 14 D-01) | All per-user UI prefs (theme/font_size/use_note/...) already aggregate on `Preference`; same pattern keeps Phase 15 form addition trivial | ✓ Good — model validation matches FONT_SIZES pattern |
+| `around_action` (not `before_action`) for `set_locale` (Phase 14 D-04) | `I18n.locale` is thread-local; Puma reuses threads. `with_locale` saves/restores atomically per request | ✓ Good — locale bleed across requests prevented |
+| Whitelist guard before every `I18n.with_locale` (Phase 14 D-04) | Defense in depth: model validation rejects bad writes; whitelist guard rejects bad reads (stale DB / malformed Accept-Language); `enforce_available_locales` is the last line | ✓ Good — `I18n::InvalidLocale` impossible by construction |
+| No `?locale=` URL parameter (Phase 14 D-04) | I18N-02 spec doesn't include URL parameter; not reading params makes I18N-03 trivially satisfied | ✓ Good — testable surface stays minimal; can be added later if needed |
 
 ## Evolution
 
@@ -117,4 +122,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-01 after v1.4 milestone start*
+*Last updated: 2026-05-01 — Phase 14 complete (locale infrastructure foundation: data layer, controller concern, layout binding, VERI18N-01 tests).*

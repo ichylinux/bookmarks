@@ -2,26 +2,26 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Internationalization
-status: ready-to-execute
-stopped_at: "Phase 14 planned"
-last_updated: "2026-05-01T00:00:00Z"
-last_activity: 2026-05-01 - Phase 14 (Locale Infrastructure) planned; 3 plans ready to execute
+status: phase-complete
+stopped_at: "Phase 14 complete; ready for Phase 15"
+last_updated: "2026-05-01T02:30:00Z"
+last_activity: 2026-05-01 - Phase 14 (Locale Infrastructure) complete; 3/3 plans, 127/127 tests green
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 0
-  percent: 0
+  completed_plans: 3
+  percent: 20
 ---
 
 # State
 
 ## Current Position
 
-Phase: 14 — Locale Infrastructure
-Plan: — (3 plans ready)
-Status: Ready to execute (3 plans: 14-01 data layer, 14-02 concern+wiring, 14-03 tests)
-Last activity: 2026-05-01 — Phase 14 planning complete; 14-01/14-02/14-03 PLAN.md files created
+Phase: 14 — Locale Infrastructure (COMPLETE)
+Next: Phase 15 — Language Preference (not started)
+Status: Phase 14 complete — 3/3 plans, full Minitest suite 127 runs / 625 assertions / 0 failures
+Last activity: 2026-05-01 — Phase 14 execution + verification complete
 
 ## Project Reference
 
@@ -35,7 +35,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 14 | Locale Infrastructure | Not started |
+| 14 | Locale Infrastructure | Complete (2026-05-01) |
 | 15 | Language Preference | Not started |
 | 16 | Core Shell & Shared Messages Translation | Not started |
 | 17 | Feature Surface Translation | Not started |
@@ -43,20 +43,22 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Accumulated Context
 
-### Shipped in v1.3
+### Shipped in v1.4 so far
 
-- `notes` table + `Note` model (`Crud::ByUser`, soft-delete, validations, `scope :recent`)
-- `NotesController#create` — authenticated, `user_id` merged server-side, redirects to `root_path(tab: 'notes')`
-- Simple-theme tab strip (ホーム/ノート) with jQuery switching, SSR `?tab=notes` initial state
-- `_note_gadget.html.erb` with empty-state and reverse-chrono list
-- `WelcomeControllerTest` gadget + isolation coverage; Cucumber `features/04.ノート.feature`
-- `drawer_ui?` helper gating hamburger/drawer in layout; `layout_structure_test.rb` extended
+- `preferences.locale` nullable string column (migration `20260501020618_add_locale_to_preferences`)
+- `Preference::SUPPORTED_LOCALES = %w[ja en].freeze` + `validates :locale, inclusion:` model contract
+- `config.i18n.available_locales = %i[ja en]` boot-time restriction (combined with `enforce_available_locales = true`)
+- `Localization` controller concern (`app/controllers/concerns/localization.rb`) — `around_action :set_locale` (thread-safe), saved → Accept-Language → :ja resolution pipeline with whitelist guard at every step, q-value-aware Accept-Language parser, no `params[:locale]` recognition
+- `ApplicationController` includes `Localization` as the first include (before `protect_from_forgery` / `authenticate_user!`)
+- `<html lang="<%= I18n.locale %>">` in `app/views/layouts/application.html.erb`
+- `test/controllers/application_controller_test.rb` covers all 4 VERI18N-01 paths via integration tests asserting `<html lang>` attribute
 
-### Critical Pitfalls (carry forward)
+### Critical Pitfalls (carry forward to Phase 15+)
 
-- Rails 8.1 `has_many ... delete_all` nullify incompatibility with NOT NULL `user_id` — use `Note.where(user_id: user.id).delete_all` in tests
-- Theme leakage: both ERB guard (`favorite_theme == 'simple'`) and CSS scope (`.simple { }`) are required — one alone is insufficient
-- CSRF: use `form_with(local: true)` — do not copy inline `authenticity_token` from portal layout
+- **Zeitwerk boot order:** `config/application.rb` cannot reference `Preference::SUPPORTED_LOCALES` (uninitialized constant at boot). Use inline `%i[ja en]` and treat the duplication as documented (with comment).
+- **Puma thread reuse:** `I18n.locale` is thread-local; always use `around_action` + `I18n.with_locale` (NEVER `before_action`) to prevent locale bleed across requests reusing the same thread.
+- **Whitelist before with_locale:** Even though `enforce_available_locales = true` raises on bad input, the concern MUST whitelist via `Preference::SUPPORTED_LOCALES.include?(candidate.to_s)` BEFORE calling `I18n.with_locale` — silent fall-through is the contract for stale DB / malformed Accept-Language values.
+- **Carry forward from v1.3:** Rails 8.1 `has_many ... delete_all` nullify incompatibility with NOT NULL FK; theme leakage requires both ERB guard + CSS scope; CSRF use `form_with(local: true)`.
 
 ## Quick Tasks Completed
 
@@ -70,6 +72,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-05-01T00:00:00Z
-Stopped at: Phase 14 planning complete (3 plans)
-Resume: `/gsd-execute-phase 14` to execute the Locale Infrastructure plans
+Last session: 2026-05-01T02:30:00Z
+Stopped at: Phase 14 complete (3/3 plans verified, all tests green)
+Resume: `/gsd-discuss-phase 15` — discuss Phase 15 Language Preference before planning
+        or `/gsd-plan-phase 15` — plan Phase 15 directly (CONTEXT not yet captured)

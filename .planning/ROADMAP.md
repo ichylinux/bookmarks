@@ -15,7 +15,7 @@
 
 | Phase | Milestone | Requirements | Status | Depends on |
 |-------|-----------|--------------|--------|------------|
-| 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Planned (3 plans) | v1.3 complete |
+| 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Complete (3/3 plans, 2026-05-01) | v1.3 complete |
 | 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Not started | Phase 14 |
 | 16. Core Shell & Shared Messages Translation | v1.4 | TRN-01, TRN-04 | Not started | Phase 15 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
@@ -32,13 +32,13 @@
 Plans:
 
 **Wave 1**
-- [ ] 14-01-PLAN.md — Data layer: migration + Preference model constants/validation + I18n available_locales config
+- [x] 14-01-PLAN.md — Data layer: migration + Preference model constants/validation + I18n available_locales config (completed 2026-05-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 14-02-PLAN.md — Localization concern + ApplicationController wiring + html lang layout attribute
+- [x] 14-02-PLAN.md — Localization concern + ApplicationController wiring + html lang layout attribute (completed 2026-05-01)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 14-03-PLAN.md — Integration tests: 4 VERI18N-01 paths in ApplicationControllerTest
+- [x] 14-03-PLAN.md — Integration tests: 4 VERI18N-01 paths in ApplicationControllerTest (completed 2026-05-01)
 
 **Cross-cutting constraints:**
 - `Preference::SUPPORTED_LOCALES` (defined in 14-01) is the single source of truth referenced by both the concern (14-02) and tests (14-03)
@@ -158,4 +158,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 14 planned (3 plans); ready for execution.*
+*Last updated: 2026-05-01 — Phase 14 complete (3/3 plans, full Minitest suite green: 127 runs / 625 assertions / 0 failures); Phase 15 ready to plan.*

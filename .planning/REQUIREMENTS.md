@@ -7,10 +7,10 @@
 
 ### Locale Infrastructure
 
-- [ ] **I18N-01**: User can have a persisted `locale` value on their account limited to supported locales (`ja` / `en`).
-- [ ] **I18N-02**: User sees every request rendered with locale resolved in this order: saved account locale, valid `Accept-Language` match, then default Japanese.
-- [ ] **I18N-03**: User cannot force an unsupported locale through headers, params, or stored data.
-- [ ] **I18N-04**: Assistive technologies receive the correct page language via the rendered `<html lang>` attribute.
+- [x] **I18N-01**: User can have a persisted `locale` value on their account limited to supported locales (`ja` / `en`). *(Phase 14, 2026-05-01)*
+- [x] **I18N-02**: User sees every request rendered with locale resolved in this order: saved account locale, valid `Accept-Language` match, then default Japanese. *(Phase 14, 2026-05-01)*
+- [x] **I18N-03**: User cannot force an unsupported locale through headers, params, or stored data. *(Phase 14, 2026-05-01)*
+- [x] **I18N-04**: Assistive technologies receive the correct page language via the rendered `<html lang>` attribute. *(Phase 14, 2026-05-01)*
 
 ### Language Preference
 
@@ -34,7 +34,7 @@
 
 ### Verification and Safety
 
-- [ ] **VERI18N-01**: User-facing tests cover saved user locale, Accept-Language fallback, invalid locale fallback/rejection, and default Japanese behavior.
+- [x] **VERI18N-01**: User-facing tests cover saved user locale, Accept-Language fallback, invalid locale fallback/rejection, and default Japanese behavior. *(Phase 14, 2026-05-01)*
 - [ ] **VERI18N-02**: User-facing tests cover representative Japanese and English UI paths for layout, preferences, core gadgets, and auth/2FA surfaces.
 - [ ] **VERI18N-03**: User-visible Japanese literals remaining in views, helpers, controllers, and JavaScript are either translated or explicitly documented as intentional user content.
 - [ ] **VERI18N-04**: User-visible translation keys are present in both `ja.yml` and `en.yml` for every extracted string.
@@ -65,10 +65,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| I18N-01 | Phase 14 | Pending |
-| I18N-02 | Phase 14 | Pending |
-| I18N-03 | Phase 14 | Pending |
-| I18N-04 | Phase 14 | Pending |
+| I18N-01 | Phase 14 | Complete (2026-05-01) |
+| I18N-02 | Phase 14 | Complete (2026-05-01) |
+| I18N-03 | Phase 14 | Complete (2026-05-01) |
+| I18N-04 | Phase 14 | Complete (2026-05-01) |
 | PREF-01 | Phase 15 | Pending |
 | PREF-02 | Phase 15 | Pending |
 | PREF-03 | Phase 15 | Pending |
@@ -80,7 +80,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTHI18N-01 | Phase 18 | Pending |
 | AUTHI18N-02 | Phase 18 | Pending |
 | AUTHI18N-03 | Phase 18 | Pending |
-| VERI18N-01 | Phase 14 | Pending |
+| VERI18N-01 | Phase 14 | Complete (2026-05-01) |
 | VERI18N-02 | Phase 18 | Pending |
 | VERI18N-03 | Phase 18 | Pending |
 | VERI18N-04 | Phase 18 | Pending |
@@ -92,4 +92,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-01*
-*Last updated: 2026-05-01 after v1.4 roadmap creation*
+*Last updated: 2026-05-01 — Phase 14 complete: I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 validated.*
