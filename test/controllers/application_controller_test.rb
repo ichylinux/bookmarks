@@ -43,7 +43,7 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'a', text: 'ホーム'
+    assert_select 'a', text: 'Home'
     assert_select 'a', text: '設定'
     assert_select 'button.hamburger-btn[aria-label=?]', 'メニュー'
   end
