@@ -27,6 +27,13 @@
 
 **Requirements:** I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01
 
+**Plans:** 3 plans
+
+Plans:
+- [ ] 14-01-PLAN.md — Data layer: migration + Preference model constants/validation + I18n available_locales config
+- [ ] 14-02-PLAN.md — Localization concern + ApplicationController wiring + html lang layout attribute
+- [ ] 14-03-PLAN.md — Integration tests: 4 VERI18N-01 paths in ApplicationControllerTest
+
 **Success criteria:**
 1. A signed-in user with a saved `ja` or `en` account locale sees pages rendered in that saved locale.
 2. A first-time or signed-out visitor with a valid `Accept-Language` match sees the app rendered in the matched supported locale.
@@ -141,4 +148,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — v1.4 roadmap created; ready for Phase 14 discussion.*
+*Last updated: 2026-05-01 — Phase 14 planned (3 plans); ready for execution.*
