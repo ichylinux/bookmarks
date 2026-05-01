@@ -1,3 +1,5 @@
+require 'uri'
+
 もし /^ブックマーク管理画面を開き、ブックマーク追加用のアイコンをクリックします。$/ do
   sign_in user
   visit bookmarks_path
@@ -9,7 +11,7 @@
 end
 
 もし /^URLを入力すると、自動的にサイトのタイトルが保管されます。$/ do
-  @bookmark_url = 'http://example.com'
+  @bookmark_url = URI.join(current_url, '/').to_s
   fill_in 'bookmark[url]', with: @bookmark_url
   find('#bookmark_url').send_keys(:tab)
   assert wait_until { find('#bookmark_title').value.present? }, 'URLからタイトルが自動取得されていません'
