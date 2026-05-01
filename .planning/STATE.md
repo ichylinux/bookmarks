@@ -2,28 +2,28 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: ready-to-execute
-stopped_at: Phase 15 planned — 3 plans across 2 waves; ready for /gsd-execute-phase 15
-last_updated: "2026-05-01T03:27:38.812Z"
-last_activity: 2026-05-01 — Phase 15 planning complete (3 plans: 15-01 backend, 15-02 i18n catalog, 15-03 view+tests)
+status: phase-complete
+stopped_at: Phase 15 complete — 3 plans, 8 new tests, full suite 135/0; Phase 16 ready to plan
+last_updated: "2026-05-01T03:55:00.000Z"
+last_activity: 2026-05-01 — Phase 15 execution complete (3/3 plans, full Minitest suite green: 135 runs / 694 assertions / 0 failures)
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 3
-  percent: 50
+  completed_plans: 6
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 15 (Language Preference) — READY TO EXECUTE
-Plans: 3 (15-01, 15-02, 15-03)
-Last completed: Phase 14 — Locale Infrastructure (3/3 plans, 2026-05-01)
-Status: Phase 15 plans created, awaiting execution
-Last activity: 2026-05-01 — Phase 15 plans written (15-01 backend wiring, 15-02 i18n catalogs, 15-03 view+tests)
-Resume: `/gsd-execute-phase 15` — execute Phase 15 plans
+Phase: 15 (Language Preference) — COMPLETE (2026-05-01)
+Plans: 3/3 (15-01, 15-02, 15-03 — all complete)
+Last completed: Phase 15 — Language Preference (3/3 plans, 2026-05-01)
+Status: Phase 15 fully verified (25/25 must_haves, 4/4 success criteria, PREF-01..03 traceable)
+Last activity: 2026-05-01 — Phase 15 全 plans 完了、全 suite green (135 runs / 694 assertions / 0 failures)
+Resume: `/gsd-discuss-phase 16` — discuss Phase 16 (Core Shell & Shared Messages Translation)
 
 ## Project Reference
 
@@ -38,7 +38,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | Phase | Name | Status |
 |-------|------|--------|
 | 14 | Locale Infrastructure | Complete (2026-05-01) |
-| 15 | Language Preference | Planned (2026-05-01); 3 plans, ready to execute |
+| 15 | Language Preference | Complete (2026-05-01) — 3/3 plans, 8 new integration tests |
 | 16 | Core Shell & Shared Messages Translation | Not started |
 | 17 | Feature Surface Translation | Not started |
 | 18 | Auth, 2FA & Translation Verification | Not started |
@@ -49,17 +49,25 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 - `preferences.locale` nullable string column (migration `20260501020618_add_locale_to_preferences`)
 - `Preference::SUPPORTED_LOCALES = %w[ja en].freeze` + `validates :locale, inclusion:` model contract
+- `Preference::LOCALE_OPTIONS = { '自動' => nil, '日本語' => 'ja', 'English' => 'en' }.freeze` (Phase 15)
+- `Preference::FONT_SIZE_OPTIONS` Hash 削除、`FONT_SIZES` 配列のみ保持 (Phase 15 D-09)
 - `config.i18n.available_locales = %i[ja en]` boot-time restriction (combined with `enforce_available_locales = true`)
-- `Localization` controller concern (`app/controllers/concerns/localization.rb`) — `around_action :set_locale` (thread-safe), saved → Accept-Language → :ja resolution pipeline with whitelist guard at every step, q-value-aware Accept-Language parser, no `params[:locale]` recognition
-- `ApplicationController` includes `Localization` as the first include (before `protect_from_forgery` / `authenticate_user!`)
+- `Localization` controller concern (`app/controllers/concerns/localization.rb`) — `around_action :set_locale` (thread-safe), saved → Accept-Language → :ja resolution pipeline
+- `ApplicationController` includes `Localization` as the first include
 - `<html lang="<%= I18n.locale %>">` in `app/views/layouts/application.html.erb`
-- `test/controllers/application_controller_test.rb` covers all 4 VERI18N-01 paths via integration tests asserting `<html lang>` attribute
+- `PreferencesController` — `:locale` permit + 空文字 nil 化 + `redirect_to preferences_path` (Phase 15)
+- `app/views/preferences/index.html.erb` — locale select + theme/font_size の `t` 化 + `t('.submit')` (Phase 15)
+- `config/locales/ja.yml` / `config/locales/en.yml` — `activerecord.attributes.preference.{font_size, locale}` + `preferences.index.{theme_options, font_size_options, submit}` (Phase 15)
+- `test/controllers/preferences_controller_test.rb` — 14 tests (6 既存 + 8 新規) で PREF-01..03 を網羅 (Phase 15)
+- `test/controllers/application_controller_test.rb` covers all 4 VERI18N-01 paths via integration tests asserting `<html lang>` attribute (Phase 14)
 
-### Critical Pitfalls (carry forward to Phase 15+)
+### Critical Pitfalls (carry forward to Phase 16+)
 
 - **Zeitwerk boot order:** `config/application.rb` cannot reference `Preference::SUPPORTED_LOCALES` (uninitialized constant at boot). Use inline `%i[ja en]` and treat the duplication as documented (with comment).
 - **Puma thread reuse:** `I18n.locale` is thread-local; always use `around_action` + `I18n.with_locale` (NEVER `before_action`) to prevent locale bleed across requests reusing the same thread.
 - **Whitelist before with_locale:** Even though `enforce_available_locales = true` raises on bad input, the concern MUST whitelist via `Preference::SUPPORTED_LOCALES.include?(candidate.to_s)` BEFORE calling `I18n.with_locale` — silent fall-through is the contract for stale DB / malformed Accept-Language values.
+- **Lazy lookup template path (Phase 15 lesson):** `t('.foo')` in `app/views/X/Y.html.erb` resolves to `X.Y.foo`, NOT `X.foo`. Phase 15 で Plan 15-02 が `preferences.foo` 直下に置いたキーを `preferences.index.foo` にネストし直す補修が必要だった。Phase 16/17 で view を i18n 化する際、yml キーの階層は view path に完全一致させる必要がある。
+- **Native ラベル原則 (Phase 15 lesson):** locale select の `自動 / 日本語 / English` は en 表示時も native のまま (D-02)。同様の「言語 / 通貨 / 国名」など UI 一般慣習に従う場合、Phase 16/17 で再利用可能なパターン。
 - **Carry forward from v1.3:** Rails 8.1 `has_many ... delete_all` nullify incompatibility with NOT NULL FK; theme leakage requires both ERB guard + CSS scope; CSRF use `form_with(local: true)`.
 
 ## Quick Tasks Completed
@@ -74,7 +82,6 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 
 ## Session Continuity
 
-Last session: 2026-05-01T03:27:00Z
-Stopped at: Phase 15 plans written — 3 PLAN.md across 2 waves (15-01 + 15-02 parallel, 15-03 depends on both)
-Resume: `/gsd-execute-phase 15` — execute Phase 15 plans (recommended)
-        or `/gsd-plan-phase 15 --reviews` — replan with cross-AI review feedback
+Last session: 2026-05-01T03:55:00Z
+Stopped at: Phase 15 完了 — Wave 1 (15-01 backend, 15-02 i18n) と Wave 2 (15-03 view + 8 tests) を sequential inline 実行。途中 Plan 15-02 の lazy lookup namespace ミスを Plan 15-03 で補修。最終 suite 135/694/0
+Resume: `/gsd-discuss-phase 16` — Phase 16 (Core Shell & Shared Messages Translation) に進む

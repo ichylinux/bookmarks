@@ -14,9 +14,9 @@
 
 ### Language Preference
 
-- [ ] **PREF-01**: User can choose Japanese or English from the existing `/preferences` page.
-- [ ] **PREF-02**: User's language choice persists across sign-out, sign-in, browser refresh, and future sessions.
-- [ ] **PREF-03**: User sees the preferences page itself translated after changing language.
+- [x] **PREF-01**: User can choose Japanese or English from the existing `/preferences` page. *(Phase 15, 2026-05-01)*
+- [x] **PREF-02**: User's language choice persists across sign-out, sign-in, browser refresh, and future sessions. *(Phase 15, 2026-05-01)*
+- [x] **PREF-03**: User sees the preferences page itself translated after changing language. *(Phase 15, 2026-05-01)*
 
 ### Translation Coverage
 
@@ -69,9 +69,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | I18N-02 | Phase 14 | Complete (2026-05-01) |
 | I18N-03 | Phase 14 | Complete (2026-05-01) |
 | I18N-04 | Phase 14 | Complete (2026-05-01) |
-| PREF-01 | Phase 15 | Pending |
-| PREF-02 | Phase 15 | Pending |
-| PREF-03 | Phase 15 | Pending |
+| PREF-01 | Phase 15 | Complete (2026-05-01) |
+| PREF-02 | Phase 15 | Complete (2026-05-01) |
+| PREF-03 | Phase 15 | Complete (2026-05-01) |
 | TRN-01 | Phase 16 | Pending |
 | TRN-02 | Phase 17 | Pending |
 | TRN-03 | Phase 17 | Pending |

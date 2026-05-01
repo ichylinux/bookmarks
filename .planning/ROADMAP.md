@@ -16,7 +16,7 @@
 | Phase | Milestone | Requirements | Status | Depends on |
 |-------|-----------|--------------|--------|------------|
 | 14. Locale Infrastructure | v1.4 | I18N-01, I18N-02, I18N-03, I18N-04, VERI18N-01 | Complete (3/3 plans, 2026-05-01) | v1.3 complete |
-| 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Not started | Phase 14 |
+| 15. Language Preference | v1.4 | PREF-01, PREF-02, PREF-03 | Complete (3/3 plans, 2026-05-01) | Phase 14 |
 | 16. Core Shell & Shared Messages Translation | v1.4 | TRN-01, TRN-04 | Not started | Phase 15 |
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Not started | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Not started | Phase 17 |
@@ -63,14 +63,14 @@ Plans:
 3. The selected language persists after browser refresh, sign-out, sign-in, and future sessions.
 4. The preferences page itself renders in the newly selected language after the change.
 
-**Plans (planned 2026-05-01):**
+**Plans (completed 2026-05-01):**
 
 **Wave 1** *(parallel — no shared files)*
-- `15-01` Backend wiring — `Preference::LOCALE_OPTIONS` 定数、controller の `:locale` permit + 空文字 nil 化 + `redirect_to preferences_path`、既存 test_更新 redirect URL 更新。`FONT_SIZE_OPTIONS` Hash 削除（D-09 Plan 段階決定）
-- `15-02` I18n catalog — `ja.yml` に `preference.locale / preference.font_size / preferences.{theme_options, font_size_options, submit}` 追加、`en.yml` を Phase 15 スコープでフル構築
+- [x] `15-01-PLAN.md` Backend wiring — `Preference::LOCALE_OPTIONS` 定数、controller の `:locale` permit + 空文字 nil 化 + `redirect_to preferences_path`、既存 test_更新 redirect URL 更新。`FONT_SIZE_OPTIONS` Hash 削除（D-09 Plan 段階決定） *(completed 2026-05-01)*
+- [x] `15-02-PLAN.md` I18n catalog — `ja.yml` に `preference.locale / preference.font_size / preferences.index.{theme_options, font_size_options, submit}` 追加、`en.yml` を Phase 15 スコープでフル構築 *(completed 2026-05-01)*
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- `15-03` View + integration tests — `f.select :locale`、theme/font_size の `t` 化、`f.submit t('.submit')`、`f.label :font_size` override 削除、`preference_params` helper 拡張、PREF-01..03 を証明する 8 件の Minitest 統合テスト追加
+- [x] `15-03-PLAN.md` View + integration tests — `f.select :locale`、theme/font_size の `t` 化、`f.submit t('.submit')`、`f.label :font_size` override 削除、`preference_params` helper 拡張、PREF-01..03 を証明する 8 件の Minitest 統合テスト追加 *(completed 2026-05-01)*
 
 **Cross-cutting constraints:**
 - ロケールセレクタ ラベル（`自動 / 日本語 / English`）は **native 表記固定**で i18n を経由しない（D-02）
@@ -172,4 +172,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 14 complete (3/3 plans, full Minitest suite green: 127 runs / 625 assertions / 0 failures); Phase 15 ready to plan.*
+*Last updated: 2026-05-01 — Phase 15 complete (3/3 plans, full Minitest suite green: 135 runs / 694 assertions / 0 failures); Phase 16 ready to plan.*
