@@ -1,11 +1,11 @@
-<nav class="breadcrumbs" aria-label="パンくずリスト">
+<nav class="breadcrumbs" aria-label="<%= t('.breadcrumbs_aria') %>">
   <ol class="breadcrumbs-list">
     <li class="breadcrumbs-item">
-      <%= link_to 'ルート', bookmarks_path, class: 'breadcrumbs-link' %>
+      <%= link_to t('.root'), bookmarks_path, class: 'breadcrumbs-link' %>
       <% unless @parent %>
         <span class="breadcrumbs-item-actions">
-          <%= link_to new_bookmark_path(parent_id: nil), class: 'breadcrumbs-create-folder', title: 'フォルダを作成' do %>
-            <span class="breadcrumbs-icon">📁</span><span class="breadcrumbs-label">フォルダ</span>
+          <%= link_to new_bookmark_path(parent_id: nil, kind: 'folder'), class: 'breadcrumbs-create-folder', title: t('.create_folder') do %>
+            <span class="breadcrumbs-icon">📁</span><span class="breadcrumbs-label"><%= t('.folder') %></span>
           <% end %>
         </span>
       <% end %>
@@ -17,8 +17,8 @@
     <% end %>
     <li class="breadcrumbs-item breadcrumbs-actions">
       <span class="breadcrumbs-item-actions">
-        <%= link_to new_bookmark_path(parent_id: @parent_id), class: 'breadcrumbs-create-bookmark', title: 'ブックマークを追加' do %>
-          <span class="breadcrumbs-icon">🔖</span><span class="breadcrumbs-label">ブックマーク</span>
+        <%= link_to new_bookmark_path(parent_id: @parent_id, kind: 'bookmark'), class: 'breadcrumbs-create-bookmark', title: t('.add_bookmark') do %>
+          <span class="breadcrumbs-icon">🔖</span><span class="breadcrumbs-label"><%= t('.bookmark') %></span>
         <% end %>
       </span>
     </li>
@@ -29,8 +29,8 @@
   <thead>
     <tr>
       <th><%= Bookmark.human_attribute_name :title %></th>
-      <th>URL</th>
-      <th colspan="2">操作</th>
+      <th><%= Bookmark.human_attribute_name :url %></th>
+      <th colspan="2"><%= t('.actions') %></th>
     </tr>
   </thead>
   <tbody>
@@ -48,9 +48,9 @@
             <%= b.url %>
           <% end %>
         </td>
-        <td><%= link_to '編集', edit_bookmark_path(b) %></td>
+        <td><%= link_to t('actions.edit'), edit_bookmark_path(b) %></td>
         <td>
-          <%= link_to '削除', bookmark_path(b), method: 'delete', data: { confirm: t('messages.confirm_delete', name: b.title) } %>
+          <%= link_to t('actions.delete'), bookmark_path(b), method: 'delete', data: { confirm: t('messages.confirm_delete', name: b.title) } %>
         </td>
       </tr>
     <% end %>

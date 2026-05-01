@@ -112,7 +112,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-folder[href=?]', new_bookmark_path(parent_id: nil)
+    assert_select 'a.breadcrumbs-create-folder[href=?]', new_bookmark_path(parent_id: nil, kind: 'folder')
     assert_select 'a.breadcrumbs-create-folder[title=?]', 'フォルダを作成'
   end
 
@@ -121,7 +121,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: nil)
+    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: nil, kind: 'bookmark')
     assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
   end
 
@@ -146,7 +146,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path(parent_id: folder.id)
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: folder.id)
+    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: folder.id, kind: 'bookmark')
     assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
   end
 
