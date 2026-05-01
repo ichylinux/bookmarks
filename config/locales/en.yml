@@ -35,12 +35,13 @@ en:
     invalid_code: The verification code is invalid.
 
   preferences:
-    theme_options:
-      modern: Modern
-      classic: Classic
-      simple: Simple
-    font_size_options:
-      large: Large
-      medium: Medium
-      small: Small
-    submit: Save
+    index:
+      theme_options:
+        modern: Modern
+        classic: Classic
+        simple: Simple
+      font_size_options:
+        large: Large
+        medium: Medium
+        small: Small
+      submit: Save

@@ -47,12 +47,13 @@ ja:
     invalid_code: 認証コードが正しくありません。
 
   preferences:
-    theme_options:
-      modern: モダン
-      classic: クラシック
-      simple: シンプル
-    font_size_options:
-      large: 大
-      medium: 中
-      small: 小
-    submit: 保存
+    index:
+      theme_options:
+        modern: モダン
+        classic: クラシック
+        simple: シンプル
+      font_size_options:
+        large: 大
+        medium: 中
+        small: 小
+      submit: 保存
