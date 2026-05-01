@@ -1,12 +1,12 @@
 <section class="note-gadget">
-  <h2>ノート</h2>
+  <h2><%= t('.title') %></h2>
   <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
-    <%= f.label :body, 'メモ' %>
+    <%= f.label :body, t('.body_label') %>
     <%= f.text_area :body, rows: 4 %>
-    <%= f.submit '保存' %>
+    <%= f.submit t('.submit') %>
   <% end %>
   <% if @notes.empty? %>
-    <p class="note-empty">メモはまだありません</p>
+    <p class="note-empty"><%= t('.empty') %></p>
   <% else %>
     <div class="note-list">
       <% @notes.each do |note| %>

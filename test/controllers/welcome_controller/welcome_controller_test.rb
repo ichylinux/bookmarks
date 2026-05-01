@@ -63,25 +63,39 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマのノートパネルにメモフォームが表示される
-    user.preference.update!(theme: 'simple', use_note: true)
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
     assert_select '#notes-tab-panel .note-gadget', count: 1
     assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
     assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
     assert_select 'textarea[name=?]', 'note[body]', count: 1
-    assert_select 'input[type=submit][value=?]', '保存', count: 1
+    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
   end
 
   def test_シンプルテーマでメモがないとき空状態を表示する
     Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'simple', use_note: true)
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
     assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
     assert_select '#notes-tab-panel .note-list', count: 0
+  end
+
+  def test_シンプルテーマのノートパネルが英語ロケールで英語表示される
+    Note.where(user_id: user.id).delete_all
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'en')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
   end
 
   def test_シンプルテーマでメモは新しい順に表示されタイムスタンプも出る
@@ -123,10 +137,12 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
       created_at: Time.zone.local(2026, 4, 30, 11, 0),
       updated_at: Time.zone.local(2026, 4, 30, 11, 0)
     )
-    user.preference.update!(theme: 'simple', use_note: true)
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'en')
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
     assert_includes response.body, own_note.body
     assert_not_includes response.body, '他ユーザーの秘密メモ 13-02'
   end

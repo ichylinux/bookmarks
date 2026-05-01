@@ -14,12 +14,12 @@ end
   capture
 end
 
-もし /^メモに (.*?) と入力して保存します。$/ do |body|
+もし /^メモに (.*?) と入力してメモを保存します。$/ do |body|
   @note_body = body
   within '#notes-tab-panel' do
     find('textarea[name="note[body]"]').set(body)
   end
-  click_on '保存'
+  click_on 'メモを保存'
   assert_equal root_path, current_path
   tab = Rack::Utils.parse_query(URI.parse(current_url).query)['tab']
   assert_equal 'notes', tab
