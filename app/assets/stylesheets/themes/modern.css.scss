@@ -317,3 +317,10 @@
   outline-offset: 1px;
   border-color: var(--modern-color-primary);
 }
+
+// STYLE-05: Gadget title bars — override welcome.css.scss rgba(0,0,0,.20) with modern primary color
+// Higher specificity (0,4,4) beats welcome.css.scss (0,3,4)
+.modern div.gadgets div.gadget div div.title {
+  background: var(--modern-color-primary);
+  color: #ffffff;
+}
