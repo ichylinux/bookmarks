@@ -78,6 +78,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     get new_feed_path
 
     assert_response :success
+    assert_select '.actions a', text: 'Back to list', count: 1
     assert_select 'button[data-feed-url-required-message=?]', 'Enter the feed URL first.', count: 1
     assert_select 'button[data-feed-fetch-failed-message=?]', 'Could not fetch the feed.', count: 1
     assert_select 'button', text: 'Fetch From Feed', count: 1
@@ -106,6 +107,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     get edit_feed_path(feed)
 
     assert_response :success
+    assert_select '.actions a', text: '一覧に戻る', count: 1
     assert_select 'button[data-feed-url-required-message=?]', 'フィードURLを先に入力してください。', count: 1
     assert_select 'button[data-feed-fetch-failed-message=?]', 'フィードを取得できませんでした。', count: 1
     assert_select 'button', text: 'フィードから取得', count: 1
