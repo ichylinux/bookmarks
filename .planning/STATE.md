@@ -23,7 +23,7 @@ Plan: Not started
 Plans: 0/? (planning not yet started)
 Last completed: Phase 16 — Core Shell & Shared Messages Translation (3/3 plans, 2026-05-01)
 Status: Ready to discuss/plan Phase 17
-Last activity: 2026-05-01
+Last activity: 2026-05-01 - Completed quick task 260501-nyc: modern theme gadget title bars use primary blue instead of classic grey
 Resume: `/gsd-discuss-phase 17` — gather context for Phase 17 Feature Surface Translation
 
 ## Project Reference
@@ -84,6 +84,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-q04 | remove table 'tweets' since there is no reference to it | 2026-05-01 | 3f215d4 |
 | 260501-q05 | Font size preference (large, medium, small) | 2026-05-01 | 7ac28f1, e8608a0 |
 | 260501-jmn | Fix cucumber regression from Phase 15-01 redirect (`features/step_definitions/todos.rb:7`); add CLAUDE.md phase-verification policy requiring `bundle exec rake dad:test` green | 2026-05-01 | d5311a6, 03c892c |
+| 260501-nyc | modern theme — gadget title bars use primary blue (#3b82f6) instead of classic grey | 2026-05-01 | fb43b2c |
 
 ## Session Continuity
 
