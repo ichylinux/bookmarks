@@ -1,25 +1,35 @@
+<% submit_label =
+    if @bookmark.persisted?
+      t('.submit_update')
+    elsif params[:kind] == 'folder'
+      t('.submit_create_folder')
+    else
+      t('.submit_create_bookmark')
+    end
+%>
+
 <%= form_for @bookmark do |f| %>
   <table>
     <tr>
       <th><%= f.label :url %></th>
       <td>
-        <%= f.text_field :url, placeholder: 'URL（フォルダの場合は空欄）' %>
-        <small>URLを空欄にするとフォルダとして作成されます</small>
+        <%= f.text_field :url, placeholder: t('.url_placeholder') %>
+        <small><%= t('.folder_help') %></small>
       </td>
     </tr>
     <tr>
       <th><%= f.label :title %></th>
       <td>
         <%= f.text_field :title %>
-        <small>URLを入力したあと、別の欄へフォーカスを移す（Tab やクリック）と、ページのタイトルが自動で入ります。タイトル欄がすでに入力されているときは上書きしません。</small>
+        <small><%= t('.title_help') %></small>
       </td>
     </tr>
     <tr>
-      <th><%= f.label :parent_id, '親フォルダ' %></th>
+      <th><%= f.label :parent_id, t('.parent_folder') %></th>
       <td>
         <%= f.select :parent_id, 
             options_for_select(
-              [['なし（ルート）', nil]] + 
+              [[t('.no_parent'), nil]] +
               (@available_folders || Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title))
                       .map { |f| [f.title, f.id] },
               @bookmark.parent_id
@@ -30,5 +40,5 @@
       </td>
     </tr>
   </table>
-  <%= f.submit %>
+  <%= f.submit submit_label %>
 <% end %>

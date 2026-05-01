@@ -25,6 +25,58 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/bookmarks/new', path
   end
 
+  def test_ブックマーク新規フォームが日本語ロケールで表示される
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get new_bookmark_path(kind: 'bookmark')
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select 'input#bookmark_url[placeholder=?]', 'URL（フォルダの場合は空欄）'
+    assert_select 'small', text: 'URLを空欄にするとフォルダとして作成されます'
+    assert_select 'small', text: 'タイトルを空欄にするとURLから自動取得します'
+    assert_select 'label[for=bookmark_parent_id]', text: '親フォルダ'
+    assert_select 'option', text: 'なし（ルート）'
+    assert_select 'input[type=submit][value=?]', 'ブックマークを追加'
+  end
+
+  def test_ブックマーク新規フォームが英語ロケールで表示されフォルダ名は変わらない
+    folder = Bookmark.create!(user_id: user.id, title: '日本語フォルダ17-02', url: nil, parent_id: nil, deleted: false)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get new_bookmark_path(parent_id: folder.id, kind: 'bookmark')
+
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select 'input#bookmark_url[placeholder=?]', 'URL (leave blank for folders)'
+    assert_select 'small', text: 'Leave URL blank to create a folder'
+    assert_select 'small', text: 'Leave title blank to fetch it from the URL'
+    assert_select 'label[for=bookmark_parent_id]', text: 'Parent folder'
+    assert_select 'option', text: 'None (root)'
+    assert_select 'option', text: folder.title
+    assert_select 'input[type=submit][value=?]', 'Add Bookmark'
+  end
+
+  def test_フォルダ作成フォームが明示的な日本語submitを表示する
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get new_bookmark_path(kind: 'folder')
+
+    assert_response :success
+    assert_select 'input[type=submit][value=?]', 'フォルダを作成'
+  end
+
+  def test_編集フォームが英語ロケールで更新submitを表示する
+    bookmark = bookmark(user)
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get edit_bookmark_path(bookmark)
+
+    assert_response :success
+    assert_select 'h1', text: 'Edit Bookmark'
+    assert_select 'input[type=submit][value=?]', 'Update'
+  end
+
   def test_登録
     sign_in user
     post bookmarks_path, params: { bookmark: bookmark_params(user) }
