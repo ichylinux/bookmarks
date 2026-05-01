@@ -4,8 +4,8 @@ milestone: v1.4
 milestone_name: — Internationalization
 status: executing
 stopped_at: Phase 15 完了 — Wave 1 (15-01 backend, 15-02 i18n) と Wave 2 (15-03 view + 8 tests) を sequential inline 実行。途中 Plan 15-02 の lazy lookup namespace ミスを Plan 15-03 で補修。最終 suite 135/694/0
-last_updated: "2026-05-01T06:53:11.998Z"
-last_activity: 2026-05-01 -- Phase 16 planning complete
+last_updated: "2026-05-01T07:02:42.980Z"
+last_activity: 2026-05-01 -- Phase 16 execution started
 progress:
   total_phases: 5
   completed_phases: 2
@@ -18,11 +18,12 @@ progress:
 
 ## Current Position
 
-Phase: 16 (Core Shell & Shared Messages Translation) — context gathered (2026-05-01)
+Phase: 16 (core-shell-and-shared-messages-translation) — EXECUTING
+Plan: 1 of 3
 Plans: 0/? (planning not yet started)
 Last completed: Phase 15 — Language Preference (3/3 plans, 2026-05-01)
-Status: Ready to execute
-Last activity: 2026-05-01 -- Phase 16 planning complete
+Status: Executing Phase 16
+Last activity: 2026-05-01 -- Phase 16 execution started
 Resume: `/gsd-plan-phase 16` — research + plan Phase 16
 
 ## Project Reference
