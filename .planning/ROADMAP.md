@@ -185,4 +185,4 @@ The full phase details, success criteria, and plan list live in [`.planning/mile
 </details>
 
 ---
-*Last updated: 2026-05-01 — Phase 15 complete (3/3 plans, full Minitest suite green: 135 runs / 694 assertions / 0 failures); Phase 16 ready to plan.*
+*Last updated: 2026-05-01 — Phase 16 complete (3/3 plans; lint, Minitest 142/716, and dad:test 9/28 green); Phase 17 ready to discuss/plan.*
