@@ -17,7 +17,7 @@ class PreferencesController < ApplicationController
       @user.save!
     end
 
-    flash[:notice] = t('preferences.saved')
+    flash[:notice] = saved_notice
     redirect_to preferences_path
   end
 
@@ -33,7 +33,7 @@ class PreferencesController < ApplicationController
       @user.save!
     end
 
-    flash[:notice] = t('preferences.saved')
+    flash[:notice] = saved_notice
     redirect_to preferences_path
   end
 
@@ -48,6 +48,15 @@ class PreferencesController < ApplicationController
     ]
 
     params.require(:user).permit(permitted)
+  end
+
+  def saved_notice
+    candidate = @user.preference&.locale
+    if candidate.present? && Preference::SUPPORTED_LOCALES.include?(candidate.to_s)
+      I18n.with_locale(candidate.to_sym) { t('preferences.saved') }
+    else
+      t('preferences.saved')
+    end
   end
 
 end
