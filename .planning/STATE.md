@@ -1,50 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: — Internationalization
-status: completed
-stopped_at: v1.4 milestone complete — all 7 phases shipped, audit passed, ready to archive
-last_updated: "2026-05-03T08:58:41.741Z"
-last_activity: 2026-05-03
+milestone: v1.5
+milestone_name: Verification Debt Cleanup
+status: planning
+stopped_at: ""
+last_updated: "2026-05-03T18:09:05+09:00"
+last_activity: 2026-05-03 - Milestone v1.5 started
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 19
-  completed_plans: 19
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 18.2 (Preferences Locale Change Flash) — complete
-Plan: All complete
-Plans: 1/1 complete
-Last completed: Phase 18.2 — Preferences Locale Change Flash (1/1 plan, 2026-05-03)
-Status: v1.4 milestone complete — ready to archive
-Last activity: 2026-05-03
-Resume: `/gsd-complete-milestone` — archive v1.4 and prepare for next version
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-03 — Milestone v1.5 started
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-01)
+See: `.planning/PROJECT.md` (updated 2026-05-03)
 
-**Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-**Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30)
-**Current milestone:** v1.4 — Internationalization (gap closure)
-
-## v1.4 Roadmap
-
-| Phase | Name | Status |
-|-------|------|--------|
-| 14 | Locale Infrastructure | Complete (2026-05-01) |
-| 15 | Language Preference | Complete (2026-05-01) — 3/3 plans, 8 new integration tests |
-| 16 | Core Shell & Shared Messages Translation | Complete (2026-05-01) — 3/3 plans, full lint/Minitest/dad:test gate green |
-| 17 | Feature Surface Translation | Complete (2026-05-01) — 5/5 plans, full lint/Minitest/dad:test gate green |
-| 18 | Auth, 2FA & Translation Verification | Complete (2026-05-02) — 3/3 plans, full lint/Minitest/dad:test gate green |
-| 18.1 | 2FA Pending Locale Resolution | Complete (2026-05-02) — 1/1 plan, full lint/Minitest/dad:test gate green |
-| 18.2 | Preferences Locale Change Flash | Ready to plan — closes preferences save flash old-locale audit gap |
+**Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
+**Shipped:** v1.1 (2026-04-27), v1.2 (2026-04-29), v1.3 (2026-04-30), v1.4 (2026-05-03)
+**Current milestone:** v1.5 — Verification Debt Cleanup
 
 ## Accumulated Context
 

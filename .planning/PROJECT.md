@@ -14,15 +14,17 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash messages, Devise auth, 2FA OTP challenge, preferences, bookmarks/notes/todos/feeds/calendar surfaces) renders in Japanese or English. Locale is persisted per account on `preferences.locale`, with a three-stage resolution (saved preference → Accept-Language → `:ja` default) wired through a thread-safe `Localization` controller concern using `around_action` + `I18n.with_locale`. The pending 2FA OTP challenge honors saved locale before sign-in completes. Preferences save flash translates under the just-saved locale via a whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together. Locale key parity between `ja.yml` and `en.yml` is enforced by tests; user content (bookmark/folder names, note bodies, Todo titles, feed/calendar external data) remains untranslated by design.
 
-**Current milestone:** None active. Ready for `/gsd-new-milestone`.
+**Current milestone:** v1.5 — Verification Debt Cleanup (planning)
 
-## Next Milestone Goals
+## Current Milestone: v1.5 Verification Debt Cleanup
 
-Candidates for the next milestone (to be refined during `/gsd-new-milestone`):
+**Goal:** Close carry-forward verification debt by completing missing Phase 05/06/09 verification artifacts, with only minimal supporting fixes if verification reveals true gaps.
 
-- Address carry-forward tech debt (Phase 14/15/18 missing/draft VALIDATION.md, Phase 16 `nav.home: Home` brand label, Phase 18 Cucumber reset hook scope, dad:test scenario-order DB-state leak — see `.planning/v1.4-MILESTONE-AUDIT.md` and the deferred items in STATE.md).
-- Outstanding feature requests deferred from earlier milestones (delete individual notes, note gadget on modern/classic themes — see Out of Scope).
-- 13 quick tasks accumulated across v1.1–v1.4 in `.planning/quick/` (drawer UI helper extraction, simple theme tab toggle, font size preference polish, etc.).
+**Target features:**
+- Complete Phase 05 verification documentation from existing implementation evidence
+- Complete Phase 06 verification documentation from existing implementation evidence
+- Complete Phase 09 verification documentation from existing implementation evidence
+- Apply only narrowly scoped supporting code/test fixes required to make verification claims accurate
 
 ## Requirements
 
@@ -47,7 +49,9 @@ Candidates for the next milestone (to be refined during `/gsd-new-milestone`):
 
 ### Active
 
-(None — ready for next milestone)
+- [ ] Complete Phase 05 verification documentation and acceptance evidence
+- [ ] Complete Phase 06 verification documentation and acceptance evidence
+- [ ] Complete Phase 09 verification documentation and acceptance evidence
 
 ### Out of Scope (revisit when planning)
 
@@ -130,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-03 — v1.4 Internationalization shipped and archived.*
+*Last updated: 2026-05-03 — started v1.5 Verification Debt Cleanup milestone.*
