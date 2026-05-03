@@ -12,7 +12,7 @@
 
 - [x] **Phase 19: Verification Rubric & Traceability Baseline** - Shared verification contract and evidence mapping for phases 05/06/09.
 - [x] **Phase 20: Phase 05 Verification Closure** - Close phase 05 verification document with evidence-backed outcomes and minimal fixes only when required.
-- [ ] **Phase 21: Phase 06 Verification Closure** - Close phase 06 verification document including modern/non-modern navigation and drawer contracts.
+- [x] **Phase 21: Phase 06 Verification Closure** - Close phase 06 verification document including modern/non-modern navigation and drawer contracts.
 - [ ] **Phase 22: Phase 09 Verification Closure & Milestone Sync** - Close phase 09 verification evidence and synchronize milestone tracking documents.
 
 ## Phase Details
@@ -66,8 +66,8 @@
 |-------|----------------|--------|-----------|
 | 19. Verification Rubric & Traceability Baseline | 1/1 | Complete | 2026-05-03 |
 | 20. Phase 05 Verification Closure | 2/2 | Complete | 2026-05-03 |
-| 21. Phase 06 Verification Closure | 0/2 | Planned | - |
+| 21. Phase 06 Verification Closure | 2/2 | Complete | 2026-05-03 |
 | 22. Phase 09 Verification Closure & Milestone Sync | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-05-03 — Phase 21 discussed/UI-specified/planned; ready to execute.*
+*Last updated: 2026-05-03 — Phase 21 executed and verification-closed (`P06V-01`, `P06V-02` PASS).*
