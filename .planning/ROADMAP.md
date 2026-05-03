@@ -196,7 +196,12 @@ Plans:
 
 **Gap Closure:** Closes `preferences-locale-change-flash-old-locale` from `.planning/v1.4-MILESTONE-AUDIT.md`.
 
-**Plans:** To be planned
+**Plans:** 1 plan
+
+Plans:
+
+**Wave 1**
+- [ ] 18.2-01-PLAN.md — PreferencesController locale-change save flash translated under saved candidate locale + ja↔en regression tests + full verification gate
 
 **Success criteria:**
 1. Updating `preference.locale` from `ja` to `en` redirects to `/preferences` with `<html lang="en">`.
