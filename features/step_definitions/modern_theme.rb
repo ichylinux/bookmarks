@@ -3,6 +3,16 @@
   sign_in user
 end
 
+もし /^クラシックテーマでサインインします。$/ do
+  user.preference.update!(theme: 'classic')
+  sign_in user unless current_user&.id == user.id
+end
+
+もし /^検証用シンプルテーマでサインインします。$/ do
+  user.preference.update!(theme: 'simple')
+  sign_in user unless current_user&.id == user.id
+end
+
 もし /^ルートページを開くと、ドロワーは閉じています。$/ do
   visit root_path
   capture
@@ -55,5 +65,33 @@ end
          'ヘッダーにユーザー名が表示されているはずです'
   assert !page.has_css?('#header .head-box .head-user-email a'),
          'ユーザー名はリンクではないはずです'
+  capture
+end
+
+もし /^ルートページを開くと、シンプルメニューが表示され、ドロワー関連要素はありません。$/ do
+  visit root_path
+  assert has_css?('body.simple'), 'シンプルテーマであるはずです'
+  assert has_css?('ul.navigation'), 'シンプルメニューが表示されているはずです'
+  assert !page.has_css?('button.hamburger-btn'), 'ハンバーガーボタンは表示されないはずです'
+  assert !page.has_css?('div.drawer'), 'ドロワーは表示されないはずです'
+  assert !page.has_css?('div.drawer-overlay'), 'オーバーレイは表示されないはずです'
+  assert !page.has_css?('body.drawer-open'), 'ドロワー状態は付与されないはずです'
+  capture
+end
+
+もし /^Escapeキーを押してもドロワーは開きません。$/ do
+  find('body').send_keys(:escape)
+  assert !page.has_css?('body.drawer-open'), 'Escape押下後もドロワーは開かないはずです'
+  capture
+end
+
+もし /^シンプルメニューの「設定」リンクをクリックすると設定ページに遷移します。$/ do
+  within 'ul.navigation' do
+    find('li.email > a', match: :first).click
+    assert has_css?('li.email .menu:not(.hidden)'), 'シンプルメニューのドロップダウンが開いているはずです'
+    find("li.email .menu a[href='#{preferences_path}']").click
+  end
+  assert_equal preferences_path, current_path
+  assert !page.has_css?('body.drawer-open'), '遷移後もドロワー状態は付与されないはずです'
   capture
 end
