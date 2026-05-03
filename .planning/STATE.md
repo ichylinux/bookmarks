@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Verification Debt Cleanup
 status: planning
-stopped_at: Phase 21 UI-SPEC approved
-last_updated: "2026-05-03T20:52:00+09:00"
-last_activity: 2026-05-03 - Phase 21 UI-SPEC approved; ready for plan-phase
+stopped_at: Phase 21 plans verified
+last_updated: "2026-05-03T20:58:00+09:00"
+last_activity: 2026-05-03 - Phase 21 research and plans created; checker-approved for execution
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 3
+  total_plans: 5
   completed_plans: 3
   percent: 50
 ---
@@ -19,9 +19,9 @@ progress:
 ## Current Position
 
 Phase: 21 of 22 (Phase 06 Verification Closure)
-Plan: context ready; planning not started
-Status: Ready for Phase 21 planning
-Last activity: 2026-05-03 — Phase 21 context + UI-SPEC captured (`21-CONTEXT.md`, `21-DISCUSSION-LOG.md`, `21-UI-SPEC.md`)
+Plan: 2 plans ready (21-01, 21-02)
+Status: Planned — ready to execute
+Last activity: 2026-05-03 — Phase 21 plans verified (`21-01-PLAN.md`, `21-02-PLAN.md`)
 
 Progress: [█████░░░░░] 50%
 
@@ -62,6 +62,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 - Phase 19 security gate is now closed (`19-SECURITY.md`, threats_open: 0).
 - Phase 20 context lock: Phase 05-only claim inventory (`THEME-01..03`) with fail-first, automated-first, one-rerun closure policy.
 - Phase 20 execution outcome: `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is now closure-ready (`P05-C01..C03` PASS).
+- Phase 21 lock: exactly 3 claims (NAV-01, NAV-02, non-modern unaffected), with classic+simple interaction evidence required.
 
 ### Pending Todos
 
@@ -73,6 +74,6 @@ None currently. Next risk is Phase 06 scope drift; keep verification limited to 
 
 ## Session Continuity
 
-Last session: 2026-05-03T20:52:00+09:00
-Stopped at: Phase 21 UI-SPEC approved
-Resume: `/gsd-plan-phase 21`
+Last session: 2026-05-03T20:58:00+09:00
+Stopped at: Phase 21 plans verified
+Resume: `/gsd-execute-phase 21`

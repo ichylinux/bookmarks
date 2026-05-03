@@ -46,7 +46,7 @@
   1. `.planning/phases/06-html-structure/06-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 06 requirements.
   2. Verification evidence demonstrates modern-theme navigation/drawer behavior contracts under expected interactions.
   3. Verification evidence also demonstrates non-modern behavior contracts so regressions or false assumptions are visible.
-**Plans**: TBD
+**Plans**: 01 — Verification artifact + non-modern interaction evidence, 02 — Baseline closure + fail-first mismatch handling
 **UI hint**: yes
 
 ### Phase 22: Phase 09 Verification Closure & Milestone Sync
@@ -66,8 +66,8 @@
 |-------|----------------|--------|-----------|
 | 19. Verification Rubric & Traceability Baseline | 1/1 | Complete | 2026-05-03 |
 | 20. Phase 05 Verification Closure | 2/2 | Complete | 2026-05-03 |
-| 21. Phase 06 Verification Closure | 0/TBD | Not started | - |
+| 21. Phase 06 Verification Closure | 0/2 | Planned | - |
 | 22. Phase 09 Verification Closure & Milestone Sync | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-05-03 — Phase 20 executed and verified complete; Phase 21 is next.*
+*Last updated: 2026-05-03 — Phase 21 discussed/UI-specified/planned; ready to execute.*
