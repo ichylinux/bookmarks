@@ -25,7 +25,7 @@
   1. Maintainer can use a single rubric for phases 05/06/09 that captures REQ-ID mapping, commit SHA, commands run, outcomes, and rerun notes.
   2. For every verification claim in phases 05/06/09 scope, maintainer can point to at least one concrete evidence source (test, code reference, or manual check record).
   3. Verification records are reproducible by another maintainer using only the logged SHA and command history.
-**Plans**: TBD
+**Plans**: 01 — Verification rubric + canonical pointers
 
 ### Phase 20: Phase 05 Verification Closure
 **Goal**: Maintainers can truthfully close v1.2 phase 05 verification with complete pass/fail evidence and only minimal scope-bound corrections.
@@ -64,7 +64,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 19. Verification Rubric & Traceability Baseline | 0/TBD | Not started | - |
+| 19. Verification Rubric & Traceability Baseline | 1/1 | Executed — verify | 2026-05-03 |
 | 20. Phase 05 Verification Closure | 0/TBD | Not started | - |
 | 21. Phase 06 Verification Closure | 0/TBD | Not started | - |
 | 22. Phase 09 Verification Closure & Milestone Sync | 0/TBD | Not started | - |

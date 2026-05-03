@@ -7,6 +7,8 @@
 
 ### Verification Framework
 
+> **Canonical rubric:** `.planning/phases/19-verification-rubric-traceability-baseline/19-VERIFICATION-RUBRIC.md`
+
 - [ ] **VERF-01**: Maintainer can use a shared verification rubric for phases 05, 06, and 09 that defines required evidence fields (REQ-ID mapping, commit SHA, commands, outcomes, rerun notes).
 - [ ] **VERF-02**: Maintainer can map each verification claim for phases 05, 06, and 09 to at least one concrete evidence source (test, code reference, or explicit manual check record).
 
