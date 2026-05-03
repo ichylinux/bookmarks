@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Verification Debt Cleanup
 status: planning
-stopped_at: ""
-last_updated: "2026-05-03T18:40:00+09:00"
-last_activity: 2026-05-03 - v1.5 roadmap created (Phases 19-22)
+stopped_at: Phase 19 context gathered
+last_updated: "2026-05-03T18:54:18+09:00"
+last_activity: 2026-05-03 - Phase 19 context gathered
 progress:
   total_phases: 4
   completed_phases: 0
@@ -20,8 +20,8 @@ progress:
 
 Phase: 19 of 22 (Verification Rubric & Traceability Baseline)
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-03 — Roadmap finalized for v1.5 (Phases 19-22)
+Status: Context gathered — ready to plan
+Last activity: 2026-05-03 — Phase 19 context captured
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -56,6 +56,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 - v1.5 phases are requirement-driven only: verification rubric → phase 05 closure → phase 06 closure → phase 09 closure + milestone sync.
 - Scope remains strict to verification debt cleanup for 05/06/09 and milestone bookkeeping updates.
 - Minimal-fix policy applies: code/test changes allowed only when evidence proves a real mismatch.
+- Phase 19 context locked: hybrid evidence schema, automated-first acceptance threshold, one-rerun flake policy, and fail-first/minimal-fix workflow.
 
 ### Pending Todos
 
@@ -68,5 +69,5 @@ None currently. Primary risk is false closure without reproducible evidence; mit
 ## Session Continuity
 
 Last session: 2026-05-03T09:40:00Z
-Stopped at: v1.5 roadmap created with full requirement coverage (Phases 19-22)
-Resume: `/gsd-plan-phase 19`
+Stopped at: Phase 19 context gathered
+Resume: `/gsd-plan-phase 19` (uses `.planning/phases/19-verification-rubric-traceability-baseline/19-CONTEXT.md`)
