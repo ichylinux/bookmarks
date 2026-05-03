@@ -3,7 +3,7 @@ require 'uri'
 もし /^ブックマーク管理画面を開き、ブックマーク追加用のアイコンをクリックします。$/ do
   sign_in user
   visit bookmarks_path
-  capture
+  assert has_selector?('.breadcrumbs')
   assert has_selector?('a.breadcrumbs-create-bookmark')
   find('a.breadcrumbs-create-bookmark').click
   assert has_selector?('form')
