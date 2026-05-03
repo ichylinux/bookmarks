@@ -60,9 +60,9 @@ Existing infrastructure covers all phase behaviors. No new test stubs required f
 
 ## Validation Sign-Off
 
-- [ ] Rubric file committed with all mandatory sections
-- [ ] Canonical pointers updated (`REQUIREMENTS.md`, `ROADMAP.md` Plans line)
-- [ ] Full three-suite green at closure SHA
-- [ ] `nyquist_compliant` updated when execution waves complete
+- [x] Rubric file committed with all mandatory sections
+- [x] Canonical pointers updated (`REQUIREMENTS.md`, `ROADMAP.md` Plans line)
+- [x] Full three-suite green at closure SHA
+- [x] `nyquist_compliant` updated when execution waves complete
 
 **Approval:** pending
