@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Verification Debt Cleanup
 status: planning
-stopped_at: Phase 21 context gathered
-last_updated: "2026-05-03T20:49:00+09:00"
-last_activity: 2026-05-03 - Phase 21 discussion complete; context captured for planning
+stopped_at: Phase 21 UI-SPEC approved
+last_updated: "2026-05-03T20:52:00+09:00"
+last_activity: 2026-05-03 - Phase 21 UI-SPEC approved; ready for plan-phase
 progress:
   total_phases: 4
   completed_phases: 2
@@ -21,7 +21,7 @@ progress:
 Phase: 21 of 22 (Phase 06 Verification Closure)
 Plan: context ready; planning not started
 Status: Ready for Phase 21 planning
-Last activity: 2026-05-03 — Phase 21 context captured (`21-CONTEXT.md`, `21-DISCUSSION-LOG.md`)
+Last activity: 2026-05-03 — Phase 21 context + UI-SPEC captured (`21-CONTEXT.md`, `21-DISCUSSION-LOG.md`, `21-UI-SPEC.md`)
 
 Progress: [█████░░░░░] 50%
 
@@ -73,6 +73,6 @@ None currently. Next risk is Phase 06 scope drift; keep verification limited to 
 
 ## Session Continuity
 
-Last session: 2026-05-03T20:49:00+09:00
-Stopped at: Phase 21 context gathered
+Last session: 2026-05-03T20:52:00+09:00
+Stopped at: Phase 21 UI-SPEC approved
 Resume: `/gsd-plan-phase 21`
