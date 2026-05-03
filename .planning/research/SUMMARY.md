@@ -1,115 +1,132 @@
 # Project Research Summary
 
-**Project:** Bookmarks v1.4 — Internationalization
-**Domain:** Rails i18n / bilingual UI (ja/en) for an existing Rails personal dashboard
-**Researched:** 2026-05-01
+**Project:** Bookmarks — v1.5 Verification Debt Cleanup  
+**Domain:** Verification evidence closure and milestone documentation integrity  
+**Researched:** 2026-05-03  
 **Confidence:** HIGH
 
 ## Executive Summary
 
-v1.4 should add bilingual Japanese/English UI through Rails' built-in i18n system, with no frontend framework changes and no JavaScript translation pipeline. The app already has the right foundation: Rails 8.1, `rails-i18n`, `devise-i18n`, server-rendered ERB views, and a preferences page where account settings already live.
+v1.5 is a verification-hardening milestone, not a feature milestone. The recommended approach is to close carry-forward debt for Phases 05/06/09 by rebuilding requirement-to-evidence traceability, completing missing verification artifacts, and allowing only minimal supporting fixes when evidence proves a real gap.
 
-The recommended implementation is a small locale infrastructure layer first, followed by incremental string extraction. Locale should be persisted on `users.locale` as defined in `PROJECT.md`, resolved on every request by `ApplicationController`, and selected through `/preferences`. First visits and unauthenticated pages should fall back to a whitelisted `Accept-Language` parse, then `I18n.default_locale` (`:ja`).
+Experts handle this by preserving the current stack and enforcing a strict verification contract: run lint + Rails tests + Cucumber (`dad:test`), record commit SHA/commands/results, and treat verification docs as release-gating artifacts. Completion status in ROADMAP/STATE/MILESTONES should only move after concrete proof is captured.
 
-The main risks are incomplete English coverage hidden by fallbacks, Devise/Warden messages using the wrong locale, and hardcoded strings surviving in attributes, helper-rendered HTML, JavaScript callbacks, tests, and custom 2FA views. These should be handled by phasing foundation work before extraction, adding locale-specific tests, and verifying Devise failure paths explicitly.
-
-## Reconciled Decisions
-
-### Store locale on `users.locale`
-
-`PROJECT.md` is canonical for v1.4 and explicitly calls for a `locale` column on `users`. Although one architecture note considered `preferences.locale`, this milestone should use `users.locale` because locale affects authentication, Devise/Warden messaging, first post-login rendering, and account identity more than presentation-only preferences.
-
-### Use `before_action :set_locale`
-
-Rails generally recommends `around_action` with `I18n.with_locale`, but this app uses Devise/Warden. Research flags Devise failure flows as a risk when `around_action` resets locale before Warden failure responses are rendered. Use a `before_action` that assigns `I18n.locale = resolved_locale` at the start of every request. Never mutate `I18n.default_locale` at runtime.
-
-The implementation must verify an English-locale failed-login path so Devise flash messages are proven to render in English.
-
-### Avoid new dependencies by default
-
-Manual `Accept-Language` parsing is sufficient for the two supported locales when paired with `I18n.available_locales` whitelisting. Do not add `http_accept_language` unless real browser/header behavior proves the manual parser inadequate.
-
-Do not configure `i18n-js` for v1.4. For isolated JavaScript-visible strings, render translated values into `data-*` attributes from ERB and read those attributes in JavaScript.
-
-### Rely on bundled Devise translations unless customizing
-
-`devise-i18n` is already installed. Let the gem provide default Devise messages and labels unless the app needs custom Devise copy. Custom 2FA views still need explicit `en.yml` counterparts.
+Primary risks are false closure (no REQ-ID mapping), non-reproducible evidence, flake laundering, and scope creep into refactors. Mitigation is process enforcement: mandatory traceability, deterministic evidence runs, explicit first-failure logging, and narrow fix policy tied directly to failed claims.
 
 ## Key Findings
 
-### Recommended Stack
+### Stack Stance (from STACK.md)
 
-No required new gems or npm packages.
+Keep the existing Rails/Sprockets/jQuery test stack and close debt via discipline, not tooling change.
 
-| Component | Recommendation |
-|-----------|----------------|
-| Locale files | `config/locales/ja.yml` and `config/locales/en.yml` |
-| Locale persistence | `users.locale`, nullable string, validated against `ja` / `en` |
-| Locale resolution | `ApplicationController` `before_action :set_locale` |
-| First-visit fallback | Safely parse `HTTP_ACCEPT_LANGUAGE`, whitelist against `I18n.available_locales` |
-| Devise | Use installed `devise-i18n`; verify Warden failure path |
-| JavaScript strings | Prefer ERB-rendered `data-*` translated values, not `i18n-js` |
+**Core technologies and commands:**
+- `yarn run lint` — style/static gate for verification credibility  
+- `bin/rails test` — regression and behavior gate  
+- `bundle exec rake dad:test` — integration/acceptance gate (canonical Cucumber entrypoint)  
+- `SORT=true bundle exec rake dad:test` — deterministic ordering for reproducible evidence  
 
-### Table Stakes
+**Version/tooling stance:** no framework migrations, no new reporting platform, no runner overhaul in v1.5.
 
-- Add `users.locale` and validation.
-- Configure `config.i18n.available_locales = %i[ja en]`.
-- Resolve locale by priority: `current_user.locale` -> valid `Accept-Language` locale -> `I18n.default_locale`.
-- Add a language selector to `/preferences`.
-- Extract all hardcoded UI strings in both `ja.yml` and `en.yml`.
-- Translate navigation, layout, flash/error messages, bookmarks, notes, todos, feeds, calendar surfaces, custom 2FA views, ARIA/title/placeholder text, and controller alerts.
-- Verify Devise auth pages and failure flash behavior in both locales.
+### Requirement Categories (from FEATURES.md)
 
-### Watch Out For
+**Must-have (table stakes):**
+- Complete `05-VERIFICATION.md`, `06-VERIFICATION.md`, `09-VERIFICATION.md`
+- REQ-ID → evidence → result traceability for every claim
+- Reproducible run records (SHA, commands, outcomes)
 
-1. **Fallbacks can mask missing English keys.** Tests should explicitly exercise `:en`, and extraction work should add both locale keys together.
-2. **Devise/Warden can bypass `around_action`.** Use `before_action` and verify failed-login flash localization.
-3. **Never change `I18n.default_locale` at runtime.** It is global, not request-local.
-4. **Whitelist `Accept-Language`.** Never assign raw header values to `I18n.locale`.
-5. **Tests currently assert Japanese literals.** Update tests alongside each extracted view/controller surface.
-6. **Strings hide in attributes and JS callbacks.** Search for text in `aria-label`, `title`, `placeholder`, submit values, helpers, `.js.erb`, and JavaScript failure handlers.
+**Should-have (quality differentiators):**
+- Shared verification rubric across 05/06/09
+- Confidence labeling per claim (HIGH/MEDIUM/LOW)
+- Cross-phase integration checks to ensure docs match current app behavior
 
-## Suggested Roadmap Phases
+**Defer (v2+ / out of scope):**
+- User-facing features, broad refactors, tooling/platform migrations
 
-### Phase 14: I18n Foundation
+### Architecture Approach (from ARCHITECTURE.md)
 
-Add `users.locale`, model validation, `available_locales`, safe locale resolution, and request-level tests for user preference, Accept-Language fallback, invalid locale rejection, and default `:ja` behavior.
+Documentation-first flow: reconstruct evidence from v1.2 requirements, author missing verification docs, apply smallest fix only if needed, then sync project tracking docs.
 
-### Phase 15: Preferences Language Switcher
+**Major components:**
+1. `v1.2-REQUIREMENTS.md` — canonical REQ IDs
+2. `05/06/09-VERIFICATION.md` — source-of-truth evidence
+3. `ROADMAP/STATE/MILESTONES/PROJECT` — completion and debt ledger synchronization
 
-Add ja/en selector to `/preferences`, persist to `users.locale`, and verify the selected language affects the next rendered page.
+### Key Risks (from PITFALLS.md)
 
-### Phase 16: Core Shell Translation
+1. **No REQ-ID traceability** — enforce explicit mapping per claim  
+2. **Non-reproducible evidence** — require SHA + exact commands + outcomes  
+3. **Skipping required suite(s)** — keep lint + rails test + dad:test mandatory  
+4. **Flake laundering** — log first failure; only controlled rerun with classification  
+5. **Scope creep from “minimal fixes”** — reject changes not directly needed for verification truth
 
-Extract layout, navigation, drawer/menu, shared buttons, preferences page labels, flash strings, and common UI copy to `ja.yml` / `en.yml`.
+## Implications for Roadmap
 
-### Phase 17: Feature Surface Translation
+### Phase 1: Traceability Matrix & Verification Rubric
+**Rationale:** all downstream verification quality depends on shared REQ-ID mapping rules.  
+**Delivers:** 05/06/09 traceability matrix, evidence template, confidence labeling standard.  
+**Addresses:** requirement-to-evidence traceability, reproducibility baseline.  
+**Avoids:** false closure and inconsistent acceptance criteria.
 
-Extract bookmarks, notes, todos, feeds, calendar, forms, validation-facing labels, controller alerts, ARIA/title/placeholder strings, and JS-visible messages via `data-*` values.
+### Phase 2: Phase 05 Verification Closure
+**Rationale:** first concrete closure pass validates rubric and workflow.  
+**Delivers:** complete `05-VERIFICATION.md` + minimal supporting fixes (if needed).  
+**Addresses:** table-stakes verification debt for Phase 05.  
+**Avoids:** THEME-ID mismatch and undocumented pass claims.
 
-### Phase 18: Auth, 2FA, and Verification
+### Phase 3: Phase 06 Verification Closure
+**Rationale:** builds on proven process and catches navigation/drawer contract regressions early.  
+**Delivers:** complete `06-VERIFICATION.md` + modern/non-modern contract proof.  
+**Addresses:** table-stakes verification debt for Phase 06.  
+**Avoids:** missing non-modern coverage and suite-skipping.
 
-Verify Devise and custom 2FA pages, failed-login flash localization, remaining hardcoded strings, English/Japanese smoke paths, and translation coverage.
+### Phase 4: Phase 09 Verification Closure + Milestone Sync
+**Rationale:** final closure should include selector-level visual proof and bookkeeping sync.  
+**Delivers:** complete `09-VERIFICATION.md`, then ROADMAP/STATE/MILESTONES/PROJECT updates.  
+**Addresses:** remaining verification debt and milestone closure readiness.  
+**Avoids:** stale project status after evidence completion.
+
+### Research Flags
+
+**Likely needs `/gsd-research-phase`:**
+- Phase 3 (if non-modern behavior evidence is ambiguous in current tests)
+- Phase 4 (if visual/selector proof lacks stable validation method)
+
+**Can likely skip deeper research (standard pattern):**
+- Phase 1 and Phase 2 (well-defined internal process and artifacts)
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Rails i18n, rails-i18n, and devise-i18n are already present |
-| Features | HIGH | Scope is explicit in `PROJECT.md` and the app surface is small enough to audit |
-| Architecture | HIGH | Server-rendered Rails flow keeps locale resolution centralized |
-| Pitfalls | HIGH | Main risks are known Rails/Devise i18n failure modes plus extraction completeness |
+| Stack | HIGH | Clear no-change stance with explicit command contract |
+| Features | HIGH | Scope sharply defined around 05/06/09 verification debt only |
+| Architecture | HIGH | Artifact flow and ordering are concrete and dependency-driven |
+| Pitfalls | HIGH | Risks are specific, actionable, and aligned to enforcement rules |
 
 **Overall confidence:** HIGH
 
+### Gaps to Address
+
+- Flake taxonomy is not formally codified; define allowed rerun/classification rules in phase planning.
+- Cross-phase integration check depth is not quantified; set a minimum evidence bar before closure sign-off.
+
 ## Sources
 
-- `.planning/PROJECT.md` — v1.4 milestone scope
-- `.planning/research/STACK.md`
-- `.planning/research/FEATURES.md`
-- `.planning/research/ARCHITECTURE.md`
-- `.planning/research/PITFALLS.md`
+### Primary (HIGH confidence)
+- `.planning/research/STACK.md` — stack stance and command contract
+- `.planning/research/FEATURES.md` — scope categories and anti-features
+- `.planning/research/ARCHITECTURE.md` — artifact flow and phase order
+- `.planning/research/PITFALLS.md` — risk model and enforcement rules
+- `.planning/PROJECT.md` — active milestone scope confirmation
 
 ---
-*Research completed: 2026-05-01*
-*Ready for requirements: yes*
+*Research completed: 2026-05-03*  
+*Ready for roadmap: yes*
+
+## Ready for requirements
+
+- [ ] REQ-ID traceability matrix approved for 05/06/09  
+- [ ] Verification rubric + evidence metadata format locked  
+- [ ] Mandatory command contract agreed (`lint`, `rails test`, `dad:test`)  
+- [ ] Minimal-fix policy and flake-handling rule confirmed  
+- [ ] ROADMAP/STATE/MILESTONES sync criteria defined
