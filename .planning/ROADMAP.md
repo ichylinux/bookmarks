@@ -21,7 +21,7 @@
 | 17. Feature Surface Translation | v1.4 | TRN-02, TRN-03, TRN-05 | Complete (5/5 plans, 2026-05-01) | Phase 16 |
 | 18. Auth, 2FA & Translation Verification | v1.4 | AUTHI18N-01, AUTHI18N-02, AUTHI18N-03, VERI18N-02, VERI18N-03, VERI18N-04 | Complete (3/3 plans, 2026-05-02) | Phase 17 |
 | 18.1. 2FA Pending Locale Resolution | v1.4 | I18N-02, AUTHI18N-02, VERI18N-02 | Complete (1/1 plan, 2026-05-02) | Phase 18 + v1.4 audit |
-| 18.2. Preferences Locale Change Flash | v1.4 | PREF-03, TRN-04, VERI18N-02 | Not started — gap closure | Phase 18.1 + v1.4 audit |
+| 18.2. Preferences Locale Change Flash | v1.4 | PREF-03, TRN-04, VERI18N-02 | Complete (1/1 plan, 2026-05-03) | Phase 18.1 + v1.4 audit |
 
 #### Phase 14: Locale Infrastructure
 
@@ -201,7 +201,7 @@ Plans:
 Plans:
 
 **Wave 1**
-- [ ] 18.2-01-PLAN.md — PreferencesController locale-change save flash translated under saved candidate locale + ja↔en regression tests + full verification gate
+- [x] 18.2-01-PLAN.md — PreferencesController locale-change save flash translated under saved candidate locale + ja↔en regression tests + full verification gate
 
 **Success criteria:**
 1. Updating `preference.locale` from `ja` to `en` redirects to `/preferences` with `<html lang="en">`.
