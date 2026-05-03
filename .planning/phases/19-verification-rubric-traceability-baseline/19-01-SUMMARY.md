@@ -29,11 +29,12 @@ Ship the shared verification rubric for phases 05/06/09 and wire canonical point
 |------|---------|------|
 | 19-01-01 | docs(phase-19-01): add shared verification rubric (VERF baseline) | `e207dc3` |
 | 19-01-02 | docs(phase-19-01): canonical rubric link, roadmap progress, state sync | `7989e0c` |
-| Summary | docs(phase-19-01): execution summary and phase research/validation artifacts | `3014c97` |
+
+Followed by a documentation-only commit adding this `19-01-SUMMARY.md` plus `19-RESEARCH.md` / `19-VALIDATION.md` (see `git log --oneline -5`).
 
 ## Verification (plan `<verification>`)
 
-Recorded against tree at `3014c97` (includes this SUMMARY commit).
+Three suites were executed successfully on the working tree **after** `7989e0c` and **before** the summary/research commit; no application code changed in later documentation commits.
 
 | Step | Command | Outcome |
 |------|---------|---------|
