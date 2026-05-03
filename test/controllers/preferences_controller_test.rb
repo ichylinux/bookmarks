@@ -209,6 +209,36 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_localeをjaからenに変更すると保存通知が英語で表示される
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: 'en').merge(id: user.preference.id)
+      }
+    }
+    assert_response :redirect
+    follow_redirect!
+    assert_equal '/preferences', path
+    assert_select 'html[lang=?]', 'en'
+    assert_select '.flash-notice', text: I18n.t('preferences.saved', locale: :en)
+  end
+
+  def test_localeをenからjaに変更すると保存通知が日本語で表示される
+    user.preference.update!(locale: 'en')
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(locale: 'ja').merge(id: user.preference.id)
+      }
+    }
+    assert_response :redirect
+    follow_redirect!
+    assert_equal '/preferences', path
+    assert_select 'html[lang=?]', 'ja'
+    assert_select '.flash-notice', text: I18n.t('preferences.saved', locale: :ja)
+  end
+
   def test_localeはサインアウト後も保持される
     sign_in user
     patch preference_path(user), params: {
