@@ -87,6 +87,61 @@
 
 ---
 
+## Milestone: v1.4 — Internationalization
+
+**Shipped:** 2026-05-03
+**Phases:** 7 (14–18.2) | **Plans:** 19 | **Tasks:** 32
+
+### What Was Built
+
+- Locale infrastructure: `preferences.locale` column, `Preference::SUPPORTED_LOCALES` whitelist, `Localization` controller concern with thread-safe `around_action :set_locale` + `I18n.with_locale`, three-stage resolution (saved → Accept-Language → :ja), `<html lang>` from resolved locale.
+- Preferences language switcher (ja/en/auto) on `/preferences` with locale-aware page chrome.
+- Core shell + shared message translation: navigation, drawer, simple-theme menu, `flash.errors.generic` fallback all driven by `t(...)`.
+- Feature-surface translation: bookmarks, notes, todos, feeds, calendars — UI chrome localized while user/external content stays as-is. JavaScript-visible feed messages supplied via server-rendered translated `data-*` attributes (no JS i18n build pipeline).
+- Auth/2FA localization: Devise `invalid_credentials` alert, OTP labels, setup pages — all bilingual through shared layout flash rendering.
+- Phase 18.1 gap closure: pending 2FA OTP page resolves saved locale via `session[:otp_user_id]` before sign-in completes, without signing in early, while preserving the `SUPPORTED_LOCALES` whitelist.
+- Phase 18.2 gap closure: `PreferencesController#create/update` translate save flash under the just-saved locale via whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together.
+- Ja/en regression coverage: locale key parity test, OTP saved-locale test, locale-change save flash test (both directions), representative feature-surface ja/en assertions.
+
+### What Worked
+
+- **Phase 14 invariants drove everything downstream:** the `around_action` + `I18n.with_locale` + whitelist-gate contract was set once and held across 18 plans. Every subsequent integration just had to respect those three rules.
+- **Audit-driven gap closure:** the v1.4 milestone audit caught two real integration gaps (pending OTP, preferences flash) that automated phase-level verification missed. Splitting them into 18.1 and 18.2 preserved phase boundaries.
+- **Translation surface as a feature, not a refactor:** treating each surface (auth, feature pages, shared shell) as a phase-scoped deliverable with its own ja/en regression made the work atomically verifiable instead of one giant rewrite.
+- **`I18n.with_locale` for one-shot translation under a different locale than the request:** the same primitive solved both the OTP pre-sign-in lookup and the save flash post-redirect alignment.
+- **Native labels rule (D-02):** keeping `自動 / 日本語 / English` in their own scripts regardless of UI locale matched product intent and saved a failed UX iteration.
+
+### What Was Inefficient
+
+- **Cucumber scenario-order DB-state leak:** Phase 18.2 verification needed three runs of `dad:test` to go green (different unrelated features flaked on each first attempt). The flake was acknowledged in `CLAUDE.md` but never fixed; carries forward as v1.5+ debt.
+- **Two integration gaps caught only by milestone audit, not phase verification:** PREF-03 was claimed by Phase 15's plan, marked complete by 15-03 SUMMARY, and passed Phase 15 verification — yet the locale-change save flash bug existed the whole time. Phase-level verification didn't simulate the post-redirect render under the new locale. Lesson: phase verification should include the user-observable post-action state across the redirect boundary, not just the immediate handler return.
+- **Lazy lookup template path mismatch (Plan 15-02):** `t('.foo')` in `app/views/preferences/index.html.erb` resolves to `preferences.index.foo`, not `preferences.foo`. Plan 15-02 placed keys at `preferences.foo` and required a corrective edit. Future view-i18n plans must verify yml key paths match the view path exactly.
+- **Multiple phases shipped without VALIDATION.md** (Phase 14, 15, 18, 18.1) — Nyquist tracking lagged the actual work. Pattern from v1.3 retrospective recurred.
+- **Phase 16 `nav.home: Home` brand label** carried forward as documented intentional exception but never explicitly decided — flagged in audit tech_debt.
+
+### Patterns Established
+
+- **Locale resolution contract:** `around_action :set_locale` + `I18n.with_locale` + `Preference::SUPPORTED_LOCALES.include?(candidate.to_s)` whitelist gate before every locale-setting call. Forbidden: `before_action`, raw `I18n.locale = ...`, `?locale=` URL param.
+- **Pre-sign-in saved-locale lookup:** `session[:otp_user_id]` is the bridge for resolving saved preferences during multi-step authentication without prematurely signing in.
+- **Post-action translation under different locale:** when a save changes the active locale, materialize the post-action flash with `I18n.with_locale(saved_candidate) { t(key) }` so the flash aligns with the post-redirect chrome.
+- **Native-label rule for language UIs:** display language names in their own script regardless of UI locale.
+- **JavaScript-visible strings via server-rendered `data-*`:** no JS i18n build pipeline; ERB renders translated text into data attributes that JS reads.
+- **Yml key path parity with view path:** `t('.x')` in `app/views/A/B.html.erb` ⇒ key at `A.B.x`, not `A.x`.
+
+### Key Lessons
+
+1. **Phase verification must cross the redirect boundary.** A handler that sets `flash[:notice] = t(...)` then `redirect_to` is verified as a unit only by asserting the post-redirect rendered output, not the controller-level return. Apply this to any `before_action`-vs-`around_action`-vs-after-save state question in future phases.
+2. **`I18n.with_locale` is the universal escape hatch.** It solves "translate this one string under a different locale than the request" cleanly and thread-safely. Reach for it before adding new helpers.
+3. **Milestone audits catch what phase audits miss.** Cross-phase integrations (Localization concern × PreferencesController × shared layout flash) need a milestone-level review pass; don't trust per-phase verification to catch them.
+4. **Re-run audits after gap closures.** Stale `gaps_found` audits create friction at archive time. The audit refresh is cheap; do it as part of gap-closure phase verification.
+5. **Whitelist gates compose with framework guards.** `Preference::SUPPORTED_LOCALES` + `enforce_available_locales` + `validates :locale, inclusion:` is three independent layers; any one alone is incomplete.
+
+### Cost Observations
+
+- Not tracked in-repo. Approximate: 7 phases / 19 plans / ~3 calendar days; opus/sonnet mix typical for the project.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -96,6 +151,7 @@
 | v1.1 | 3 (2–4) | First full GSD milestone with roadmap + requirements + archive close-out |
 | v1.2 | 5 (5–9) | Added UI-SPEC, drawer JS interaction, full-page CSS polish; first multi-plan theme phase |
 | v1.3 | 4 (10–13) | First data-layer → controller → UI → tests pipeline; Cucumber E2E; zero-dep constraint held |
+| v1.4 | 7 (14–18.2) | First milestone with mid-flight gap-closure phases (18.1, 18.2) added after audit; first cross-cutting concern (locale) wired through every surface |
 
 ### Cumulative quality
 
@@ -104,6 +160,7 @@
 | v1.1 | Minitest + Cucumber green at close | Manual D-04 smoke for JS-touching flows |
 | v1.2 | Minitest + SCSS contract tests | Human UAT 5/5; drawer reduced-motion manual |
 | v1.3 | Minitest + Cucumber HEADLESS green | Human UAT 5/5; Phase 10 VERIFICATION skipped |
+| v1.4 | Minitest 191/1101 + Cucumber 9/28 green | Locale key parity test enforced; pre-existing Cucumber scenario-order flake surfaced and deferred |
 
 ### Top lessons (carry forward)
 
@@ -111,3 +168,5 @@
 2. Phase dirs not archived to `milestones/v*-phases/` — `/gsd-cleanup` available for retroactive archival.
 3. Run `/gsd-audit-milestone` only after **all** phases complete; early audits produce misleading `gaps_found` reports.
 4. Create `VERIFICATION.md` with the phase, not retroactively — saves Nyquist remediation work at close.
+5. Phase verification must cross the redirect boundary for any flow that changes shared state (locale, theme, session) — the post-action rendered output is the contract, not the handler return (v1.4).
+6. Refresh stale milestone audits as part of gap-closure phase verification, not at archive time (v1.4).
