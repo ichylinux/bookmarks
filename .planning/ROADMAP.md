@@ -6,90 +6,68 @@
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
 - ✅ **v1.4 — Internationalization** — Phases 14–18.2 (shipped 2026-05-03) — [archived](milestones/v1.4-ROADMAP.md)
+- 🚧 **v1.5 — Verification Debt Cleanup** — Phases 19–22 (in progress)
 
 ## Phases
 
-<details>
-<summary>✅ v1.4 — Internationalization (Phases 14–18.2) — SHIPPED 2026-05-03</summary>
+- [ ] **Phase 19: Verification Rubric & Traceability Baseline** - Shared verification contract and evidence mapping for phases 05/06/09.
+- [ ] **Phase 20: Phase 05 Verification Closure** - Close phase 05 verification document with evidence-backed outcomes and minimal fixes only when required.
+- [ ] **Phase 21: Phase 06 Verification Closure** - Close phase 06 verification document including modern/non-modern navigation and drawer contracts.
+- [ ] **Phase 22: Phase 09 Verification Closure & Milestone Sync** - Close phase 09 verification evidence and synchronize milestone tracking documents.
 
-The full phase details, success criteria, and plan list live in [`.planning/milestones/v1.4-ROADMAP.md`](milestones/v1.4-ROADMAP.md).
+## Phase Details
 
-- [x] **Phase 14: Locale Infrastructure** (3/3 plans) — completed 2026-05-01
-- [x] **Phase 15: Language Preference** (3/3 plans) — completed 2026-05-01
-- [x] **Phase 16: Core Shell & Shared Messages Translation** (3/3 plans) — completed 2026-05-01
-- [x] **Phase 17: Feature Surface Translation** (5/5 plans) — completed 2026-05-01
-- [x] **Phase 18: Auth, 2FA & Translation Verification** (3/3 plans) — completed 2026-05-02
-- [x] **Phase 18.1: 2FA Pending Locale Resolution** (1/1 plan) — completed 2026-05-02
-- [x] **Phase 18.2: Preferences Locale Change Flash** (1/1 plan) — completed 2026-05-03
+### Phase 19: Verification Rubric & Traceability Baseline
+**Goal**: Maintainers can verify phases 05/06/09 using one reproducible evidence rubric with explicit requirement-to-evidence mappings.
+**Depends on**: Phase 18.2
+**Requirements**: VERF-01, VERF-02
+**Success Criteria** (what must be TRUE):
+  1. Maintainer can use a single rubric for phases 05/06/09 that captures REQ-ID mapping, commit SHA, commands run, outcomes, and rerun notes.
+  2. For every verification claim in phases 05/06/09 scope, maintainer can point to at least one concrete evidence source (test, code reference, or manual check record).
+  3. Verification records are reproducible by another maintainer using only the logged SHA and command history.
+**Plans**: TBD
 
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 14. Locale Infrastructure | v1.4 | 3/3 | Complete | 2026-05-01 |
-| 15. Language Preference | v1.4 | 3/3 | Complete | 2026-05-01 |
-| 16. Core Shell & Shared Messages Translation | v1.4 | 3/3 | Complete | 2026-05-01 |
-| 17. Feature Surface Translation | v1.4 | 5/5 | Complete | 2026-05-01 |
-| 18. Auth, 2FA & Translation Verification | v1.4 | 3/3 | Complete | 2026-05-02 |
-| 18.1. 2FA Pending Locale Resolution | v1.4 | 1/1 | Complete | 2026-05-02 |
-| 18.2. Preferences Locale Change Flash | v1.4 | 1/1 | Complete | 2026-05-03 |
+### Phase 20: Phase 05 Verification Closure
+**Goal**: Maintainers can truthfully close v1.2 phase 05 verification with complete pass/fail evidence and only minimal scope-bound corrections.
+**Depends on**: Phase 19
+**Requirements**: P05V-01, P05V-02
+**Success Criteria** (what must be TRUE):
+  1. `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 05 requirements.
+  2. Any failed claim is either recorded as fail with evidence or corrected with the smallest supporting code/test change directly tied to that claim.
+  3. After any supporting fix, affected phase 05 claims are re-verified and evidence is updated in the same verification record.
+**Plans**: TBD
+**UI hint**: yes
 
-</details>
+### Phase 21: Phase 06 Verification Closure
+**Goal**: Maintainers can truthfully close v1.2 phase 06 verification including navigation and drawer behavior contracts across supported themes.
+**Depends on**: Phase 19
+**Requirements**: P06V-01, P06V-02
+**Success Criteria** (what must be TRUE):
+  1. `.planning/phases/06-html-structure/06-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 06 requirements.
+  2. Verification evidence demonstrates modern-theme navigation/drawer behavior contracts under expected interactions.
+  3. Verification evidence also demonstrates non-modern behavior contracts so regressions or false assumptions are visible.
+**Plans**: TBD
+**UI hint**: yes
 
-<details>
-<summary>✅ v1.3 — Quick Note Gadget (Phases 10–13) — SHIPPED 2026-04-30</summary>
+### Phase 22: Phase 09 Verification Closure & Milestone Sync
+**Goal**: Maintainers can close v1.2 phase 09 verification with reproducible style evidence and then accurately reflect closure status in milestone tracking artifacts.
+**Depends on**: Phase 20, Phase 21
+**Requirements**: P09V-01, P09V-02, MSYN-01
+**Success Criteria** (what must be TRUE):
+  1. `.planning/phases/09-full-page-theme-styles/09-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 09 requirements.
+  2. Visual/style assertions in phase 09 include reproducible selector-level evidence that another maintainer can validate.
+  3. After 05/06/09 closure, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/MILESTONES.md`, and `.planning/PROJECT.md` consistently report the same verification debt status.
+**Plans**: TBD
+**UI hint**: yes
 
-The full phase details, success criteria, and plan list live in [`.planning/milestones/v1.3-ROADMAP.md`](milestones/v1.3-ROADMAP.md).
+## Progress
 
-- [x] **Phase 10: Data Layer** (3/3 plans) — completed 2026-04-30
-- [x] **Phase 11: Notes Controller** (1/1 plan) — completed 2026-04-30
-- [x] **Phase 12: Tab UI** (2/2 plans) — completed 2026-04-30
-- [x] **Phase 13: Note Gadget + Integration Tests** (4/4 plans) — completed 2026-04-30
-
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 10. Data Layer | v1.3 | 3/3 | Complete | 2026-04-30 |
-| 11. Notes Controller | v1.3 | 1/1 | Complete | 2026-04-30 |
-| 12. Tab UI | v1.3 | 2/2 | Complete | 2026-04-30 |
-| 13. Note Gadget + Integration Tests | v1.3 | 4/4 | Complete | 2026-04-30 |
-
-</details>
-
-<details>
-<summary>✅ v1.2 — Modern Theme (Phases 5–9) — SHIPPED 2026-04-29</summary>
-
-The full phase details, success criteria, and plan list live in [`.planning/milestones/v1.2-ROADMAP.md`](milestones/v1.2-ROADMAP.md).
-
-- [x] **Phase 5: Theme Foundation** (2/2 plans) — completed 2026-04-28
-- [x] **Phase 6: HTML Structure** (1/1 plan) — completed 2026-04-29
-- [x] **Phase 7: Drawer CSS + Animation** (1/1 plan) — completed 2026-04-29
-- [x] **Phase 8: Drawer JS Interaction** (1/1 plan) — completed 2026-04-29
-- [x] **Phase 9: Full-Page Theme Styles** (1/1 plan) — completed 2026-04-29
-
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 5. Theme Foundation | v1.2 | 2/2 | Complete | 2026-04-28 |
-| 6. HTML Structure | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 7. Drawer CSS + Animation | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 8. Drawer JS Interaction | v1.2 | 1/1 | Complete | 2026-04-29 |
-| 9. Full-Page Theme Styles | v1.2 | 1/1 | Complete | 2026-04-29 |
-
-</details>
-
-<details>
-<summary>✅ v1.1 — Modern JavaScript (Phases 2–4) — SHIPPED 2026-04-27</summary>
-
-The full phase details, success criteria, and plan list live in [`.planning/milestones/v1.1-ROADMAP.md`](milestones/v1.1-ROADMAP.md).
-
-- [x] **Phase 2: JavaScript tooling baseline** (2/2 plans) — completed 2026-04-27
-- [x] **Phase 3: Modernize application scripts** (2/2 plans) — completed 2026-04-27
-- [x] **Phase 4: Verify and document** (2/2 plans) — completed 2026-04-27
-
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 2. JavaScript tooling | v1.1 | 2/2 | Complete | 2026-04-27 |
-| 3. Modernize scripts | v1.1 | 2/2 | Complete | 2026-04-27 |
-| 4. Verify and document | v1.1 | 2/2 | Complete | 2026-04-27 |
-
-</details>
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 19. Verification Rubric & Traceability Baseline | 0/TBD | Not started | - |
+| 20. Phase 05 Verification Closure | 0/TBD | Not started | - |
+| 21. Phase 06 Verification Closure | 0/TBD | Not started | - |
+| 22. Phase 09 Verification Closure & Milestone Sync | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-05-03 — v1.4 Internationalization shipped and archived.*
+*Last updated: 2026-05-03 — v1.5 roadmap initialized (Phases 19–22).*

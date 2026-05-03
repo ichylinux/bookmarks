@@ -70,4 +70,4 @@
 
 ---
 *Requirements defined: 2026-05-03*  
-*Last updated: 2026-05-03 after v1.5 requirement definition*
+*Last updated: 2026-05-03 after v1.5 roadmap traceability validation*
