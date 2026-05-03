@@ -1,5 +1,5 @@
 $(function() {
-  if (!$('body').hasClass('modern')) return;
+  if (!$('body').hasClass('modern') && !$('body').hasClass('classic')) return;
 
   const $body = $('body');
 

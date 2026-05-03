@@ -7,8 +7,10 @@ class MenuJsThemeGuardContractTest < ActiveSupport::TestCase
     @menu_js = Rails.root.join('app/assets/javascripts/menu.js').read
   end
 
-  test 'menu.js uses strict modern-only body guard' do
-    assert_match(/if\s*\(!\$\('body'\)\.hasClass\('modern'\)\)\s*return;/, @menu_js)
-    refute_match(/hasClass\('classic'\)/, @menu_js)
+  test 'menu.js drawer guard applies to modern and classic only' do
+    assert_match(
+      /if\s*\(!\$\('body'\)\.hasClass\('modern'\)\s*&&\s*!\$\('body'\)\.hasClass\('classic'\)\)\s*return;/,
+      @menu_js
+    )
   end
 end
