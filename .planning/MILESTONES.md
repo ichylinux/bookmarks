@@ -1,5 +1,27 @@
 # Milestones
 
+## v1.4 Internationalization (Shipped: 2026-05-03)
+
+**Phases completed:** 7 phases, 19 plans, 32 tasks
+
+**Key accomplishments:**
+
+- Plan 15-02 の補修
+- Shared shell and flash translation catalog with ja/en parity enforcement and rails-i18n validation-default verification
+- Layout, simple-theme menu, and note fallback alert now consume the shared Phase 16 translation catalog
+- Chrome and shared-flash translation behavior is now covered by ja/en integration tests, with the full Phase 16 verification gate green
+- Rails I18n locale skeleton and model-level translation primitives for downstream feature surface rewrites
+- Bookmark screens now render fixed UI chrome through ja/en locale keys while preserving bookmark and folder records as user content
+- Note and Todo surfaces now render fixed UI chrome in Japanese or English while preserving note bodies, Todo titles, and numeric priority values
+- Feed and calendar surfaces now render fixed UI chrome in Japanese or English, with feed JavaScript messages supplied by server-rendered translated attributes
+- Phase 17 feature-surface translation is covered by representative ja/en assertions and a green lint, Minitest, and Cucumber gate
+- Localized failed sign-in alerts now render through the shared Rails layout in both Japanese and English
+- Auth and 2FA pages now have integration coverage proving Japanese and English rendering paths
+- Phase 18 passed the full local gate and the remaining translation audit was approved
+- Pending 2FA OTP pages now honor saved account locale before OTP completion
+
+---
+
 ## v1.3 — Quick Note Gadget (shipped 2026-04-30)
 
 **Scope:** Phases 10–13 (10 plans) — data layer, notes controller, simple-theme tab UI, note gadget, Cucumber E2E, and drawer-gating helper. 14 files changed, 287 insertions.

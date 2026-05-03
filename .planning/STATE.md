@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: — Internationalization
-status: milestone_complete
-stopped_at: Phase 18.2 complete — 1/1 plan executed, verification passed, full lint/Minitest/dad:test gate green
-last_updated: "2026-05-03T08:29:01.980Z"
+status: completed
+stopped_at: v1.4 milestone complete — all 7 phases shipped, audit passed, ready to archive
+last_updated: "2026-05-03T08:58:41.741Z"
 last_activity: 2026-05-03
 progress:
   total_phases: 7
@@ -23,7 +23,7 @@ Plan: All complete
 Plans: 1/1 complete
 Last completed: Phase 18.2 — Preferences Locale Change Flash (1/1 plan, 2026-05-03)
 Status: v1.4 milestone complete — ready to archive
-Last activity: 2026-05-03 — Phase 18.2 plan, execute, verify all green
+Last activity: 2026-05-03
 Resume: `/gsd-complete-milestone` — archive v1.4 and prepare for next version
 
 ## Project Reference
@@ -95,8 +95,38 @@ See: `.planning/PROJECT.md` (updated 2026-05-01)
 | 260501-onx | stabilize flaky features/02.タスク.feature:5 (task widget scenario) | 2026-05-01 | 60c134b, 93d16db |
 | 260501-qlk | fix gadget title link visited color | 2026-05-01 | 8dd9aca |
 
+## Deferred Items
+
+Items acknowledged and deferred at v1.4 milestone close on 2026-05-03:
+
+| Category | Item | Status |
+|----------|------|--------|
+| verification_gap | Phase 05: 05-VERIFICATION.md | human_needed |
+| verification_gap | Phase 06: 06-VERIFICATION.md | human_needed |
+| verification_gap | Phase 09: 09-VERIFICATION.md | human_needed |
+| uat_gap | Phase 09: 09-HUMAN-UAT.md | passed (0 pending) |
+| uat_gap | Phase 12: 12-HUMAN-UAT.md | resolved (0 pending) |
+| context_questions | Phase 10: 10-CONTEXT.md | 3 open questions |
+| quick_task | 260429-q01-convert-system-tests-to-cucumber | missing |
+| quick_task | 260429-q02-rename-default-theme-to-classic | missing |
+| quick_task | 260430-pph-modenize-javascript-in-notes-tabs-js | missing |
+| quick_task | 260430-pz0-as-shown-in-tmp-ss-png-tabs-are-represen | missing |
+| quick_task | 260430-q04-check-readme-outdated-info | missing |
+| quick_task | 260430-q05-notes-no-dependent-destroy | missing |
+| quick_task | 260501-jmn-fix-cucumber-tests-failing-due-to-recent | missing |
+| quick_task | 260501-nyc-modern-theme-gadget-title-bar-color-fix | missing |
+| quick_task | 260501-onx-features-02-feature-5-is-flaky | missing |
+| quick_task | 260501-q03-simple-theme-note-tab-toggle | missing |
+| quick_task | 260501-q04-remove-tweets-table | missing |
+| quick_task | 260501-q05-font-size-preference | missing |
+| quick_task | 260501-qlk-fix-gadget-title-link-visited-color | missing |
+| todo | 2026-04-30-extract-drawer-ui-helper.md | ui (pending) |
+| todo | 2026-04-30-gate-drawer-blocks-on-theme.md | ui (pending) |
+
+All items predate v1.4; none block the v1.4 definition of done. Carry forward to v1.5+ planning.
+
 ## Session Continuity
 
-Last session: 2026-05-01T11:45:00Z
-Stopped at: Phase 17 complete — 5/5 plans executed, verification passed, code review clean, final gate green
-Resume: `/gsd-discuss-phase 18` — Phase 18 (Auth, 2FA & Translation Verification) に進む
+Last session: 2026-05-03T08:50:00Z
+Stopped at: v1.4 milestone complete — all 7 phases shipped, audit passed, ready to archive
+Resume: `/gsd-new-milestone` — start the next milestone cycle

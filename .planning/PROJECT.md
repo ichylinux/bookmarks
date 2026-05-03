@@ -2,30 +2,27 @@
 
 ## What This Is
 
-Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI. Users can also capture personal notes from the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework.
+Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
 ## Core Value
 
-Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience.
-
-## Current Milestone: v1.4 Internationalization
-
-**Goal:** Make the app fully bilingual (ja/en) with a per-user language preference and browser Accept-Language detection on first visit.
-
-**Target features:**
-- Extract all hardcoded UI strings to `config/locales/ja.yml` and `config/locales/en.yml`
-- Add `locale` column to `preferences` table; persist selected language per account
-- Detect `Accept-Language` header on first visit as fallback default
-- Language switcher on `/preferences` page (ja / en selection)
-- Coverage: navigation/layout, flash/error messages, bookmarks/notes/todos gadgets, Devise auth pages
+Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
 ## Current State
 
-**Shipped:** v1.3 — Quick Note Gadget (2026-04-30)
+**Shipped:** v1.4 — Internationalization (2026-05-03)
 
-Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes and save them; the page returns to the Note tab after save and displays a reverse-chronological list of the user's notes. Notes are per-user isolated. All functionality tested by Minitest integration tests and a Japanese Cucumber E2E feature.
+The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash messages, Devise auth, 2FA OTP challenge, preferences, bookmarks/notes/todos/feeds/calendar surfaces) renders in Japanese or English. Locale is persisted per account on `preferences.locale`, with a three-stage resolution (saved preference → Accept-Language → `:ja` default) wired through a thread-safe `Localization` controller concern using `around_action` + `I18n.with_locale`. The pending 2FA OTP challenge honors saved locale before sign-in completes. Preferences save flash translates under the just-saved locale via a whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together. Locale key parity between `ja.yml` and `en.yml` is enforced by tests; user content (bookmark/folder names, note bodies, Todo titles, feed/calendar external data) remains untranslated by design.
 
-**Current milestone status:** v1.4 — Internationalization gap closure in progress. Phase 18.1 fixed saved-locale resolution on the pending 2FA OTP challenge page; Phase 18.2 is queued to fix the remaining preferences locale-change save flash gap before archive.
+**Current milestone:** None active. Ready for `/gsd-new-milestone`.
+
+## Next Milestone Goals
+
+Candidates for the next milestone (to be refined during `/gsd-new-milestone`):
+
+- Address carry-forward tech debt (Phase 14/15/18 missing/draft VALIDATION.md, Phase 16 `nav.home: Home` brand label, Phase 18 Cucumber reset hook scope, dad:test scenario-order DB-state leak — see `.planning/v1.4-MILESTONE-AUDIT.md` and the deferred items in STATE.md).
+- Outstanding feature requests deferred from earlier milestones (delete individual notes, note gadget on modern/classic themes — see Out of Scope).
+- 13 quick tasks accumulated across v1.1–v1.4 in `.planning/quick/` (drawer UI helper extraction, simple theme tab toggle, font size preference polish, etc.).
 
 ## Requirements
 
@@ -42,23 +39,15 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - ✓ Note capture: textarea + Save → persisted note owned by `current_user` — **v1.3 Phase 11**
 - ✓ Note list: reverse-chronological, per-user isolated, with timestamp — **v1.3 Phase 13**
 - ✓ Persisted per-user `locale` (ja/en) on `preferences`, three-stage resolution (saved → Accept-Language → :ja default), `<html lang>` rendered from resolved locale, including pending 2FA OTP challenge requests — **v1.4 Phases 14 + 18.1**
-- ◐ Preferences language switcher persists `locale` and translates the preferences page labels/options; post-change save flash must still be fixed for the newly active locale — **v1.4 Phases 15 + 18.2**
-- ◐ Core shell navigation, drawer/menu chrome, and shared generic flash fallback render through ja/en locale keys; preferences save flash has one locale-change integration gap — **v1.4 Phases 16 + 18.2**
+- ✓ Preferences language switcher persists `locale`, translates the preferences page, and renders the post-change save flash in the newly active locale — **v1.4 Phases 15 + 18.2**
+- ✓ Core shell (navigation, drawer/menu chrome) and shared flash messages render through ja/en locale keys with locale-change correctness on the preferences flow — **v1.4 Phases 16 + 18.2**
 - ✓ Core feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages render through ja/en locale keys while user/external content remains unchanged — **v1.4 Phase 17**
 - ✓ Auth and 2FA surfaces render in Japanese and English; failed sign-in and invalid OTP alerts use shared localized flash rendering; pending OTP challenge honors saved locale — **v1.4 Phases 18 + 18.1**
-- ◐ Translation verification is nearly complete: representative ja/en paths are covered, locale key parity is enforced, remaining Japanese literals are documented intentional exceptions, and saved-locale OTP regression coverage exists. Phase 18.2 adds the missing preferences locale-change flash regression coverage.
+- ✓ Translation verification: representative ja/en paths covered, locale key parity enforced, native/external-data exceptions documented, saved-locale OTP and locale-change save-flash regression tests in place — **v1.4 Phases 18 + 18.1 + 18.2**
 
-### Active (v1.4)
+### Active
 
-- [x] All UI strings extracted to `ja.yml` / `en.yml` locale files, with intentional native/external-data exceptions documented — **v1.4 Phases 14–18**
-- [x] `locale` column added to `preferences` table; persists language preference per account — **v1.4 Phase 14**
-- [x] `Accept-Language` header detection sets locale for unauthenticated / first visits — **v1.4 Phase 14**
-- [x] Language switcher (ja / en) on `/preferences` page — **v1.4 Phase 15**
-- [x] Navigation, layout labels, and core feature UIs (bookmarks, notes, todos, feeds, calendars) translated — **v1.4 Phases 16–17**
-- [x] JavaScript-visible feed messages supplied via server-rendered translated `data-*` attributes, without a JS i18n build pipeline — **v1.4 Phase 17**
-- [ ] All flash messages, validation errors, and Devise pages translated in both locales — **v1.4 Phases 16–18.2** *(pending preferences locale-change save flash fix)*
-- [x] Pending 2FA OTP challenge uses saved account locale before the user is fully signed in — **v1.4 Phase 18.1**
-- [ ] Preferences save notice uses the newly active locale immediately after a language change — **v1.4 Phase 18.2**
+(None — ready for next milestone)
 
 ### Out of Scope (revisit when planning)
 
@@ -69,6 +58,8 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - Note gadget on modern and classic themes — deferred until simple theme proves out
 - Rich text / markdown editor — conflicts with no-new-JS-deps constraint
 - Real-time autosave — explicit save is the correct UX for deliberate capture
+- Locale beyond ja/en — not planned; `Preference::SUPPORTED_LOCALES` whitelist + `enforce_available_locales` keep the surface explicit
+- `?locale=` URL parameter override — intentionally absent (Phase 14 D-04); can be added if a use case emerges
 
 ## Context
 
@@ -77,13 +68,14 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 - **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/milestones/v1.1-ROADMAP.md`
 - **Shipped v1.2 (2026-04-29):** modern theme with hamburger drawer nav and full-page CSS polish (Phases 5–9). Details: `.planning/milestones/v1.2-ROADMAP.md`
 - **Shipped v1.3 (2026-04-30):** quick note gadget — data layer, controller, tab UI, note gadget partial, Cucumber E2E, drawer-gating helper (Phases 10–13). Details: `.planning/milestones/v1.3-ROADMAP.md`
-- **v1.4 gap closure in progress (2026-05-02):** Locale resolution/preferences, shell/shared messages, core feature surfaces, auth/2FA, Devise failure flashes, representative ja/en verification paths, and locale key parity are implemented. Phase 18.1 closed the pending OTP saved-locale gap by resolving `session[:otp_user_id]` through `Localization` without signing in early. A remaining Phase 18.2 gap covers preferences save flashes that can be translated before a locale-changing redirect. Feed JavaScript-visible messages use server-rendered `data-*` attributes; user/external content remains untranslated by design.
+- **Shipped v1.4 (2026-05-03):** end-to-end Japanese/English localization across infrastructure (Phase 14), preferences UI (15), core shell (16), feature surfaces (17), auth/2FA (18), pending-OTP locale (18.1), and locale-change save flash (18.2). Final gate green: `yarn run lint`, `bin/rails test` 191/1101, `bundle exec rake dad:test` 9/28. Details: `.planning/milestones/v1.4-ROADMAP.md`. Audit: `.planning/milestones/v1.4-MILESTONE-AUDIT.md`.
 
 ## Constraints
 
 - **Stack**: Sprockets + jQuery + existing gem pipeline — new JS must not break asset compilation or production minification
 - **Browsers**: Target environments implied by Babel `preset-env` and project policy
 - **Compatibility**: Preserve behaviour of `.js.erb` and controller-driven JS responses where used
+- **Locale resolution**: All locale candidates must pass `Preference::SUPPORTED_LOCALES.include?(...)` before reaching `I18n.with_locale`; `before_action` is forbidden for locale-setting (Puma thread reuse leaks); `around_action` + `I18n.with_locale` is the contract.
 
 ## Key Decisions
 
@@ -95,10 +87,13 @@ Simple theme welcome page now has a "Home/Note" tab strip. Users can type notes 
 | Tab state via query param (`?tab=notes`) not History API | Survives POST/redirect cycle; no pushState complexity | ✓ Good — simple and reliable |
 | `user_id` never in strong params — merged server-side | Security: never trust client for ownership | ✓ Good — matches todos_controller pattern |
 | `Note.where(user_id: ...).delete_all` in tests | Rails 8.1 association `delete_all` issues nullifying UPDATE; NOT NULL constraint rejects it | ✓ Good — pragmatic workaround documented |
-| `locale` column on `preferences`, not `users` (Phase 14 D-01) | All per-user UI prefs (theme/font_size/use_note/...) already aggregate on `Preference`; same pattern keeps Phase 15 form addition trivial | ✓ Good — model validation matches FONT_SIZES pattern |
+| `locale` column on `preferences`, not `users` (Phase 14 D-01) | All per-user UI prefs already aggregate on `Preference`; same pattern keeps Phase 15 form addition trivial | ✓ Good — model validation matches FONT_SIZES pattern |
 | `around_action` (not `before_action`) for `set_locale` (Phase 14 D-04) | `I18n.locale` is thread-local; Puma reuses threads. `with_locale` saves/restores atomically per request | ✓ Good — locale bleed across requests prevented |
 | Whitelist guard before every `I18n.with_locale` (Phase 14 D-04) | Defense in depth: model validation rejects bad writes; whitelist guard rejects bad reads (stale DB / malformed Accept-Language); `enforce_available_locales` is the last line | ✓ Good — `I18n::InvalidLocale` impossible by construction |
 | No `?locale=` URL parameter (Phase 14 D-04) | I18N-02 spec doesn't include URL parameter; not reading params makes I18N-03 trivially satisfied | ✓ Good — testable surface stays minimal; can be added later if needed |
+| Pending-OTP saved locale via `session[:otp_user_id]` (Phase 18.1) | Resolves saved locale before Devise sign-in completes, without signing in early; respects existing whitelist gate | ✓ Good — fixes pending-OTP locale gap with no surface area increase |
+| Translate save flash under saved candidate locale (Phase 18.2) | Pre-redirect flash materialization happens under the OLD locale; translating under `I18n.with_locale(saved)` after `@user.save!` aligns flash with chrome | ✓ Good — closes locale-change save flash gap; whitelist-gated, falls through cleanly for non-locale saves |
+| Native labels for locale select (`自動 / 日本語 / English`) (Phase 15 D-02) | Language names are conventionally shown in their own script regardless of UI locale | ✓ Good — pattern reused for any future native-label UIs |
 
 ## Evolution
 
@@ -118,6 +113,10 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Shipped
 
+### v1.4 — Internationalization (2026-05-03)
+
+**Delivered:** End-to-end Japanese/English bilingual UI. Locale infrastructure (DB column + thread-safe `Localization` concern + `<html lang>` + Accept-Language fallback), preferences language switcher, core shell + feature surface translation, auth/2FA localization, pending-OTP saved-locale resolution, and locale-change save flash correctness. 7 phases, 19 plans, 32 tasks, ~3 days.
+
 ### v1.3 — Quick Note Gadget (2026-04-30)
 
 **Delivered:** Notes table + model (`Crud::ByUser`, soft-delete, validations), `NotesController#create`, simple-theme tab strip (Home/Note), `_note_gadget` partial with empty-state and reverse-chrono list, `WelcomeControllerTest` coverage, Cucumber E2E feature, `drawer_ui?` layout helper. Human UAT 5/5.
@@ -131,4 +130,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-02 — Phase 18.1 closed the pending-OTP saved-locale gap; v1.4 is ready for milestone audit rerun before archive.*
+*Last updated: 2026-05-03 — v1.4 Internationalization shipped and archived.*
