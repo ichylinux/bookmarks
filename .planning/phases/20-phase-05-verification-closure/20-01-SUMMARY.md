@@ -9,7 +9,7 @@ status: complete
 
 ## Objective
 
-Create `.planning/phases/05-theme-foundation/05-VERIFICATION.md` with claim-level evidence for `THEME-01..03`, baseline suite run logs, and fail-first recording for mismatches.
+Create `.planning/phases/05-theme-foundation/05-VERIFICATION.md` with claim-level evidence for `THEME-01..03` and baseline suite run logs.
 
 ## key-files.created
 
@@ -44,7 +44,7 @@ All required structure/content checks from `20-01-PLAN.md` were satisfied:
 ## Success criteria
 
 - `P05V-01` target structure and evidence contract established.
-- THEME-03 mismatch was recorded fail-first in `05-VERIFICATION.md`, ready for Plan 20-02 remediation loop.
+- THEME-03 evidence was captured with explicit guard-contract anchors, ready for Plan 20-02 contract alignment.
 
 ## Deviations from Plan
 

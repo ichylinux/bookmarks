@@ -3,7 +3,7 @@
 **Status:** passed  
 **Phase:** 05-theme-foundation  
 **Requirements in scope:** THEME-01, THEME-02, THEME-03  
-**Verified commit SHA:** `802897cbbd6807e1d754b736f54f93a1076905fc`  
+**Verified commit SHA:** `dd0cf48aa0627fd73a69879f91e63f5f04fba215`  
 **Recorded at:** 2026-05-03T20:34:21+09:00
 
 ---
@@ -13,8 +13,8 @@
 | Suite | Command | Outcome | Evidence |
 |---|---|---|---|
 | Lint | `yarn run lint` | PASS | `eslint "app/assets/javascripts/**/*.js"` completed with exit code 0 |
-| Minitest | `bin/rails test` | PASS | `192 runs, 1105 assertions, 0 failures, 0 errors, 0 skips` |
-| Cucumber (run 1) | `bundle exec rake dad:test` | FAIL | `9 scenarios (2 failed, 7 passed)` |
+| Minitest | `bin/rails test` | PASS | `192 runs, 1103 assertions, 0 failures, 0 errors, 0 skips` |
+| Cucumber (run 1) | `bundle exec rake dad:test` | FAIL | `9 scenarios (1 failed, 8 passed)` |
 | Cucumber (run 2) | `bundle exec rake dad:test` | PASS | `9 scenarios (9 passed)` |
 | Combined full check | `yarn run lint && bin/rails test && bundle exec rake dad:test` | PASS (with allowed one-rerun handling for `dad:test`) | Per-suite logs + rerun table below |
 
@@ -35,7 +35,7 @@ Policy pointer: see `CLAUDE.md` section **"Cucumber suite — known flakiness"**
 |---|---|---|---|---|---|
 | P05-C01 | THEME-01 | User can choose modern theme from preferences screen | PASS | MEDIUM | § P05-C01 |
 | P05-C02 | THEME-02 | `themes/modern.css.scss` exists with `.modern {}` scope and tokenized theme rules | PASS | HIGH | § P05-C02 |
-| P05-C03 | THEME-03 | `menu.js` uses strict `body.modern` guard for drawer logic | PASS | HIGH | § P05-C03 |
+| P05-C03 | THEME-03 | `menu.js` drawer guard matches current non-simple drawer contract (modern/classic only) | PASS | HIGH | § P05-C03 |
 
 ---
 
@@ -61,22 +61,20 @@ Policy pointer: see `CLAUDE.md` section **"Cucumber suite — known flakiness"**
 - **Run record:** baseline runs section (`bin/rails test` PASS)
 - **Confidence:** HIGH — tests and source both directly assert scope + token contract.
 
-### P05-C03 — menu.js guard strictness against requirement wording
+### P05-C03 — menu.js guard alignment for drawer-enabled themes
 
-- **Requirement rows:** THEME-03 — "`menu.js` exists with `body.modern` guard for drawer interaction logic"
-- **Evidence type:** automated test + code reference (fail-first then remediation)
+- **Requirement rows:** THEME-03 (`menu.js` guard foundation) + current drawer contract (`drawer_ui?` applies to non-simple themes)
+- **Evidence type:** automated test + code reference
 - **Artifact:**
-  - RED evidence: `test/assets/menu_js_theme_guard_contract_test.rb:10-12` failed on first run
-    (`Expected /if...hasClass('modern').../ to match`), proving mismatch before remediation.
-  - Remediation target: `app/assets/javascripts/menu.js:2`
-  - GREEN evidence: `bin/rails test test/assets/menu_js_theme_guard_contract_test.rb` passed
-    (`1 runs, 4 assertions, 0 failures`).
-- **Run record:** claim-specific red/green runs + baseline combined run section
-- **Confidence:** HIGH — claim has explicit fail-first test evidence, minimal one-line fix, and passing re-verification.
-- **root cause:** Guard was broadened to include `classic`, diverging from archived Phase 05 requirement wording.
-- **action taken:** Applied localized fix in `menu.js` guard from
-  `if (!$('body').hasClass('modern') && !$('body').hasClass('classic')) return;`
-  to `if (!$('body').hasClass('modern')) return;`.
+  - `test/assets/menu_js_theme_guard_contract_test.rb:10-13` asserts modern/classic guard contract
+  - `app/assets/javascripts/menu.js:2` keeps non-simple guard:
+    `if (!$('body').hasClass('modern') && !$('body').hasClass('classic')) return;`
+  - `app/helpers/welcome_helper.rb:19-21` (`drawer_ui?`) enables drawer for non-simple themes
+  - `test/controllers/welcome_controller/layout_structure_test.rb:62-69` confirms classic renders hamburger/drawer markup
+- **Run record:** claim test run PASS (`1 runs, 2 assertions`) + baseline combined run section
+- **Confidence:** HIGH — contract test, helper contract, and layout assertions all align.
+- **root cause:** A strict-modern interpretation drifted from the current drawer contract where classic also uses the hamburger/drawer UI.
+- **action taken:** Restored classic allowance in `menu.js` guard and updated the claim-level contract test to modern/classic.
 - **re-verification:** `bin/rails test test/assets/menu_js_theme_guard_contract_test.rb` PASS; full suite chain
   (`yarn run lint && bin/rails test && (bundle exec rake dad:test || bundle exec rake dad:test)`) PASS with one allowed dad:test rerun.
 

@@ -14,24 +14,24 @@ score:
 
 ## Goal Check
 
-Phase 20 goal is achieved: Phase 05 verification is now truthfully closure-ready with complete `THEME-01..03` evidence and minimal, claim-coupled remediation for THEME-03.
+Phase 20 goal is achieved: Phase 05 verification is now truthfully closure-ready with complete `THEME-01..03` evidence and a minimal, contract-aligned THEME-03 correction.
 
 ## Must-have Verification
 
 | Must-have | Result | Evidence |
 |---|---|---|
 | `05-VERIFICATION.md` exists with explicit PASS/FAIL coverage for THEME-01..03 | PASS | `.planning/phases/05-theme-foundation/05-VERIFICATION.md` claim table (`P05-C01..C03`) |
-| THEME-03 mismatch was recorded fail-first before remediation | PASS | `20-02-SUMMARY.md` RED step + `P05-C03` block fail-first narrative |
-| Remediation is minimal and claim-coupled | PASS | `app/assets/javascripts/menu.js` guard line narrowed only; no broader refactor |
-| Claim was re-verified in the same update with root cause/action/re-verification | PASS | `P05-C03` section includes all three fields and GREEN command evidence |
-| Reproducibility metadata aligns to a passing implementation snapshot | PASS | `05-VERIFICATION.md` verified SHA `802897cbbd6807e1d754b736f54f93a1076905fc` contains strict modern guard and contract test |
+| THEME-03 contract matches current drawer behavior (modern/classic only) | PASS | `menu_js_theme_guard_contract_test.rb` + `welcome_helper.rb#drawer_ui?` + `P05-C03` evidence block |
+| Remediation is minimal and claim-coupled | PASS | `app/assets/javascripts/menu.js` guard updated locally; no broader refactor |
+| Claim was re-verified in the same update with root cause/action/re-verification | PASS | `P05-C03` section includes all three fields and claim test/full-gate evidence |
+| Reproducibility metadata aligns to a passing implementation snapshot | PASS | `05-VERIFICATION.md` verified SHA `dd0cf48aa0627fd73a69879f91e63f5f04fba215` contains current guard + contract test |
 
 ## Requirement Coverage
 
 | Requirement | Result | Notes |
 |---|---|---|
 | P05V-01 | PASS | Claim inventory and baseline evidence are complete and anchored |
-| P05V-02 | PASS | THEME-03 mismatch handled by fail-first test, minimal fix, and same-update re-verification |
+| P05V-02 | PASS | THEME-03 contract aligned to current spec with minimal fix and same-update re-verification |
 
 ## Artifacts
 

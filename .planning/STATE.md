@@ -49,7 +49,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 
 **Recent Trend:**
 - Last 5 plans: 19-01, 20-01, 20-02
-- Trend: Phase 20 closed with fail-first remediation and full gate evidence
+- Trend: Phase 20 closed with contract-aligned remediation and full gate evidence
 
 ## Accumulated Context
 
