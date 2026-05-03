@@ -14,7 +14,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash messages, Devise auth, 2FA OTP challenge, preferences, bookmarks/notes/todos/feeds/calendar surfaces) renders in Japanese or English. Locale is persisted per account on `preferences.locale`, with a three-stage resolution (saved preference → Accept-Language → `:ja` default) wired through a thread-safe `Localization` controller concern using `around_action` + `I18n.with_locale`. The pending 2FA OTP challenge honors saved locale before sign-in completes. Preferences save flash translates under the just-saved locale via a whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together. Locale key parity between `ja.yml` and `en.yml` is enforced by tests; user content (bookmark/folder names, note bodies, Todo titles, feed/calendar external data) remains untranslated by design.
 
-**Current milestone:** v1.5 — Verification Debt Cleanup (planning)
+**Current milestone:** v1.5 — Verification Debt Cleanup (in progress)
 
 ## Current Milestone: v1.5 Verification Debt Cleanup
 
@@ -46,10 +46,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Core feature surfaces for bookmarks, notes, todos, feeds, calendars, and JavaScript-visible feed messages render through ja/en locale keys while user/external content remains unchanged — **v1.4 Phase 17**
 - ✓ Auth and 2FA surfaces render in Japanese and English; failed sign-in and invalid OTP alerts use shared localized flash rendering; pending OTP challenge honors saved locale — **v1.4 Phases 18 + 18.1**
 - ✓ Translation verification: representative ja/en paths covered, locale key parity enforced, native/external-data exceptions documented, saved-locale OTP and locale-change save-flash regression tests in place — **v1.4 Phases 18 + 18.1 + 18.2**
+- ✓ Phase 05 verification closure complete with fail-first THEME-03 contract remediation and reproducible evidence (`05-VERIFICATION.md`) — **v1.5 Phase 20**
 
 ### Active
 
-- [ ] Complete Phase 05 verification documentation and acceptance evidence
 - [ ] Complete Phase 06 verification documentation and acceptance evidence
 - [ ] Complete Phase 09 verification documentation and acceptance evidence
 
@@ -134,4 +134,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-03 — started v1.5 Verification Debt Cleanup milestone.*
+*Last updated: 2026-05-03 — Phase 20 complete; Phase 05 verification closed.*

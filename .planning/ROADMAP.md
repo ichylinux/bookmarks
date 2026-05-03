@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 19: Verification Rubric & Traceability Baseline** - Shared verification contract and evidence mapping for phases 05/06/09.
-- [ ] **Phase 20: Phase 05 Verification Closure** - Close phase 05 verification document with evidence-backed outcomes and minimal fixes only when required.
+- [x] **Phase 20: Phase 05 Verification Closure** - Close phase 05 verification document with evidence-backed outcomes and minimal fixes only when required.
 - [ ] **Phase 21: Phase 06 Verification Closure** - Close phase 06 verification document including modern/non-modern navigation and drawer contracts.
 - [ ] **Phase 22: Phase 09 Verification Closure & Milestone Sync** - Close phase 09 verification evidence and synchronize milestone tracking documents.
 
@@ -35,7 +35,7 @@
   1. `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 05 requirements.
   2. Any failed claim is either recorded as fail with evidence or corrected with the smallest supporting code/test change directly tied to that claim.
   3. After any supporting fix, affected phase 05 claims are re-verified and evidence is updated in the same verification record.
-**Plans**: TBD
+**Plans**: 01 — Verification artifact and baseline evidence, 02 — THEME-03 fail-first remediation and re-verification
 **UI hint**: yes
 
 ### Phase 21: Phase 06 Verification Closure
@@ -65,9 +65,9 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 19. Verification Rubric & Traceability Baseline | 1/1 | Complete | 2026-05-03 |
-| 20. Phase 05 Verification Closure | 0/TBD | Not started | - |
+| 20. Phase 05 Verification Closure | 2/2 | Complete | 2026-05-03 |
 | 21. Phase 06 Verification Closure | 0/TBD | Not started | - |
 | 22. Phase 09 Verification Closure & Milestone Sync | 0/TBD | Not started | - |
 
 ---
-*Last updated: 2026-05-03 — Phase 19 verified/secured; ready for Phase 20 planning.*
+*Last updated: 2026-05-03 — Phase 20 executed and verified complete; Phase 21 is next.*

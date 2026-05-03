@@ -3,39 +3,39 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Verification Debt Cleanup
 status: planning
-stopped_at: Phase 19 verification complete
-last_updated: "2026-05-03T19:21:40+09:00"
-last_activity: 2026-05-03 - Phase 19 UAT/security gates complete; ready for Phase 20
+stopped_at: Phase 20 executed and verified
+last_updated: "2026-05-03T20:39:00+09:00"
+last_activity: 2026-05-03 - Phase 20 completed (2/2 plans), verification passed, roadmap/state synchronized
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 25
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
+  percent: 50
 ---
 
 # State
 
 ## Current Position
 
-Phase: 20 of 22 (Phase 05 Verification Closure)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-03 — Phase 19 marked complete after UAT + security verification
+Phase: 21 of 22 (Phase 06 Verification Closure)
+Plan: awaiting discuss/plan
+Status: Phase 20 complete; next phase not started
+Last activity: 2026-05-03 — Phase 20 execution complete (`20-01-SUMMARY.md`, `20-02-SUMMARY.md`, `20-VERIFICATION.md`)
 
-Progress: [██░░░░░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-03)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.5 phase 20 verification closure for phase 05 evidence.
+**Current focus:** v1.5 phase 21 verification closure for phase 06 evidence.
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1 (v1.5)
+- Total plans completed: 3 (v1.5)
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -44,11 +44,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 19 | 1 | — | — |
-| 20-22 (not started) | 0 | — | — |
+| 20 | 2 | — | — |
+| 21-22 (not started) | 0 | — | — |
 
 **Recent Trend:**
-- Last 5 plans: 19-01
-- Trend: Phase 19 plan 01 executed 2026-05-03
+- Last 5 plans: 19-01, 20-01, 20-02
+- Trend: Phase 20 closed with fail-first remediation and full gate evidence
 
 ## Accumulated Context
 
@@ -59,6 +60,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 - Minimal-fix policy applies: code/test changes allowed only when evidence proves a real mismatch.
 - Phase 19 context locked: hybrid evidence schema, automated-first acceptance threshold, one-rerun flake policy, and fail-first/minimal-fix workflow.
 - Phase 19 security gate is now closed (`19-SECURITY.md`, threats_open: 0).
+- Phase 20 context lock: Phase 05-only claim inventory (`THEME-01..03`) with fail-first, automated-first, one-rerun closure policy.
+- Phase 20 execution outcome: `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is now closure-ready (`P05-C01..C03` PASS).
 
 ### Pending Todos
 
@@ -66,10 +69,10 @@ See deferred backlog in `.planning/PROJECT.md` and `.planning/STATE.md` history;
 
 ### Blockers/Concerns
 
-None currently. Primary risk is false closure without reproducible evidence; mitigated by Phase 19 rubric enforcement.
+None currently. Next risk is Phase 06 scope drift; keep verification limited to phase-owned contracts.
 
 ## Session Continuity
 
-Last session: 2026-05-03T19:21:40+09:00
-Stopped at: Phase 19 complete, ready to plan Phase 20
-Resume: `/gsd-discuss-phase 20` or `/gsd-plan-phase 20`
+Last session: 2026-05-03T20:39:00+09:00
+Stopped at: Phase 20 executed and verified
+Resume: `/gsd-discuss-phase 21`
