@@ -57,7 +57,9 @@
   1. `.planning/phases/09-full-page-theme-styles/09-VERIFICATION.md` is complete with pass/fail outcomes for all relevant v1.2 phase 09 requirements.
   2. Visual/style assertions in phase 09 include reproducible selector-level evidence that another maintainer can validate.
   3. After 05/06/09 closure, `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/MILESTONES.md`, and `.planning/PROJECT.md` consistently report the same verification debt status.
-**Plans**: TBD
+**Plans**: 2 plans
+  - [ ] 22-01-PLAN.md — Create 09-VERIFICATION.md with P09-C01..C04 evidence (P09V-01/P09V-02)
+  - [ ] 22-02-PLAN.md — v1.5 milestone sync + archive snapshots (MSYN-01)
 **UI hint**: yes
 
 ## Progress
