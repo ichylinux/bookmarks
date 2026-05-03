@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.5 — Verification Debt Cleanup (shipped 2026-05-04)
+
+**Scope:** Phases 19–22 (7 plans) — shared verification rubric (Phase 19), Phase 05 closure (Phase 20), Phase 06 closure (Phase 21), Phase 09 closure + milestone sync (Phase 22).
+
+**Key accomplishments:**
+
+- Phase 19: Shared verification rubric (`19-VERIFICATION-RUBRIC.md`) defining baseline tri-suite runs, hybrid claim table + per-claim evidence blocks, fail-first / minimal-fix / one-rerun policy. Closes VERF-01, VERF-02.
+- Phase 20: `05-VERIFICATION.md` closure-ready with `P05-C01..C03` PASS for THEME-01/02/03, including THEME-03 drawer-contract alignment (modern + classic, simple excluded by `drawer_ui?`). Closes P05V-01, P05V-02.
+- Phase 21: `06-VERIFICATION.md` closure-ready with `P06-C01..C03` PASS for NAV-01/02 plus non-modern (classic + simple) unaffected contract per Phase 6 success criterion 4. Modern + classic + simple interaction evidence captured. Closes P06V-01, P06V-02.
+- Phase 22: `09-VERIFICATION.md` closure-ready with `P09-C01..C04` PASS for STYLE-01..04, anchored to `modern_full_page_theme_contract_test.rb` selectors (`.modern #header .head-box`, `font-size: 16px` + `-apple-system`, `.modern table` + `nth-child`, `.modern .actions` + `input[type="`). STYLE-05 explicitly out of scope. Closes P09V-01, P09V-02.
+- Cross-document milestone sync (`ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md`) consistently reflects v1.5 closure. Closes MSYN-01.
+- Tri-suite gate (lint + Minitest + Cucumber with one-rerun policy) green at v1.5 closure commit.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.5-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.5-REQUIREMENTS.md)
+
+---
+
 ## v1.4 Internationalization (Shipped: 2026-05-03)
 
 **Phases completed:** 7 phases, 19 plans, 32 tasks
@@ -80,4 +97,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-04-29 — v1.2 complete-milestone close-out*
+*Last updated: 2026-05-04 — v1.5 verification debt cleanup close-out*

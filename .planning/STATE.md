@@ -2,41 +2,41 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: — Verification Debt Cleanup
-status: executing
-stopped_at: Phase 21 completed
-last_updated: "2026-05-03T17:46:04.086Z"
-last_activity: 2026-05-03 -- Phase 22 planning complete
+status: complete
+stopped_at: v1.5 milestone shipped
+last_updated: "2026-05-04T12:10:00+09:00"
+last_activity: "2026-05-04 — Phase 22 executed; v1.5 milestone shipped with `09-VERIFICATION.md` closure-ready (`P09-C01..C04` PASS) and milestone sync complete"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 7
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 22 of 22 (Phase 09 Verification Closure & Milestone Sync)
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-05-03 -- Phase 22 planning complete
+Phase: 22 of 22 (Complete) — v1.5 milestone shipped
+Plan: 22-01 + 22-02 complete
+Status: v1.5 shipped
+Last activity: 2026-05-04 — Phase 22 plans 01–02 complete; `09-VERIFICATION.md` closure-ready (`P09-C01..C04` PASS).
 
-Progress: [███████░░░] 75%
+Progress: [██████████] 100%
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-03)
+See: `.planning/PROJECT.md` (updated 2026-05-04)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.5 phase 22 verification closure and milestone synchronization.
+**Current focus:** v1.5 verification debt cleanup milestone shipped (Phases 19–22).
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5 (v1.5)
+- Total plans completed: 7 (v1.5)
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -47,12 +47,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 | 19 | 1 | — | — |
 | 20 | 2 | — | — |
 | 21 | 2 | — | — |
-| 22 (not started) | 0 | — | — |
+| 22 | 2 | — | — |
 
 **Recent Trend:**
 
-- Last 5 plans: 19-01, 20-01, 20-02, 21-01, 21-02
-- Trend: Phase 21 closed with classic/simple interaction evidence and reproducible tri-suite logs
+- Last 5 plans: 20-02, 21-01, 21-02, 22-01, 22-02
+- Trend: v1.5 milestone shipped with Phase 09 closure (P09-C01..C04 PASS) and milestone sync complete
 
 ## Accumulated Context
 
@@ -67,6 +67,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-03)
 - Phase 20 execution outcome: `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is now closure-ready (`P05-C01..C03` PASS).
 - Phase 21 lock: exactly 3 claims (NAV-01, NAV-02, non-modern unaffected), with classic+simple interaction evidence required.
 - Phase 21 execution outcome: `.planning/phases/06-html-structure/06-VERIFICATION.md` is closure-ready (`P06-C01..C03` PASS) with one-rerun flake classification logged.
+- Phase 22 lock: STYLE-01..04 claim inventory (`P09-C01..C04`) anchored to `modern_full_page_theme_contract_test.rb` selectors; STYLE-05 explicitly out-of-scope per Phase 22 D-02.
+- Phase 22 execution outcome: `.planning/phases/09-full-page-theme-styles/09-VERIFICATION.md` is closure-ready (`P09-C01..C04` PASS); v1.5 milestone shipped with cross-document sync (`ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md`) and `milestones/v1.5-{ROADMAP,REQUIREMENTS}.md` snapshots.
 
 ### Pending Todos
 
@@ -74,10 +76,10 @@ See deferred backlog in `.planning/PROJECT.md` and `.planning/STATE.md` history;
 
 ### Blockers/Concerns
 
-None currently. Next risk is Phase 22 synchronization drift across `ROADMAP/STATE/PROJECT/MILESTONES`.
+None — v1.5 verification debt cleanup complete.
 
 ## Session Continuity
 
-Last session: 2026-05-03T21:22:56+09:00
-Stopped at: Phase 21 completed
+Last session: 2026-05-04T12:10:00+09:00
+Stopped at: v1.5 milestone shipped
 Resume: `/gsd-progress`

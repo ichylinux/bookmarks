@@ -10,21 +10,13 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 
 ## Current State
 
-**Shipped:** v1.4 — Internationalization (2026-05-03)
+**Shipped:** v1.5 — Verification Debt Cleanup (2026-05-04)
+
+v1.5 closed carry-forward verification debt for v1.2 phases 05/06/09. Each phase has a closure-ready verification document anchored to test methods and code references per the shared Phase 19 rubric. Phase 05 closes THEME-01/02/03 (`P05-C01..C03` PASS), Phase 06 closes NAV-01/02 with non-modern unaffected contract (`P06-C01..C03` PASS), Phase 09 closes STYLE-01..04 (`P09-C01..C04` PASS) anchored to `test/assets/modern_full_page_theme_contract_test.rb` selectors. Tracking documents (ROADMAP, STATE, MILESTONES, PROJECT) and milestone snapshots are consistent.
+
+**Previously shipped:** v1.4 — Internationalization (2026-05-03)
 
 The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash messages, Devise auth, 2FA OTP challenge, preferences, bookmarks/notes/todos/feeds/calendar surfaces) renders in Japanese or English. Locale is persisted per account on `preferences.locale`, with a three-stage resolution (saved preference → Accept-Language → `:ja` default) wired through a thread-safe `Localization` controller concern using `around_action` + `I18n.with_locale`. The pending 2FA OTP challenge honors saved locale before sign-in completes. Preferences save flash translates under the just-saved locale via a whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together. Locale key parity between `ja.yml` and `en.yml` is enforced by tests; user content (bookmark/folder names, note bodies, Todo titles, feed/calendar external data) remains untranslated by design.
-
-**Current milestone:** v1.5 — Verification Debt Cleanup (in progress)
-
-## Current Milestone: v1.5 Verification Debt Cleanup
-
-**Goal:** Close carry-forward verification debt by completing missing Phase 05/06/09 verification artifacts, with only minimal supporting fixes if verification reveals true gaps.
-
-**Target features:**
-- Complete Phase 05 verification documentation from existing implementation evidence
-- Complete Phase 06 verification documentation from existing implementation evidence
-- Complete Phase 09 verification documentation from existing implementation evidence
-- Apply only narrowly scoped supporting code/test fixes required to make verification claims accurate
 
 ## Requirements
 
@@ -48,10 +40,12 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Translation verification: representative ja/en paths covered, locale key parity enforced, native/external-data exceptions documented, saved-locale OTP and locale-change save-flash regression tests in place — **v1.4 Phases 18 + 18.1 + 18.2**
 - ✓ Phase 05 verification closure complete with THEME-03 drawer-contract alignment (modern/classic) and reproducible evidence (`05-VERIFICATION.md`) — **v1.5 Phase 20**
 - ✓ Phase 06 verification closure complete with modern/non-modern (classic + simple) interaction and structural evidence (`06-VERIFICATION.md`) — **v1.5 Phase 21**
+- ✓ Phase 09 verification closure complete with reproducible STYLE-01..04 selector evidence (`09-VERIFICATION.md`) — **v1.5 Phase 22**
+- ✓ v1.5 verification debt cleanup milestone closed; `ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md` consistently reflect v1.2 phase 05/06/09 closure — **v1.5 Phase 22**
 
 ### Active
 
-- [ ] Complete Phase 09 verification documentation and acceptance evidence
+- _None — v1.5 verification debt cleanup shipped 2026-05-04. Next milestone TBD._
 
 ### Out of Scope (revisit when planning)
 
@@ -67,6 +61,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`.
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`
 - JavaScript (post–v1.1): first-party `app/assets/javascripts/` follows ESLint + `CONVENTIONS.md`; Sprockets + Babel + jQuery 4 + Rails UJS unchanged
 - **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/milestones/v1.1-ROADMAP.md`
@@ -117,6 +112,10 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Shipped
 
+### v1.5 — Verification Debt Cleanup (2026-05-04)
+
+**Delivered:** Carry-forward verification closure for v1.2 phases 05/06/09 — shared Phase 19 rubric, `05-VERIFICATION.md`, `06-VERIFICATION.md`, and `09-VERIFICATION.md` with reproducible evidence; cross-document milestone sync and archive snapshots. Phases 19–22, 7 plans.
+
 ### v1.4 — Internationalization (2026-05-03)
 
 **Delivered:** End-to-end Japanese/English bilingual UI. Locale infrastructure (DB column + thread-safe `Localization` concern + `<html lang>` + Accept-Language fallback), preferences language switcher, core shell + feature surface translation, auth/2FA localization, pending-OTP saved-locale resolution, and locale-change save flash correctness. 7 phases, 19 plans, 32 tasks, ~3 days.
@@ -134,4 +133,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-03 — Phase 20 complete; Phase 05 verification closed.*
+*Last updated: 2026-05-04 — v1.5 verification debt cleanup shipped (Phase 22).*
