@@ -57,7 +57,7 @@ spec:
     stage('release') {
       agent { kubernetes { inheritFrom 'kaniko' } }
       environment {
-        RELEASE_TAG = "v1.6.0-${BUILD_NUMBER}"
+        RELEASE_TAG = "v1.7.0-${BUILD_NUMBER}"
       }
       stages {
         stage('tagging') {
