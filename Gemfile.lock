@@ -272,7 +272,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (8.0.0)
       railties (>= 3.2.16)
-    json (2.19.4)
+    json (2.19.5)
     jwt (3.1.2)
       base64
     libyajl2 (2.1.0)
@@ -305,9 +305,9 @@ GEM
     mixlib-shellout (3.3.9)
       chef-utils
     msgpack (1.8.0)
-    multi_json (1.20.1)
+    multi_json (1.21.0)
     multi_test (1.1.0)
-    multi_xml (0.8.1)
+    multi_xml (0.9.0)
       bigdecimal (>= 3.1, < 5)
     multipart-post (2.4.1)
     mysql2 (0.5.7)
@@ -465,7 +465,7 @@ GEM
       rexml
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyzip (3.2.2)
+    rubyzip (3.3.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
