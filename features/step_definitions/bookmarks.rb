@@ -10,11 +10,11 @@ require 'uri'
   capture
 end
 
-もし /^URLを入力すると、自動的にサイトのタイトルが保管されます。$/ do
+もし /^URLを入力し、「URLから取得」ボタンでサイトのタイトルを取得します。$/ do
   @bookmark_url = URI.join(current_url, '/').to_s
   fill_in 'bookmark[url]', with: @bookmark_url
-  find('#bookmark_url').send_keys(:tab)
-  assert wait_until { find('#bookmark_title').value.present? }, 'URLからタイトルが自動取得されていません'
+  click_button 'URLから取得'
+  assert wait_until { find('#bookmark_title').value.present? }, 'URLからタイトルが取得されていません'
   @bookmark_title = find('#bookmark_title').value
   capture
 end

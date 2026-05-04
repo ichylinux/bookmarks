@@ -7,6 +7,9 @@
       t('.submit_create_bookmark')
     end
 %>
+<% show_title_fetch_button =
+     !(@bookmark.new_record? && params[:kind] == 'folder') &&
+     !(@bookmark.persisted? && @bookmark.url.blank?) %>
 
 <%= form_for @bookmark do |f| %>
   <table>
@@ -21,6 +24,13 @@
       <th><%= f.label :title %></th>
       <td>
         <%= f.text_field :title %>
+        <% if show_title_fetch_button %>
+          <%= f.button t('.fetch_from_url'),
+                onclick: 'bookmarks.fetch_title_from_url(this); return false;',
+                'data-url': fetch_title_bookmarks_path,
+                'data-bookmark-url-required-message': t('.url_required_for_title_fetch'),
+                'data-bookmark-title-fetch-failed-message': t('.title_fetch_failed') %>
+        <% end %>
         <small><%= t('.title_help') %></small>
       </td>
     </tr>

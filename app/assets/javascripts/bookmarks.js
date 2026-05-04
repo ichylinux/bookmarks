@@ -1,23 +1,29 @@
-$(document).ready(() => {
-  $(document).on('blur', '#bookmark_url', function() {
-    const urlValue = $.trim($(this).val());
-    if (urlValue === '') {
-      return;
-    }
+window.bookmarks = window.bookmarks || {};
+const bookmarks = window.bookmarks;
 
-    $.get('/bookmarks/fetch_title', { url: urlValue })
-      .done((title) => {
-        const t = $.trim(title);
-        if (t === '') {
-          return;
-        }
-        const $titleField = $('#bookmark_title');
-        if ($.trim($titleField.val()) === '') {
-          $titleField.val(t);
-        }
-      })
-      .fail(function() {
-        // silent -- do nothing
-      });
-  });
-});
+function requestBookmarkTitleFromUrl(fetchPath, url) {
+  return $.get(fetchPath, { url: $.trim(url) });
+}
+
+bookmarks.fetch_title_from_url = function(button) {
+  const form = $(button).closest('form');
+  const fetchPath = $(button).data('url');
+  const url = $.trim(form.find('#bookmark_url').val() || '');
+  if (url === '') {
+    alert($(button).data('bookmarkUrlRequiredMessage'));
+    return;
+  }
+
+  requestBookmarkTitleFromUrl(fetchPath, url)
+    .done((title) => {
+      const t = $.trim(title);
+      if (t === '') {
+        alert($(button).data('bookmarkTitleFetchFailedMessage'));
+        return;
+      }
+      form.find('#bookmark_title').val(t);
+    })
+    .fail(function() {
+      alert($(button).data('bookmarkTitleFetchFailedMessage'));
+    });
+};

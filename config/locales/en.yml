@@ -72,7 +72,10 @@ en:
     form:
       url_placeholder: URL (leave blank for folders)
       folder_help: Leave URL blank to create a folder
-      title_help: Leave title blank to fetch it from the URL
+      fetch_from_url: Fetch from URL
+      url_required_for_title_fetch: Enter the URL first.
+      title_fetch_failed: Could not fetch the page title.
+      title_help: After entering a URL, use "Fetch from URL" to fill in the title.
       parent_folder: Parent folder
       no_parent: None (root)
       submit_create_bookmark: Add Bookmark

@@ -34,10 +34,11 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'ja'
     assert_select 'input#bookmark_url[placeholder=?]', 'URL（フォルダの場合は空欄）'
     assert_select 'small', text: 'URLを空欄にするとフォルダとして作成されます'
-    assert_select 'small', text: 'タイトルを空欄にするとURLから自動取得します'
+    assert_select 'small', text: 'URLを入力したあと「URLから取得」でタイトルを取得できます。'
     assert_select 'label[for=bookmark_parent_id]', text: '親フォルダ'
     assert_select 'option', text: 'なし（ルート）'
     assert_select 'input[type=submit][value=?]', 'ブックマークを追加'
+    assert_select 'button', text: 'URLから取得'
   end
 
   def test_ブックマーク新規フォームが英語ロケールで表示されフォルダ名は変わらない
@@ -50,11 +51,12 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'en'
     assert_select 'input#bookmark_url[placeholder=?]', 'URL (leave blank for folders)'
     assert_select 'small', text: 'Leave URL blank to create a folder'
-    assert_select 'small', text: 'Leave title blank to fetch it from the URL'
+    assert_select 'small', text: 'After entering a URL, use "Fetch from URL" to fill in the title.'
     assert_select 'label[for=bookmark_parent_id]', text: 'Parent folder'
     assert_select 'option', text: 'None (root)'
     assert_select 'option', text: folder.title
     assert_select 'input[type=submit][value=?]', 'Add Bookmark'
+    assert_select 'button', text: 'Fetch from URL'
   end
 
   def test_フォルダ作成フォームが明示的な日本語submitを表示する
@@ -64,6 +66,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'input[type=submit][value=?]', 'フォルダを作成'
+    assert_select 'button', text: 'URLから取得', count: 0
   end
 
   def test_編集フォームが英語ロケールで更新submitを表示する

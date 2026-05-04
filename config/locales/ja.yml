@@ -72,7 +72,10 @@ ja:
     form:
       url_placeholder: URL（フォルダの場合は空欄）
       folder_help: URLを空欄にするとフォルダとして作成されます
-      title_help: タイトルを空欄にするとURLから自動取得します
+      fetch_from_url: URLから取得
+      url_required_for_title_fetch: URLを先に入力してください。
+      title_fetch_failed: ページのタイトルを取得できませんでした。
+      title_help: URLを入力したあと「URLから取得」でタイトルを取得できます。
       parent_folder: 親フォルダ
       no_parent: なし（ルート）
       submit_create_bookmark: ブックマークを追加
