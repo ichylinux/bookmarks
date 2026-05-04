@@ -51,24 +51,24 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | — | Pending |
-| LAYOUT-02 | — | Pending |
-| LAYOUT-03 | — | Pending |
-| TAB-01 | — | Pending |
-| TAB-02 | — | Pending |
-| TAB-03 | — | Pending |
-| TAB-04 | — | Pending |
-| TAB-05 | — | Pending |
-| THEME-01 | — | Pending |
-| THEME-02 | — | Pending |
-| THEME-03 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
+| LAYOUT-01 | Phase 27 | Pending |
+| LAYOUT-02 | Phase 26 | Pending |
+| LAYOUT-03 | Phase 26 | Pending |
+| TAB-01 | Phase 27 | Pending |
+| TAB-02 | Phase 27 | Pending |
+| TAB-03 | Phase 27 | Pending |
+| TAB-04 | Phase 26 | Pending |
+| TAB-05 | Phase 27 | Pending |
+| THEME-01 | Phase 26 | Pending |
+| THEME-02 | Phase 26 | Pending |
+| THEME-03 | Phase 26 | Pending |
+| TEST-01 | Phase 28 | Pending |
+| TEST-02 | Phase 28 | Pending |
 
 **Coverage:**
 - v1.7 requirements: 13 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-04*
