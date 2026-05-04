@@ -43,18 +43,18 @@ Extend the quick Note gadget — currently only visible on the "simple" theme �
 
 ## Traceability
 
-| REQ-ID  | Phase | Plan |
-|---------|-------|------|
-| NOTE-01 | —     | —    |
-| NOTE-02 | —     | —    |
-| NOTE-03 | —     | —    |
-| NOTE-04 | —     | —    |
-| NOTE-05 | —     | —    |
-| NOTE-06 | —     | —    |
-| NOTE-07 | —     | —    |
-| NOTE-08 | —     | —    |
-| NOTE-09 | —     | —    |
-| NOTE-10 | —     | —    |
+| REQ-ID  | Phase    | Plan |
+|---------|----------|------|
+| NOTE-01 | Phase 23 | —    |
+| NOTE-02 | Phase 23 | —    |
+| NOTE-03 | Phase 23 | —    |
+| NOTE-04 | Phase 23 | —    |
+| NOTE-05 | Phase 24 | —    |
+| NOTE-06 | Phase 24 | —    |
+| NOTE-07 | Phase 24 | —    |
+| NOTE-08 | Phase 25 | —    |
+| NOTE-09 | Phase 25 | —    |
+| NOTE-10 | Phase 25 | —    |
 
 ---
-*Last updated: 2026-05-04 — v1.6 requirements defined.*
+*Last updated: 2026-05-04 — v1.6 roadmap created; traceability mapped to Phases 23–25.*

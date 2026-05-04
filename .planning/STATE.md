@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: — Note Gadget for All Themes
 status: planning
-stopped_at: milestone planning
+stopped_at: roadmap created
 last_updated: "2026-05-04T00:00:00+09:00"
-last_activity: "2026-05-04 — Milestone v1.6 started"
+last_activity: "2026-05-04 — Roadmap created (Phases 23–25)"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap created)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-04 — Milestone v1.6 started
+Status: Roadmap created; awaiting phase planning
+Last activity: 2026-05-04 — v1.6 roadmap created (3 phases: 23–25)
 
 ## Project Reference
 
@@ -54,6 +54,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-04)
 - v1.6 scope: extend the Note gadget (already built in v1.3 for simple theme) to modern and classic themes.
 - Existing `_note_gadget.html.erb` partial, `NotesController`, and `Note` model are in place — work is UI integration and CSS per theme.
 - "Note gadget on modern and classic themes" was explicitly Out of Scope in v1.3; now promoted to Active for v1.6.
+- Phase 23: add note panel HTML to `welcome/index.html.erb` `else` branch and drawer nav Note link to `application.html.erb`.
+- Phase 24: CSS for note panel visibility and theme-appropriate styling; verify `t()` labels render correctly in both locales on modern and classic.
+- Phase 25: Minitest integration tests for modern + classic note panel; Cucumber E2E for modern theme note capture flow.
+- No JavaScript changes required — `notes_tabs.js` guard (`if (!$('body').hasClass('simple')) return;`) does not affect SSR-driven panel visibility; tab param pattern is server-side only.
+- Panel hiding for modern/classic themes requires CSS outside the existing `.simple {}` block in `welcome.css.scss`.
 
 ### Pending Todos
 
@@ -73,5 +78,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Milestone v1.6 planning started
-Resume: `/gsd-progress`
+Stopped at: v1.6 roadmap created (Phases 23–25)
+Resume: `/gsd-plan-phase 23`
