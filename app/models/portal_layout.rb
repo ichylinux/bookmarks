@@ -1,2 +1,2 @@
-class PortalLayout < ActiveRecord::Base
+class PortalLayout < ApplicationRecord
 end

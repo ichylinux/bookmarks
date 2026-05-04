@@ -1,4 +1,4 @@
-class Note < ActiveRecord::Base
+class Note < ApplicationRecord
   include Crud::ByUser
 
   belongs_to :user

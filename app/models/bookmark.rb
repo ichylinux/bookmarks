@@ -1,4 +1,4 @@
-class Bookmark < ActiveRecord::Base
+class Bookmark < ApplicationRecord
   include Crud::ByUser
 
   belongs_to :user

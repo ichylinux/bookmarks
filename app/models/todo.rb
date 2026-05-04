@@ -32,7 +32,7 @@ module TodoConst
   PRIORITIES = PriorityLabels.new(PRIORITY_KEYS).freeze
 end
 
-class Todo < ActiveRecord::Base
+class Todo < ApplicationRecord
   include TodoConst
   include Crud::ByUser
 

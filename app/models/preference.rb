@@ -1,4 +1,4 @@
-class Preference < ActiveRecord::Base
+class Preference < ApplicationRecord
   FONT_SIZE_LARGE = 'large'.freeze
   FONT_SIZE_MEDIUM = 'medium'.freeze
   FONT_SIZE_SMALL = 'small'.freeze
