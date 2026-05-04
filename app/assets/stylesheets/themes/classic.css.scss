@@ -259,3 +259,17 @@
   font-size: 0.8125rem;
   color: #666;
 }
+
+// v1.7 THEME-02: mobile portal column tabs (narrow only)
+@media (max-width: 767px) {
+  .classic .portal-column-tabs {
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  .classic .portal-column-tab--active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #1d4ed8;
+  }
+}

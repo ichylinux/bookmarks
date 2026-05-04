@@ -134,16 +134,17 @@ en:
       generic: Something went wrong.
 
   welcome:
+    calendar_gadget:
+      loading: Loading calendar...
+    feed:
+      loading: Loading feed...
+      fetch_failed: Could not fetch the feed.
     note_gadget:
       title: Notes
       body_label: Note
       submit: Save Note
       empty: No notes yet
-    feed:
-      loading: Loading feed...
-      fetch_failed: Could not fetch the feed.
-    calendar_gadget:
-      loading: Loading calendar...
+    portal_column_tabs_aria_label: Switch portal columns
 
   calendars:
     get_gadget:

@@ -8,21 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.7 Mobile Portal Layout
+## Current Milestone
 
-**Goal:** On narrow smartphone screens, replace the vertically-stacked portal columns with a tab strip so users can switch between columns without scrolling; PC/tablet keeps the existing multi-column layout.
-
-**Target features:**
-- CSS breakpoint that detects mobile-width screens
-- Mobile-only column tab strip on the welcome page (tabs labeled by column number)
-- Tab switching shows/hides the selected column div (CSS + minimal JS)
-- Applied to all three themes: modern, classic, simple
-- Desktop/tablet: existing side-by-side column layout unchanged
-- Simple theme: column tabs coexist with the existing Home/Note tab strip
+Planning for the next version — last shipped: **v1.7 — Mobile Portal Layout** (2026-05-04). Use `/gsd-new-milestone` to define v1.8 when ready.
 
 ## Current State
 
-**Shipped:** v1.6 — Note Gadget for All Themes (2026-05-04)
+**Shipped:** v1.7 — Mobile Portal Layout (2026-05-04)
+
+Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
+
+**Previously shipped:** v1.6 — Note Gadget for All Themes (2026-05-04)
 
 The quick Note gadget is available on modern and classic themes: `/?tab=notes` shows `#notes-tab-panel` with `#welcome-home-panel` hidden (and the inverse on `/`). When `use_note` is enabled, the drawer nav includes a Note link (`t('nav.note')` / Japanese 「ノート」) to `root_path(tab: 'notes')`. Theme SCSS adds `#notes-tab-panel` styling under modern and classic token sets; `_note_gadget` labels remain locale-driven (ja/en). Regression coverage spans `welcome_controller_test`, `layout_structure_test`, and Cucumber (`モダンテーマでドロワーのノートリンクからメモを保存する`). Ship verified with `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test` green.
 
@@ -60,10 +56,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ v1.5 verification debt cleanup milestone closed; `ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md` consistently reflect v1.2 phase 05/06/09 closure — **v1.5 Phase 22**
 - ✓ Note gadget on modern theme (`/?tab=notes`, drawer link when `use_note`, integration + E2E coverage) — **v1.6 Phases 23–25**
 - ✓ Note gadget on classic theme (same contracts and tests as modern for panel visibility and drawer link) — **v1.6 Phases 23–25**
+- ✓ Mobile portal column tabs on welcome (`$portal-mobile-breakpoint` 768px; tab strip + `portal--column-active-N`; modern/classic/simple) — **v1.7 Phases 26–28**
 
 ### Active
 
-_Requirements defined in `.planning/REQUIREMENTS.md` — see v1.7 milestone._
+Next milestone not defined — see `.planning/REQUIREMENTS.md` after `/gsd-new-milestone`.
 
 ### Out of Scope (revisit when planning)
 
@@ -78,6 +75,7 @@ _Requirements defined in `.planning/REQUIREMENTS.md` — see v1.7 milestone._
 
 ## Context
 
+- **Shipped v1.7 (2026-05-04):** Mobile portal layout — CSS breakpoint variable in `welcome.css.scss`, `portal_column_section` partial + `portal_mobile_tabs.js`, theme-scoped tab styling, Minitest + Cucumber. Gate: tri-suite green.
 - **Shipped v1.6 (2026-05-04):** Note gadget extended to modern and classic themes per `.planning/milestones/v1.6-ROADMAP.md`. Audit: `.planning/milestones/v1.6-MILESTONE-AUDIT.md` (`tech_debt`: no formal per-phase `.planning/phases/` VERIFICATION/Nyquist artifacts; traceability via roadmap success criteria, REQUIREMENTS archive, tests).
 - **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`. Audit: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` (`tech_debt`, no blockers).
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`

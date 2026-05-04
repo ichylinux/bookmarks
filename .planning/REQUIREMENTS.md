@@ -7,28 +7,28 @@
 
 ### Layout — Responsive breakpoint
 
-- [ ] **LAYOUT-01**: On screens narrower than the mobile breakpoint, the portal columns display under a tab strip with one column visible at a time
-- [ ] **LAYOUT-02**: On screens at or above the mobile breakpoint (PC/tablet), the existing side-by-side multi-column layout is unchanged
-- [ ] **LAYOUT-03**: The mobile breakpoint is defined as a single SCSS variable (not hardcoded in multiple places)
+- [x] **LAYOUT-01**: On screens narrower than the mobile breakpoint, the portal columns display under a tab strip with one column visible at a time
+- [x] **LAYOUT-02**: On screens at or above the mobile breakpoint (PC/tablet), the existing side-by-side multi-column layout is unchanged
+- [x] **LAYOUT-03**: The mobile breakpoint is defined as a single SCSS variable (not hardcoded in multiple places)
 
 ### Tab — Column tab strip (mobile only)
 
-- [ ] **TAB-01**: A tab strip is shown on mobile with one tab per portal column (labeled by column number)
-- [ ] **TAB-02**: Selecting a tab shows that column's gadgets and hides the others
-- [ ] **TAB-03**: The first column tab is active by default on page load
-- [ ] **TAB-04**: The tab strip is hidden on PC/tablet (CSS media query)
-- [ ] **TAB-05**: Tab state is driven by CSS class toggling (JS sets active class; CSS controls visibility)
+- [x] **TAB-01**: A tab strip is shown on mobile with one tab per portal column (labeled by column number)
+- [x] **TAB-02**: Selecting a tab shows that column's gadgets and hides the others
+- [x] **TAB-03**: The first column tab is active by default on page load
+- [x] **TAB-04**: The tab strip is hidden on PC/tablet (CSS media query)
+- [x] **TAB-05**: Tab state is driven by CSS class toggling (JS sets active class; CSS controls visibility)
 
 ### Theme — All-theme coverage
 
-- [ ] **THEME-01**: Modern theme welcome page gets the mobile column tab strip
-- [ ] **THEME-02**: Classic theme welcome page gets the mobile column tab strip
-- [ ] **THEME-03**: Simple theme welcome page gets the mobile column tab strip (coexists with existing Home/Note tabs)
+- [x] **THEME-01**: Modern theme welcome page gets the mobile column tab strip
+- [x] **THEME-02**: Classic theme welcome page gets the mobile column tab strip
+- [x] **THEME-03**: Simple theme welcome page gets the mobile column tab strip (coexists with existing Home/Note tabs)
 
 ### Test — Verification
 
-- [ ] **TEST-01**: Minitest integration tests cover tab strip presence and column show/hide classes for each theme
-- [ ] **TEST-02**: Cucumber scenario covers mobile column tab switching (at least one theme)
+- [x] **TEST-01**: Minitest integration tests cover tab strip presence and column show/hide classes for each theme
+- [x] **TEST-02**: Cucumber scenario covers mobile column tab switching (at least one theme)
 
 ## Future Requirements
 
@@ -51,19 +51,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | Phase 27 | Pending |
-| LAYOUT-02 | Phase 26 | Pending |
-| LAYOUT-03 | Phase 26 | Pending |
-| TAB-01 | Phase 27 | Pending |
-| TAB-02 | Phase 27 | Pending |
-| TAB-03 | Phase 27 | Pending |
-| TAB-04 | Phase 26 | Pending |
-| TAB-05 | Phase 27 | Pending |
-| THEME-01 | Phase 26 | Pending |
-| THEME-02 | Phase 26 | Pending |
-| THEME-03 | Phase 26 | Pending |
-| TEST-01 | Phase 28 | Pending |
-| TEST-02 | Phase 28 | Pending |
+| LAYOUT-01 | Phase 27 | Complete |
+| LAYOUT-02 | Phase 26 | Complete |
+| LAYOUT-03 | Phase 26 | Complete |
+| TAB-01 | Phase 27 | Complete |
+| TAB-02 | Phase 27 | Complete |
+| TAB-03 | Phase 27 | Complete |
+| TAB-04 | Phase 26 | Complete |
+| TAB-05 | Phase 27 | Complete |
+| THEME-01 | Phase 26 | Complete |
+| THEME-02 | Phase 26 | Complete |
+| THEME-03 | Phase 26 | Complete |
+| TEST-01 | Phase 28 | Complete |
+| TEST-02 | Phase 28 | Complete |
 
 **Coverage:**
 - v1.7 requirements: 13 total
@@ -72,4 +72,4 @@
 
 ---
 *Requirements defined: 2026-05-04*
-*Last updated: 2026-05-04 after initial definition*
+*Last updated: 2026-05-04 — v1.7 requirements marked complete after ship.*

@@ -95,3 +95,28 @@ end
   assert !page.has_css?('body.drawer-open'), '遷移後もドロワー状態は付与されないはずです'
   capture
 end
+
+もし /^ルートページを開きます。$/ do
+  visit root_path
+  capture
+end
+
+もし /^ポータル列タブが3つ表示されています。$/ do
+  assert has_css?('.portal-column-tabs'), 'ポータル列タブ枠があるはずです'
+  assert has_css?('button.portal-column-tab', count: 3), '列タブが3つあるはずです'
+  capture
+end
+
+もし /^2列目のポータル列タブをクリックします。$/ do
+  find('button.portal-column-tab[data-portal-column-index="1"]').click
+  capture
+end
+
+もし /^2列目のポータル列がアクティブです。$/ do
+  assert has_css?('.portal.portal--column-active-1'), '2列目のポータルがアクティブなはずです'
+  assert has_css?(
+    'button.portal-column-tab--active[data-portal-column-index="1"]',
+    count: 1
+  ), '2列目のタブがアクティブなはずです'
+  capture
+end

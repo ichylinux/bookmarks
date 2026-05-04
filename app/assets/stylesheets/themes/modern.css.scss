@@ -470,3 +470,23 @@
   line-height: 1.4;
   color: #6b7280;
 }
+
+// v1.7 THEME-01: mobile portal column tabs (narrow only; breakpoint matches welcome.css.scss $portal-mobile-breakpoint − 1px)
+@media (max-width: 767px) {
+  .modern .portal-column-tabs {
+    gap: 8px;
+    padding: 0 16px;
+  }
+
+  .modern .portal-column-tab {
+    border-color: var(--modern-border);
+    background: var(--modern-surface-alt);
+    color: var(--modern-text);
+  }
+
+  .modern .portal-column-tab--active {
+    background: var(--modern-color-primary);
+    color: #fff;
+    border-color: var(--modern-color-primary);
+  }
+}

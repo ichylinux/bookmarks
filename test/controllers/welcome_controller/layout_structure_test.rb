@@ -152,4 +152,32 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.drawer > nav > a', count: 6
   end
 
+  def test_モダンテーマでポータル列タブと既定の列状態が出力される
+    user.preference.update!(theme: 'modern')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal-column-tabs button.portal-column-tab', count: 3
+    assert_select '.portal.portal--column-active-0', count: 1
+    assert_select 'button.portal-column-tab--active', count: 1
+  end
+
+  def test_クラシックテーマでポータル列タブと既定の列状態が出力される
+    user.preference.update!(theme: 'classic')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal-column-tabs button.portal-column-tab', count: 3
+    assert_select '.portal.portal--column-active-0', count: 1
+  end
+
+  def test_シンプルテーマでポータル列タブと既定の列状態が出力される
+    user.preference.update!(theme: 'simple')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal-column-tabs button.portal-column-tab', count: 3
+    assert_select '.portal.portal--column-active-0', count: 1
+  end
+
 end

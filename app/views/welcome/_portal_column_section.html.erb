@@ -1,0 +1,30 @@
+<%# locals: portal_columns — Array<Array<Gadget>> from Portal#portal_columns %>
+<div class="portal-column-tabs" role="tablist" aria-label="<%= t('welcome.portal_column_tabs_aria_label') %>">
+  <% portal_columns.each_with_index do |_, i| %>
+    <button
+      type="button"
+      class="portal-column-tab<%= ' portal-column-tab--active' if i.zero? %>"
+      role="tab"
+      aria-selected="<%= i.zero? ? 'true' : 'false' %>"
+      aria-controls="column_<%= i %>"
+      id="portal-column-tab-<%= i %>"
+      data-portal-column-index="<%= i %>"
+    >
+      <%= i + 1 %>
+    </button>
+  <% end %>
+</div>
+<div class="portal portal--column-active-0">
+  <% portal_columns.each_with_index do |gadgets, i| %>
+    <div
+      id="column_<%= i %>"
+      class="gadgets portal-column"
+      role="tabpanel"
+      aria-labelledby="portal-column-tab-<%= i %>"
+    >
+      <% gadgets.each do |g| %>
+        <%= render g.class.name.underscore, gadget: g %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

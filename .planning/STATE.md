@@ -2,59 +2,49 @@
 gsd_state_version: 1.0
 milestone: v1.7
 milestone_name: Mobile Portal Layout
-status: planning
+status: complete
 stopped_at: —
 last_updated: "2026-05-04T00:00:00+09:00"
-last_activity: "2026-05-04 — Milestone v1.7 started"
+last_activity: "2026-05-04 — v1.7 shipped (mobile portal column tabs)"
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 3
   total_plans: 0
   completed_plans: 0
-  percent: 0
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-04 — Milestone v1.7 started
+Phase: 26–28 complete  
+Plan: —  
+Status: Milestone v1.7 delivered (implementation + tri-suite verification)  
+Last activity: 2026-05-04 — Mobile portal column tabs; `welcome.css.scss` breakpoint variable; partial + JS; Minitest + Cucumber
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-04 after v1.6 archive)
+See: `.planning/PROJECT.md`
 
-**Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-
-**Current focus:** Define the next milestone with `/gsd-new-milestone` (fresh requirements → roadmap).
+**Current focus:** Plan next milestone with `/gsd-new-milestone` or continue product work on `master`.
 
 ## Performance Metrics
 
-**Velocity (v1.6 close-out):**
-
-- Phases in milestone: 23–25 (delivered without numbered plan artifacts)
-- Tri-suite gate: lint + Minitest + Cucumber green at ship
-
-**Recent trend:**
-
-- v1.6 execution consolidated implementation + verification in one pass; process debt documented in milestone audit (no per-phase VERIFICATION dirs).
+v1.7 closed in one implementation pass: Phases 26–28 (no per-phase PLAN dirs). Tri-suite gate: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` green at completion.
 
 ## Accumulated Context
 
 ### Decisions
 
-- v1.6 scope: extend the Note gadget (already built in v1.3 for simple theme) to modern and classic themes.
-- Modern/classic use `#welcome-home-panel` + `#notes-tab-panel` with `welcome-tab-panel--hidden` for mutual exclusivity; simple theme unchanged (`simple-tab-panel` / `simple-home-panel`).
-- Drawer nav Note link gated by `use_note`; Japanese locale uses `nav.note` →「ノート」.
-- Cucumber: `モダンテーマでノートを有効にしてサインイン` step avoids ambiguity with existing `モダンテーマでサインイン`.
+- Mobile portal UI uses viewport max-width one px below `$portal-mobile-breakpoint` (768px): columns switch to numbered tabs + single visible column via `portal--column-active-N` on `.portal`.
+- Tab strip is in the DOM for all viewports; hidden on wide screens with CSS (`display: none`).
+- Simple theme: column tabs live inside `#simple-home-panel`, above the existing Home/Note simple tabs (REQ THEME-03).
 
 ### Pending Todos
 
-- v1.5 audit follow-ups (accepted tech debt): backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, normalize Nyquist validation artifacts if strict compliance is required.
-- Optional: `/gsd-cleanup` if you want legacy `.planning/phases/` dirs consolidated into milestone archives.
+- Optional: `gsd-sdk` / local GSD CLI install so `/gsd-autonomous` can run `init.milestone-op` and full lifecycle without manual fallbacks.
+- Optional: `/gsd-complete-milestone` to archive v1.7 roadmap snapshot under `.planning/milestones/` if you use GSD archival workflow.
 
 ### Blockers/Concerns
 
@@ -71,6 +61,6 @@ None.
 
 Last session: 2026-05-04
 
-Stopped at: v1.6 archived; repository tagged `v1.6`; `.planning/REQUIREMENTS.md` removed pending next milestone definition.
+Stopped at: v1.7 feature complete; planning docs updated.
 
-Resume: `/gsd-new-milestone` or feature work on `master` as needed.
+Resume: tag release / PR as needed; run `/gsd-new-milestone` for v1.8 planning.

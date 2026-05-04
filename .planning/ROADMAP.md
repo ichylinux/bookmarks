@@ -8,7 +8,7 @@
 - ✅ **v1.4 — Internationalization** — Phases 14–18.2 (shipped 2026-05-03) — [archived](milestones/v1.4-ROADMAP.md)
 - ✅ **v1.5 — Verification Debt Cleanup** — Phases 19–22 (shipped 2026-05-04) — [archived](milestones/v1.5-ROADMAP.md)
 - ✅ **v1.6 — Note Gadget for All Themes** — Phases 23–25 (shipped 2026-05-04) — [archived](milestones/v1.6-ROADMAP.md)
-- 🚧 **v1.7 — Mobile Portal Layout** — Phases 26–28 (in progress)
+- ✅ **v1.7 — Mobile Portal Layout** — Phases 26–28 (shipped 2026-05-04)
 
 ## Phases
 
@@ -33,9 +33,9 @@
 
 ### v1.7 — Mobile Portal Layout (Phases 26–28)
 
-- [ ] **Phase 26: CSS Foundation** — Mobile breakpoint variable, portal column CSS for mobile stacking, tab strip CSS (show/hide), applied to all three themes (LAYOUT-02, LAYOUT-03, TAB-04, THEME-01, THEME-02, THEME-03)
-- [ ] **Phase 27: Tab Strip HTML & JS** — Server-rendered column tab strip in welcome/index, JavaScript for tab switching (set active class, show/hide columns), first tab active by default (LAYOUT-01, TAB-01, TAB-02, TAB-03, TAB-05)
-- [ ] **Phase 28: Tests & Phase Gate** — Minitest integration tests for tab strip presence and column show/hide on all themes; Cucumber scenario for mobile column tab switching; tri-suite green (TEST-01, TEST-02)
+- [x] **Phase 26: CSS Foundation** — Mobile breakpoint variable, portal column tab strip CSS (mobile-only), all themes — completed 2026-05-04
+- [x] **Phase 27: Tab Strip HTML & JS** — Server-rendered column tabs, JS `portal--column-active-N` toggling, first column default — completed 2026-05-04
+- [x] **Phase 28: Tests & Phase Gate** — Minitest (3 themes) + Cucumber mobile tab scenario + tri-suite green — completed 2026-05-04
 
 ## Progress
 
@@ -48,9 +48,9 @@
 | 23. View & Navigation Integration                 | v1.6      | —              | Complete | 2026-05-04 |
 | 24. CSS Styling & Localization Verification       | v1.6      | —              | Complete | 2026-05-04 |
 | 25. Tests & Phase Gate                            | v1.6      | —              | Complete | 2026-05-04 |
-| 26. CSS Foundation                                | v1.7      | —              | Pending  | —          |
-| 27. Tab Strip HTML & JS                           | v1.7      | —              | Pending  | —          |
-| 28. Tests & Phase Gate                            | v1.7      | —              | Pending  | —          |
+| 26. CSS Foundation                                | v1.7      | —              | Complete | 2026-05-04 |
+| 27. Tab Strip HTML & JS                           | v1.7      | —              | Complete | 2026-05-04 |
+| 28. Tests & Phase Gate                             | v1.7      | —              | Complete | 2026-05-04 |
 
 ---
-*Last updated: 2026-05-04 — v1.7 Mobile Portal Layout milestone started (Phases 26–28).*
+*Last updated: 2026-05-04 — v1.7 Mobile Portal Layout milestone complete (Phases 26–28).*

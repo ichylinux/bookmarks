@@ -134,16 +134,17 @@ ja:
       generic: エラーが発生しました
 
   welcome:
+    calendar_gadget:
+      loading: カレンダーを読み込み中・・・
+    feed:
+      loading: フィードを取得中・・・
+      fetch_failed: フィードを取得できませんでした。
     note_gadget:
       title: ノート
       body_label: メモ
       submit: メモを保存
       empty: メモはまだありません
-    feed:
-      loading: フィードを取得中・・・
-      fetch_failed: フィードを取得できませんでした。
-    calendar_gadget:
-      loading: カレンダーを読み込み中・・・
+    portal_column_tabs_aria_label: ポータル列の切り替え
 
   calendars:
     get_gadget:

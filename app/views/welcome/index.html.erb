@@ -37,15 +37,7 @@
   <% use_note = current_user.preference&.use_note? %>
   <% notes_active = use_note && (params[:tab].to_s == 'notes') %>
   <div id="simple-home-panel" class="simple-tab-panel <%= 'simple-tab-panel--hidden' if notes_active %>">
-    <div class="portal">
-      <% @portal.portal_columns.each_with_index do |gadgets, i| %>
-        <div id="column_<%= i %>" class="gadgets">
-          <% gadgets.each do |g| %>
-            <%= render g.class.name.underscore, gadget: g %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+    <%= render 'portal_column_section', portal_columns: @portal.portal_columns %>
   </div>
 
   <% if use_note %>
@@ -57,15 +49,7 @@
   <% use_note = current_user.preference&.use_note? %>
   <% notes_active = use_note && (params[:tab].to_s == 'notes') %>
   <div id="welcome-home-panel" class="welcome-tab-panel <%= 'welcome-tab-panel--hidden' if notes_active %>">
-    <div class="portal">
-      <% @portal.portal_columns.each_with_index do |gadgets, i| %>
-        <div id="column_<%= i %>" class="gadgets">
-          <% gadgets.each do |g| %>
-            <%= render g.class.name.underscore, gadget: g %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+    <%= render 'portal_column_section', portal_columns: @portal.portal_columns %>
   </div>
 
   <% if use_note %>
