@@ -40,7 +40,7 @@ class Calendar < ApplicationRecord
   end
   
   def holiday(date)
-    return nil unless I18n.locale.to_sym == :ja
+    return nil unless holiday?(date)
 
     from = display_date.prev_month.beginning_of_month
     to = display_date.next_month.end_of_month
