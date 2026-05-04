@@ -186,6 +186,44 @@
 
 ---
 
+## Milestone: v1.6 — Note Gadget for All Themes
+
+**Shipped:** 2026-05-04  
+**Phases:** 3 (23–25) | **Plans:** Not tracked as numbered artifacts (roadmap success criteria only)
+
+### What Was Built
+
+- Modern and classic welcome surfaces render `_note_gadget` on `/?tab=notes` with `#welcome-home-panel` / `#notes-tab-panel` exclusivity (`welcome-tab-panel--hidden`).
+- Drawer navigation exposes Note (`t('nav.note')`) when `use_note` is enabled; Japanese copy delivered via locale tables.
+- Theme SCSS extensions for `#notes-tab-panel` under modern/classic tokens; simple-theme tab JS unchanged (`notes_tabs.js` remains simple-only).
+- Automated regression coverage in controller + layout integration tests and an expanded Cucumber scenario for modern-theme capture via the drawer link.
+
+### What Worked
+
+- **Reuse simple-theme contracts:** query-param tab state + full-page POST note create avoided new JS frameworks or SPA-style switching on modern/classic.
+- **Focused incremental milestones:** v1.3 proved capture/list flows on simple first; v1.6 layered presentation + navigation without revisiting persistence semantics.
+
+### What Was Inefficient
+
+- **Process parity gap:** unlike earlier milestones, Phases 23–25 shipped without `.planning/phases/` VERIFICATION/Nyquist artifacts — acceptable for velocity here but increases reliance on audits/tests for historical narrative.
+- **`gsd-sdk query milestone.complete` unavailable** in this environment’s CLI build; archival steps were executed manually (higher friction than automation promises).
+
+### Patterns Established
+
+- **SSR-first panel switching for modern/classic:** mirrors simple-theme behavior without extending `notes_tabs.js`.
+- **Explicit Cucumber steps when combining theme activation + preference toggles** — prevents ambiguous stepdefs when multiple “sign in as modern user” variants coexist.
+
+### Key Lessons
+
+1. When skipping formal phase directories, capture milestone-level audits early (`v1.6-MILESTONE-AUDIT.md`) so close-out doesn’t re-argue evidence.
+2. Keep drawer additions gated by existing helpers (`drawer_ui?`, `use_note`) rather than inline theme comparisons — preserves parity across locales.
+
+### Cost Observations
+
+- Documentation/process overhead intentionally lighter than verification-debt milestone v1.5; engineering effort concentrated in SCSS + ERB + tests.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -197,6 +235,7 @@
 | v1.3 | 4 (10–13) | First data-layer → controller → UI → tests pipeline; Cucumber E2E; zero-dep constraint held |
 | v1.4 | 7 (14–18.2) | First milestone with mid-flight gap-closure phases (18.1, 18.2) added after audit; first cross-cutting concern (locale) wired through every surface |
 | v1.5 | 4 (19–22) | First verification-debt-only milestone; shared rubric phase + per-document closure phases + explicit milestone sync phase |
+| v1.6 | 3 (23–25) | First milestone shipped entirely without `.planning/phases/` directories — roadmap + audit + tests carry traceability |
 
 ### Cumulative quality
 
@@ -207,6 +246,7 @@
 | v1.3 | Minitest + Cucumber HEADLESS green | Human UAT 5/5; Phase 10 VERIFICATION skipped |
 | v1.4 | Minitest 191/1101 + Cucumber 9/28 green | Locale key parity test enforced; pre-existing Cucumber scenario-order flake surfaced and deferred |
 | v1.5 | Minitest + Cucumber green (one-rerun policy) | No new user-facing features; evidence-only + 2 test file changes (+38+16 lines) |
+| v1.6 | Minitest + Cucumber green (one-rerun policy) | Theme/UI expansion only; milestone audit notes missing Nyquist artifacts |
 
 ### Top lessons (carry forward)
 
@@ -218,3 +258,4 @@
 6. Refresh stale milestone audits as part of gap-closure phase verification, not at archive time (v1.4).
 7. Archive snapshots (milestones/v*-ROADMAP.md, v*-REQUIREMENTS.md) must be created after all phases complete — mid-execution snapshots are stale at close (v1.5).
 8. Verification-debt milestones need a shared rubric phase first; the rubric investment pays for itself across all downstream closure phases (v1.5).
+9. If you skip `.planning/phases/` artifacts for speed, publish a milestone audit early so archival/reviews cite one authoritative gap ledger instead of inferring from git history (v1.6).

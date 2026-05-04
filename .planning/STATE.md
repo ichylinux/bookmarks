@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.6
-milestone_name: — Note Gadget for All Themes
-status: planning
-stopped_at: roadmap created
-last_updated: "2026-05-04T00:00:00+09:00"
-last_activity: "2026-05-04 — Roadmap created (Phases 23–25)"
+milestone: —
+milestone_name: —
+status: awaiting_next_milestone
+stopped_at: v1.6 archived and tagged 2026-05-04
+last_updated: "2026-05-04T21:00:00+09:00"
+last_activity: "2026-05-04 — v1.6 milestone archived (.planning/milestones/v1.6-*); REQUIREMENTS.md removed for next cycle"
 progress:
-  total_phases: 3
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,51 +18,43 @@ progress:
 
 ## Current Position
 
-Phase: Not started (roadmap created)
+Phase: —
 Plan: —
-Status: Roadmap created; awaiting phase planning
-Last activity: 2026-05-04 — v1.6 roadmap created (3 phases: 23–25)
+Status: v1.6 shipped and archived; no active roadmap milestone until `/gsd-new-milestone`.
+Last activity: 2026-05-04 — Milestone close-out (archive snapshots, ROADMAP collapse, git tag `v1.6`)
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-04)
+See: `.planning/PROJECT.md` (updated 2026-05-04 after v1.6 archive)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.6 — Extend the quick Note gadget to modern and classic themes.
+
+**Current focus:** Define the next milestone with `/gsd-new-milestone` (fresh requirements → roadmap).
 
 ## Performance Metrics
 
-**Velocity:**
+**Velocity (v1.6 close-out):**
 
-- Total plans completed: 0 (v1.6)
-- Average duration: —
-- Total execution time: 0.0 hours
+- Phases in milestone: 23–25 (delivered without numbered plan artifacts)
+- Tri-suite gate: lint + Minitest + Cucumber green at ship
 
-**By Phase:**
+**Recent trend:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-
-**Recent Trend:**
-
-- Starting v1.6
+- v1.6 execution consolidated implementation + verification in one pass; process debt documented in milestone audit (no per-phase VERIFICATION dirs).
 
 ## Accumulated Context
 
 ### Decisions
 
 - v1.6 scope: extend the Note gadget (already built in v1.3 for simple theme) to modern and classic themes.
-- Existing `_note_gadget.html.erb` partial, `NotesController`, and `Note` model are in place — work is UI integration and CSS per theme.
-- "Note gadget on modern and classic themes" was explicitly Out of Scope in v1.3; now promoted to Active for v1.6.
-- Phase 23: add note panel HTML to `welcome/index.html.erb` `else` branch and drawer nav Note link to `application.html.erb`.
-- Phase 24: CSS for note panel visibility and theme-appropriate styling; verify `t()` labels render correctly in both locales on modern and classic.
-- Phase 25: Minitest integration tests for modern + classic note panel; Cucumber E2E for modern theme note capture flow.
-- No JavaScript changes required — `notes_tabs.js` guard (`if (!$('body').hasClass('simple')) return;`) does not affect SSR-driven panel visibility; tab param pattern is server-side only.
-- Panel hiding for modern/classic themes requires CSS outside the existing `.simple {}` block in `welcome.css.scss`.
+- Modern/classic use `#welcome-home-panel` + `#notes-tab-panel` with `welcome-tab-panel--hidden` for mutual exclusivity; simple theme unchanged (`simple-tab-panel` / `simple-home-panel`).
+- Drawer nav Note link gated by `use_note`; Japanese locale uses `nav.note` →「ノート」.
+- Cucumber: `モダンテーマでノートを有効にしてサインイン` step avoids ambiguity with existing `モダンテーマでサインイン`.
 
 ### Pending Todos
 
-- v1.5 audit follow-ups (accepted tech debt): backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, fix stale `.planning/REQUIREMENTS.md` references, and normalize Nyquist validation artifacts if strict compliance is required.
+- v1.5 audit follow-ups (accepted tech debt): backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, normalize Nyquist validation artifacts if strict compliance is required.
+- Optional: `/gsd-cleanup` if you want legacy `.planning/phases/` dirs consolidated into milestone archives.
 
 ### Blockers/Concerns
 
@@ -78,5 +70,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: v1.6 roadmap created (Phases 23–25)
-Resume: `/gsd-plan-phase 23`
+
+Stopped at: v1.6 archived; repository tagged `v1.6`; `.planning/REQUIREMENTS.md` removed pending next milestone definition.
+
+Resume: `/gsd-new-milestone` or feature work on `master` as needed.

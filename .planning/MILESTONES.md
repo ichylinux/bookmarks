@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.6 — Note Gadget for All Themes (shipped 2026-05-04)
+
+**Scope:** Phases 23–25 — welcome/layout integration for modern and classic themes, `#notes-tab-panel` styling, ja/en verification tests, Cucumber modern-theme note capture.
+
+**Key accomplishments:**
+
+- **Phase 23:** Mutual exclusive Home vs Note panels on modern/classic via SSR + `welcome-tab-panel--hidden`; drawer Note link when `use_note`; `/?tab=notes` routing unchanged from simple-theme semantics.
+- **Phase 24:** `#notes-tab-panel` SCSS aligned with modern and classic theme tokens; locale assertions for `_note_gadget` chrome on both themes (`nav.note` →「ノート」).
+- **Phase 25:** `welcome_controller_test` + `layout_structure_test` coverage for panel visibility and drawer link; Cucumber scenario「モダンテーマでドロワーのノートリンクからメモを保存する」with disambiguated sign-in steps.
+- Tri-suite gate (lint + Minitest + Cucumber with project flake rerun policy) green at milestone archive.
+
+**Audit:** [Milestone audit](milestones/v1.6-MILESTONE-AUDIT.md) — `tech_debt`, no requirement gaps; accepted debt is absence of formal per-phase `.planning/phases/` VERIFICATION/Nyquist artifacts for Phases 23–25 (traceability via roadmap + archived REQUIREMENTS + tests).
+
+**Known deferred items at close:** carry-forward v1.5 verification-wrapper/normalization tasks listed in `.planning/STATE.md` (not blocking v1.6).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.6-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.6-REQUIREMENTS.md) · [Milestone audit](milestones/v1.6-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.5 — Verification Debt Cleanup (shipped 2026-05-04)
 
 **Scope:** Phases 19–22 (7 plans) — shared verification rubric (Phase 19), Phase 05 closure (Phase 20), Phase 06 closure (Phase 21), Phase 09 closure + milestone sync (Phase 22).
@@ -99,4 +118,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-04 — v1.5 verification debt cleanup close-out*
+*Last updated: 2026-05-04 — v1.6 Note Gadget for All Themes archived*

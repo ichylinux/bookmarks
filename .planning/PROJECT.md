@@ -8,22 +8,21 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.6 — Note Gadget for All Themes
+## Current Milestone
 
-**Goal:** Extend the quick Note gadget from the simple theme to modern and classic themes so all users can capture and view notes from the welcome page.
-
-**Target features:**
-- Note gadget (textarea + Save + note list) accessible on modern theme
-- Note gadget accessible on classic theme
-- Theme-appropriate presentation for each theme layout
+_Not started._ Define the next milestone with `/gsd-new-milestone` (requirements → roadmap).
 
 ## Current State
 
-**Shipped:** v1.5 — Verification Debt Cleanup (2026-05-04)
+**Shipped:** v1.6 — Note Gadget for All Themes (2026-05-04)
+
+The quick Note gadget is available on modern and classic themes: `/?tab=notes` shows `#notes-tab-panel` with `#welcome-home-panel` hidden (and the inverse on `/`). When `use_note` is enabled, the drawer nav includes a Note link (`t('nav.note')` / Japanese 「ノート」) to `root_path(tab: 'notes')`. Theme SCSS adds `#notes-tab-panel` styling under modern and classic token sets; `_note_gadget` labels remain locale-driven (ja/en). Regression coverage spans `welcome_controller_test`, `layout_structure_test`, and Cucumber (`モダンテーマでドロワーのノートリンクからメモを保存する`). Ship verified with `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test` green.
+
+**Previously shipped:** v1.5 — Verification Debt Cleanup (2026-05-04)
 
 v1.5 closed carry-forward verification debt for v1.2 phases 05/06/09. Each phase has a closure-ready verification document anchored to test methods and code references per the shared Phase 19 rubric. Phase 05 closes THEME-01/02/03 (`P05-C01..C03` PASS), Phase 06 closes NAV-01/02 with non-modern unaffected contract (`P06-C01..C03` PASS), Phase 09 closes STYLE-01..04 (`P09-C01..C04` PASS) anchored to `test/assets/modern_full_page_theme_contract_test.rb` selectors. Tracking documents (ROADMAP, STATE, MILESTONES, PROJECT) and milestone snapshots are consistent.
 
-**Previously shipped:** v1.4 — Internationalization (2026-05-03)
+**Earlier:** v1.4 — Internationalization (2026-05-03)
 
 The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash messages, Devise auth, 2FA OTP challenge, preferences, bookmarks/notes/todos/feeds/calendar surfaces) renders in Japanese or English. Locale is persisted per account on `preferences.locale`, with a three-stage resolution (saved preference → Accept-Language → `:ja` default) wired through a thread-safe `Localization` controller concern using `around_action` + `I18n.with_locale`. The pending 2FA OTP challenge honors saved locale before sign-in completes. Preferences save flash translates under the just-saved locale via a whitelist-gated `I18n.with_locale`, so language-change redirects render chrome and notice in the new locale together. Locale key parity between `ja.yml` and `en.yml` is enforced by tests; user content (bookmark/folder names, note bodies, Todo titles, feed/calendar external data) remains untranslated by design.
 
@@ -51,19 +50,19 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Phase 06 verification closure complete with modern/non-modern (classic + simple) interaction and structural evidence (`06-VERIFICATION.md`) — **v1.5 Phase 21**
 - ✓ Phase 09 verification closure complete with reproducible STYLE-01..04 selector evidence (`09-VERIFICATION.md`) — **v1.5 Phase 22**
 - ✓ v1.5 verification debt cleanup milestone closed; `ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md` consistently reflect v1.2 phase 05/06/09 closure — **v1.5 Phase 22**
+- ✓ Note gadget on modern theme (`/?tab=notes`, drawer link when `use_note`, integration + E2E coverage) — **v1.6 Phases 23–25**
+- ✓ Note gadget on classic theme (same contracts and tests as modern for panel visibility and drawer link) — **v1.6 Phases 23–25**
 
 ### Active
 
-- Note gadget available on modern theme (tab or integrated section) — **v1.6**
-- Note gadget available on classic theme (tab or integrated section) — **v1.6**
+_No active milestone requirements — define the next milestone via `/gsd-new-milestone`._
 
 ### Out of Scope (revisit when planning)
 
 - Introducing a new frontend framework, npm-heavy bundler migration, or replacing the asset pipeline
 - Large UX redesigns unrelated to current milestone scope
 - TypeScript conversion
-- Delete individual notes — deferred until core capture flow proves out
-- Note gadget on modern and classic themes — **moved to v1.6 Active** (simple theme proven out in v1.3–v1.5)
+- Delete individual notes — deferred until core capture flow proves out on all themes
 - Rich text / markdown editor — conflicts with no-new-JS-deps constraint
 - Real-time autosave — explicit save is the correct UX for deliberate capture
 - Locale beyond ja/en — not planned; `Preference::SUPPORTED_LOCALES` whitelist + `enforce_available_locales` keep the surface explicit
@@ -71,6 +70,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.6 (2026-05-04):** Note gadget extended to modern and classic themes per `.planning/milestones/v1.6-ROADMAP.md`. Audit: `.planning/milestones/v1.6-MILESTONE-AUDIT.md` (`tech_debt`: no formal per-phase `.planning/phases/` VERIFICATION/Nyquist artifacts; traceability via roadmap success criteria, REQUIREMENTS archive, tests).
 - **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`. Audit: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` (`tech_debt`, no blockers).
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`
 - JavaScript (post–v1.1): first-party `app/assets/javascripts/` follows ESLint + `CONVENTIONS.md`; Sprockets + Babel + jQuery 4 + Rails UJS unchanged
@@ -103,6 +103,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Pending-OTP saved locale via `session[:otp_user_id]` (Phase 18.1) | Resolves saved locale before Devise sign-in completes, without signing in early; respects existing whitelist gate | ✓ Good — fixes pending-OTP locale gap with no surface area increase |
 | Translate save flash under saved candidate locale (Phase 18.2) | Pre-redirect flash materialization happens under the OLD locale; translating under `I18n.with_locale(saved)` after `@user.save!` aligns flash with chrome | ✓ Good — closes locale-change save flash gap; whitelist-gated, falls through cleanly for non-locale saves |
 | Native labels for locale select (`自動 / 日本語 / English`) (Phase 15 D-02) | Language names are conventionally shown in their own script regardless of UI locale | ✓ Good — pattern reused for any future native-label UIs |
+| Modern/classic note panels via SSR + CSS visibility classes | Matches simple-theme `?tab=notes` pattern without new client-side tab framework; `#welcome-home-panel` / `#notes-tab-panel` mutual exclusion via `welcome-tab-panel--hidden` | ✓ Good — POST/redirect friendly; `notes_tabs.js` remains simple-only |
+| Drawer Note link gated by `use_note` | Avoids surprising navigation when gadget disabled; uses `t('nav.note')` for ja/en parity | ✓ Good — aligns with existing gadget preference model |
+| Cucumber step naming for modern + `use_note` | Disambiguates “modern theme sign-in” steps from scenarios that must enable the note preference | ✓ Good — reduces ambiguous step matching |
 
 ## Evolution
 
@@ -121,6 +124,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.6 — Note Gadget for All Themes (2026-05-04)
+
+**Delivered:** Modern and classic themes render the shared `_note_gadget` on `/?tab=notes` with home/note panel exclusivity; drawer Note link when `use_note`; SCSS for `#notes-tab-panel` in theme files; ja/en verification tests; Cucumber modern-theme capture scenario. Phases 23–25 (plans tracked inline on roadmap). Milestone audit records accepted process debt (no per-phase VERIFICATION dirs).
 
 ### v1.5 — Verification Debt Cleanup (2026-05-04)
 
@@ -143,4 +150,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-04 — v1.6 Note Gadget for All Themes started.*
+*Last updated: 2026-05-04 after v1.6 milestone archive.*
