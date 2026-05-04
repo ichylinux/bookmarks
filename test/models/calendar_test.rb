@@ -27,12 +27,19 @@ class CalendarTest < ActiveSupport::TestCase
     end
   end
 
-  def test_holiday_names_remain_from_holiday_jp
+  def test_holiday_names_are_only_shown_in_japanese_locale
     calendar = Calendar.new(user: user, title: 'Locale calendar')
     calendar.display_date = Date.new(2026, 1, 1)
+    new_years_day = Date.new(2026, 1, 1)
+
+    I18n.with_locale(:ja) do
+      assert calendar.holiday?(new_years_day)
+      assert_equal '元日', calendar.holiday(new_years_day)
+    end
 
     I18n.with_locale(:en) do
-      assert_equal '元日', calendar.holiday(Date.new(2026, 1, 1))
+      assert_not calendar.holiday?(new_years_day)
+      assert_nil calendar.holiday(new_years_day)
     end
   end
 end

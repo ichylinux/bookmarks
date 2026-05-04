@@ -181,7 +181,7 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, '元日'
   end
 
-  def test_ガジェットが英語ロケールで月_曜日_ナビラベルを表示し祝日名はそのまま
+  def test_ガジェットが英語ロケールで月_曜日_ナビラベルを表示し祝日名を表示しない
     calendar = calendar(user)
     user.preference.update!(locale: 'en')
     sign_in user
@@ -194,7 +194,7 @@ class CalendarsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'caption a[aria-label=?][title=?]', 'Next month', 'Next month', text: '>>', count: 1
     assert_select 'th.sunday', text: 'Sun', count: 1
     assert_select 'th', text: 'Thu', count: 1
-    assert_includes response.body, '元日'
+    assert_not_includes response.body, '元日'
   end
 
   def test_参照画面が英語ロケールでactionを翻訳しカレンダータイトルは変えない

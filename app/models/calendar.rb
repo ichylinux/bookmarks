@@ -34,10 +34,14 @@ class Calendar < ApplicationRecord
   end
 
   def holiday?(date)
+    return false unless I18n.locale.to_sym == :ja
+
     HolidayJp.holiday?(date)
   end
   
   def holiday(date)
+    return nil unless I18n.locale.to_sym == :ja
+
     from = display_date.prev_month.beginning_of_month
     to = display_date.next_month.end_of_month
     @holidays_of_month ||= HolidayJp.between(from, to)

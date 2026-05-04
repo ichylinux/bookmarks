@@ -4,8 +4,8 @@ milestone: v1.5
 milestone_name: — Verification Debt Cleanup
 status: complete
 stopped_at: v1.5 milestone shipped
-last_updated: "2026-05-04T12:10:00+09:00"
-last_activity: "2026-05-04 — Quick task Q-01: all models updated to inherit ApplicationRecord instead of ActiveRecord::Base (7b23b5d)"
+last_updated: "2026-05-04T12:11:00+09:00"
+last_activity: "2026-05-04 — Quick task Q-02: HolidayJp holidays only render in Japanese locale (this commit)"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -83,6 +83,7 @@ None — v1.5 verification debt cleanup complete.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | Q-01 | Model class should inherit ApplicationRecord instead of ActiveRecord::Base | 2026-05-04 | 7b23b5d | — |
+| Q-02 | HolidayJp holidays only render in Japanese locale | 2026-05-04 | this commit | `.planning/quick/260504-q02-holiday-jp-ja-locale/` |
 
 ## Session Continuity
 
