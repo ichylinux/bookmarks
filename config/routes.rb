@@ -28,7 +28,7 @@ Rails.application.routes.draw do
 
   resources :feeds do
     collection do
-      post 'fetch_title'
+      get 'fetch_title'
     end
   end
 

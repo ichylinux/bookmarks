@@ -49,12 +49,17 @@ class FeedsController < ApplicationController
   end
 
   def fetch_title
-    @feed = Feed.new(feed_params)
+    feed_url = params[:feed_url].to_s.strip
+    raise ArgumentError, 'blank feed_url' if feed_url.blank?
+
+    @feed = Feed.new(user_id: current_user.id, feed_url: feed_url)
     if @feed.feed?
       render plain: @feed.feed.title
     else
       head :ok
     end
+  rescue StandardError
+    head :ok
   end
 
   private

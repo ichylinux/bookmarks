@@ -7,27 +7,21 @@ const feeds = window.feeds;
 
 feeds.fetch_title = function(button) {
   const form = $(button).closest('form');
-
-  const url = form.find('input[name*="feed_url"]').val();
-  if (url === '') {
+  const fetchPath = $(button).data('url');
+  const feedUrl = $.trim(form.find('input[name*="feed_url"]').val() || '');
+  if (feedUrl === '') {
     alert($(button).data('feedUrlRequiredMessage'));
     return;
   }
-  
-  const params = form.serializeArray();
-  for (let i = 0; i < params.length; i ++) {
-    if (params[i].name === 'id') {
-      params[i].value = '';  // omit id so server treats this as a new record
-    } else if (params[i].name === '_method') {
-      params[i].value = 'post';
-    }
-  }
 
-  $.post($(button).data('url'), params, (title) => {
-    if ($.trim(title) === '') {
+  $.get(fetchPath, { feed_url: feedUrl }, (title) => {
+    const t = $.trim(title);
+    if (t === '') {
       alert($(button).data('feedFetchFailedMessage'));
       return;
     }
-    form.find('input[name*="title"]').val(title);
+    form.find('input[name*="title"]').val(t);
+  }).fail(function() {
+    alert($(button).data('feedFetchFailedMessage'));
   });
 };

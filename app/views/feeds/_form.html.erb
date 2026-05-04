@@ -10,7 +10,7 @@
         <%= f.text_field :title %>
         <%= f.button t('.fetch_from_feed'),
               onclick: 'feeds.fetch_title(this); return false;',
-              'data-url': url_for(action: 'fetch_title'),
+              'data-url': fetch_title_feeds_path,
               'data-feed-url-required-message': t('.feed_url_required'),
               'data-feed-fetch-failed-message': t('.feed_fetch_failed') %>
       </td>
