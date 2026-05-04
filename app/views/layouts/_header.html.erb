@@ -1,0 +1,17 @@
+<div id="header">
+  <div class="head-box">
+    <img src="/icon.svg" alt="Bookmarks" class="header-icon" />
+    <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
+    <% if drawer_ui? %>
+      <span class="head-user-email"><%= current_user.display_name %></span>
+      <div class="head-trailing-actions<%= ' head-trailing-actions--with-note' if current_user.preference&.use_note? %>">
+        <% if current_user.preference&.use_note? %>
+          <%= link_to root_path(tab: 'notes'), class: 'head-note-btn', aria: { label: t('nav.note') } do %>
+            <%= render 'icons/note' %>
+          <% end %>
+        <% end %>
+        <button class="hamburger-btn" aria-label="<%= t('nav.menu_aria') %>"></button>
+      </div>
+    <% end %>
+  </div>
+</div>
