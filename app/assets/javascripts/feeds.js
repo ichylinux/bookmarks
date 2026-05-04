@@ -5,7 +5,7 @@ window.feeds = window.feeds || {};
 // file or the alias here will become stale.
 const feeds = window.feeds;
 
-feeds.get_feed_title = function(button) {
+feeds.fetch_title = function(button) {
   const form = $(button).closest('form');
 
   const url = form.find('input[name*="feed_url"]').val();

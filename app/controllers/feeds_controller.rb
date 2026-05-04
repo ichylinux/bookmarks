@@ -48,7 +48,7 @@ class FeedsController < ApplicationController
     redirect_to action: 'index'
   end
 
-  def get_feed_title
+  def fetch_title
     @feed = Feed.new(feed_params)
     if @feed.feed?
       render plain: @feed.feed.title
