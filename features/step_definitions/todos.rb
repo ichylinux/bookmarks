@@ -1,7 +1,7 @@
-もし /^設定画面で タスクウィジェットを表示する にチェックを入れます。$/ do
+もし /^設定画面で タスクを表示する にチェックを入れます。$/ do
   sign_in user
   visit '/preferences'
-  check 'タスクウィジェットを表示する'
+  check 'タスクを表示する'
   capture
   click_on '保存'
 end
@@ -9,7 +9,7 @@ end
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do
   sign_in user
   visit '/preferences'
-  check 'タスクウィジェットを表示する'
+  check 'タスクを表示する'
   select Todo::PRIORITIES[Todo::PRIORITY_HIGH], from: 'タスク追加時の初期優先度'
   capture
   click_on '保存'

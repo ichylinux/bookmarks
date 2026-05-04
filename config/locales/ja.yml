@@ -14,9 +14,9 @@ ja:
         locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
         theme: テーマ
-        use_note: ノートタブを表示する
-        use_todo: タスクウィジェットを表示する
-        use_calendar: カレンダーウィジェットを表示する
+        use_note: ノートを表示する
+        use_todo: タスクを表示する
+        use_calendar: カレンダーを表示する
       todo:
         priority: 優先度
         title: タイトル

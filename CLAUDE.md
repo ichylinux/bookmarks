@@ -26,7 +26,7 @@ Cucumber is part of the green-bar gate. Do not declare a phase "complete" if `da
 
 `bundle exec rake dad:test` exhibits intermittent scenario-order-dependent failures unrelated to any individual phase:
 - Scenarios share DB state (no truncation between scenarios). One scenario's `preference.theme = 'simple'` or `use_note: true` updates can leak into a later scenario that assumes default state.
-- Specific symptoms seen: `Unable to find checkbox "タスクウィジェットを表示する"`, missing `.todo_actions` on `/`, missing `#notes-tab-panel`.
+- Specific symptoms seen: `Unable to find checkbox "タスクを表示する"`, missing `.todo_actions` on `/`, missing `#notes-tab-panel`.
 
 **Until this is fixed,** when verifying a phase: if `dad:test` fails, re-run once. A consistent failure across two runs indicates a real regression. A flake that disappears on re-run is pre-existing and tracked separately.
 

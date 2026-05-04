@@ -14,9 +14,9 @@ en:
         locale: Language
         open_links_in_new_tab: Open links in new tab
         theme: Theme
-        use_note: Show note tab
-        use_todo: Show todo widget
-        use_calendar: Show calendar widget
+        use_note: Show notes
+        use_todo: Show tasks
+        use_calendar: Show calendar
       todo:
         priority: Priority
         title: Title

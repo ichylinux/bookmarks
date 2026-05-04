@@ -277,7 +277,7 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     get preferences_path
     assert_response :success
-    assert_select 'label[for=?]', 'user_preference_attributes_use_calendar', text: 'カレンダーウィジェットを表示する'
+    assert_select 'label[for=?]', 'user_preference_attributes_use_calendar', text: 'カレンダーを表示する'
     assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][use_calendar]'
   end
 
