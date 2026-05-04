@@ -5,7 +5,7 @@ milestone_name: — Verification Debt Cleanup
 status: complete
 stopped_at: v1.5 milestone shipped
 last_updated: "2026-05-04T12:10:00+09:00"
-last_activity: "2026-05-04 — Phase 22 executed; v1.5 milestone shipped with `09-VERIFICATION.md` closure-ready (`P09-C01..C04` PASS) and milestone sync complete"
+last_activity: "2026-05-04 — Quick task Q-01: all models updated to inherit ApplicationRecord instead of ActiveRecord::Base (7b23b5d)"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -77,6 +77,12 @@ See deferred backlog in `.planning/PROJECT.md` and `.planning/STATE.md` history;
 ### Blockers/Concerns
 
 None — v1.5 verification debt cleanup complete.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| Q-01 | Model class should inherit ApplicationRecord instead of ActiveRecord::Base | 2026-05-04 | 7b23b5d | — |
 
 ## Session Continuity
 
