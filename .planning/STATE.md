@@ -1,42 +1,40 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.5
-milestone_name: — Verification Debt Cleanup
-status: complete
-stopped_at: v1.5 milestone shipped
-last_updated: "2026-05-04T12:22:43+09:00"
-last_activity: "2026-05-04 — v1.5 milestone audit recorded accepted tech debt; no blockers"
+milestone: v1.6
+milestone_name: — Note Gadget for All Themes
+status: planning
+stopped_at: milestone planning
+last_updated: "2026-05-04T00:00:00+09:00"
+last_activity: "2026-05-04 — Milestone v1.6 started"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 22 of 22 (Complete) — v1.5 milestone shipped
-Plan: 22-01 + 22-02 complete
-Status: v1.5 shipped
-Last activity: 2026-05-04 — v1.5 milestone audit recorded accepted tech debt; no blockers.
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-04 — Milestone v1.6 started
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-04)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.5 verification debt cleanup milestone shipped (Phases 19–22).
+**Current focus:** v1.6 — Extend the quick Note gadget to modern and classic themes.
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 7 (v1.5)
+- Total plans completed: 0 (v1.6)
 - Average duration: —
 - Total execution time: 0.0 hours
 
@@ -44,40 +42,26 @@ See: `.planning/PROJECT.md` (updated 2026-05-04)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 19 | 1 | — | — |
-| 20 | 2 | — | — |
-| 21 | 2 | — | — |
-| 22 | 2 | — | — |
 
 **Recent Trend:**
 
-- Last 5 plans: 20-02, 21-01, 21-02, 22-01, 22-02
-- Trend: v1.5 milestone shipped with Phase 09 closure (P09-C01..C04 PASS) and milestone sync complete
+- Starting v1.6
 
 ## Accumulated Context
 
 ### Decisions
 
-- v1.5 phases are requirement-driven only: verification rubric → phase 05 closure → phase 06 closure → phase 09 closure + milestone sync.
-- Scope remains strict to verification debt cleanup for 05/06/09 and milestone bookkeeping updates.
-- Minimal-fix policy applies: code/test changes allowed only when evidence proves a real mismatch.
-- Phase 19 context locked: hybrid evidence schema, automated-first acceptance threshold, one-rerun flake policy, and fail-first/minimal-fix workflow.
-- Phase 19 security gate is now closed (`19-SECURITY.md`, threats_open: 0).
-- Phase 20 context lock: Phase 05-only claim inventory (`THEME-01..03`) with fail-first, automated-first, one-rerun closure policy.
-- Phase 20 execution outcome: `.planning/phases/05-theme-foundation/05-VERIFICATION.md` is now closure-ready (`P05-C01..C03` PASS).
-- Phase 21 lock: exactly 3 claims (NAV-01, NAV-02, non-modern unaffected), with classic+simple interaction evidence required.
-- Phase 21 execution outcome: `.planning/phases/06-html-structure/06-VERIFICATION.md` is closure-ready (`P06-C01..C03` PASS) with one-rerun flake classification logged.
-- Phase 22 lock: STYLE-01..04 claim inventory (`P09-C01..C04`) anchored to `modern_full_page_theme_contract_test.rb` selectors; STYLE-05 explicitly out-of-scope per Phase 22 D-02.
-- Phase 22 execution outcome: `.planning/phases/09-full-page-theme-styles/09-VERIFICATION.md` is closure-ready (`P09-C01..C04` PASS); v1.5 milestone shipped with cross-document sync (`ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md`) and `milestones/v1.5-{ROADMAP,REQUIREMENTS}.md` snapshots.
-- v1.5 milestone audit outcome: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` status `tech_debt`, requirements 9/9 satisfied, integration 9/9 wired, flows 4/4 complete; tech debt accepted to proceed with milestone completion.
+- v1.6 scope: extend the Note gadget (already built in v1.3 for simple theme) to modern and classic themes.
+- Existing `_note_gadget.html.erb` partial, `NotesController`, and `Note` model are in place — work is UI integration and CSS per theme.
+- "Note gadget on modern and classic themes" was explicitly Out of Scope in v1.3; now promoted to Active for v1.6.
 
 ### Pending Todos
 
-Accepted v1.5 audit follow-ups: backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, fix stale `.planning/REQUIREMENTS.md` references or restore an index, and normalize Nyquist validation artifacts if strict compliance is required.
+- v1.5 audit follow-ups (accepted tech debt): backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, fix stale `.planning/REQUIREMENTS.md` references, and normalize Nyquist validation artifacts if strict compliance is required.
 
 ### Blockers/Concerns
 
-None blocking — v1.5 verification debt cleanup complete; audit tech debt accepted.
+None.
 
 ### Quick Tasks Completed
 
@@ -88,6 +72,6 @@ None blocking — v1.5 verification debt cleanup complete; audit tech debt accep
 
 ## Session Continuity
 
-Last session: 2026-05-04T12:10:00+09:00
-Stopped at: v1.5 milestone shipped
+Last session: 2026-05-04
+Stopped at: Milestone v1.6 planning started
 Resume: `/gsd-progress`

@@ -8,6 +8,15 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.6 — Note Gadget for All Themes
+
+**Goal:** Extend the quick Note gadget from the simple theme to modern and classic themes so all users can capture and view notes from the welcome page.
+
+**Target features:**
+- Note gadget (textarea + Save + note list) accessible on modern theme
+- Note gadget accessible on classic theme
+- Theme-appropriate presentation for each theme layout
+
 ## Current State
 
 **Shipped:** v1.5 — Verification Debt Cleanup (2026-05-04)
@@ -45,7 +54,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- _None — v1.5 verification debt cleanup shipped 2026-05-04. Next milestone TBD._
+- Note gadget available on modern theme (tab or integrated section) — **v1.6**
+- Note gadget available on classic theme (tab or integrated section) — **v1.6**
 
 ### Out of Scope (revisit when planning)
 
@@ -53,7 +63,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - Large UX redesigns unrelated to current milestone scope
 - TypeScript conversion
 - Delete individual notes — deferred until core capture flow proves out
-- Note gadget on modern and classic themes — deferred until simple theme proves out
+- Note gadget on modern and classic themes — **moved to v1.6 Active** (simple theme proven out in v1.3–v1.5)
 - Rich text / markdown editor — conflicts with no-new-JS-deps constraint
 - Real-time autosave — explicit save is the correct UX for deliberate capture
 - Locale beyond ja/en — not planned; `Preference::SUPPORTED_LOCALES` whitelist + `enforce_available_locales` keep the surface explicit
@@ -133,4 +143,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-04 — v1.5 verification debt cleanup shipped (Phase 22).*
+*Last updated: 2026-05-04 — v1.6 Note Gadget for All Themes started.*
