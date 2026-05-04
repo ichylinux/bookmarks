@@ -14,12 +14,9 @@ end
   sign_in user
 end
 
-もし /^ドロワーからノート画面を開きます。$/ do
+もし /^ヘッダーのノートアイコンからノート画面を開きます。$/ do
   visit root_path
-  find('button.hamburger-btn', match: :first).click
-  within '.drawer' do
-    click_link 'ノート'
-  end
+  find('a.head-note-btn[aria-label="ノート"]', match: :first).click
   assert has_selector?('#notes-tab-panel')
   uri = URI.parse(current_url)
   tab = Rack::Utils.parse_query(uri.query)['tab']

@@ -93,6 +93,35 @@
     border-radius: 2px;
   }
 
+  #header .head-box .head-note-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
+    color: #fff;
+    text-decoration: none;
+    z-index: 1020;
+    box-sizing: border-box;
+  }
+
+  #header .head-box .head-note-btn:hover {
+    text-decoration: none;
+    opacity: 0.88;
+  }
+
+  #header .head-box .head-note-btn:focus-visible {
+    outline: 2px solid var(--modern-color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  #header .head-box .head-note-btn svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
   #header .head-box .hamburger-btn {
     display: inline-block;
     position: relative;
@@ -105,6 +134,10 @@
     cursor: pointer;
     z-index: 1020;
     flex-shrink: 0;
+  }
+
+  #header .head-box .head-trailing-actions .hamburger-btn {
+    margin-left: 0;
   }
 
   #header .head-box .hamburger-btn:focus-visible {
@@ -144,6 +177,10 @@
     bottom: auto;
     top: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  &.drawer-open #header .head-box .head-note-btn {
+    visibility: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {

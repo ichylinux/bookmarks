@@ -43,6 +43,18 @@ a:hover {
   gap: 10px;
 }
 
+// Modern/classic: note + hamburger share one flex row so icon-to-icon spacing matches email→note.
+#header .head-box .head-trailing-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+#header .head-box .head-trailing-actions:not(.head-trailing-actions--with-note) {
+  margin-left: 8px;
+}
+
 #header .head-box .header-icon {
   width: 48px;
   height: 48px;

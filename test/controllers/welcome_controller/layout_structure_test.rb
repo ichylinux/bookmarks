@@ -102,23 +102,54 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel', count: 0
   end
 
-  def test_モダンテーマでuse_noteオンのときドロワーにノートへリンクがある
+  def test_モダンテーマでuse_noteオンのときドロワーにノートリンクはない
     user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
     sign_in user
     get root_path
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
-    assert_select '.drawer' do
-      assert_select 'a[href=?]', root_path(tab: 'notes'), text: 'ノート', count: 1
-    end
+    assert_select '.drawer a[href=?]', root_path(tab: 'notes'), count: 0
   end
 
-  def test_モダンテーマでuse_noteオンのときドロワーnavは7リンク
+  def test_モダンテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
+    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'ノート', count: 1
+    assert_select '#header a.head-note-btn svg', count: 1
+  end
+
+  def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
+    user.preference.update!(theme: 'modern', use_note: false)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a.head-note-btn', count: 0
+  end
+
+  def test_クラシックテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
+    user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'Note', count: 1
+  end
+
+  def test_シンプルテーマではヘッダーにノートアイコンがない
+    user.preference.update!(theme: 'simple', use_note: true)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a.head-note-btn', count: 0
+  end
+
+  def test_モダンテーマでuse_noteオンのときドロワーnavは6リンク
     user.preference.update!(theme: 'modern', use_note: true)
     sign_in user
     get root_path
     assert_response :success
-    assert_select '.drawer > nav > a', count: 7
+    assert_select '.drawer > nav > a', count: 6
   end
 
 end
