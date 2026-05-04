@@ -32,6 +32,9 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: 256Mi
 """
         }
       }
@@ -54,7 +57,7 @@ spec:
     stage('release') {
       agent { kubernetes { inheritFrom 'kaniko' } }
       environment {
-        RELEASE_TAG = "v1.3.0-${BUILD_NUMBER}"
+        RELEASE_TAG = "v1.5.0-${BUILD_NUMBER}"
       }
       stages {
         stage('tagging') {
