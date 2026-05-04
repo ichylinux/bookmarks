@@ -332,3 +332,104 @@
 .modern div.gadgets div.gadget div div.title a:focus-visible {
   color: #ffffff;
 }
+
+// Note gadget (welcome /?tab=notes) — spacing and list cards aligned with STYLE tokens
+.modern #notes-tab-panel {
+  padding: 0 16px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.modern #notes-tab-panel .note-gadget {
+  margin: 0;
+}
+
+.modern #notes-tab-panel .note-gadget h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 12px 0;
+  color: var(--modern-text);
+}
+
+.modern #notes-tab-panel .note-gadget-form {
+  margin: 0 0 20px 0;
+}
+
+.modern #notes-tab-panel .note-gadget-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--modern-text);
+}
+
+.modern #notes-tab-panel .note-gadget-form textarea {
+  width: 100%;
+  max-width: 640px;
+  box-sizing: border-box;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modern #notes-tab-panel .note-gadget-form input[type="submit"] {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--modern-color-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modern #notes-tab-panel .note-gadget-form input[type="submit"]:hover {
+  filter: brightness(0.95);
+}
+
+.modern #notes-tab-panel .note-gadget-form input[type="submit"]:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
+}
+
+.modern #notes-tab-panel .note-empty {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.modern #notes-tab-panel .note-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modern #notes-tab-panel .note-item {
+  margin: 0 0 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--modern-border);
+  border-radius: 8px;
+  background: var(--modern-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.modern #notes-tab-panel .note-item:last-child {
+  margin-bottom: 0;
+}
+
+.modern #notes-tab-panel .note-body {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: var(--modern-text);
+}
+
+.modern #notes-tab-panel .note-timestamp {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: #6b7280;
+}

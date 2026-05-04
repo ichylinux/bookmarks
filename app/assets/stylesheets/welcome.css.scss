@@ -172,3 +172,11 @@ div.gadgets {
     color: #777;
   }
 }
+
+// v1.6: modern/classic welcome — home vs note panels (?tab=notes), theme-scoped like .simple
+.modern,
+.classic {
+  .welcome-tab-panel--hidden {
+    display: none;
+  }
+}

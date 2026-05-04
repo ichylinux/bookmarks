@@ -192,6 +192,121 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, older_time.strftime('%Y-%m-%d %H:%M')
   end
 
+  def test_モダンテーマでuse_noteがfalseのときノートパネルが表示されない
+    user.preference.update!(theme: 'modern', use_note: false)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#welcome-home-panel', count: 1
+    assert_select '#notes-tab-panel', count: 0
+  end
+
+  def test_モダンテーマでルートではノートパネルが隠れtab_notesで表示される
+    user.preference.update!(theme: 'modern', use_note: true)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
+  end
+
+  def test_モダンテーマで不正なtabクエリはホームを表示する
+    user.preference.update!(theme: 'modern', use_note: true)
+    sign_in user
+    get root_path(tab: 'evil')
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+  end
+
+  def test_クラシックテーマでuse_noteがfalseのときノートパネルが表示されない
+    user.preference.update!(theme: 'classic', use_note: false)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#welcome-home-panel', count: 1
+    assert_select '#notes-tab-panel', count: 0
+  end
+
+  def test_クラシックテーマでルートではノートパネルが隠れtab_notesで表示される
+    user.preference.update!(theme: 'classic', use_note: true)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
+  end
+
+  def test_クラシックテーマで不正なtabクエリはホームを表示する
+    user.preference.update!(theme: 'classic', use_note: true)
+    sign_in user
+    get root_path(tab: 'evil')
+    assert_response :success
+    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+  end
+
+  def test_モダンテーマのノートパネルが日本語ロケールで表示される
+    Note.where(user_id: user.id).delete_all
+    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
+    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
+    assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
+  end
+
+  def test_モダンテーマのノートパネルが英語ロケールで表示される
+    Note.where(user_id: user.id).delete_all
+    user.preference.update!(theme: 'modern', use_note: true, locale: 'en')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
+  end
+
+  def test_クラシックテーマのノートパネルが日本語ロケールで表示される
+    Note.where(user_id: user.id).delete_all
+    user.preference.update!(theme: 'classic', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
+    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
+    assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
+  end
+
+  def test_クラシックテーマのノートパネルが英語ロケールで表示される
+    Note.where(user_id: user.id).delete_all
+    user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select 'html[lang=?]', 'en'
+    assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
+    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
+  end
+
   def test_ノートパネルには他ユーザーのメモが表示されない
     Note.where(user_id: user.id).delete_all
     other_user = User.find(2)

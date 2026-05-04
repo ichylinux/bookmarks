@@ -86,20 +86,39 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
-  def test_モダンテーマではシンプル用タブマークアップが出力されない
-    user.preference.update!(theme: 'modern')
+  def test_モダンテーマではuse_noteオフのときノートパネルが出力されない
+    user.preference.update!(theme: 'modern', use_note: false)
     sign_in user
     get root_path
     assert_response :success
     assert_select '#notes-tab-panel', count: 0
   end
 
-  def test_クラシックテーマではシンプル用タブマークアップが出力されない
-    user.preference.update!(theme: 'classic')
+  def test_クラシックテーマではuse_noteオフのときノートパネルが出力されない
+    user.preference.update!(theme: 'classic', use_note: false)
     sign_in user
     get root_path
     assert_response :success
     assert_select '#notes-tab-panel', count: 0
+  end
+
+  def test_モダンテーマでuse_noteオンのときドロワーにノートへリンクがある
+    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'html[lang=?]', 'ja'
+    assert_select '.drawer' do
+      assert_select 'a[href=?]', root_path(tab: 'notes'), text: 'ノート', count: 1
+    end
+  end
+
+  def test_モダンテーマでuse_noteオンのときドロワーnavは7リンク
+    user.preference.update!(theme: 'modern', use_note: true)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.drawer > nav > a', count: 7
   end
 
 end

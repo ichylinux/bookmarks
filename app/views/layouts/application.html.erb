@@ -40,6 +40,9 @@
         <nav>
           <%= link_to t('nav.home'), root_path %>
           <%= link_to t('nav.preferences'), preferences_path %>
+          <% if current_user.preference&.use_note? %>
+            <%= link_to t('nav.note'), root_path(tab: 'notes') %>
+          <% end %>
           <%= link_to t('nav.bookmarks'), bookmarks_path %>
           <%= link_to t('nav.todos'), todos_path %>
           <%= link_to t('nav.feeds'), feeds_path %>
