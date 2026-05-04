@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: —
-milestone_name: —
-status: awaiting_next_milestone
-stopped_at: v1.6 archived and tagged 2026-05-04
-last_updated: "2026-05-04T21:00:00+09:00"
-last_activity: "2026-05-04 — v1.6 milestone archived (.planning/milestones/v1.6-*); REQUIREMENTS.md removed for next cycle"
+milestone: v1.7
+milestone_name: Mobile Portal Layout
+status: planning
+stopped_at: —
+last_updated: "2026-05-04T00:00:00+09:00"
+last_activity: "2026-05-04 — Milestone v1.7 started"
 progress:
   total_phases: 0
   completed_phases: 0
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.6 shipped and archived; no active roadmap milestone until `/gsd-new-milestone`.
-Last activity: 2026-05-04 — Milestone close-out (archive snapshots, ROADMAP collapse, git tag `v1.6`)
+Status: Defining requirements
+Last activity: 2026-05-04 — Milestone v1.7 started
 
 ## Project Reference
 
