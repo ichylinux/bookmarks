@@ -7,6 +7,7 @@ class PreferenceTest < ActiveSupport::TestCase
 
     assert_equal Todo::PRIORITY_NORMAL, p.default_priority
     assert_equal true, p.use_todo?
+    assert_equal true, p.use_calendar?
     assert_nil p.font_size
   end
 

@@ -20,9 +20,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :calendars do
-    member do
-      get  'get_gadget'
+  resources :calendars, only: [] do
+    collection do
+      get :get_gadget
     end
   end
 

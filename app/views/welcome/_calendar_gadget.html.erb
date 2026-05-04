@@ -4,12 +4,12 @@
     <div style="line-height: 30em;">
       <script>
         $(document).ready(function() {
-          $.get('<%= url_for controller: 'calendars', action: 'get_gadget', id: gadget.id, display_date: gadget.display_date %>', {format: 'html'}, function(html) {
+          $.get('<%= get_gadget_calendars_path(display_date: gadget.display_date) %>', {format: 'html'}, function(html) {
             $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
           });
         });
       </script>
-      <span><%= t('.loading', title: gadget.title) %></span>
+      <span><%= t('welcome.calendar_gadget.loading') %></span>
     </div>
   </div>
 </div>

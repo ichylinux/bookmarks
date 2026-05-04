@@ -1,67 +1,67 @@
 <table class="calendar">
   <caption>
-    <%= link_to '<<', 
-          {controller: 'calendars', action: 'get_gadget', id: @calendar.id, display_date: @calendar.display_date - 1.month},
+    <%= link_to '<<',
+          get_gadget_calendars_path(display_date: @calendar_gadget.display_date - 1.month),
           onclick: 'calendars.get_gadget(this); return false;',
           title: t('.previous_month'),
           aria: { label: t('.previous_month') } %>
-    <span><%= l(@calendar.display_date, format: :calendar_month) %></span>
+    <span><%= l(@calendar_gadget.display_date, format: :calendar_month) %></span>
     <%= link_to '>>',
-          {controller: 'calendars', action: 'get_gadget', id: @calendar.id, display_date: @calendar.display_date + 1.month},
+          get_gadget_calendars_path(display_date: @calendar_gadget.display_date + 1.month),
           onclick: 'calendars.get_gadget(this); return false;',
           title: t('.next_month'),
           aria: { label: t('.next_month') } %>
   </caption>
   <tr>
     <% 7.times do |i| %>
-      <th class="<%= ['sunday', nil, nil, nil, nil, nil, 'saturday'][i] %>"><%= @calendar.day_of_week(i) %></th>
+      <th class="<%= ['sunday', nil, nil, nil, nil, nil, 'saturday'][i] %>"><%= @calendar_gadget.day_of_week(i) %></th>
     <% end %>
   </tr>
-  
-  <% if @calendar.display_date.beginning_of_month.wday != 0 %>
+
+  <% if @calendar_gadget.display_date.beginning_of_month.wday != 0 %>
     <tr>
-      <% @calendar.display_date.beginning_of_month.wday.times do |i| %>
-        <% date = (@calendar.display_date - (@calendar.display_date.wday - i).days) %>
+      <% @calendar_gadget.display_date.beginning_of_month.wday.times do |i| %>
+        <% date = (@calendar_gadget.display_date - (@calendar_gadget.display_date.wday - i).days) %>
         <td class="previous_month">
-          <div class="day <%= date_classes(@calendar, date) %>">
+          <div class="day <%= date_classes(@calendar_gadget, date) %>">
             <%= date.day %>
           </div>
-          <div class="content <%= date_classes(@calendar, date) %>">
-            <%= @calendar.holiday(date) %>
+          <div class="content <%= date_classes(@calendar_gadget, date) %>">
+            <%= @calendar_gadget.holiday(date) %>
           </div>
         </td>
       <% end %>
   <% end %>
-  
-  <% @calendar.display_date.end_of_month.day.times do |i| %>
-    <% date = @calendar.display_date + i.days %>
+
+  <% @calendar_gadget.display_date.end_of_month.day.times do |i| %>
+    <% date = @calendar_gadget.display_date + i.days %>
     <% if date.wday == 0 %>
       <tr>
     <% end %>
-    
+
     <td>
-      <div class="day <%= date_classes(@calendar, date) %>">
+      <div class="day <%= date_classes(@calendar_gadget, date) %>">
         <%= date.day %>
       </div>
-      <div class="content <%= date_classes(@calendar, date) %>">
-        <%= @calendar.holiday(date) %>
+      <div class="content <%= date_classes(@calendar_gadget, date) %>">
+        <%= @calendar_gadget.holiday(date) %>
       </div>
     </td>
-    
+
     <% if date.wday == 6 %>
       </tr>
     <% end %>
   <% end %>
 
-  <% if @calendar.display_date.end_of_month.wday != 6 %>
-      <% (6 - @calendar.display_date.end_of_month.wday).times do |i| %>
-        <% date = @calendar.display_date.end_of_month + (i + 1).days %>
+  <% if @calendar_gadget.display_date.end_of_month.wday != 6 %>
+      <% (6 - @calendar_gadget.display_date.end_of_month.wday).times do |i| %>
+        <% date = @calendar_gadget.display_date.end_of_month + (i + 1).days %>
         <td class="next_month">
-          <div class="day <%= date_classes(@calendar, date) %>">
+          <div class="day <%= date_classes(@calendar_gadget, date) %>">
             <%= i + 1 %>
           </div>
-          <div class="content <%= date_classes(@calendar, date) %>">
-            <%= @calendar.holiday(date) %>
+          <div class="content <%= date_classes(@calendar_gadget, date) %>">
+            <%= @calendar_gadget.holiday(date) %>
           </div>
         </td>
       <% end %>

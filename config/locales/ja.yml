@@ -4,8 +4,6 @@ ja:
       bookmark:
         title: タイトル
         url: URL
-      calendar:
-        title: タイトル
       feed:
         display_count: 表示件数
         feed_url: フィードURL
@@ -18,6 +16,7 @@ ja:
         theme: テーマ
         use_note: ノートタブを表示する
         use_todo: タスクウィジェットを表示する
+        use_calendar: カレンダーウィジェットを表示する
       todo:
         priority: 優先度
         title: タイトル
@@ -43,6 +42,8 @@ ja:
       title: ブックマーク
     todo:
       title: タスク
+    calendar:
+      title: カレンダー
 
   todos:
     priorities:
@@ -124,7 +125,6 @@ ja:
     preferences: 設定
     bookmarks: ブックマーク
     todos: タスク
-    calendars: カレンダー
     feeds: フィード
     sign_out: ログアウト
     menu_aria: メニュー
@@ -142,8 +142,13 @@ ja:
     feed:
       loading: フィードを取得中・・・
       fetch_failed: フィードを取得できませんでした。
-    calendar:
-      loading: "%{title}を取得中・・・"
+    calendar_gadget:
+      loading: カレンダーを読み込み中・・・
+
+  calendars:
+    get_gadget:
+      previous_month: 前の月
+      next_month: 次の月
 
   feeds:
     index:
@@ -156,18 +161,6 @@ ja:
       feed_fetch_failed: フィードを取得できませんでした。
       submit_create: 登録
       submit_update: 更新
-
-  calendars:
-    get_gadget:
-      previous_month: 前の月
-      next_month: 次の月
-    form:
-      submit_create: 登録
-      submit_update: 更新
-    actions:
-      view: カレンダーを表示
-    edit:
-      title: 編集
 
   devise:
     sessions:

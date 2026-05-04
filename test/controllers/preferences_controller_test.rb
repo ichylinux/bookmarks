@@ -260,4 +260,25 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_use_calendarをオフに保存する
+    assert user.preference.persisted?
+    user.preference.update!(use_calendar: true)
+    preference_param = preference_params(use_calendar: false).merge(id: user.preference.id)
+    sign_in user
+    patch preference_path(user), params: {
+      user: { preference_attributes: preference_param }
+    }
+    assert_response :redirect
+    assert_not user.preference.reload.use_calendar?
+  end
+
+  def test_設定画面にuse_calendarチェックボックスを表示する
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'label[for=?]', 'user_preference_attributes_use_calendar', text: 'カレンダーウィジェットを表示する'
+    assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][use_calendar]'
+  end
+
 end

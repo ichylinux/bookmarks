@@ -63,8 +63,9 @@ class Portal < ApplicationRecord
       ret[gadget.gadget_id] = gadget
     end
 
-    calendars = Calendar.where(user_id: user.id).not_deleted.each do |c|
-      ret[c.gadget_id] = c
+    if user.preference.use_calendar?
+      cal = CalendarGadget.new(user)
+      ret[cal.gadget_id] = cal
     end
 
     Feed.where(user_id: user.id, deleted: false).each do |f|

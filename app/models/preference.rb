@@ -25,6 +25,7 @@ class Preference < ApplicationRecord
     ret.default_priority = Todo::PRIORITY_NORMAL
     ret.theme = "modern"
     ret.use_todo = true
+    ret.use_calendar = true
     ret
   end
 

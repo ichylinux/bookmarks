@@ -1,87 +1,9 @@
 class CalendarsController < ApplicationController
-  before_action :preload_calendar, except: ['index', 'new', 'create']
-
-  def index
-    @calendar = Calendar.where(user_id: current_user).not_deleted.first
-
-    if @calendar
-      redirect_to action: 'show', id: @calendar.id
-    else
-      redirect_to action: 'new'
-    end
-  end
-
-  def show
-  end
-
   def get_gadget
-    @calendar.display_date = Date.parse(params[:display_date])
+    head :not_found and return unless current_user.preference.use_calendar?
+
+    @calendar_gadget = CalendarGadget.new(current_user)
+    @calendar_gadget.display_date = Date.parse(params[:display_date])
     render layout: false
   end
-
-  def new
-    @calendar = Calendar.new(user_id: current_user.id)
-  end
-
-  def create
-    @calendar = Calendar.new(calendar_params)
-    
-    begin
-      @calendar.transaction do
-        @calendar.save!
-      end
-
-      redirect_to @calendar
-
-    rescue ActiveRecord::RecordInvalid => e
-      render :new
-    end
-  end
-
-  def edit
-  end
-
-  def update
-    begin
-      @calendar.transaction do
-        @calendar.attributes = calendar_params
-        @calendar.save!
-      end
-
-      redirect_to @calendar
-
-    rescue ActiveRecord::RecordInvalid => e
-      render :edit
-    end
-  end
-
-  def destroy
-    @calendar.transaction do
-      @calendar.destroy_logically!
-    end
-    
-    redirect_to action: 'index'
-  end
-
-  private
-
-  def preload_calendar
-    @calendar = Calendar.find(params[:id])
-
-    unless @calendar.readable_by?(current_user)
-      head :not_found and return
-    end
-  end
-
-  def calendar_params
-    ret = params.require(:calendar).permit(:title)
-
-    case action_name
-    when 'create'
-      ret = ret.merge(user_id: current_user.id)
-    end
-
-    ret
-  end
-
 end

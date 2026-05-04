@@ -1,17 +1,17 @@
 require 'test_helper'
 
-class CalendarTest < ActiveSupport::TestCase
+class CalendarGadgetTest < ActiveSupport::TestCase
   def test_day_of_week_follows_active_locale
-    calendar = Calendar.new(user: user, title: 'Locale calendar')
+    gadget = CalendarGadget.new(user)
 
     I18n.with_locale(:ja) do
-      assert_equal '日', calendar.day_of_week(0)
-      assert_equal '月', calendar.day_of_week(1)
+      assert_equal '日', gadget.day_of_week(0)
+      assert_equal '月', gadget.day_of_week(1)
     end
 
     I18n.with_locale(:en) do
-      assert_equal 'Sun', calendar.day_of_week(0)
-      assert_equal 'Mon', calendar.day_of_week(1)
+      assert_equal 'Sun', gadget.day_of_week(0)
+      assert_equal 'Mon', gadget.day_of_week(1)
     end
   end
 
@@ -28,18 +28,18 @@ class CalendarTest < ActiveSupport::TestCase
   end
 
   def test_holiday_names_are_only_shown_in_japanese_locale
-    calendar = Calendar.new(user: user, title: 'Locale calendar')
-    calendar.display_date = Date.new(2026, 1, 1)
+    gadget = CalendarGadget.new(user)
+    gadget.display_date = Date.new(2026, 1, 1)
     new_years_day = Date.new(2026, 1, 1)
 
     I18n.with_locale(:ja) do
-      assert calendar.holiday?(new_years_day)
-      assert_equal '元日', calendar.holiday(new_years_day)
+      assert gadget.holiday?(new_years_day)
+      assert_equal '元日', gadget.holiday(new_years_day)
     end
 
     I18n.with_locale(:en) do
-      assert_not calendar.holiday?(new_years_day)
-      assert_nil calendar.holiday(new_years_day)
+      assert_not gadget.holiday?(new_years_day)
+      assert_nil gadget.holiday(new_years_day)
     end
   end
 end

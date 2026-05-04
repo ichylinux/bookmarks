@@ -1,12 +1,16 @@
-class Calendar < ApplicationRecord
-  include Crud::ByUser
+class CalendarGadget
+  attr_reader :user
 
-  belongs_to :user
-  validates :user, presence: true
-  validates :title, presence: true
+  def initialize(user)
+    @user = user
+  end
 
   def gadget_id
-    "calendar_#{self.id}"
+    'calendar'
+  end
+
+  def title
+    I18n.t('gadgets.calendar.title')
   end
 
   def entries
@@ -16,7 +20,7 @@ class Calendar < ApplicationRecord
   def day_of_week(index)
     I18n.t('date.abbr_day_names')[index]
   end
-  
+
   def display_date
     @display_date ||= Date.today.beginning_of_month
   end
@@ -38,18 +42,17 @@ class Calendar < ApplicationRecord
 
     HolidayJp.holiday?(date)
   end
-  
+
   def holiday(date)
     return nil unless holiday?(date)
 
     from = display_date.prev_month.beginning_of_month
     to = display_date.next_month.end_of_month
     @holidays_of_month ||= HolidayJp.between(from, to)
-    @holidays_of_month.each do |holiday|
-      return holiday.name if holiday.date == date
+    @holidays_of_month.each do |h|
+      return h.name if h.date == date
     end
-    
+
     nil
   end
-
 end

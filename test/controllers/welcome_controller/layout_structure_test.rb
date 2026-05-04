@@ -35,7 +35,6 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.drawer a[href=?]', preferences_path
     assert_select '.drawer a[href=?]', bookmarks_path
     assert_select '.drawer a[href=?]', todos_path
-    assert_select '.drawer a[href=?]', calendars_path
     assert_select '.drawer a[href=?]', feeds_path
     assert_select '.drawer a[href=?]', destroy_user_session_path
     assert_select '.drawer a[href=?][data-method=?]', destroy_user_session_path, 'delete'
@@ -50,13 +49,13 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.wrapper div.drawer', count: 0
   end
 
-  def test_ドロワー内のnav要素が7リンクを含む
+  def test_ドロワー内のnav要素が6リンクを含む
     user.preference.update!(theme: 'modern')
     sign_in user
     get root_path
     assert_response :success
     assert_select '.drawer > nav', count: 1
-    assert_select '.drawer > nav > a', count: 7
+    assert_select '.drawer > nav > a', count: 6
   end
 
   def test_クラシックテーマでハンバーガーとドロワーが表示される

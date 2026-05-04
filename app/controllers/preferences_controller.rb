@@ -43,7 +43,7 @@ class PreferencesController < ApplicationController
     permitted = [
       :name,
       preference_attributes: [
-        :id, :theme, :font_size, :use_todo, :default_priority, :use_note, :open_links_in_new_tab, :locale
+        :id, :theme, :font_size, :use_todo, :default_priority, :use_note, :use_calendar, :open_links_in_new_tab, :locale
       ]
     ]
 

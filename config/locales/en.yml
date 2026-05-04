@@ -4,8 +4,6 @@ en:
       bookmark:
         title: Title
         url: URL
-      calendar:
-        title: Title
       feed:
         display_count: Display count
         feed_url: Feed URL
@@ -18,6 +16,7 @@ en:
         theme: Theme
         use_note: Show note tab
         use_todo: Show todo widget
+        use_calendar: Show calendar widget
       todo:
         priority: Priority
         title: Title
@@ -43,6 +42,8 @@ en:
       title: Bookmarks
     todo:
       title: Tasks
+    calendar:
+      title: Calendar
 
   todos:
     priorities:
@@ -124,7 +125,6 @@ en:
     preferences: Preferences
     bookmarks: Bookmarks
     todos: Tasks
-    calendars: Calendars
     feeds: Feeds
     sign_out: Sign out
     menu_aria: Menu
@@ -142,8 +142,13 @@ en:
     feed:
       loading: Loading feed...
       fetch_failed: Could not fetch the feed.
-    calendar:
-      loading: "Loading %{title}..."
+    calendar_gadget:
+      loading: Loading calendar...
+
+  calendars:
+    get_gadget:
+      previous_month: Previous month
+      next_month: Next month
 
   feeds:
     index:
@@ -156,18 +161,6 @@ en:
       feed_fetch_failed: Could not fetch the feed.
       submit_create: Create
       submit_update: Update
-
-  calendars:
-    get_gadget:
-      previous_month: Previous month
-      next_month: Next month
-    form:
-      submit_create: Create
-      submit_update: Update
-    actions:
-      view: View Calendar
-    edit:
-      title: Edit Calendar
 
   devise:
     sessions:
