@@ -142,6 +142,50 @@
 
 ---
 
+## Milestone: v1.5 — Verification Debt Cleanup
+
+**Shipped:** 2026-05-04
+**Phases:** 4 (19–22) | **Plans:** 7
+
+### What Was Built
+
+- Phase 19: Shared verification rubric (`19-VERIFICATION-RUBRIC.md`) with hybrid claim table + per-claim evidence blocks, fail-first/minimal-fix/one-rerun policy, and tri-suite gate (lint + Minitest + Cucumber). Closes VERF-01/02.
+- Phase 20: `05-VERIFICATION.md` closure with `P05-C01..C03` PASS — THEME-01/02/03 including THEME-03 drawer-contract alignment (modern + classic, simple excluded by `drawer_ui?`). Closes P05V-01/02.
+- Phase 21: `06-VERIFICATION.md` closure with `P06-C01..C03` PASS — modern + classic + simple interaction evidence, non-modern unaffected contract. Closes P06V-01/02.
+- Phase 22: `09-VERIFICATION.md` closure with `P09-C01..C04` PASS — STYLE-01..04 anchored to `modern_full_page_theme_contract_test.rb` selectors; STYLE-05 explicitly out of scope. Closes P09V-01/02 + MSYN-01.
+
+### What Worked
+
+- **Verification rubric as shared contract (Phase 19):** a single artifact defining evidence fields, acceptance threshold, and flake policy meant Phases 20–22 could close independently without relitigating criteria.
+- **Fail-first, minimal-fix policy:** finding THEME-03 mismatch in Phase 20 and fixing only the broken guard (`modern_only` enforcement) rather than broader cleanup kept scope contained and the fix traceable.
+- **One-rerun flake policy:** the explicit policy (one re-run allowed, consistent second failure = real regression) prevented premature green declarations without adding flake anxiety.
+- **Milestone sync as its own plan (22-02):** treating cross-document consistency as an explicit deliverable (not an afterthought) caught the stale snapshot problem and produced a clean close.
+
+### What Was Inefficient
+
+- **Stale archive snapshots:** milestones/v1.5-ROADMAP.md and v1.5-REQUIREMENTS.md were created mid-execution (pre–Phase 22 completion) and required correction at formal close. Archive snapshots should only be created after all phases complete.
+- **No formal milestone audit:** v1.5-MILESTONE-AUDIT.md was skipped; the milestone-sync work in Phase 22 substituted for it but is not structurally equivalent. For future debt-cleanup milestones, a lightweight audit (even just a checklist) is worth the overhead.
+- **RETROSPECTIVE and REQUIREMENTS.md not cleaned up by Phase 22-02:** the "milestone shipped" declaration in STATE.md preceded the formal `/gsd-complete-milestone` archival, leaving RETROSPECTIVE, REQUIREMENTS.md removal, ROADMAP reorganization, and git tag as deferred work.
+
+### Patterns Established
+
+- **Verification-debt milestone pattern:** shared rubric phase → one closure phase per document → milestone sync phase. Works cleanly when scope is exclusively carry-forward verification, not new features.
+- **Selector-level evidence standard:** STYLE claims require specific CSS selectors or DOM paths as evidence, not just "theme looks right." This is the reproducible bar for future style phases.
+- **Out-of-scope claim (STYLE-05):** explicitly naming an out-of-scope claim in the verification document prevents future confusion about whether it was missed or intentionally deferred.
+
+### Key Lessons
+
+1. **Archive snapshots at end, not mid-execution.** Creating milestones/v*-ROADMAP.md and v*-REQUIREMENTS.md before all phases complete produces stale artifacts that need correction at formal close.
+2. **Verification rubric investment pays off across N phases.** Phase 19's rubric made Phases 20–22 self-describing; each closure document could be read independently and understood in full.
+3. **Milestone sync is a real deliverable.** Cross-document consistency (ROADMAP + STATE + MILESTONES + PROJECT) should be a named plan in the milestone, not assumed to happen automatically.
+
+### Cost Observations
+
+- Verification-debt milestones are documentation-heavy: ~260 files changed across 7 plans, but actual code changes were 2 test files (+38 + 16 lines). The effort was evidence capture and document alignment, not feature work.
+- Model mix: not tracked. Tri-suite gate ran multiple times; Cucumber one-rerun policy applied at least once.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -152,6 +196,7 @@
 | v1.2 | 5 (5–9) | Added UI-SPEC, drawer JS interaction, full-page CSS polish; first multi-plan theme phase |
 | v1.3 | 4 (10–13) | First data-layer → controller → UI → tests pipeline; Cucumber E2E; zero-dep constraint held |
 | v1.4 | 7 (14–18.2) | First milestone with mid-flight gap-closure phases (18.1, 18.2) added after audit; first cross-cutting concern (locale) wired through every surface |
+| v1.5 | 4 (19–22) | First verification-debt-only milestone; shared rubric phase + per-document closure phases + explicit milestone sync phase |
 
 ### Cumulative quality
 
@@ -161,6 +206,7 @@
 | v1.2 | Minitest + SCSS contract tests | Human UAT 5/5; drawer reduced-motion manual |
 | v1.3 | Minitest + Cucumber HEADLESS green | Human UAT 5/5; Phase 10 VERIFICATION skipped |
 | v1.4 | Minitest 191/1101 + Cucumber 9/28 green | Locale key parity test enforced; pre-existing Cucumber scenario-order flake surfaced and deferred |
+| v1.5 | Minitest + Cucumber green (one-rerun policy) | No new user-facing features; evidence-only + 2 test file changes (+38+16 lines) |
 
 ### Top lessons (carry forward)
 
@@ -170,3 +216,5 @@
 4. Create `VERIFICATION.md` with the phase, not retroactively — saves Nyquist remediation work at close.
 5. Phase verification must cross the redirect boundary for any flow that changes shared state (locale, theme, session) — the post-action rendered output is the contract, not the handler return (v1.4).
 6. Refresh stale milestone audits as part of gap-closure phase verification, not at archive time (v1.4).
+7. Archive snapshots (milestones/v*-ROADMAP.md, v*-REQUIREMENTS.md) must be created after all phases complete — mid-execution snapshots are stale at close (v1.5).
+8. Verification-debt milestones need a shared rubric phase first; the rubric investment pays for itself across all downstream closure phases (v1.5).
