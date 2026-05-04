@@ -13,7 +13,9 @@
 - Cross-document milestone sync (`ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md`) consistently reflects v1.5 closure. Closes MSYN-01.
 - Tri-suite gate (lint + Minitest + Cucumber with one-rerun policy) green at v1.5 closure commit.
 
-**Archives:** [ROADMAP snapshot](milestones/v1.5-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.5-REQUIREMENTS.md)
+**Audit:** [Milestone audit](milestones/v1.5-MILESTONE-AUDIT.md) — `tech_debt`, no blockers; accepted follow-ups are Phase 19 verification wrapper normalization, rubric backlinks, stale requirements-path cleanup, and optional Nyquist validation artifacts.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.5-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.5-REQUIREMENTS.md) · [Milestone audit](milestones/v1.5-MILESTONE-AUDIT.md)
 
 ---
 

@@ -4,8 +4,8 @@ milestone: v1.5
 milestone_name: — Verification Debt Cleanup
 status: complete
 stopped_at: v1.5 milestone shipped
-last_updated: "2026-05-04T12:11:00+09:00"
-last_activity: "2026-05-04 — Quick task Q-02: HolidayJp holidays only render in Japanese locale (this commit)"
+last_updated: "2026-05-04T12:22:43+09:00"
+last_activity: "2026-05-04 — v1.5 milestone audit recorded accepted tech debt; no blockers"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -21,7 +21,7 @@ progress:
 Phase: 22 of 22 (Complete) — v1.5 milestone shipped
 Plan: 22-01 + 22-02 complete
 Status: v1.5 shipped
-Last activity: 2026-05-04 — Phase 22 plans 01–02 complete; `09-VERIFICATION.md` closure-ready (`P09-C01..C04` PASS).
+Last activity: 2026-05-04 — v1.5 milestone audit recorded accepted tech debt; no blockers.
 
 Progress: [██████████] 100%
 
@@ -69,14 +69,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-04)
 - Phase 21 execution outcome: `.planning/phases/06-html-structure/06-VERIFICATION.md` is closure-ready (`P06-C01..C03` PASS) with one-rerun flake classification logged.
 - Phase 22 lock: STYLE-01..04 claim inventory (`P09-C01..C04`) anchored to `modern_full_page_theme_contract_test.rb` selectors; STYLE-05 explicitly out-of-scope per Phase 22 D-02.
 - Phase 22 execution outcome: `.planning/phases/09-full-page-theme-styles/09-VERIFICATION.md` is closure-ready (`P09-C01..C04` PASS); v1.5 milestone shipped with cross-document sync (`ROADMAP.md`, `STATE.md`, `MILESTONES.md`, `PROJECT.md`) and `milestones/v1.5-{ROADMAP,REQUIREMENTS}.md` snapshots.
+- v1.5 milestone audit outcome: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` status `tech_debt`, requirements 9/9 satisfied, integration 9/9 wired, flows 4/4 complete; tech debt accepted to proceed with milestone completion.
 
 ### Pending Todos
 
-See deferred backlog in `.planning/PROJECT.md` and `.planning/STATE.md` history; no additional v1.5 todos captured yet.
+Accepted v1.5 audit follow-ups: backfill or waive `19-VERIFICATION.md`, add Phase 19 rubric backlinks to `05/06/09-VERIFICATION.md`, fix stale `.planning/REQUIREMENTS.md` references or restore an index, and normalize Nyquist validation artifacts if strict compliance is required.
 
 ### Blockers/Concerns
 
-None — v1.5 verification debt cleanup complete.
+None blocking — v1.5 verification debt cleanup complete; audit tech debt accepted.
 
 ### Quick Tasks Completed
 

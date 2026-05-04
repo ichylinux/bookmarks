@@ -61,7 +61,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
-- **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`.
+- **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`. Audit: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` (`tech_debt`, no blockers).
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`
 - JavaScript (post–v1.1): first-party `app/assets/javascripts/` follows ESLint + `CONVENTIONS.md`; Sprockets + Babel + jQuery 4 + Rails UJS unchanged
 - **Shipped v1.1 (2026-04-27):** tooling baseline, script modernization (Phases 2–3), full test + smoke verification (Phase 4). Details: `.planning/milestones/v1.1-ROADMAP.md`
