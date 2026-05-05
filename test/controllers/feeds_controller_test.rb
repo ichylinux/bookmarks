@@ -161,4 +161,28 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  def test_fetch_titleでfeedが解決できない場合はokを返す
+    sign_in user
+    fake_feed = Struct.new(:feed?) { def feed? = false }.new(false)
+
+    with_feed_new(fake_feed) do
+      get fetch_title_feeds_path, params: { feed_url: 'https://example.com/feed.xml' }
+    end
+
+    assert_response :ok
+    assert_equal '', response.body
+  end
+
+  private
+
+  def with_feed_new(fake_feed)
+    singleton = Feed.singleton_class
+    singleton.send(:alias_method, :__feeds_test_original_new, :new)
+    singleton.send(:define_method, :new) { |*_args, &_block| fake_feed }
+    yield
+  ensure
+    singleton.send(:alias_method, :new, :__feeds_test_original_new)
+    singleton.send(:remove_method, :__feeds_test_original_new)
+  end
+
 end

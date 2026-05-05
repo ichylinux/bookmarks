@@ -8,26 +8,26 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: Completed v1.9 Mobile Regression Hardening
+## Current Milestone: v1.10 HTTP Client Consolidation
 
-**Goal:** Close regression-hardening and verification-determinism debt for mobile portal behavior.
+**Goal:** Replace `httparty` usage with `faraday` while preserving current behavior and reducing dependency surface.
 
-**Delivered:**
-- TEST-02 tab-click contract hardening and explicit baseline traceability
-- Cucumber scenario-state isolation hook to reduce order-dependent `dad:test` flakes
-- Tri-suite verification gate green at milestone close
+**Target features:**
+- Replace every `httparty` call path with a `faraday`-based implementation
+- Preserve request/response behavior and error handling semantics
+- Remove `httparty` from dependency graph with regression-proof tests
 
 ## Current State
 
-**Shipped:** v1.9 — Mobile Regression Hardening (2026-05-05)
+**Planning:** v1.10 — HTTP Client Consolidation (2026-05-05)
 
-v1.9 closed post-v1.8 regression hardening debt through three linked phases: baseline lane definition (33), explicit tab-click JS/Minitest contract hardening (33.1), and deterministic Cucumber scenario-state reset hooks (33.2). End-of-milestone tri-suite gate remained green.
+v1.10 focuses on consolidating external HTTP calls onto `faraday` so the codebase can remove `httparty` and keep behavior stable through test-backed migration.
 
-**Next Milestone Goals (draft):**
+**Milestone goals:**
 
-- Define fresh requirement set for next roadmap cycle
-- Preserve deterministic verification baseline (keep scenario-state reset hook healthy)
-- Continue mobile UX evolution without regressing established TEST-02 contracts
+- Migrate all remaining `httparty` usage to `faraday`
+- Preserve request contracts and error-handling behavior
+- Simplify dependencies by removing `httparty` from Gemfile/Gemfile.lock
 
 Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
 
@@ -73,9 +73,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- [ ] Mobile users can switch portal columns with swipe gestures
-- [ ] Mobile users can restore their last selected column from `localStorage`
-- [ ] Deferred mobile UX improvements (for example, label improvements and mobile reordering) are triaged into in-scope vs deferred for this milestone
+- [ ] Replace all `httparty` call paths with `faraday` equivalents
+- [ ] Preserve request/response and failure behavior during migration
+- [ ] Remove `httparty` dependency with tests that prevent regression
 
 ### Out of Scope (revisit when planning)
 
@@ -171,4 +171,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-05 — after v1.9 milestone completion.*
+*Last updated: 2026-05-05 — after v1.10 milestone kickoff.*

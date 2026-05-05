@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.9
-milestone_name: Mobile Regression Hardening
-status: completed
+milestone: v1.10
+milestone_name: HTTP Client Consolidation
+status: planning
 stopped_at: —
-last_updated: "2026-05-05T23:34:00+09:00"
-last_activity: "2026-05-05 — Milestone v1.9 archived and ready for next milestone initialization"
+last_updated: "2026-05-05T23:50:00+09:00"
+last_activity: "2026-05-05 — Milestone v1.10 started"
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: v1.9 (completed)  
-Plan: milestone closeout (completed)  
-Status: v1.9 archived; waiting for next milestone kickoff  
-Last activity: 2026-05-05 — `/gsd-complete-milestone 1.9` closeout completed
+Phase: Not started (defining requirements)  
+Plan: —  
+Status: Defining requirements  
+Last activity: 2026-05-05 — Milestone v1.10 started
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** Start next milestone planning (`/gsd-new-milestone`).
+**Current focus:** Define v1.10 requirements and roadmap for HTTP client consolidation.
 
 ## Performance Metrics
 

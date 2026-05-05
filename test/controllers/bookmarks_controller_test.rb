@@ -286,4 +286,52 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'a.breadcrumbs-link[href=?]', bookmarks_path
   end
+
+  def test_fetch_titleがfaraday経由でtitleを返す
+    sign_in user
+    fake_response = Struct.new(:body).new('<html><head><title>Example Title</title></head><body></body></html>')
+    fake_conn = Object.new
+    fake_conn.define_singleton_method(:get) { |_url| fake_response }
+
+    with_faraday_new(fake_conn) do
+      get fetch_title_bookmarks_path, params: { url: 'https://example.com' }
+    end
+
+    assert_response :success
+    assert_equal 'Example Title', response.body
+  end
+
+  def test_fetch_titleがblank_urlならokを返す
+    sign_in user
+
+    get fetch_title_bookmarks_path, params: { url: '   ' }
+
+    assert_response :ok
+    assert_equal '', response.body
+  end
+
+  def test_fetch_titleでfaraday例外時はokを返す
+    sign_in user
+    fake_conn = Object.new
+    fake_conn.define_singleton_method(:get) { |_url| raise Faraday::TimeoutError, 'timeout' }
+
+    with_faraday_new(fake_conn) do
+      get fetch_title_bookmarks_path, params: { url: 'https://example.com' }
+    end
+
+    assert_response :ok
+    assert_equal '', response.body
+  end
+
+  private
+
+  def with_faraday_new(fake_conn)
+    singleton = Faraday.singleton_class
+    singleton.send(:alias_method, :__bookmarks_test_original_new, :new)
+    singleton.send(:define_method, :new) { |*_args, &_block| fake_conn }
+    yield
+  ensure
+    singleton.send(:alias_method, :new, :__bookmarks_test_original_new)
+    singleton.send(:remove_method, :__bookmarks_test_original_new)
+  end
 end
