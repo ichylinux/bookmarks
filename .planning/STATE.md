@@ -4,8 +4,8 @@ milestone: v1.7
 milestone_name: Mobile Portal Layout
 status: complete
 stopped_at: —
-last_updated: "2026-05-05T12:45:39+09:00"
-last_activity: "2026-05-05 — Q-04 quick task: document theme CSS separation convention"
+last_updated: "2026-05-05T14:39:09+09:00"
+last_activity: "2026-05-05 — Q-05 quick task: make notice messages disposable"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -21,7 +21,7 @@ progress:
 Phase: 26–28 complete  
 Plan: —  
 Status: Milestone v1.7 delivered (implementation + tri-suite verification)  
-Last activity: 2026-05-04 — Mobile portal column tabs; `welcome.css.scss` breakpoint variable; partial + JS; Minitest + Cucumber
+Last activity: 2026-05-05 — Quick task Q-05 made shared flash messages dismissible without page refresh
 
 ## Project Reference
 
@@ -58,6 +58,7 @@ None.
 | Q-02 | HolidayJp holidays only render in Japanese locale | 2026-05-04 | this commit | `.planning/quick/260504-q02-holiday-jp-ja-locale/` |
 | Q-03 | App icon at upper left links to root path | 2026-05-05 | 6603404 | `.planning/quick/260505-q03-app-icon-root-link/` |
 | Q-04 | Document theme CSS separation convention | 2026-05-05 | this commit | `.planning/quick/260505-q04-theme-css-separation-reference/` |
+| Q-05 | Make notice messages disposable without refreshing the page | 2026-05-05 | 81babad | `.planning/quick/260505-q05-disposable-notice-message/` |
 
 ## Session Continuity
 
