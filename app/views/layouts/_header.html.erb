@@ -1,8 +1,6 @@
 <div id="header">
   <div class="head-box">
-    <%= link_to root_path do %>
-      <%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %>
-    <% end %>
+    <%= link_to root_path do %><%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %><% end %>
     <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
     <% if drawer_ui? %>
       <span class="head-user-email"><%= current_user.display_name %></span>
