@@ -122,6 +122,7 @@ en:
   nav:
     home: Home
     note: Note
+    note_return: Return to bookmarks
     preferences: Preferences
     bookmarks: Bookmarks
     todos: Tasks

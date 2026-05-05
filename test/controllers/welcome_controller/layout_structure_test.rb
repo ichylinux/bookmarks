@@ -124,7 +124,16 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'ノート', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
+  end
+
+  def test_モダンテーマでノート表示中はヘッダーアイコンがホームへ向きアクティブ表示になる
+    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?]', root_path, 'ブックマーク画面に戻る', count: 1
   end
 
   def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
@@ -141,6 +150,15 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'Note', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
+  end
+
+  def test_クラシックテーマでノート表示中はヘッダーアイコンがホームへ向く
+    user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?]', root_path, 'Return to bookmarks', count: 1
   end
 
   def test_シンプルテーマではヘッダーにノートアイコンがない

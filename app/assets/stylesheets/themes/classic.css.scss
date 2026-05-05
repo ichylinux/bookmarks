@@ -101,6 +101,11 @@
     flex-shrink: 0;
   }
 
+  #header .head-box .head-note-btn--active {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+  }
+
   #header .head-box .hamburger-btn {
     display: inline-block;
     position: relative;

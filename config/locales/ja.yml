@@ -122,6 +122,7 @@ ja:
   nav:
     home: Home
     note: ノート
+    note_return: ブックマーク画面に戻る
     preferences: 設定
     bookmarks: ブックマーク
     todos: タスク
