@@ -83,9 +83,22 @@ a:hover {
 }
 
 @media (max-width: 480px) {
-.wrapper {
-  padding: 0 10px 10px 10px;
-}
+  .wrapper {
+    padding: 0 10px 10px 10px;
+  }
+
+  // アイコンと同じ遷移先のため狭い画面ではタイトルを隠し、メール表示幅を最大化する
+  #header .head-box .head-title {
+    display: none;
+  }
+
+  .classic #header .head-box .head-user-email,
+  .modern #header .head-box .head-user-email {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    margin-left: 0;
+  }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
