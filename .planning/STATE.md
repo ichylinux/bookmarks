@@ -4,8 +4,8 @@ milestone: v1.7
 milestone_name: Mobile Portal Layout
 status: complete
 stopped_at: —
-last_updated: "2026-05-04T00:00:00+09:00"
-last_activity: "2026-05-04 — v1.7 shipped (mobile portal column tabs)"
+last_updated: "2026-05-05T12:00:44+09:00"
+last_activity: "2026-05-05 — Q-03 quick task: header app icon links to root"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -56,6 +56,7 @@ None.
 |---|-------------|------|--------|-----------|
 | Q-01 | Model class should inherit ApplicationRecord instead of ActiveRecord::Base | 2026-05-04 | 7b23b5d | — |
 | Q-02 | HolidayJp holidays only render in Japanese locale | 2026-05-04 | this commit | `.planning/quick/260504-q02-holiday-jp-ja-locale/` |
+| Q-03 | App icon at upper left links to root path | 2026-05-05 | 6603404 | `.planning/quick/260505-q03-app-icon-root-link/` |
 
 ## Session Continuity
 
