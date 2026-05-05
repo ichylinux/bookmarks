@@ -18,6 +18,13 @@ First-party `app/assets/javascripts/**/*.js` files assume jQuery. Follow these r
 - Prefer `const` or `let` for bindings (`var` is forbidden; ESLint `no-var` rule enforced. Exceptions require `eslint-disable-next-line` on the offending line plus a one-line justification).
 - ESLint is configured in the repository root `eslint.config.mjs` (targets `app/assets/javascripts/**/*.js`; uses `@eslint/js` recommended + Prettier integration). The key enforced rule is `no-var` (error). Run with: `yarn run lint`.
 
+## Stylesheets (Sprockets SCSS)
+
+- Keep `app/assets/stylesheets/common.css.scss` limited to application-wide structural defaults and shared primitives.
+- Theme-specific selectors and behavior belong under `app/assets/stylesheets/themes/`, in the matching theme file (`classic.css.scss`, `modern.css.scss`, `simple.css.scss`).
+- Do not add `.modern`, `.classic`, or `.simple` selectors to `common.css.scss`; move those rules to the corresponding theme stylesheet.
+- Shared fallbacks that intentionally apply before a theme takes over may remain in `common.css.scss`, but comments should describe the shared behavior rather than a specific theme.
+
 ## Naming Conventions
 
 **Models:**
