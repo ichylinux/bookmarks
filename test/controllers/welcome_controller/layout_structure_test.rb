@@ -123,6 +123,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
+    assert_select '#header .head-box.head-box--with-note-action', count: 1
     assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'ノート', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
@@ -141,6 +142,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
+    assert_select '#header .head-box.head-box--with-note-action', count: 0
     assert_select '#header a.head-note-btn', count: 0
   end
 

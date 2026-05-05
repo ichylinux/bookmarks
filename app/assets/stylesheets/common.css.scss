@@ -43,6 +43,13 @@ a:hover {
   gap: 10px;
 }
 
+#header .head-box .head-leading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 // Header actions share one flex row so icon-to-icon spacing stays consistent.
 #header .head-box .head-trailing-actions {
   display: flex;
@@ -92,6 +99,42 @@ a:hover {
     display: none;
   }
 
+  // 左右非対称でもメールをビューポート中央に置く（1fr auto 1fr）
+  #header .head-box {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: 8px;
+  }
+
+  #header .head-box.head-box--with-note-action {
+    grid-template-columns: minmax(88px, 1fr) minmax(0, auto) minmax(88px, 1fr);
+  }
+
+  #header .head-box .head-leading {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  #header .head-box .head-user-email {
+    grid-column: 2;
+    justify-self: center;
+    margin-left: 0;
+  }
+
+  #header .head-box.head-box--with-note-action .head-user-email {
+    max-width: calc(100vw - 216px);
+  }
+
+  #header .head-box .head-trailing-actions {
+    grid-column: 3;
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  #header .head-box .head-trailing-actions:not(.head-trailing-actions--with-note) {
+    margin-left: 0;
+  }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {

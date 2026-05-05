@@ -20,6 +20,12 @@
     min-width: 0;
   }
 
+  @media (max-width: 480px) {
+    #header .head-box .head-user-email {
+      margin-left: 0;
+    }
+  }
+
   .drawer-overlay {
     display: block;
     position: fixed;

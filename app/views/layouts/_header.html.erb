@@ -1,7 +1,9 @@
 <div id="header">
-  <div class="head-box">
-    <%= link_to root_path do %><%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %><% end %>
-    <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
+  <div class="head-box<%= ' head-box--with-note-action' if drawer_ui? && current_user.preference&.use_note? %>">
+    <div class="head-leading">
+      <%= link_to root_path do %><%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %><% end %>
+      <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
+    </div>
     <% if drawer_ui? %>
       <span class="head-user-email"><%= current_user.display_name %></span>
       <div class="head-trailing-actions<%= ' head-trailing-actions--with-note' if current_user.preference&.use_note? %>">
