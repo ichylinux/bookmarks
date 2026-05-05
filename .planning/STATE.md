@@ -62,7 +62,7 @@ None.
 | Q-03 | App icon at upper left links to root path | 2026-05-05 | 6603404 | `.planning/quick/260505-q03-app-icon-root-link/` |
 | Q-04 | Document theme CSS separation convention | 2026-05-05 | this commit | `.planning/quick/260505-q04-theme-css-separation-reference/` |
 | Q-05 | Make notice messages disposable without refreshing the page | 2026-05-05 | 81babad | `.planning/quick/260505-q05-disposable-notice-message/` |
-| Q-06 | Use English for documents under .planning directory | 2026-05-05 | this commit | `.planning/quick/260505-q06-planning-docs-english/` |
+| Q-06 | Use English for documents under .planning directory | 2026-05-05 | 4df0d6b | `.planning/quick/260505-q06-planning-docs-english/` |
 
 ## Session Continuity
 
