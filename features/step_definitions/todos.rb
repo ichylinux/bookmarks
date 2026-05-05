@@ -41,7 +41,7 @@ end
   end
 end
 
-もし /^新しいタスクの追加時に、選択した優先度が選択された状態で表示されます。$/ do
+ならば /^新しいタスクの追加時に、選択した優先度が選択された状態で表示されます。$/ do
   visit '/'
   assert has_selector?('.todo_actions')
   capture

@@ -19,10 +19,6 @@ class Bookmark < ApplicationRecord
     url.present?
   end
 
-  def destroy_logically!
-    update!(deleted: true)
-  end
-
   private
 
   def url_validation

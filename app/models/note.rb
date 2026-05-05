@@ -7,11 +7,8 @@ class Note < ApplicationRecord
 
   validates :body, presence: true, length: { maximum: 4000 }
 
+  scope :active, -> { where(deleted: false) }
   scope :recent, -> { order(created_at: :desc) }
-
-  def destroy_logically!
-    update!(deleted: true)
-  end
 
   private
 

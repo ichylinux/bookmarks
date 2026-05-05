@@ -55,4 +55,10 @@ class NoteTest < ActiveSupport::TestCase
     assert reloaded.deleted, 'destroy_logically! should set deleted: true (soft-delete), not remove the row'
   end
 
+  def test_active_scope_excludes_deleted
+    note = notes(:one)
+    note.destroy_logically!
+    assert_not_includes Note.active, note
+  end
+
 end

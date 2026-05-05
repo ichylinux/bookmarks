@@ -139,7 +139,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
     assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
     assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
-    assert_select 'textarea[name=?]', 'note[body]', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?]', 'note[body]', count: 1
     assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
   end
 

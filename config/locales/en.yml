@@ -145,6 +145,8 @@ en:
       title: Notes
       body_label: Note
       submit: Save Note
+      update: Update Note
+      delete: Delete Note
       empty: No notes yet
     portal_column_tabs_aria_label: Switch portal columns
 

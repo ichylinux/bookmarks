@@ -43,6 +43,7 @@ end
 もし /^ノートタブに (.*?) が先頭表示されます。$/ do |body|
   assert_equal @note_body, body if @note_body
   within '#notes-tab-panel' do
-    assert has_selector?('.note-item:first-child .note-body', text: body)
+    first_note_body = find('.note-item:first-child .note-item-edit-form textarea[name="note[body]"]').value
+    assert_equal body, first_note_body
   end
 end
