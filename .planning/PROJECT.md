@@ -8,9 +8,14 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone
+## Current Milestone: v1.8 Mobile UX Enhancement
 
-Planning for the next version — last shipped: **v1.7 — Mobile Portal Layout** (2026-05-04). Use `/gsd-new-milestone` to define v1.8 when ready.
+**Goal:** Make mobile column switching more intuitive and preserve the previously selected column across revisits.
+
+**Target features:**
+- Switch columns by swipe
+- Persist and restore the selected column with `localStorage`
+- Re-evaluate deferred mobile UX items and pick what belongs in this milestone
 
 ## Current State
 
@@ -60,7 +65,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-Next milestone not defined — see `.planning/REQUIREMENTS.md` after `/gsd-new-milestone`.
+- [ ] Mobile users can switch portal columns with swipe gestures
+- [ ] Mobile users can restore their last selected column from `localStorage`
+- [ ] Deferred mobile UX improvements (for example, label improvements and mobile reordering) are triaged into in-scope vs deferred for this milestone
 
 ### Out of Scope (revisit when planning)
 
@@ -156,4 +163,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-04 — v1.7 Mobile Portal Layout milestone started.*
+*Last updated: 2026-05-05 — v1.8 Mobile UX Enhancement milestone started.*
