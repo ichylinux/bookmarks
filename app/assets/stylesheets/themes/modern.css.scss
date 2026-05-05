@@ -89,15 +89,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 45vw;
-  }
-
-  @media (max-width: 480px) {
-    #header .head-box .head-user-email {
-      flex: 1 1 0;
-      min-width: 0;
-      max-width: none;
-      margin-left: 0;
-    }
+    min-width: 0;
   }
 
   #header .head-box .head-title:focus-visible {
