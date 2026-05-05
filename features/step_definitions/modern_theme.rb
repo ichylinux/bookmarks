@@ -101,6 +101,17 @@ end
   capture
 end
 
+もし /^ページを再読み込みします。$/ do
+  visit current_path
+  capture
+end
+
+もし /^localStorageの列状態を不正値に設定します。$/ do
+  visit root_path
+  page.execute_script("window.localStorage.setItem('portalMobileActiveColumn', '999')")
+  capture
+end
+
 もし /^ポータル列タブが3つ表示されています。$/ do
   assert has_css?('.portal-column-tabs'), 'ポータル列タブ枠があるはずです'
   assert has_css?('button.portal-column-tab', count: 3), '列タブが3つあるはずです'
@@ -112,11 +123,114 @@ end
   capture
 end
 
+もし /^3列目のポータル列タブをクリックします。$/ do
+  find('button.portal-column-tab[data-portal-column-index="2"]').click
+  capture
+end
+
 もし /^2列目のポータル列がアクティブです。$/ do
   assert has_css?('.portal.portal--column-active-1'), '2列目のポータルがアクティブなはずです'
   assert has_css?(
     'button.portal-column-tab--active[data-portal-column-index="1"]',
     count: 1
   ), '2列目のタブがアクティブなはずです'
+  capture
+end
+
+もし /^3列目のポータル列がアクティブです。$/ do
+  assert has_css?('.portal.portal--column-active-2'), '3列目のポータルがアクティブなはずです'
+  assert has_css?(
+    'button.portal-column-tab--active[data-portal-column-index="2"]',
+    count: 1
+  ), '3列目のタブがアクティブなはずです'
+  capture
+end
+
+もし /^1列目のポータルを左にスワイプします。$/ do
+  page.execute_script(<<~JS)
+    (function() {
+      const portal = document.querySelector('.portal');
+      function makeTouch(x, y) {
+        return new Touch({ identifier: 1, target: portal, clientX: x, clientY: y, radiusX: 10, radiusY: 10, rotationAngle: 0, force: 1 });
+      }
+      function fire(type, x, y) {
+        const t = makeTouch(x, y);
+        portal.dispatchEvent(new TouchEvent(type, { touches: type === 'touchend' ? [] : [t], changedTouches: [t], bubbles: true, cancelable: true }));
+      }
+      fire('touchstart', 290, 400);
+      fire('touchmove', 195, 400);
+      fire('touchmove', 100, 400);
+      fire('touchend', 100, 400);
+    })();
+  JS
+  capture
+end
+
+もし /^1列目のポータルを右にスワイプします。$/ do
+  page.execute_script(<<~JS)
+    (function() {
+      const portal = document.querySelector('.portal');
+      function makeTouch(x, y) {
+        return new Touch({ identifier: 1, target: portal, clientX: x, clientY: y, radiusX: 10, radiusY: 10, rotationAngle: 0, force: 1 });
+      }
+      function fire(type, x, y) {
+        const t = makeTouch(x, y);
+        portal.dispatchEvent(new TouchEvent(type, { touches: type === 'touchend' ? [] : [t], changedTouches: [t], bubbles: true, cancelable: true }));
+      }
+      fire('touchstart', 100, 400);
+      fire('touchmove', 195, 400);
+      fire('touchmove', 290, 400);
+      fire('touchend', 290, 400);
+    })();
+  JS
+  capture
+end
+
+もし /^アクティブなポータルを右にスワイプします。$/ do
+  page.execute_script(<<~JS)
+    (function() {
+      const portal = document.querySelector('.portal');
+      function makeTouch(x, y) {
+        return new Touch({ identifier: 1, target: portal, clientX: x, clientY: y, radiusX: 10, radiusY: 10, rotationAngle: 0, force: 1 });
+      }
+      function fire(type, x, y) {
+        const t = makeTouch(x, y);
+        portal.dispatchEvent(new TouchEvent(type, { touches: type === 'touchend' ? [] : [t], changedTouches: [t], bubbles: true, cancelable: true }));
+      }
+      fire('touchstart', 100, 400);
+      fire('touchmove', 195, 400);
+      fire('touchmove', 290, 400);
+      fire('touchend', 290, 400);
+    })();
+  JS
+  capture
+end
+
+もし /^1列目のポータルを縦方向にスワイプします。$/ do
+  page.execute_script(<<~JS)
+    (function() {
+      const portal = document.querySelector('.portal');
+      function makeTouch(x, y) {
+        return new Touch({ identifier: 1, target: portal, clientX: x, clientY: y, radiusX: 10, radiusY: 10, rotationAngle: 0, force: 1 });
+      }
+      function fire(type, x, y) {
+        const t = makeTouch(x, y);
+        portal.dispatchEvent(new TouchEvent(type, { touches: type === 'touchend' ? [] : [t], changedTouches: [t], bubbles: true, cancelable: true }));
+      }
+      fire('touchstart', 195, 200);
+      fire('touchmove', 196, 350);
+      fire('touchmove', 196, 500);
+      fire('touchend', 196, 500);
+    })();
+  JS
+  capture
+end
+
+もし /^1列目のポータル列がアクティブのままです。$/ do
+  assert has_css?('.portal.portal--column-active-0'), '1列目のポータルがアクティブのままであるはずです'
+  assert has_css?(
+    'button.portal-column-tab--active[data-portal-column-index="0"]',
+    count: 1
+  ), '1列目のタブがアクティブのままであるはずです'
   capture
 end
