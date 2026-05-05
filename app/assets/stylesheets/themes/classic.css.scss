@@ -4,6 +4,10 @@
 }
 
 .classic {
+  .welcome-tab-panel--hidden {
+    display: none;
+  }
+
   #header .head-box .head-user-email {
     margin-left: auto;
     color: #333;
@@ -13,6 +17,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 45vw;
+  }
+
+  @media (max-width: 480px) {
+    #header .head-box .head-user-email {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: none;
+      margin-left: 0;
+    }
   }
 
   .drawer-overlay {

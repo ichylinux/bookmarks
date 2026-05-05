@@ -22,13 +22,6 @@ body.font-size-large {
   font-size: 14px;
 }
 
-// Modern/classic welcome: home vs notes panels use `welcome-tab-panel--hidden` (SSR).
-// Without this rule both #welcome-home-panel and #notes-tab-panel stay visible.
-body.modern .welcome-tab-panel--hidden,
-body.classic .welcome-tab-panel--hidden {
-  display: none;
-}
-
 a, a:visited {
   text-decoration: none;
 }
@@ -50,7 +43,7 @@ a:hover {
   gap: 10px;
 }
 
-// Modern/classic: note + hamburger share one flex row so icon-to-icon spacing matches email→note.
+// Header actions share one flex row so icon-to-icon spacing stays consistent.
 #header .head-box .head-trailing-actions {
   display: flex;
   align-items: center;
@@ -99,13 +92,6 @@ a:hover {
     display: none;
   }
 
-  .classic #header .head-box .head-user-email,
-  .modern #header .head-box .head-user-email {
-    flex: 1 1 0;
-    min-width: 0;
-    max-width: none;
-    margin-left: 0;
-  }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
