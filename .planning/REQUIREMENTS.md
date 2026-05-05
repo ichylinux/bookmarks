@@ -1,75 +1,70 @@
-# Requirements: Bookmarks — v1.7 Mobile Portal Layout
+# Requirements: Bookmarks — v1.8 Mobile UX Enhancement
 
-**Defined:** 2026-05-04
+**Defined:** 2026-05-05
 **Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## v1.7 Requirements
+## v1.8 Requirements
 
-### Layout — Responsive breakpoint
+### Swipe
 
-- [x] **LAYOUT-01**: On screens narrower than the mobile breakpoint, the portal columns display under a tab strip with one column visible at a time
-- [x] **LAYOUT-02**: On screens at or above the mobile breakpoint (PC/tablet), the existing side-by-side multi-column layout is unchanged
-- [x] **LAYOUT-03**: The mobile breakpoint is defined as a single SCSS variable (not hardcoded in multiple places)
+- [ ] **SWIPE-01**: User can switch to adjacent portal columns with horizontal swipe on mobile
+- [ ] **SWIPE-02**: Vertical scrolling gestures do not trigger column switching
+- [ ] **SWIPE-03**: At first/last column, out-of-range swipe does not change active column
 
-### Tab — Column tab strip (mobile only)
+### State
 
-- [x] **TAB-01**: A tab strip is shown on mobile with one tab per portal column (labeled by column number)
-- [x] **TAB-02**: Selecting a tab shows that column's gadgets and hides the others
-- [x] **TAB-03**: The first column tab is active by default on page load
-- [x] **TAB-04**: The tab strip is hidden on PC/tablet (CSS media query)
-- [x] **TAB-05**: Tab state is driven by CSS class toggling (JS sets active class; CSS controls visibility)
+- [ ] **STATE-01**: Active column updates through a single state flow for both tab tap and swipe
+- [ ] **STATE-02**: Last active mobile column is persisted in `localStorage`
+- [ ] **STATE-03**: On revisit, app restores saved column; invalid/missing storage falls back to first column
 
-### Theme — All-theme coverage
+### UX and Accessibility
 
-- [x] **THEME-01**: Modern theme welcome page gets the mobile column tab strip
-- [x] **THEME-02**: Classic theme welcome page gets the mobile column tab strip
-- [x] **THEME-03**: Simple theme welcome page gets the mobile column tab strip (coexists with existing Home/Note tabs)
+- [ ] **UXA-01**: Existing tab-based navigation remains available as a non-swipe interaction path
+- [ ] **UXA-02**: Active tab UI and `portal--column-active-N` class state always stay in sync
+- [ ] **UXA-03**: Same behavior is guaranteed across modern, classic, and simple themes
 
-### Test — Verification
+### Test
 
-- [x] **TEST-01**: Minitest integration tests cover tab strip presence and column show/hide classes for each theme
-- [x] **TEST-02**: Cucumber scenario covers mobile column tab switching (at least one theme)
+- [ ] **TEST-01**: Minitest verifies state sync, restore/fallback behavior, and theme coverage
+- [ ] **TEST-02**: Cucumber verifies swipe transition, no-switch on vertical scroll intent, and revisit restore
 
 ## Future Requirements
 
 ### Enhancements
 
-- **ENH-01**: User-configurable tab labels per column (currently generic numbers)
-- **ENH-02**: Persist active column tab in URL param or localStorage so navigation preserves column position
-- **ENH-03**: Drag-and-drop gadget reorder on mobile (sortable is currently desktop-only)
+- **ENH-01**: User-configurable tab labels per column (deferred)
+- **ENH-03**: Drag-and-drop gadget reorder on mobile (deferred)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| User-configurable tab labels per column | Complexity deferred to future milestone; generic numbers sufficient |
-| Changing the number of columns | Driven by `portal_column_count`; unchanged in this milestone |
-| Drag-and-drop reorder on mobile | Sortable stays desktop-only; touch-drag complexity is high |
-| Any page other than the welcome/portal page | Only the portal home screen has the column layout |
+| Introducing frontend framework or build-system migration | Violates milestone constraint (Sprockets/jQuery continuity) |
+| Full column-label editing UI | Deferred; requires additional persistence and settings UI |
+| Mobile drag-and-drop reorder implementation | High touch interaction complexity; deferred |
+| Expanding this UX beyond welcome/portal page | Milestone focus is portal column interaction only |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAYOUT-01 | Phase 27 | Complete |
-| LAYOUT-02 | Phase 26 | Complete |
-| LAYOUT-03 | Phase 26 | Complete |
-| TAB-01 | Phase 27 | Complete |
-| TAB-02 | Phase 27 | Complete |
-| TAB-03 | Phase 27 | Complete |
-| TAB-04 | Phase 26 | Complete |
-| TAB-05 | Phase 27 | Complete |
-| THEME-01 | Phase 26 | Complete |
-| THEME-02 | Phase 26 | Complete |
-| THEME-03 | Phase 26 | Complete |
-| TEST-01 | Phase 28 | Complete |
-| TEST-02 | Phase 28 | Complete |
+| SWIPE-01 | Phase 29 | Pending |
+| SWIPE-02 | Phase 29 | Pending |
+| SWIPE-03 | Phase 29 | Pending |
+| STATE-01 | Phase 29 | Pending |
+| STATE-02 | Phase 30 | Pending |
+| STATE-03 | Phase 30 | Pending |
+| UXA-01 | Phase 29 | Pending |
+| UXA-02 | Phase 29 | Pending |
+| UXA-03 | Phase 30 | Pending |
+| TEST-01 | Phase 31 | Pending |
+| TEST-02 | Phase 31 | Pending |
 
 **Coverage:**
-- v1.7 requirements: 13 total
-- Mapped to phases: 13
+- v1.8 requirements: 11 total
+- Mapped to phases: 11
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-05-04*
-*Last updated: 2026-05-04 — v1.7 requirements marked complete after ship.*
+*Requirements defined: 2026-05-05*
+*Last updated: 2026-05-05 — v1.8 roadmap created; traceability mapped to Phases 29–31.*
