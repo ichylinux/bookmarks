@@ -19,10 +19,16 @@
     <div class="wrapper">
       <%= render 'common/menu' if user_signed_in? && favorite_theme == 'simple' %>
       <% if flash[:notice].present? %>
-        <div class="flash-notice"><%= flash[:notice] %></div>
+        <div class="flash-message flash-notice" role="status">
+          <span class="flash-message__body"><%= flash[:notice] %></span>
+          <button type="button" class="flash-dismiss" aria-label="<%= t('flash.dismiss') %>" data-dismiss-flash></button>
+        </div>
       <% end %>
       <% if flash[:alert].present? %>
-        <div class="flash-alert"><%= flash[:alert] %></div>
+        <div class="flash-message flash-alert" role="alert">
+          <span class="flash-message__body"><%= flash[:alert] %></span>
+          <button type="button" class="flash-dismiss" aria-label="<%= t('flash.dismiss') %>" data-dismiss-flash></button>
+        </div>
       <% end %>
       <%= yield %>
     </div>

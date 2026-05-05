@@ -131,6 +131,7 @@ ja:
     menu_aria: メニュー
 
   flash:
+    dismiss: 通知を閉じる
     errors:
       generic: エラーが発生しました
 

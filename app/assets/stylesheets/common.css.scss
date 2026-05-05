@@ -349,20 +349,48 @@ table {
   text-align: right;
 }
 
+.flash-message {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+.flash-message__body {
+  flex: 1;
+}
+
 .flash-notice {
   background: #dff0d8;
   color: #3c763d;
   border: 1px solid #d6e9c6;
-  padding: 10px 16px;
-  margin-bottom: 16px;
-  border-radius: 4px;
 }
 
 .flash-alert {
   background: #f2dede;
   color: #a94442;
   border: 1px solid #ebccd1;
-  padding: 10px 16px;
-  margin-bottom: 16px;
-  border-radius: 4px;
+}
+
+.flash-dismiss {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0 0 0 8px;
+}
+
+.flash-dismiss::before {
+  content: "\00d7";
+}
+
+.flash-dismiss:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }

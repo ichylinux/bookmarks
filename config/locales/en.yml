@@ -131,6 +131,7 @@ en:
     menu_aria: Menu
 
   flash:
+    dismiss: Dismiss notification
     errors:
       generic: Something went wrong.
 

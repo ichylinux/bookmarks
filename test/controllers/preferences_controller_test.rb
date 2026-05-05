@@ -222,6 +222,8 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/preferences', path
     assert_select 'html[lang=?]', 'en'
     assert_select '.flash-notice', text: I18n.t('preferences.saved', locale: :en)
+    assert_select '.flash-notice button.flash-dismiss[data-dismiss-flash][aria-label=?]',
+      I18n.t('flash.dismiss', locale: :en), count: 1
   end
 
   def test_localeをenからjaに変更すると保存通知が日本語で表示される
@@ -237,6 +239,8 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/preferences', path
     assert_select 'html[lang=?]', 'ja'
     assert_select '.flash-notice', text: I18n.t('preferences.saved', locale: :ja)
+    assert_select '.flash-notice button.flash-dismiss[data-dismiss-flash][aria-label=?]',
+      I18n.t('flash.dismiss', locale: :ja), count: 1
   end
 
   def test_localeはサインアウト後も保持される

@@ -30,6 +30,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       authentication_keys: User.human_attribute_name(:email, locale: :ja),
       locale: :ja)
     assert_select '.flash-alert', text: expected
+    assert_select '.flash-alert button.flash-dismiss[data-dismiss-flash][aria-label=?]',
+      I18n.t('flash.dismiss', locale: :ja), count: 1
   end
 
   # AUTHI18N-03: Failed sign-in flash appears in English
@@ -43,6 +45,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       authentication_keys: User.human_attribute_name(:email, locale: :en),
       locale: :en)
     assert_select '.flash-alert', text: expected
+    assert_select '.flash-alert button.flash-dismiss[data-dismiss-flash][aria-label=?]',
+      I18n.t('flash.dismiss', locale: :en), count: 1
   end
 
 end
