@@ -17,6 +17,13 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'button.hamburger-btn', count: 1
   end
 
+  def test_ヘッダーのアプリアイコンがルートへのリンクになる
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a[href=?] img.header-icon[src=?][alt=?]', root_path, '/icon.svg', 'Bookmarks', count: 1
+  end
+
   def test_モダンテーマでドロワーが存在する
     user.preference.update!(theme: 'modern')
     sign_in user
