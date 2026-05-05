@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.8
-milestone_name: Mobile UX Enhancement
-status: planning
+milestone: v1.9
+milestone_name: Mobile Regression Hardening
+status: completed
 stopped_at: —
-last_updated: "2026-05-05T16:08:00+09:00"
-last_activity: "2026-05-05 — Completed quick task Q-06: use English for .planning documents"
+last_updated: "2026-05-05T23:34:00+09:00"
+last_activity: "2026-05-05 — Milestone v1.9 archived and ready for next milestone initialization"
 progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 10
+  completed_plans: 10
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 29 (planning)  
-Plan: —  
-Status: Milestone v1.8 planning in progress (roadmap drafted and mapped)  
-Last activity: 2026-05-05 — Quick task Q-06 completed to standardize .planning docs in English
+Phase: v1.9 (completed)  
+Plan: milestone closeout (completed)  
+Status: v1.9 archived; waiting for next milestone kickoff  
+Last activity: 2026-05-05 — `/gsd-complete-milestone 1.9` closeout completed
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** Plan and execute v1.8 Mobile UX Enhancement (Phases 29–31).
+**Current focus:** Start next milestone planning (`/gsd-new-milestone`).
 
 ## Performance Metrics
 
@@ -42,12 +42,26 @@ v1.8 planning baseline created with full requirement-to-phase mapping (11/11). E
 - Simple theme: column tabs live inside `#simple-home-panel`, above the existing Home/Note simple tabs (REQ THEME-03).
 - v1.8 phases use continuous numbering from prior milestone (start at Phase 29).
 - v1.8 requirement mapping fixed as: Phase 29 (swipe/state-flow/accessibility sync), Phase 30 (localStorage restore + cross-theme parity), Phase 31 (verification gate).
+- Phase 32 added for v1.8 lifecycle completion work (audit, complete, cleanup).
+- Phase 32.1 inserted as urgent contract-gap closure for SWIPE-01 non-boundary right-swipe adjacent transition in E2E.
+- Phase 33 added as post-v1.8 tab regression hardening baseline.
+- Phase 33.1 inserted as urgent contract-gap closure for TEST-02 tab-click regression coverage in JS/Minitest.
+
+### Roadmap Evolution
+
+- Phase 32 added: Milestone Lifecycle Completion
+- Phase 32.1 inserted after Phase 32 (URGENT): Close gap: SWIPE-01 — 非境界右スワイプの隣接遷移をE2E契約で明示化
+- Phase 33 added: Tab Regression Hardening Baseline
+- Phase 33.1 inserted after Phase 33 (URGENT): Close gap: TEST-02 — タブクリック回帰契約をJS/Minitestで明示化
+- Phase 33.1 planned: 33.1-01 (tab-click JS/Minitest contract hardening + verification)
+- Phase 33.1 executed: contract assertions expanded, verification passed, and summary/verification artifacts recorded.
+- Phase 33 planned/executed: 033-01 baseline traceability closure completed with explicit linkage to 33.1 TEST-02 evidence and tri-suite verification.
+- Phase 33.2 inserted: dedicated gap-closure lane for Cucumber scenario-state reset to reduce order-dependent dad:test flakiness.
+- Phase 33.2 executed: centralized scenario reset hook added in `features/support/hooks.rb`; tri-suite passed with dad:test green on first run.
 
 ### Pending Todos
 
-- Execute Phase 29 implementation plans (swipe gesture and unified state flow).
-- Execute Phase 30 implementation plans (localStorage persistence and restore fallback).
-- Execute Phase 31 verification plans (Minitest + Cucumber contracts for v1.8).
+- None.
 
 ### Blockers/Concerns
 
@@ -68,6 +82,6 @@ None.
 
 Last session: 2026-05-04
 
-Stopped at: v1.8 roadmap creation complete; ready for phase planning.
+Stopped at: v1.8 milestone archived and all phase plans completed.
 
-Resume: start `/gsd-plan-phase 29`.
+Resume: start next milestone planning flow.

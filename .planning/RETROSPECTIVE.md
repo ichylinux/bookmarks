@@ -224,6 +224,46 @@
 
 ---
 
+## Milestone: v1.9 — Mobile Regression Hardening
+
+**Shipped:** 2026-05-05  
+**Phases:** 3 (33–33.2) | **Plans:** 3 | **Tasks:** 3
+
+### What Was Built
+
+- Phase 33 established an explicit baseline hardening lane for TEST-02 with direct traceability to executable artifacts.
+- Phase 33.1 strengthened JS/Minitest tab-click contracts (`data-portal-column-index`, container/portal resolution, shared `activateColumn(...)`, ARIA/class sync).
+- Phase 33.2 introduced a centralized Cucumber `Before` hook (`features/support/hooks.rb`) that resets session and shared preference defaults per scenario.
+- Tri-suite gate passed at close; `dad:test` succeeded on first run after scenario-state reset introduction.
+
+### What Worked
+
+- **Gap-closure slicing:** 33 → 33.1 → 33.2 sequencing kept each risk isolated and quickly verifiable.
+- **Contract-first hardening:** strengthening assertions without changing production behavior reduced regression blast radius.
+- **Centralized hook strategy:** placing resets in support hooks avoided step-definition duplication and made behavior predictable.
+
+### What Was Inefficient
+
+- Milestone closure automation commands in the workflow were unavailable in this runtime, forcing manual archival/editing steps.
+- Nyquist VALIDATION artifacts were still missing for v1.9 phases and remained a tracked quality debt.
+
+### Patterns Established
+
+- Keep regression debt closure in narrow insert phases with explicit requirement IDs.
+- For flaky E2E caused by shared mutable state, prefer a single scenario-level reset hook over scattered per-step cleanup.
+
+### Key Lessons
+
+1. Deterministic test baselines are worth a dedicated phase when milestone close depends on tri-suite confidence.
+2. Baseline-traceability phases (like 33) prevent ambiguity when later gap phases (33.1/33.2) carry implementation-heavy evidence.
+
+### Cost Observations
+
+- Small but high-impact milestone: three plans, mostly verification/contract and test-infrastructure hardening.
+- Runtime tooling mismatch created process overhead relative to planned automated closeout flow.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution

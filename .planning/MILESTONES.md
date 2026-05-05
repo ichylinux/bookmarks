@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.9 — Mobile Regression Hardening (shipped 2026-05-05)
+
+**Scope:** Phases 33–33.2 (3 plans) — TEST-02 contract hardening, baseline traceability closure, and Cucumber scenario-state isolation.
+
+**Key accomplishments:**
+
+- **Phase 33:** Established explicit TEST-02 baseline hardening lane and linked fulfillment evidence to executed Phase 33.1 artifacts.
+- **Phase 33.1:** Hardened JS/Minitest tab-click contracts in `portal_mobile_tabs.js` path (index resolution, container/portal resolution, shared `activateColumn(...)` call, UI/state sync assertions).
+- **Phase 33.2:** Added centralized Cucumber `Before` hook in `features/support/hooks.rb` to reset session and shared preference defaults per scenario, reducing order-dependent `dad:test` flakiness.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` first-run pass after 33.2).
+
+**Audit:** [Milestone audit](milestones/v1.9-MILESTONE-AUDIT.md) — `tech_debt`, no critical requirement/integration/flow gaps; residual debt limited to ongoing verification-infrastructure hygiene.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.9-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.9-REQUIREMENTS.md) · [Milestone audit](milestones/v1.9-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.6 — Note Gadget for All Themes (shipped 2026-05-04)
 
 **Scope:** Phases 23–25 — welcome/layout integration for modern and classic themes, `#notes-tab-panel` styling, ja/en verification tests, Cucumber modern-theme note capture.

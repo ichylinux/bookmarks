@@ -8,18 +8,26 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.8 Mobile UX Enhancement
+## Current Milestone: Completed v1.9 Mobile Regression Hardening
 
-**Goal:** Make mobile column switching more intuitive and preserve the previously selected column across revisits.
+**Goal:** Close regression-hardening and verification-determinism debt for mobile portal behavior.
 
-**Target features:**
-- Switch columns by swipe
-- Persist and restore the selected column with `localStorage`
-- Re-evaluate deferred mobile UX items and pick what belongs in this milestone
+**Delivered:**
+- TEST-02 tab-click contract hardening and explicit baseline traceability
+- Cucumber scenario-state isolation hook to reduce order-dependent `dad:test` flakes
+- Tri-suite verification gate green at milestone close
 
 ## Current State
 
-**Shipped:** v1.7 — Mobile Portal Layout (2026-05-04)
+**Shipped:** v1.9 — Mobile Regression Hardening (2026-05-05)
+
+v1.9 closed post-v1.8 regression hardening debt through three linked phases: baseline lane definition (33), explicit tab-click JS/Minitest contract hardening (33.1), and deterministic Cucumber scenario-state reset hooks (33.2). End-of-milestone tri-suite gate remained green.
+
+**Next Milestone Goals (draft):**
+
+- Define fresh requirement set for next roadmap cycle
+- Preserve deterministic verification baseline (keep scenario-state reset hook healthy)
+- Continue mobile UX evolution without regressing established TEST-02 contracts
 
 Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
 
@@ -163,4 +171,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-05 — v1.8 Mobile UX Enhancement milestone started.*
+*Last updated: 2026-05-05 — after v1.9 milestone completion.*
