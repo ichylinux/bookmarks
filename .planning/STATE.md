@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.10
-milestone_name: HTTP Client Consolidation
+milestone: v1.11
+milestone_name: Device-aware Font Size Baseline
 status: planning
 stopped_at: —
-last_updated: "2026-05-05T23:50:00+09:00"
-last_activity: "2026-05-06 — Completed quick task Q-07: Simple theme CSS relocation"
+last_updated: "2026-05-06T14:31:00+09:00"
+last_activity: "2026-05-06 — Approved v1.11 roadmap (Phases 37–39)"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,16 +18,16 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)  
+Phase: 37 (not started)  
 Plan: —  
-Status: Defining requirements  
-Last activity: 2026-05-06 — Completed quick task Q-07: Simple theme CSS relocation
+Status: Roadmap approved, ready for discuss/plan  
+Last activity: 2026-05-06 — Approved v1.11 roadmap (Phases 37–39)
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** Define v1.10 requirements and roadmap for HTTP client consolidation.
+**Current focus:** Start Phase 37 for v1.11 device-aware font-size baseline.
 
 ## Performance Metrics
 
@@ -46,6 +46,8 @@ v1.8 planning baseline created with full requirement-to-phase mapping (11/11). E
 - Phase 32.1 inserted as urgent contract-gap closure for SWIPE-01 non-boundary right-swipe adjacent transition in E2E.
 - Phase 33 added as post-v1.8 tab regression hardening baseline.
 - Phase 33.1 inserted as urgent contract-gap closure for TEST-02 tab-click regression coverage in JS/Minitest.
+- v1.11 milestone policy: keep 3-option font-size UX, apply device-aware medium baseline (PC14/mobile16), and define small/large as relative scaling.
+- Existing-user safety policy: migrate `nil/medium -> small`, keep `small/large` unchanged, and show one-time notice.
 
 ### Roadmap Evolution
 
@@ -58,6 +60,9 @@ v1.8 planning baseline created with full requirement-to-phase mapping (11/11). E
 - Phase 33 planned/executed: 033-01 baseline traceability closure completed with explicit linkage to 33.1 TEST-02 evidence and tri-suite verification.
 - Phase 33.2 inserted: dedicated gap-closure lane for Cucumber scenario-state reset to reduce order-dependent dad:test flakiness.
 - Phase 33.2 executed: centralized scenario reset hook added in `features/support/hooks.rb`; tri-suite passed with dad:test green on first run.
+- Phase 37 added: Device-aware Typography Contract
+- Phase 38 added: Existing-user Migration and One-time Notice
+- Phase 39 added: Verification Gate
 
 ### Pending Todos
 

@@ -1,27 +1,43 @@
 # Requirements: Bookmarks
 
-**Defined:** 2026-05-05
+**Defined:** 2026-05-06
 **Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
 ## v1 Requirements
 
-Requirements for milestone v1.10 (HTTP Client Consolidation). Each maps to exactly one roadmap phase.
+Requirements for milestone v1.11 (Device-aware Font Size Baseline).
 
-### HTTP Client Consolidation
+### Typography Contract
 
-- [ ] **HTTP-01**: User-facing functionality remains unchanged while all existing `httparty` call paths are migrated to `faraday`
-- [ ] **HTTP-02**: Requests preserve existing behavior for HTTP method, headers, payload/query encoding, and response parsing after migration
-- [ ] **HTTP-03**: Existing error-handling behavior is preserved for timeout, connection failure, and non-success responses
-- [ ] **HTTP-04**: `httparty` is removed from dependencies and the app boots/tests without any `httparty` runtime dependency
-- [ ] **HTTP-05**: Automated test coverage prevents regression on migrated HTTP integration paths
+- [ ] **FONT-01**: User can continue choosing exactly three font-size options (Small/Medium/Large) in preferences.
+- [ ] **FONT-02**: When user selects `medium`, text baseline is device-aware (`PC=14px`, `mobile=16px`).
+- [ ] **FONT-03**: When user selects `small`, text size is `0.875x` of the device-specific medium baseline.
+- [ ] **FONT-04**: When user selects `large`, text size is `1.125x` of the device-specific medium baseline.
+
+### Existing-user Migration
+
+- [ ] **MIGR-01**: Existing users with `font_size = nil` are migrated to `small`.
+- [ ] **MIGR-02**: Existing users with `font_size = medium` are migrated to `small`.
+- [ ] **MIGR-03**: Existing users with `font_size = small` or `large` are not changed by migration, and re-running migration does not change results.
+
+### UX + Safety
+
+- [ ] **UX-01**: Users affected by migration receive a one-time in-app notice explaining the baseline change and where to adjust font size.
+- [ ] **SAFE-01**: Unknown/invalid `font_size` values never crash rendering and always resolve to a safe fallback class.
+
+### Verification
+
+- [ ] **TEST-01**: Automated model/helper/controller tests cover canonical mapping and migration behavior contracts.
+- [ ] **TEST-02**: Automated verification confirms readability contract across modern/classic/simple themes after baseline change.
 
 ## v2 Requirements
 
 Deferred to a future milestone.
 
-### HTTP Infrastructure
+### Typography Experience
 
-- **HTTPI-01**: Standardize shared `faraday` middleware policy (retry/observability) across all external integrations
+- **UXEX-01**: Show effective current-device size preview text beside font-size selection.
+- **UXEX-02**: Add inline helper explanation under font-size selector (device-aware medium and relative small/large behavior).
 
 ## Out of Scope
 
@@ -29,27 +45,34 @@ Explicitly excluded from this milestone.
 
 | Feature | Reason |
 |---------|--------|
-| External API contract changes | Goal is dependency consolidation, not product behavior change |
-| External service/provider replacement | Independent initiative with broader risk and scope |
-| UI/UX changes unrelated to HTTP migration | Not required for dependency simplification |
+| Separate desktop/mobile font-size settings per user | Increases complexity and UX burden; single symbolic setting is the contract |
+| New size levels beyond Small/Medium/Large | Scope expansion beyond agreed 3-option UX |
+| Full typography rewrite (`px` -> `rem`) for all theme components | Too broad for this milestone; only contract-critical surfaces are in scope |
+| Frontend stack migration (SPA/bundler/device-detection gem) | Conflicts with current Rails/Sprockets constraints |
 
 ## Traceability
 
-Which phases cover which requirements. Updated from the approved roadmap.
+Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HTTP-01 | Phase 34 | Pending |
-| HTTP-02 | Phase 34 | Pending |
-| HTTP-03 | Phase 35 | Pending |
-| HTTP-04 | Phase 35 | Pending |
-| HTTP-05 | Phase 36 | Pending |
+| FONT-01 | Phase 37 | Pending |
+| FONT-02 | Phase 37 | Pending |
+| FONT-03 | Phase 37 | Pending |
+| FONT-04 | Phase 37 | Pending |
+| MIGR-01 | Phase 38 | Pending |
+| MIGR-02 | Phase 38 | Pending |
+| MIGR-03 | Phase 38 | Pending |
+| UX-01 | Phase 38 | Pending |
+| SAFE-01 | Phase 37 | Pending |
+| TEST-01 | Phase 39 | Pending |
+| TEST-02 | Phase 39 | Pending |
 
 **Coverage:**
-- v1 requirements: 5 total
-- Mapped to phases: 5
+- v1 requirements: 11 total
+- Mapped to phases: 11
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-05-05*
-*Last updated: 2026-05-05 after v1.10 initial definition*
+*Requirements defined: 2026-05-06*
+*Last updated: 2026-05-06 after v1.11 roadmap approval*

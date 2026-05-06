@@ -11,43 +11,45 @@
 - ✅ **v1.7 — Mobile Portal Layout** — Phases 26–28 (shipped 2026-05-04)
 - ✅ **v1.8 — Mobile UX Enhancement** — Phases 29–32.1 (shipped 2026-05-05) — [archived](milestones/v1.8-ROADMAP.md)
 - ✅ **v1.9 — Mobile Regression Hardening** — Phases 33–33.2 (shipped 2026-05-05) — [archived](milestones/v1.9-ROADMAP.md)
-- ◆ **v1.10 — HTTP Client Consolidation** — Phases 34–36 (planning)
+- ⚠️ **v1.10 — HTTP Client Consolidation** — Phases 34–36 (deferred 2026-05-06)
+- ◆ **v1.11 — Device-aware Font Size Baseline** — Phases 37–39 (planning)
 
 ## Phases
 
-### Phase 34 — Inventory and `faraday` Migration Path
+### Phase 37 — Device-aware Typography Contract
 
-**Goal:** Identify every `httparty` usage path and migrate request-building/response-handling flows to `faraday` with behavior parity.
+**Goal:** Keep the current small/medium/large UX while introducing device-aware medium baseline and safe fallback behavior.
 
-**Requirements:** HTTP-01, HTTP-02
-
-**Success Criteria:**
-1. All direct `httparty` call sites are replaced with `faraday` in application code.
-2. Request method/header/payload/query behavior matches pre-migration behavior on migrated paths.
-3. Response parsing and downstream call contracts remain backward-compatible.
-
-### Phase 35 — Error Handling Parity and Dependency Removal
-
-**Goal:** Preserve failure-path behavior and remove `httparty` dependency from runtime.
-
-**Requirements:** HTTP-03, HTTP-04
+**Requirements:** FONT-01, FONT-02, FONT-03, FONT-04, SAFE-01
 
 **Success Criteria:**
-1. Timeout, connection-failure, and non-success response handling behavior is preserved under `faraday`.
-2. `httparty` is removed from `Gemfile`/`Gemfile.lock` with no residual runtime references.
-3. Application boots and relevant integration paths execute without `httparty` installed.
+1. Preferences still present exactly Small/Medium/Large options.
+2. `medium` renders as `14px` baseline on PC and `16px` baseline on mobile.
+3. `small` and `large` render as `0.875x` and `1.125x` of the device-specific medium baseline.
+4. Unknown/invalid stored `font_size` values never crash rendering and resolve to a safe class.
 
-### Phase 36 — Regression Proof and Verification Gate
+### Phase 38 — Existing-user Migration and One-time Notice
 
-**Goal:** Lock migration with automated regression coverage and complete milestone verification.
+**Goal:** Protect existing users from unintended UX shifts by migrating legacy values and showing a one-time explanation.
 
-**Requirements:** HTTP-05
+**Requirements:** MIGR-01, MIGR-02, MIGR-03, UX-01
 
 **Success Criteria:**
-1. Existing tests are updated and/or new tests are added for migrated HTTP integrations.
-2. `yarn run lint` passes.
-3. `bin/rails test` passes.
-4. `bundle exec rake dad:test` passes (with one rerun allowed per flake policy).
+1. Existing `font_size = nil` users are migrated to `small`.
+2. Existing `font_size = medium` users are migrated to `small`.
+3. Existing `small` / `large` users remain unchanged; migration reruns remain idempotent.
+4. Affected users see one-time in-app notice explaining baseline change and where to adjust settings.
+
+### Phase 39 — Verification Gate
+
+**Goal:** Lock the milestone contract with automated regression coverage across behavior and theme readability.
+
+**Requirements:** TEST-01, TEST-02
+
+**Success Criteria:**
+1. Automated tests cover canonical mapping and migration behavior (model/helper/controller).
+2. Automated checks verify readability contract across modern/classic/simple themes.
+3. Regression suite catches font-size contract drift before merge.
 
 ---
-*Last updated: 2026-05-05 — v1.10 roadmap created.*
+*Last updated: 2026-05-06 — v1.11 roadmap approved.*

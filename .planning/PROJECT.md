@@ -8,26 +8,27 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.10 HTTP Client Consolidation
+## Current Milestone: v1.11 Device-aware Font Size Baseline
 
-**Goal:** Replace `httparty` usage with `faraday` while preserving current behavior and reducing dependency surface.
+**Goal:** Keep the existing small/medium/large setting UX while making the medium baseline device-aware and protecting existing users with safe migration.
 
 **Target features:**
-- Replace every `httparty` call path with a `faraday`-based implementation
-- Preserve request/response behavior and error handling semantics
-- Remove `httparty` from dependency graph with regression-proof tests
+- Medium baseline split by device (`PC=14px`, `mobile=16px`)
+- Small/large as relative scales from medium (`0.875x`, `1.125x`)
+- One-time migration for existing users (`nil/medium -> small`) plus notice
 
 ## Current State
 
-**Planning:** v1.10 — HTTP Client Consolidation (2026-05-05)
+**Planning:** v1.11 — Device-aware Font Size Baseline (2026-05-06)
 
-v1.10 focuses on consolidating external HTTP calls onto `faraday` so the codebase can remove `httparty` and keep behavior stable through test-backed migration.
+v1.11 focuses on typography behavior consistency across PC/mobile while keeping the existing preference surface stable and minimizing UX shock for existing users.
 
 **Milestone goals:**
 
-- Migrate all remaining `httparty` usage to `faraday`
-- Preserve request contracts and error-handling behavior
-- Simplify dependencies by removing `httparty` from Gemfile/Gemfile.lock
+- Keep small/medium/large selection and persisted values unchanged at the UI/API contract level
+- Apply device-aware medium baseline with relative scaling for small/large across all themes/pages
+- Migrate existing `nil` and `medium` users to `small` safely and idempotently
+- Inform migrated users with a one-time guidance notice
 
 Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
 
@@ -73,9 +74,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- [ ] Replace all `httparty` call paths with `faraday` equivalents
-- [ ] Preserve request/response and failure behavior during migration
-- [ ] Remove `httparty` dependency with tests that prevent regression
+- [ ] Implement device-aware medium baseline (`PC=14px`, `mobile=16px`) with relative small/large scaling
+- [ ] Preserve existing small/medium/large preference UX and persistence contract
+- [ ] Migrate existing `nil/medium` users to `small` (idempotent, no change for existing `small/large`)
+- [ ] Show one-time migration notice for affected users
+- [ ] Add regression coverage for model/helper/controller/theme readability contracts
 
 ### Out of Scope (revisit when planning)
 
@@ -171,4 +174,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-05 — after v1.10 milestone kickoff.*
+*Last updated: 2026-05-06 — after v1.11 milestone kickoff.*
