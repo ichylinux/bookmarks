@@ -79,7 +79,7 @@
 
   .note-item {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: max-content max-content minmax(0, 1fr);
     column-gap: 10px;
     row-gap: 8px;
     align-items: center;
@@ -132,7 +132,11 @@
     border-color: rgba(0, 0, 0, 0.45);
   }
 
-  .note-item .note-item-edit-form input[type="submit"],
+  .note-item .note-item-edit-form input[type="submit"] {
+    justify-self: start;
+    width: auto;
+  }
+
   .note-item .note-item-delete-form button {
     justify-self: start;
     width: auto;
@@ -159,7 +163,19 @@
 
 // v1.7 THEME-03: simple theme — portal tabs use .simple / welcome base rules; minor spacing only
 @media (max-width: 767px) {
+  .simple .note-item {
+    grid-template-columns: 1fr auto;
+  }
+
   .simple .portal-column-tabs {
     padding: 0 10px;
+  }
+
+  .simple .note-item .note-item-delete-form {
+    justify-self: end;
+  }
+
+  .simple .note-item .note-item-delete-form button {
+    justify-self: end;
   }
 }

@@ -286,7 +286,7 @@
 
 .classic #notes-tab-panel .note-item {
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
   column-gap: 10px;
   row-gap: 8px;
   align-items: center;
@@ -310,7 +310,11 @@
   justify-self: start;
 }
 
-.classic #notes-tab-panel .note-item .note-item-edit-form input[type="submit"],
+.classic #notes-tab-panel .note-item .note-item-edit-form input[type="submit"] {
+  justify-self: start;
+  width: auto;
+}
+
 .classic #notes-tab-panel .note-item .note-item-delete-form button {
   justify-self: start;
   width: auto;
@@ -330,9 +334,21 @@
 
 // v1.7 THEME-02: mobile portal column tabs (narrow only)
 @media (max-width: 767px) {
+  .classic #notes-tab-panel .note-item {
+    grid-template-columns: 1fr auto;
+  }
+
   .classic .portal-column-tabs {
     gap: 6px;
     padding: 0 12px;
+  }
+
+  .classic #notes-tab-panel .note-item .note-item-delete-form {
+    justify-self: end;
+  }
+
+  .classic #notes-tab-panel .note-item .note-item-delete-form button {
+    justify-self: end;
   }
 
   .classic .portal-column-tab--active {
