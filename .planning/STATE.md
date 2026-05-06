@@ -5,7 +5,7 @@ milestone_name: HTTP Client Consolidation
 status: planning
 stopped_at: —
 last_updated: "2026-05-05T23:50:00+09:00"
-last_activity: "2026-05-05 — Milestone v1.10 started"
+last_activity: "2026-05-06 — Completed quick task Q-07: Simple theme CSS relocation"
 progress:
   total_phases: 0
   completed_phases: 0
@@ -21,7 +21,7 @@ progress:
 Phase: Not started (defining requirements)  
 Plan: —  
 Status: Defining requirements  
-Last activity: 2026-05-05 — Milestone v1.10 started
+Last activity: 2026-05-06 — Completed quick task Q-07: Simple theme CSS relocation
 
 ## Project Reference
 
@@ -77,6 +77,7 @@ None.
 | Q-04 | Document theme CSS separation convention | 2026-05-05 | this commit | `.planning/quick/260505-q04-theme-css-separation-reference/` |
 | Q-05 | Make notice messages disposable without refreshing the page | 2026-05-05 | 81babad | `.planning/quick/260505-q05-disposable-notice-message/` |
 | Q-06 | Use English for documents under .planning directory | 2026-05-05 | 4df0d6b | `.planning/quick/260505-q06-planning-docs-english/` |
+| Q-07 | Simple-theme welcome CSS belongs in simple.scss | 2026-05-06 | b58fb95 | `.planning/quick/260506-q07-simple-theme-css-relocation/` |
 
 ## Session Continuity
 
