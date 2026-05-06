@@ -146,6 +146,7 @@ ja:
       body_label: メモ
       submit: メモを保存
       update: メモを更新
+      cancel: 編集をキャンセル
       delete: メモを削除
       empty: メモはまだありません
       edited_badge: 編集済み

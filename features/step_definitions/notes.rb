@@ -47,3 +47,33 @@ end
     assert_equal body, first_note_body
   end
 end
+
+もし /^先頭メモを編集表示にします。$/ do
+  within '#notes-tab-panel .note-item:first-child' do
+    find('.note-item-display').double_click
+    assert has_no_selector?('.note-item-edit-form[hidden]', wait: 3)
+    assert has_button?('編集をキャンセル')
+  end
+end
+
+もし /^先頭メモの編集欄に (.*?) と入力します。$/ do |body|
+  @editing_note_body = body
+  within '#notes-tab-panel .note-item:first-child.note-item--editing' do
+    find('textarea[name="note[body]"]').set(body)
+  end
+end
+
+もし /^先頭メモの編集表示をキャンセルします。$/ do
+  within '#notes-tab-panel .note-item:first-child.note-item--editing' do
+    click_button '編集をキャンセル'
+  end
+  assert has_no_selector?('#notes-tab-panel .note-item:first-child.note-item--editing', wait: 3)
+end
+
+もし /^ノートタブの先頭メモ本文は (.*?) のままです。$/ do |body|
+  assert_not_equal @editing_note_body, body
+  within '#notes-tab-panel' do
+    first_note_body = find('.note-item:first-child .note-body').text
+    assert_equal body, first_note_body
+  end
+end

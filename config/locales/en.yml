@@ -146,6 +146,7 @@ en:
       body_label: Note
       submit: Save Note
       update: Update Note
+      cancel: Cancel Editing
       delete: Delete Note
       empty: No notes yet
       edited_badge: Edited

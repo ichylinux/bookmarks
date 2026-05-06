@@ -12,7 +12,7 @@
   }
 
   .note-item.note-item--editing {
-    grid-template-columns: auto auto minmax(0, 1fr);
+    grid-template-columns: auto auto auto minmax(0, 1fr);
     column-gap: 10px;
   }
 
@@ -22,7 +22,8 @@
   }
 
   .note-item .note-item-edit-form,
-  .note-item .note-item-delete-form {
+  .note-item .note-item-delete-form,
+  .note-item .note-item-cancel-button {
     display: none;
   }
 
@@ -37,6 +38,10 @@
 
   .note-item.note-item--editing .note-item-delete-form {
     display: block;
+  }
+
+  .note-item.note-item--editing .note-item-cancel-button {
+    display: inline-flex;
   }
 
   .note-item.note-item--editing .note-item-display {
@@ -57,6 +62,13 @@
   .note-item.note-item--editing .note-item-delete-form {
     grid-column: 2;
     grid-row: 3;
+  }
+
+  .note-item.note-item--editing .note-item-cancel-button {
+    grid-column: 3;
+    grid-row: 3;
+    justify-self: start;
+    width: auto;
   }
 
   .note-item .note-item-edit-form textarea,
@@ -103,12 +115,21 @@
     width: auto;
   }
 
+  .note-item .note-item-cancel-button {
+    justify-self: start;
+    width: auto;
+  }
+
   @media (max-width: 767px) {
     .note-item .note-item-delete-form {
       justify-self: start;
     }
 
     .note-item .note-item-delete-form button {
+      justify-self: start;
+    }
+
+    .note-item .note-item-cancel-button {
       justify-self: start;
     }
   }
@@ -130,7 +151,8 @@
 ) {
   .note-gadget-form input[type="submit"],
   .note-item-edit-form input[type="submit"],
-  .note-item-delete-form button {
+  .note-item-delete-form button,
+  .note-item-cancel-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -162,7 +184,8 @@
   @if $hover-filter != null {
     .note-gadget-form input[type="submit"]:hover,
     .note-item-edit-form input[type="submit"]:hover,
-    .note-item-delete-form button:hover {
+    .note-item-delete-form button:hover,
+    .note-item-cancel-button:hover {
       filter: $hover-filter;
     }
   }
@@ -170,7 +193,8 @@
   @if $hover-background != null or $hover-border-color != null {
     .note-gadget-form input[type="submit"]:hover,
     .note-item-edit-form input[type="submit"]:hover,
-    .note-item-delete-form button:hover {
+    .note-item-delete-form button:hover,
+    .note-item-cancel-button:hover {
       @if $hover-background != null {
         background: $hover-background;
       }
@@ -183,7 +207,8 @@
   @if $focus-outline-color != null {
     .note-gadget-form input[type="submit"]:focus-visible,
     .note-item-edit-form input[type="submit"]:focus-visible,
-    .note-item-delete-form button:focus-visible {
+    .note-item-delete-form button:focus-visible,
+    .note-item-cancel-button:focus-visible {
       outline: 2px solid $focus-outline-color;
       outline-offset: 2px;
     }

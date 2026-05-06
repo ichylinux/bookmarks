@@ -13,14 +13,26 @@ $(function() {
     if ($item.hasClass('note-item--editing')) return;
     var $editForm = $item.find('.note-item-edit-form');
     var $deleteForm = $item.find('.note-item-delete-form');
+    var $cancelButton = $item.find('.note-item-cancel-button');
     $editForm.prop('hidden', false);
     $deleteForm.prop('hidden', false);
+    $cancelButton.prop('hidden', false);
     $item.addClass('note-item--editing');
     var textarea = $editForm.find('textarea')[0];
     if (!textarea) return;
     textarea.focus();
     textarea.selectionStart = textarea.value.length;
     textarea.selectionEnd = textarea.value.length;
+  }
+
+  function hideEditControls($item) {
+    if (!$item.length) return;
+    if (!$item.hasClass('note-item--editing')) return;
+    $item.find('.note-item-edit-form').prop('hidden', true);
+    $item.find('.note-item-delete-form').prop('hidden', true);
+    $item.find('.note-item-cancel-button').prop('hidden', true);
+    $item.removeClass('note-item--editing');
+    $item.find('.note-item-display').focus();
   }
 
   $('.note-item .note-item-display').each(function() {
@@ -62,6 +74,10 @@ $(function() {
       showEditControls($item);
     });
 
+    $item.on('click.noteGadgetEditCancel', '.note-item-cancel-button', function() {
+      hideEditControls($item);
+    });
+
     $display.on('touchstart.noteGadgetLongpress', function(e) {
       if (!MOBILE_MQ.matches) return;
       var t = e.originalEvent.touches[0];
@@ -86,4 +102,5 @@ $(function() {
       }
     });
   });
+
 });

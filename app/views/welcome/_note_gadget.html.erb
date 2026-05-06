@@ -1,6 +1,7 @@
 <section class="note-gadget"
          data-note-action-update-label="<%= t('.update') %>"
-         data-note-action-delete-label="<%= t('.delete') %>">
+         data-note-action-delete-label="<%= t('.delete') %>"
+         data-note-action-cancel-label="<%= t('.cancel') %>">
   <div class="note-gadget-composer">
     <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
       <%= f.text_area :body, rows: 4, aria: { label: t('.body_label') } %>
@@ -31,6 +32,7 @@
             <%= f.text_area :body, rows: 3 %>
             <%= f.submit t('.update') %>
           <% end %>
+          <button type="button" class="note-item-cancel-button" hidden><%= t('.cancel') %></button>
           <%= button_to t('.delete'),
                         note_path(note),
                         method: :delete,
