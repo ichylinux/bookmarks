@@ -142,7 +142,6 @@ en:
       loading: Loading feed...
       fetch_failed: Could not fetch the feed.
     note_gadget:
-      title: Notes
       body_label: Note
       submit: Save Note
       update: Update Note

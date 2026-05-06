@@ -396,14 +396,8 @@
 
 .modern #notes-tab-panel .note-gadget {
   margin: 0;
-}
-
-.modern #notes-tab-panel .note-gadget h2 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin: 0 0 12px 0;
-  color: var(--modern-text);
+  padding-top: calc(1.125rem * 1.3 + 12px);
+  box-sizing: border-box;
 }
 
 .modern #notes-tab-panel .note-gadget-form {

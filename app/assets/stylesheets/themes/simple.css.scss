@@ -12,13 +12,6 @@
   }
 
   #notes-tab-panel {
-    h2 {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 4px 0;
-    }
-
     p {
       margin: 0;
       font-size: 12px;
@@ -28,6 +21,8 @@
 
   .note-gadget {
     margin: 0 10px 8px 10px;
+    padding-top: calc(14px * 1.2 + 4px);
+    box-sizing: border-box;
   }
 
   .note-gadget-form {

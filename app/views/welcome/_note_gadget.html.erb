@@ -1,5 +1,4 @@
 <section class="note-gadget">
-  <h2><%= t('.title') %></h2>
   <div class="note-gadget-composer">
     <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
       <%= f.text_area :body, rows: 4, aria: { label: t('.body_label') } %>

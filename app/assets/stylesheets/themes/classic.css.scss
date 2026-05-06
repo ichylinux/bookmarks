@@ -201,14 +201,8 @@
 
 .classic #notes-tab-panel .note-gadget {
   margin: 0;
-}
-
-.classic #notes-tab-panel .note-gadget h2 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 10px 0;
-  color: #1a1a1a;
+  padding-top: calc(1.05rem * 1.3 + 10px);
+  box-sizing: border-box;
 }
 
 .classic #notes-tab-panel .note-gadget-form {

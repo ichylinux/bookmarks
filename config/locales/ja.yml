@@ -142,7 +142,6 @@ ja:
       loading: フィードを取得中・・・
       fetch_failed: フィードを取得できませんでした。
     note_gadget:
-      title: ノート
       body_label: メモ
       submit: メモを保存
       update: メモを更新
