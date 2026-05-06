@@ -12,10 +12,20 @@
   <% else %>
     <div class="note-list">
       <% @notes.each do |note| %>
+        <% created_time = note.created_at.strftime('%Y-%m-%d %H:%M') %>
+        <% updated_time = note.updated_at.strftime('%Y-%m-%d %H:%M') %>
+        <% edited = note.updated_at.to_i != note.created_at.to_i %>
         <div class="note-item">
           <div class="note-item-display" tabindex="0">
             <div class="note-body"><%= note.body %></div>
-            <div class="note-timestamp"><%= note.created_at.strftime('%Y-%m-%d %H:%M') %></div>
+            <div class="note-timestamp">
+              <span class="note-created-at"><%= created_time %></span>
+              <% if edited %>
+                <span class="note-edited-badge"
+                      title="<%= t('.edited_tooltip', time: updated_time) %>"
+                      aria-label="<%= t('.edited_tooltip', time: updated_time) %>"><%= t('.edited_badge') %></span>
+              <% end %>
+            </div>
           </div>
           <%= form_with model: note, local: true, html: { class: 'note-item-edit-form', hidden: true } do |f| %>
             <%= f.text_area :body, rows: 3 %>

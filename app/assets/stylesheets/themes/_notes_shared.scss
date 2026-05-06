@@ -69,6 +69,25 @@
     margin-top: 0;
   }
 
+  .note-item .note-created-at {
+    display: inline-block;
+  }
+
+  .note-item .note-edited-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.08);
+    color: inherit;
+    vertical-align: middle;
+    cursor: help;
+  }
+
   .note-item .note-item-delete-form {
     margin: 0;
     justify-self: start;

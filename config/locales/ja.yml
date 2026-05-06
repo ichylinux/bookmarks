@@ -148,6 +148,8 @@ ja:
       update: メモを更新
       delete: メモを削除
       empty: メモはまだありません
+      edited_badge: 編集済み
+      edited_tooltip: "編集: %{time}"
     portal_column_tabs_aria_label: ポータル列の切り替え
 
   calendars:

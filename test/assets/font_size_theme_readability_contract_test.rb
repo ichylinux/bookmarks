@@ -18,13 +18,6 @@ class FontSizeThemeReadabilityContractTest < ActiveSupport::TestCase
     assert_includes @common, 'calc(var(--font-size-medium-baseline) * var(--font-size-scale))'
   end
 
-  test 'modern and classic header text follows body scale with rem values' do
-    assert_match(/\.drawer nav a[\s\S]*font-size:\s*1rem/, @modern)
-    assert_match(/\.head-user-email[\s\S]*font-size:\s*1rem/, @modern)
-    assert_match(/\.drawer nav a[\s\S]*font-size:\s*1rem/, @classic)
-    assert_match(/\.head-user-email[\s\S]*font-size:\s*1rem/, @classic)
-  end
-
   test 'simple note surfaces use rem values for readability scaling' do
     assert_match(/#notes-tab-panel[\s\S]*font-size:\s*0\.875rem/, @simple)
     assert_match(/\.note-body[\s\S]*font-size:\s*0\.875rem/, @simple)

@@ -148,6 +148,8 @@ en:
       update: Update Note
       delete: Delete Note
       empty: No notes yet
+      edited_badge: Edited
+      edited_tooltip: "Edited: %{time}"
     portal_column_tabs_aria_label: Switch portal columns
 
   calendars:

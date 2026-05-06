@@ -167,10 +167,11 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
   end
 
-  def test_シンプルテーマでメモは新しい順に表示されタイムスタンプも出る
+  def test_シンプルテーマでメモは新しい順に表示されタイムスタンプと編集済みバッジが出る
     Note.where(user_id: user.id).delete_all
     older_time = Time.zone.local(2026, 4, 29, 9, 0)
     newer_time = Time.zone.local(2026, 4, 30, 9, 0)
+    edited_time = Time.zone.local(2026, 4, 30, 10, 30)
     older = user.notes.create!(
       body: '古いメモ 13-02',
       created_at: older_time,
@@ -179,9 +180,9 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     newer = user.notes.create!(
       body: '新しいメモ 13-02',
       created_at: newer_time,
-      updated_at: newer_time
+      updated_at: edited_time
     )
-    user.preference.update!(theme: 'simple', use_note: true)
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
@@ -196,6 +197,10 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
                     'newer note should render before older note'
     assert_includes response.body, newer_time.strftime('%Y-%m-%d %H:%M')
     assert_includes response.body, older_time.strftime('%Y-%m-%d %H:%M')
+    assert_select '#notes-tab-panel .note-item .note-edited-badge', text: '編集済み', count: 1
+    assert_select '#notes-tab-panel .note-item .note-edited-badge[title=?]',
+                  "編集: #{edited_time.strftime('%Y-%m-%d %H:%M')}",
+                  count: 1
   end
 
   def test_モダンテーマでuse_noteがfalseのときノートパネルが表示されない
