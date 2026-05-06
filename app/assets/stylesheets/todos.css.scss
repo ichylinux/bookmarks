@@ -16,7 +16,7 @@
   
   span.selected {
     border: 0;
-    background-image: url('<%= asset_path('selected.png') %>');
+    background-image: image-url('selected.png');
     background-repeat: no-repeat;
     background-size: 16px;
     background-position: top center;
