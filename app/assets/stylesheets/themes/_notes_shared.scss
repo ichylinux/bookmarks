@@ -1,0 +1,56 @@
+@mixin notes_grid_shared($row-gap: 8px) {
+  .note-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  .note-item {
+    display: grid;
+    grid-template-columns: max-content max-content minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: $row-gap;
+    align-items: center;
+  }
+
+  .note-item .note-item-edit-form {
+    display: contents;
+  }
+
+  .note-item .note-item-edit-form textarea {
+    grid-column: 1 / -1;
+  }
+
+  .note-item .note-timestamp {
+    grid-column: 1 / -1;
+    margin-top: 0;
+  }
+
+  .note-item .note-item-delete-form {
+    margin: 0;
+    justify-self: start;
+  }
+
+  .note-item .note-item-edit-form input[type="submit"] {
+    justify-self: start;
+    width: auto;
+  }
+
+  .note-item .note-item-delete-form button {
+    justify-self: start;
+    width: auto;
+  }
+
+  @media (max-width: 767px) {
+    .note-item {
+      grid-template-columns: 1fr auto;
+    }
+
+    .note-item .note-item-delete-form {
+      justify-self: end;
+    }
+
+    .note-item .note-item-delete-form button {
+      justify-self: end;
+    }
+  }
+}

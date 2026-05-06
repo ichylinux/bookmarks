@@ -1,3 +1,6 @@
+@import "drawer_shared";
+@import "notes_shared";
+
 .modern {
   --modern-color-primary: #3b82f6;
   --modern-bg:            #ffffff;
@@ -13,89 +16,16 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--modern-text);
 
-  .welcome-tab-panel--hidden {
-    display: none;
-  }
-
-  // Drawer backdrop — below panel, above main content
-  .drawer-overlay {
-    display: block;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 250ms ease-out;
-  }
-
-  &.drawer-open .drawer-overlay {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  // Drawer panel — right edge to align with hamburger trigger
-  .drawer {
-    display: block;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: auto;
-    // Drawer width contract: min(88vw, 320px) — libsass cannot compile min(vw, px); use vw + max-width
-    width: 88vw;
-    max-width: 320px;
-    background: var(--modern-bg);
-    box-shadow:
-      -4px 0 15px -3px rgba(0, 0, 0, 0.12),
-      -2px 0 6px -4px rgba(0, 0, 0, 0.08);
-    z-index: 1010;
-    transform: translateX(100%);
-    transition: transform 250ms ease-out;
-    overflow-y: auto;
-  }
-
-  &.drawer-open .drawer {
-    transform: translateX(0);
-  }
-
-  .drawer nav {
-    padding: 16px 24px;
-  }
-
-  .drawer nav a {
-    display: block;
-    font-size: 1rem;
-    line-height: 1.4;
-    color: var(--modern-text);
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-decoration: none;
-  }
-
-  .drawer nav a:focus-visible {
-    outline: 2px solid var(--modern-color-primary);
-    outline-offset: 2px;
-  }
-
-  // Hamburger — specificity beats common.css.scss; z-index above drawer
-  #header .head-box .head-user-email {
-    margin-left: auto;
-    color: #fff;
-    font-size: 1rem;
-    line-height: 1.4;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 45vw;
-    min-width: 0;
-  }
-
-  @media (max-width: 480px) {
-    #header .head-box .head-user-email {
-      margin-left: 0;
-    }
-  }
+  @include theme_drawer_shared(
+    #fff,
+    var(--modern-bg),
+    var(--modern-text),
+    var(--modern-color-primary),
+    #fff,
+    0.88,
+    rgba(255, 255, 255, 0.18),
+    var(--modern-text)
+  );
 
   #header .head-box .head-title:focus-visible {
     outline: 2px solid var(--modern-color-primary);
@@ -103,123 +33,6 @@
     border-radius: 2px;
   }
 
-  #header .head-box .head-note-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    flex-shrink: 0;
-    color: #fff;
-    text-decoration: none;
-    z-index: 1020;
-    box-sizing: border-box;
-  }
-
-  #header .head-box .head-note-btn:hover {
-    text-decoration: none;
-    opacity: 0.88;
-  }
-
-  #header .head-box .head-note-btn:focus-visible {
-    outline: 2px solid var(--modern-color-primary);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  #header .head-box .head-note-btn svg {
-    display: block;
-    flex-shrink: 0;
-  }
-
-  #header .head-box .head-note-btn--active {
-    background: rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-  }
-
-  #header .head-box .hamburger-btn {
-    display: inline-block;
-    position: relative;
-    margin-left: 8px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    z-index: 1020;
-    flex-shrink: 0;
-  }
-
-  #header .head-box .head-trailing-actions .hamburger-btn {
-    margin-left: 0;
-  }
-
-  #header .head-box .hamburger-btn:focus-visible {
-    outline: 2px solid var(--modern-color-primary);
-    outline-offset: 2px;
-  }
-
-  #header .head-box .hamburger-btn::before,
-  #header .head-box .hamburger-btn::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    width: 22px;
-    height: 2px;
-    background: #fff;
-    transition:
-      transform 250ms ease-out,
-      box-shadow 250ms ease-out,
-      top 250ms ease-out,
-      bottom 250ms ease-out,
-      background-color 250ms ease-out;
-  }
-
-  #header .head-box .hamburger-btn::before {
-    top: 14px;
-    transform: translateX(-50%);
-    box-shadow: 0 7px 0 #fff;
-  }
-
-  #header .head-box .hamburger-btn::after {
-    bottom: 14px;
-    transform: translateX(-50%);
-  }
-
-  &.drawer-open #header .head-box .hamburger-btn::before {
-    top: 50%;
-    box-shadow: none;
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-
-  &.drawer-open #header .head-box .hamburger-btn::after {
-    bottom: auto;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-  }
-
-  // ドロワーが開くとボタンが白背景の上に重なるため、×印は濃色に切り替える
-  &.drawer-open #header .head-box .hamburger-btn::before,
-  &.drawer-open #header .head-box .hamburger-btn::after {
-    background-color: var(--modern-text);
-  }
-
-  &.drawer-open #header .head-box .head-note-btn {
-    visibility: hidden;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .drawer,
-    .drawer-overlay {
-      transition: none;
-    }
-
-    #header .head-box .hamburger-btn::before,
-    #header .head-box .hamburger-btn::after {
-      transition: none;
-    }
-  }
 }
 
 // STYLE-01: Primary header bar — top-level selector for ID specificity
@@ -402,6 +215,7 @@
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+  @include notes_grid_shared(10px);
 }
 
 .modern #notes-tab-panel .note-gadget {
@@ -470,8 +284,6 @@
 }
 
 .modern #notes-tab-panel .note-list {
-  margin: 0;
-  padding: 0;
   list-style: none;
 }
 
@@ -487,42 +299,6 @@
 
 .modern #notes-tab-panel .note-item:last-child {
   margin-bottom: 0;
-}
-
-.modern #notes-tab-panel .note-item {
-  display: grid;
-  grid-template-columns: max-content max-content minmax(0, 1fr);
-  column-gap: 10px;
-  row-gap: 10px;
-  align-items: center;
-}
-
-.modern #notes-tab-panel .note-item .note-item-edit-form {
-  display: contents;
-}
-
-.modern #notes-tab-panel .note-item .note-item-edit-form textarea {
-  grid-column: 1 / -1;
-}
-
-.modern #notes-tab-panel .note-item .note-timestamp {
-  grid-column: 1 / -1;
-  margin-top: 0;
-}
-
-.modern #notes-tab-panel .note-item .note-item-delete-form {
-  margin: 0;
-  justify-self: start;
-}
-
-.modern #notes-tab-panel .note-item .note-item-edit-form input[type="submit"] {
-  justify-self: start;
-  width: auto;
-}
-
-.modern #notes-tab-panel .note-item .note-item-delete-form button {
-  justify-self: start;
-  width: auto;
 }
 
 .modern #notes-tab-panel .note-item-edit-form input[type="submit"]:hover {
@@ -559,21 +335,9 @@
 
 // v1.7 THEME-01: mobile portal column tabs (narrow only; breakpoint matches welcome.css.scss $portal-mobile-breakpoint − 1px)
 @media (max-width: 767px) {
-  .modern #notes-tab-panel .note-item {
-    grid-template-columns: 1fr auto;
-  }
-
   .modern .portal-column-tabs {
     gap: 8px;
     padding: 0 16px;
-  }
-
-  .modern #notes-tab-panel .note-item .note-item-delete-form {
-    justify-self: end;
-  }
-
-  .modern #notes-tab-panel .note-item .note-item-delete-form button {
-    justify-self: end;
   }
 
   .modern .portal-column-tab {

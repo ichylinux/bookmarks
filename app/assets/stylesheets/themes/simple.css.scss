@@ -1,4 +1,8 @@
+@import "notes_shared";
+
 .simple {
+  @include notes_grid_shared(8px);
+
   #header {
     display: none;
   }
@@ -51,11 +55,6 @@
     color: #666;
   }
 
-  .note-list {
-    margin: 0;
-    padding: 0;
-  }
-
   .note-item,
   .note-gadget-composer {
     margin: 0 0 12px 0;
@@ -66,32 +65,6 @@
     &:last-child {
       margin-bottom: 0;
     }
-  }
-
-  .note-item {
-    display: grid;
-    grid-template-columns: max-content max-content minmax(0, 1fr);
-    column-gap: 10px;
-    row-gap: 8px;
-    align-items: center;
-  }
-
-  .note-item .note-item-edit-form {
-    display: contents;
-  }
-
-  .note-item .note-item-edit-form textarea {
-    grid-column: 1 / -1;
-  }
-
-  .note-item .note-timestamp {
-    grid-column: 1 / -1;
-    margin-top: 0;
-  }
-
-  .note-item .note-item-delete-form {
-    margin: 0;
-    justify-self: start;
   }
 
   .note-gadget-form input[type="submit"],
@@ -123,16 +96,6 @@
     border-color: rgba(0, 0, 0, 0.45);
   }
 
-  .note-item .note-item-edit-form input[type="submit"] {
-    justify-self: start;
-    width: auto;
-  }
-
-  .note-item .note-item-delete-form button {
-    justify-self: start;
-    width: auto;
-  }
-
   .note-gadget-form input[type="submit"] {
     justify-self: start;
     width: auto;
@@ -154,19 +117,7 @@
 
 // v1.7 THEME-03: simple theme — portal tabs use .simple / welcome base rules; minor spacing only
 @media (max-width: 767px) {
-  .simple .note-item {
-    grid-template-columns: 1fr auto;
-  }
-
   .simple .portal-column-tabs {
     padding: 0 10px;
-  }
-
-  .simple .note-item .note-item-delete-form {
-    justify-self: end;
-  }
-
-  .simple .note-item .note-item-delete-form button {
-    justify-self: end;
   }
 }
