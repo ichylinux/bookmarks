@@ -27,6 +27,20 @@
   margin: 0 auto;
   box-sizing: border-box;
   @include notes_grid_shared(8px);
+  @include notes_buttons_shared(
+    32px,
+    6px 14px,
+    1px solid #333,
+    3px,
+    #f5f5f5,
+    #1a1a1a,
+    background-color 120ms ease, border-color 120ms ease,
+    null,
+    null,
+    #e5e5e5,
+    #111,
+    null
+  );
 }
 
 .classic #notes-tab-panel .note-gadget {
@@ -54,39 +68,6 @@
   font-size: 0.875rem;
 }
 
-.classic #notes-tab-panel .note-gadget-form input[type="submit"],
-.classic #notes-tab-panel .note-item-edit-form input[type="submit"],
-.classic #notes-tab-panel .note-item-delete-form button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 32px;
-  margin: 0;
-  padding: 6px 14px;
-  font-family: inherit;
-  font-size: 0.875rem;
-  line-height: 1.2;
-  border: 1px solid #333;
-  border-radius: 3px;
-  background: #f5f5f5;
-  color: #1a1a1a;
-  cursor: pointer;
-  box-sizing: border-box;
-  vertical-align: middle;
-  transition: background-color 120ms ease, border-color 120ms ease;
-}
-
-.classic #notes-tab-panel .note-gadget-form input[type="submit"]:hover,
-.classic #notes-tab-panel .note-item-edit-form input[type="submit"]:hover,
-.classic #notes-tab-panel .note-item-delete-form button:hover {
-  background: #e5e5e5;
-  border-color: #111;
-}
-
-.classic #notes-tab-panel .note-gadget-form input[type="submit"] {
-  justify-self: start;
-  width: auto;
-}
 
 .classic #notes-tab-panel .note-empty {
   margin: 0;

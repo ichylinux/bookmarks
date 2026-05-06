@@ -54,3 +54,79 @@
     }
   }
 }
+
+@mixin notes_buttons_shared(
+  $min-height,
+  $padding,
+  $border,
+  $border-radius,
+  $background,
+  $color,
+  $transition,
+  $font-weight: null,
+  $hover-filter: null,
+  $hover-background: null,
+  $hover-border-color: null,
+  $focus-outline-color: null
+) {
+  .note-gadget-form input[type="submit"],
+  .note-item-edit-form input[type="submit"],
+  .note-item-delete-form button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: $min-height;
+    margin: 0;
+    padding: $padding;
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    border: $border;
+    border-radius: $border-radius;
+    background: $background;
+    color: $color;
+    cursor: pointer;
+    box-sizing: border-box;
+    vertical-align: middle;
+    transition: $transition;
+
+    @if $font-weight != null {
+      font-weight: $font-weight;
+    }
+  }
+
+  .note-gadget-form input[type="submit"] {
+    justify-self: start;
+    width: auto;
+  }
+
+  @if $hover-filter != null {
+    .note-gadget-form input[type="submit"]:hover,
+    .note-item-edit-form input[type="submit"]:hover,
+    .note-item-delete-form button:hover {
+      filter: $hover-filter;
+    }
+  }
+
+  @if $hover-background != null or $hover-border-color != null {
+    .note-gadget-form input[type="submit"]:hover,
+    .note-item-edit-form input[type="submit"]:hover,
+    .note-item-delete-form button:hover {
+      @if $hover-background != null {
+        background: $hover-background;
+      }
+      @if $hover-border-color != null {
+        border-color: $hover-border-color;
+      }
+    }
+  }
+
+  @if $focus-outline-color != null {
+    .note-gadget-form input[type="submit"]:focus-visible,
+    .note-item-edit-form input[type="submit"]:focus-visible,
+    .note-item-delete-form button:focus-visible {
+      outline: 2px solid $focus-outline-color;
+      outline-offset: 2px;
+    }
+  }
+}

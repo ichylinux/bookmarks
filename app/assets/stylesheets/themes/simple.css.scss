@@ -2,6 +2,20 @@
 
 .simple {
   @include notes_grid_shared(8px);
+  @include notes_buttons_shared(
+    32px,
+    6px 14px,
+    1px solid rgba(0, 0, 0, 0.32),
+    4px,
+    #f5f5f5,
+    #1a1a1a,
+    background-color 120ms ease, border-color 120ms ease,
+    null,
+    null,
+    #e5e7eb,
+    rgba(0, 0, 0, 0.45),
+    null
+  );
 
   #header {
     display: none;
@@ -65,40 +79,6 @@
     &:last-child {
       margin-bottom: 0;
     }
-  }
-
-  .note-gadget-form input[type="submit"],
-  .note-item-edit-form input[type="submit"],
-  .note-item-delete-form button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 32px;
-    margin: 0;
-    padding: 6px 14px;
-    font-family: inherit;
-    font-size: 0.875rem;
-    line-height: 1.2;
-    border: 1px solid rgba(0, 0, 0, 0.32);
-    border-radius: 4px;
-    background: #f5f5f5;
-    color: #1a1a1a;
-    cursor: pointer;
-    box-sizing: border-box;
-    vertical-align: middle;
-    transition: background-color 120ms ease, border-color 120ms ease;
-  }
-
-  .note-gadget-form input[type="submit"]:hover,
-  .note-item-edit-form input[type="submit"]:hover,
-  .note-item-delete-form button:hover {
-    background: #e5e7eb;
-    border-color: rgba(0, 0, 0, 0.45);
-  }
-
-  .note-gadget-form input[type="submit"] {
-    justify-self: start;
-    width: auto;
   }
 
   .note-body {
