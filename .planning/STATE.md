@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Device-aware Font Size Baseline
 status: planning
-stopped_at: —
-last_updated: "2026-05-06T14:31:00+09:00"
-last_activity: "2026-05-06 — Approved v1.11 roadmap (Phases 37–39)"
+stopped_at: "Phase 37 context gathered"
+last_updated: "2026-05-06T14:42:00+09:00"
+last_activity: "2026-05-06 — Captured Phase 37 context decisions"
 progress:
   total_phases: 3
   completed_phases: 0
@@ -20,14 +20,14 @@ progress:
 
 Phase: 37 (not started)  
 Plan: —  
-Status: Roadmap approved, ready for discuss/plan  
-Last activity: 2026-05-06 — Approved v1.11 roadmap (Phases 37–39)
+Status: Context gathered, ready for phase planning  
+Last activity: 2026-05-06 — Captured Phase 37 context decisions
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** Start Phase 37 for v1.11 device-aware font-size baseline.
+**Current focus:** Plan Phase 37 with locked context decisions.
 
 ## Performance Metrics
 
@@ -48,6 +48,9 @@ v1.8 planning baseline created with full requirement-to-phase mapping (11/11). E
 - Phase 33.1 inserted as urgent contract-gap closure for TEST-02 tab-click regression coverage in JS/Minitest.
 - v1.11 milestone policy: keep 3-option font-size UX, apply device-aware medium baseline (PC14/mobile16), and define small/large as relative scaling.
 - Existing-user safety policy: migrate `nil/medium -> small`, keep `small/large` unchanged, and show one-time notice.
+- Phase 37 context decision: `common.css.scss` body font-size classes are authoritative; theme files follow via inherit/rem.
+- Phase 37 context decision: medium baseline values are defined once in common CSS and switched by existing mobile breakpoint.
+- Phase 37 context decision: only high-impact theme selectors are adjusted in this phase; full rem-normalization deferred.
 
 ### Roadmap Evolution
 
