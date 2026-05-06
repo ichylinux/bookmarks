@@ -1,42 +1,131 @@
-# Technology Stack
+# Technology Stack — Device-Aware Font-Size Baseline
 
 **Project:** Bookmarks  
-**Milestone:** v1.8 Mobile UX Enhancement  
-**Researched:** 2026-05-05
+**Scope:** Device-aware medium baseline (PC/mobile), relative small/large scaling, safe migration for existing users  
+**Researched:** 2026-05-06
 
-## Recommended Stack (Minimal Change)
+## Recommended Stack Changes (Minimal)
 
-Keep the existing `Rails + Sprockets + jQuery` stack and implement mobile UX behavior with first-party JavaScript. Do not introduce a new frontend framework or bundler migration in this milestone.
+## Keep (no new runtime stack)
+- Rails 8.1 + ActiveRecord + existing `preferences.font_size` string column
+- Sprockets + SCSS in `app/assets/stylesheets/`
+- Existing body class contract: `font-size-small|medium|large` from `WelcomeHelper#font_size_class`
 
-### Core
+## Change
+1. **CSS only** for device-aware baseline and relative scaling.
+2. **No DB schema migration** required for MVP.
+3. Optional hardening: one-time data cleanup migration for invalid legacy `font_size` values.
 
-| Technology | Version | Purpose | Why |
-|------------|---------|---------|-----|
-| Rails | 8.1.x | SSR screens and existing controller/view assets | Reuses current operations and test assets with minimal risk |
-| Sprockets | current | JS/CSS delivery | Matches current pipeline and milestone constraints |
-| jQuery (`jquery-rails`) | 4.6.1 | DOM operations and event support | High consistency with existing code style |
+---
 
-### Implementation Policy (v1.8)
+## CSS Strategy (Recommended)
 
-1. **Swipe-based column switching**  
-   - Use `Pointer Events` first, with `touch*` fallback only when necessary.  
-   - A lightweight utility with horizontal threshold + vertical-noise filtering is sufficient.
-2. **Persist selected column**  
-   - Use `localStorage` through the `Storage` API (`getItem/setItem/removeItem`).  
-   - Validate availability first and fall back to non-persistent in-memory behavior on failure.
-3. **Deferred-item reassessment**  
-   - For label improvements and reorder ideas, evaluate feasibility with existing JS/CSS first; dependency addition is a last resort.
+Use **px baseline + media query + relative multipliers** in `common.css.scss` (global scope), not JS/device detection.
 
-## Additional Libraries
+```scss
+/* app/assets/stylesheets/common.css.scss */
 
-### Recommended
+$font-medium-desktop: 12px;
+$font-medium-mobile: 14px; // example target
+$font-scale-small: 0.833333; // 10/12
+$font-scale-large: 1.166667; // 14/12
+$font-device-breakpoint: 768px; // align with existing mobile split
 
-- **No additional library (default)**  
-  Rationale: swipe and persistence are implementable with browser-standard APIs and avoid dependency/maintenance overhead.
+body {
+  --font-medium: #{$font-medium-desktop};
+  font-size: var(--font-medium);
+}
 
-### Conditional Allowance (Usually Unnecessary)
+@media (max-width: $font-device-breakpoint - 1px) {
+  body { --font-medium: #{$font-medium-mobile}; }
+}
 
-- If a tiny utility is introduced, limit to one package and require full compatibility with Sprockets and existing ESLint conventions.
+body.font-size-medium { font-size: var(--font-medium); }
+body.font-size-small  { font-size: calc(var(--font-medium) * #{$font-scale-small}); }
+body.font-size-large  { font-size: calc(var(--font-medium) * #{$font-scale-large}); }
+```
+
+### Why this strategy
+- Preserves existing preference values (`small|medium|large`) and helper/view behavior.
+- Keeps behavior global across themes because class is on `<body>`.
+- Avoids fragile UA sniffing and avoids introducing frontend build tooling.
+
+---
+
+## Rails Migration Approach (Safe)
+
+## MVP (recommended)
+- **No migration**.
+- Keep `font_size` nullable and continue fallback to medium:
+  - already present in helper (`font_size_class`)
+  - already reflected in preferences UI selected default.
+
+## Optional hardening migration
+If you want to sanitize stale DB rows:
+- Add migration with SQL or `update_all` to set invalid values to `NULL`.
+- Do **not** change column type or enum now.
+
+Example intent:
+- invalid `font_size` -> `NULL` (render-time fallback to medium remains safe).
+
+---
+
+## Constants Placement
+
+## Keep in Ruby (`app/models/preference.rb`)
+- `FONT_SIZE_SMALL/MEDIUM/LARGE`
+- `FONT_SIZES`
+- Semantics only (allowed values), not pixel numbers.
+
+## Put typography numbers in SCSS
+- Baselines and scale multipliers in `common.css.scss` (or extracted `_typography_tokens.scss` imported there).
+- Keep one source of truth for breakpoint and scaling.
+
+---
+
+## What NOT to Introduce
+
+- No new gem for device detection (no UA parser).
+- No JS-based font-size switching.
+- No new preference fields like `mobile_font_size` / `desktop_font_size` for MVP.
+- No enum/type migration for `font_size` yet.
+- No SPA/frontend framework changes (out of scope for Sprockets app).
+
+---
+
+## Caveats / Regression Risk
+
+1. **Cross-theme consistency risk:** many theme selectors use fixed `px`; these won't scale with body baseline.
+   - Accept for MVP, then gradually convert critical text sizes to `rem` in theme files.
+2. **Breakpoint consistency:** use existing mobile boundary (768 split) to avoid "font jumps" differing from layout behavior.
+3. **Visual regression risk:** compact UI elements (header, breadcrumb buttons, drawer text) may wrap earlier on mobile after baseline increase.
+   - Re-run existing controller/integration/Cucumber coverage and add a focused visual/system check for mobile typography.
+
+---
+
+## Minimal vs Optional Summary
+
+## Minimal (do now)
+- SCSS-only device-aware baseline + relative small/large scaling in `common.css.scss`.
+- No DB migration.
+
+## Optional (later)
+- Data cleanup migration for invalid `font_size`.
+- Theme-by-theme `px` -> `rem` conversion for deeper consistency.
+
+---
+
+## Sources (repo)
+- `.planning/PROJECT.md`
+- `app/models/preference.rb`
+- `app/helpers/welcome_helper.rb`
+- `app/assets/stylesheets/common.css.scss`
+- `app/views/preferences/index.html.erb`
+- `app/views/layouts/application.html.erb`
+- `db/schema.rb`
+- `app/assets/stylesheets/themes/*.css.scss`
+- `test/controllers/preferences_controller_test.rb`
+- `test/models/preference_test.rb`
 
 ## Non-Recommended (今回非推奨)
 

@@ -1,84 +1,148 @@
-# Architecture Patterns — v1.8 Mobile UX Enhancement
+# Architecture: Device-Aware Font-Size Baseline
 
-**Domain:** Welcome portal mobile interaction (swipe + state restore)  
-**Researched:** 2026-05-05
+**Domain:** Rails monolith typography preference integration  
+**Researched:** 2026-05-06
 
-## Recommended Architecture
+## Integration Goal
 
-Keep the existing pattern as the core (render tabs/columns via SSR and switch `.portal--column-active-N` in JS), and add only two focused enhancements in v1.8.
+Add device-aware baseline typography (PC/mobile split), keep user preference scaling (`small` / `large`) relative to baseline, and migrate legacy defaults (`nil` / `medium`) to `small` with minimal regressions.
 
-1. **Input extension:** connect swipe handling to the same state-update function already used by click handlers
-2. **State persistence:** store active column index in `localStorage` and restore on initial mobile render
+---
 
-Key principle: do not introduce new display-state classes. Continue using `portal--column-active-N` and `.portal-column-tab--active` only, so existing CSS and test assets remain reusable.
+## 1) Integration map (new vs modified)
 
-## Integration Points (DOM / CSS / JS)
+### New components
 
-### DOM
-
-The existing partial structure is already sufficient for v1.8 and should require no or minimal extension.
-
-| Existing Node | Current Role | v1.8 Integration |
+| Component | Layer | Responsibility |
 |---|---|---|
-| `.portal-column-tabs` | Tab-group container | Reuse as swipe boundary and event-delegation anchor |
-| `.portal-column-tab[data-portal-column-index]` | Click-based column selection | Reuse as source of truth for active index |
-| `.portal.portal--column-active-N` | CSS trigger for visible column | Keep same class update path for swipe/restore |
-| `#column_N.gadgets.portal-column` | Real column content | Keep existing CSS show/hide logic unchanged |
+| `Preference#effective_font_size` | Model | Normalize stored value into active size token (temporary compatibility: map `nil`/`medium` to `small`) |
+| Data migration (new migration file) | DB | Backfill `preferences.font_size`: `NULL` and `'medium'` → `'small'` |
+| Optional migration to set DB default | DB | Set future default to `'small'` (if team wants non-null persistence contract) |
 
-### CSS
+### Modified components
 
-`welcome.css.scss` already implements "show one column by active class" for mobile, so no large CSS rewrite is needed for v1.8.
-
-- Preserve existing display-switch behavior under `@media (max-width: $portal-mobile-breakpoint - 1px)`
-- Add only minimal helper styles (for example `touch-action`) when needed for swipe UX
-- Keep theme files (`modern.css.scss` / `classic.css.scss` / simple adjustments) focused on visuals while centralizing behavior in `welcome.css.scss` + JS
-
-### JavaScript
-
-`app/assets/javascripts/portal_mobile_tabs.js` を唯一の挙動オーナーとして拡張する。
-
-- Reuse existing `syncPortalClasses($portal, index)` and unify click/swipe/restore behavior paths
-- 追加候補関数:
-  - `setActiveColumn($tabs, $portal, index)`（タブactive + class更新 + save）
-  - `saveActiveColumn(index)` / `loadActiveColumn()`
-  - `bindSwipe($tabs, $portal)`（`touchstart` / `touchend` の差分で左右判定）
-- キー名は衝突回避のため名前空間化（例: `bookmarks.portal.activeColumn`）
-
-## Concrete Change Targets
-
-| Type | File | Planned Change |
+| File | Layer | Change |
 |---|---|---|
-| view partial | `app/views/welcome/_portal_column_section.html.erb` | Add only minimal data attributes if required; keep existing `data-portal-column-index` contract |
-| js | `app/assets/javascripts/portal_mobile_tabs.js` | Implement unified state-update logic for click/swipe/restore |
-| css | `app/assets/stylesheets/welcome.css.scss` | Add swipe helper styles only if needed under mobile media scope |
-| css (theme) | `app/assets/stylesheets/themes/modern.css.scss` | No default changes; apply minimal visibility polish only when necessary |
-| css (theme) | `app/assets/stylesheets/themes/classic.css.scss` | Same as above |
-| test (controller) | `test/controllers/welcome_controller/layout_structure_test.rb` | Preserve existing DOM contract guarantees (tabs/active classes), with small adjustments only if needed |
-| test (e2e steps) | `features/step_definitions/modern_theme.rb` | Add swipe steps and verify both `portal--column-active-N` and active tab sync |
-| test (e2e feature) | `features/*.feature` (mobile portal scenarios) | Add revisit-restore and left/right swipe transition scenarios |
+| `app/models/preference.rb` | Model | Add explicit default (`FONT_SIZE_DEFAULT = small`), deprecate medium path, update validation strategy by phase |
+| `app/helpers/welcome_helper.rb` | Helper | Replace direct fallback logic with `current_user.preference.effective_font_size`; keep body class contract stable |
+| `app/views/layouts/application.html.erb` | View | Keep `font-size-*` body class pattern; optionally add `font-size-v2` marker class for rollout safety |
+| `app/views/preferences/index.html.erb` | View | Default selected option becomes `small`; remove or deprecate `medium` option when migration complete |
+| `app/assets/stylesheets/common.css.scss` | CSS contract | Introduce CSS custom properties for device baseline + user scale; `font-size-small/large` only set scale |
+| `app/assets/stylesheets/themes/*.css.scss` | Theme CSS | Ensure theme rules do not hard-break root scaling; convert critical fixed text px to rem/em incrementally |
+| `test/controllers/preferences_controller_test.rb` | Tests | Update body class fallback expectations and select-option expectations |
+| `test/models/preference_test.rb` | Tests | Add `effective_font_size` behavior tests and deprecation compatibility tests |
 
-## Data Flow
+---
 
-`User gesture (click/swipe) -> setActiveColumn -> update portal--column-active-N + tab active -> save localStorage`
+## 2) Data migration touchpoints
 
-`Page load (mobile) -> load localStorage -> setActiveColumn -> show last viewed column`
+## Phase-safe migration strategy
 
-## Low-Risk Implementation Order
+1. **Compatibility first** (app code):  
+   - `effective_font_size` maps `nil` and `medium` to `small`.
+   - UI default selection changes to `small`.
+2. **Data backfill** (DB migration):  
+   - `UPDATE preferences SET font_size = 'small' WHERE font_size IS NULL OR font_size = 'medium';`
+3. **Contract tighten** (later phase):  
+   - Remove `medium` from allowed values.
+   - Optionally set `null: false` + default `'small'` in schema (only after clean backfill and test green).
 
-1. **Refactor only (internal JS cleanup)**  
-   Extract current click behavior into `setActiveColumn` and confirm no behavior change first.
-2. **Add localStorage restore/save**  
-   Save on click transitions and restore on initial load with strict range validation.
-3. **Add swipe support**  
-   Detect left/right via `touchstart/touchend` deltas and call the same `setActiveColumn`.
-4. **Minimal CSS adjustments (only when needed)**  
-   Add tiny mobile-only helper rules for usability.
-5. **Expand tests**  
-   Add swipe + restore E2E coverage while preserving existing controller tests as regression guardrails.
+This prevents runtime regressions during deploy windows where app and DB may be out of sync.
 
-## Risk Controls
+---
 
-- If `localStorage` is unavailable (for example private-mode restrictions), fail safely and fall back to default `0`.
-- Coerce saved values to numbers and clamp into `0..(tab_count - 1)`.
-- Since tabs remain hidden on desktop, keep restore behavior active only under mobile conditions.
-- Preserve the existing `portal--column-active-N` contract to avoid breaking CSS/test compatibility.
+## 3) CSS contract approach (recommended)
+
+Use one root contract in `common.css.scss`:
+
+- `--font-base-pc` (medium baseline for desktop)
+- `--font-base-mobile` (medium baseline for mobile)
+- `--font-scale` (user preference multiplier)
+
+Example contract shape:
+
+- `body` font-size = `calc(var(--font-base-pc) * var(--font-scale))`
+- mobile media query switches to `var(--font-base-mobile)`
+- `body.font-size-small { --font-scale: ... }`
+- `body.font-size-large { --font-scale: ... }`
+- temporary: `body.font-size-medium` alias to small scale during migration window (or map in helper and stop outputting medium)
+
+This keeps model/helper simple and pushes device logic to CSS where viewport truth exists.
+
+---
+
+## 4) Theme interaction notes
+
+Current theme files contain many fixed `px` font sizes (`modern`, `classic`, `simple`).  
+Implication: body/root scaling will not affect all text equally until those are migrated to rem/em.
+
+Recommended theme policy:
+
+- **Do now:** ensure shell typography follows root contract (body, wrapper, key nav text).
+- **Do incrementally:** convert fixed px in theme-specific components to rem for consistent scaling.
+- **Avoid now:** full typography rewrite in same milestone (high regression risk).
+
+---
+
+## 5) Test surface updates
+
+Minimum regression net:
+
+- `test/controllers/preferences_controller_test.rb`
+  - fallback class expectation: nil -> `font-size-small` (not medium)
+  - options shown in preferences (if medium removed, assert only small/large)
+- `test/models/preference_test.rb`
+  - `effective_font_size` maps nil/medium to small (during compatibility phase)
+  - invalid values rejected
+- Add/adjust integration assertion that `<body>` still includes theme + font-size class combination.
+
+Recommended additions:
+
+- CSS contract test (asset-level) asserting presence of `--font-base-pc`, `--font-base-mobile`, `--font-scale`.
+- One per-theme smoke assertion to ensure no catastrophic readability regression in modern/classic/simple.
+
+---
+
+## 6) Build order (min-regression phase decomposition)
+
+1. **Phase A — Compatibility seam (no behavior break)**
+   - Add `effective_font_size`, helper delegation, keep current classes.
+   - Add tests for normalization.
+   - Rationale: creates safe abstraction before changing defaults/data.
+
+2. **Phase B — CSS baseline v2**
+   - Introduce device-aware CSS variables and scaling contract in `common.css.scss`.
+   - Keep medium alias temporarily.
+   - Rationale: ships core capability with backward compatibility.
+
+3. **Phase C — Data migration + UI default shift**
+   - Backfill `nil`/`medium` -> `small`.
+   - Preferences form default and tests updated.
+   - Rationale: align persisted data with new behavior after runtime supports both.
+
+4. **Phase D — Cleanup/tighten**
+   - Remove medium from model/UI/contracts.
+   - Optional DB constraint tightening.
+   - Rationale: only after production data and tests prove stable.
+
+**Dependency rationale:** abstraction first → rendering contract → data rewrite → strictness.  
+This sequencing avoids deploy-order bugs and limits user-visible regressions.
+
+---
+
+## Source files examined
+
+- `.planning/PROJECT.md`
+- `app/models/preference.rb`
+- `app/helpers/welcome_helper.rb`
+- `app/views/layouts/application.html.erb`
+- `app/views/preferences/index.html.erb`
+- `app/assets/stylesheets/common.css.scss`
+- `app/assets/stylesheets/themes/modern.css.scss`
+- `app/assets/stylesheets/themes/classic.css.scss`
+- `app/assets/stylesheets/themes/simple.css.scss`
+- `test/controllers/preferences_controller_test.rb`
+- `test/models/preference_test.rb`
+- `test/support/preferences.rb`
+- `db/migrate/20260501000200_add_font_size_to_preferences.rb`
+- `db/schema.rb`
