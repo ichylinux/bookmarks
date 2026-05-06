@@ -169,7 +169,12 @@
     width: 22px;
     height: 2px;
     background: #fff;
-    transition: transform 250ms ease-out, box-shadow 250ms ease-out, top 250ms ease-out, bottom 250ms ease-out;
+    transition:
+      transform 250ms ease-out,
+      box-shadow 250ms ease-out,
+      top 250ms ease-out,
+      bottom 250ms ease-out,
+      background-color 250ms ease-out;
   }
 
   #header .head-box .hamburger-btn::before {
@@ -193,6 +198,12 @@
     bottom: auto;
     top: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  // ドロワーが開くとボタンが白背景の上に重なるため、×印は濃色に切り替える
+  &.drawer-open #header .head-box .hamburger-btn::before,
+  &.drawer-open #header .head-box .hamburger-btn::after {
+    background-color: var(--modern-text);
   }
 
   &.drawer-open #header .head-box .head-note-btn {
