@@ -408,6 +408,8 @@
 
 .modern #notes-tab-panel .note-gadget-form {
   margin: 0;
+  display: grid;
+  row-gap: 10px;
 }
 
 .modern #notes-tab-panel .note-gadget-form textarea,
@@ -419,16 +421,31 @@
   resize: vertical;
 }
 
-.modern #notes-tab-panel .note-gadget-form input[type="submit"] {
-  margin-top: 10px;
+.modern #notes-tab-panel .note-gadget-form input[type="submit"],
+.modern #notes-tab-panel .note-item-edit-form input[type="submit"],
+.modern #notes-tab-panel .note-item-delete-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  margin: 0;
   padding: 8px 16px;
+  font-family: inherit;
   font-size: 0.875rem;
   font-weight: 500;
+  line-height: 1.2;
   color: #fff;
   background: var(--modern-color-primary);
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.modern #notes-tab-panel .note-gadget-form input[type="submit"] {
+  justify-self: start;
+  width: auto;
 }
 
 .modern #notes-tab-panel .note-gadget-form input[type="submit"]:hover {
@@ -465,6 +482,56 @@
 
 .modern #notes-tab-panel .note-item:last-child {
   margin-bottom: 0;
+}
+
+.modern #notes-tab-panel .note-item {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  row-gap: 10px;
+  align-items: center;
+}
+
+.modern #notes-tab-panel .note-item .note-item-edit-form {
+  display: contents;
+}
+
+.modern #notes-tab-panel .note-item .note-item-edit-form textarea {
+  grid-column: 1 / -1;
+}
+
+.modern #notes-tab-panel .note-item .note-timestamp {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.modern #notes-tab-panel .note-item .note-item-delete-form {
+  margin: 0;
+  justify-self: start;
+}
+
+.modern #notes-tab-panel .note-item .note-item-edit-form input[type="submit"],
+.modern #notes-tab-panel .note-item .note-item-delete-form button {
+  justify-self: start;
+  width: auto;
+}
+
+.modern #notes-tab-panel .note-item-edit-form input[type="submit"]:hover {
+  filter: brightness(0.95);
+}
+
+.modern #notes-tab-panel .note-item-edit-form input[type="submit"]:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
+}
+
+.modern #notes-tab-panel .note-item-delete-form button:hover {
+  filter: brightness(0.95);
+}
+
+.modern #notes-tab-panel .note-item-delete-form button:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
 }
 
 .modern #notes-tab-panel .note-body {

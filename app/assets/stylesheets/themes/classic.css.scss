@@ -213,6 +213,8 @@
 
 .classic #notes-tab-panel .note-gadget-form {
   margin: 0;
+  display: grid;
+  row-gap: 8px;
 }
 
 .classic #notes-tab-panel .note-gadget-form textarea,
@@ -228,15 +230,30 @@
   font-size: 0.875rem;
 }
 
-.classic #notes-tab-panel .note-gadget-form input[type="submit"] {
-  margin-top: 8px;
+.classic #notes-tab-panel .note-gadget-form input[type="submit"],
+.classic #notes-tab-panel .note-item-edit-form input[type="submit"],
+.classic #notes-tab-panel .note-item-delete-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  margin: 0;
   padding: 6px 14px;
+  font-family: inherit;
   font-size: 0.875rem;
+  line-height: 1.2;
   border: 1px solid #333;
   border-radius: 3px;
   background: #f5f5f5;
   color: #1a1a1a;
   cursor: pointer;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.classic #notes-tab-panel .note-gadget-form input[type="submit"] {
+  justify-self: start;
+  width: auto;
 }
 
 .classic #notes-tab-panel .note-empty {
@@ -257,6 +274,38 @@
   border: 1px solid #d1d5db;
   border-radius: 4px;
   background: #fff;
+}
+
+.classic #notes-tab-panel .note-item {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  row-gap: 8px;
+  align-items: center;
+}
+
+.classic #notes-tab-panel .note-item .note-item-edit-form {
+  display: contents;
+}
+
+.classic #notes-tab-panel .note-item .note-item-edit-form textarea {
+  grid-column: 1 / -1;
+}
+
+.classic #notes-tab-panel .note-item .note-timestamp {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.classic #notes-tab-panel .note-item .note-item-delete-form {
+  margin: 0;
+  justify-self: start;
+}
+
+.classic #notes-tab-panel .note-item .note-item-edit-form input[type="submit"],
+.classic #notes-tab-panel .note-item .note-item-delete-form button {
+  justify-self: start;
+  width: auto;
 }
 
 .classic #notes-tab-panel .note-body {
