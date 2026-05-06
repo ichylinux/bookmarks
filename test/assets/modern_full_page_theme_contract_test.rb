@@ -25,8 +25,8 @@ class ModernFullPageThemeContractTest < ActiveSupport::TestCase
   end
 
   # STYLE-02: Body typography
-  test 'modern scss includes 16px system font stack' do
-    assert_includes @scss, 'font-size: 16px'
+  test 'modern scss inherits body font size and keeps system font stack' do
+    assert_includes @scss, 'font-size: inherit'
     assert_includes @scss, '-apple-system'
     assert_includes @scss, 'BlinkMacSystemFont'
     assert_match(/line-height:\s*1\.[5-9]/, @scss)

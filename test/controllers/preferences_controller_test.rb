@@ -87,6 +87,32 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'body.font-size-medium'
   end
 
+  def test_文字サイズが不正値ならbodyクラスはmediumにフォールバックする
+    user.preference.update_column(:font_size, 'extra-large')
+
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'body.font-size-medium'
+  end
+
+  def test_既存ユーザーfont_size_nilはsmallへ移行して1回だけ通知する
+    user.preference.update_columns(font_size: Preference::FONT_SIZE_SMALL, font_size_notice_pending: true)
+
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'body.font-size-small'
+    assert_select '.flash-notice', text: I18n.t('preferences.font_size_migration_notice')
+    assert_not user.preference.reload.font_size_notice_pending?
+
+    get preferences_path
+    assert_response :success
+    assert_select '.flash-notice', text: I18n.t('preferences.font_size_migration_notice'), count: 0
+  end
+
   def test_言語セレクタを表示する
     sign_in user
     get preferences_path

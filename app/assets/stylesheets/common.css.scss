@@ -1,25 +1,33 @@
 html {
   height: 100%;
-  font-size: 62.5%;
+//  font-size: 62.5%;
 }
 
 body {
+  --font-size-medium-baseline: 14px;
+  --font-size-scale: 1;
   margin: 0;
   padding: 0;
-  font-size: 12px;
+  font-size: calc(var(--font-size-medium-baseline) * var(--font-size-scale));
   background: #FFFFFF;
 }
 
 body.font-size-small {
-  font-size: 10px;
+  --font-size-scale: 0.875;
 }
 
 body.font-size-medium {
-  font-size: 12px;
+  --font-size-scale: 1;
 }
 
 body.font-size-large {
-  font-size: 14px;
+  --font-size-scale: 1.125;
+}
+
+@media (max-width: 767px) {
+  body {
+    --font-size-medium-baseline: 16px;
+  }
 }
 
 a, a:visited {

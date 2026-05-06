@@ -107,6 +107,7 @@ ja:
     invalid_code: 認証コードが正しくありません。
 
   preferences:
+    font_size_migration_notice: 文字サイズの基準を見直したため、既存設定を「小」に移行しました。必要に応じて設定画面の「文字サイズ」から変更してください。
     saved: 設定を保存しました。
     index:
       theme_options:

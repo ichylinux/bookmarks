@@ -8,8 +8,7 @@
   --modern-surface-alt:   #f3f4f6;
   --modern-danger:        #dc2626;
 
-  // STYLE-02: Body typography — 16px system font stack, readable line-height
-  font-size: 16px;
+  // STYLE-02: Body typography — follow global body scale, keep stack/readability
   line-height: 1.5;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--modern-text);
@@ -66,7 +65,7 @@
 
   .drawer nav a {
     display: block;
-    font-size: 14px;
+    font-size: 1rem;
     line-height: 1.4;
     color: var(--modern-text);
     padding-top: 12px;
@@ -83,7 +82,7 @@
   #header .head-box .head-user-email {
     margin-left: auto;
     color: #fff;
-    font-size: 14px;
+    font-size: 1rem;
     line-height: 1.4;
     white-space: nowrap;
     overflow: hidden;

@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.11 — Device-aware Font Size Baseline (shipped 2026-05-06)
+
+**Scope:** Phases 37–39 (3 plans) — device-aware typography baseline, legacy-user migration, and verification hardening.
+
+**Key accomplishments:**
+
+- **Phase 37:** Implemented body-authoritative font-size contract with desktop/mobile medium baselines (`14px`/`16px`) and relative small/large scaling (`0.875x`/`1.125x`).
+- **Phase 38:** Added idempotent legacy migration (`font_size: nil|medium -> small`) and one-time in-app notice delivery for affected users.
+- **Phase 39:** Expanded automated coverage for normalization, migration/notice behavior, and cross-theme readability contracts.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with known flake rerun policy).
+
+**Audit:** [Milestone audit](milestones/v1.11-MILESTONE-AUDIT.md) — `passed`, no critical requirement/integration/flow gaps.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.11-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.11-REQUIREMENTS.md) · [Milestone audit](milestones/v1.11-MILESTONE-AUDIT.md) · [Phase archive](milestones/v1.11-phases/)
+
+---
+
 ## v1.9 — Mobile Regression Hardening (shipped 2026-05-05)
 
 **Scope:** Phases 33–33.2 (3 plans) — TEST-02 contract hardening, baseline traceability closure, and Cucumber scenario-state isolation.

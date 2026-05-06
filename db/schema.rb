@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_04_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_190000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -61,6 +61,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_04_180000) do
     t.datetime "created_at"
     t.integer "default_priority"
     t.string "font_size"
+    t.boolean "font_size_notice_pending", default: false, null: false
     t.string "locale"
     t.boolean "open_links_in_new_tab", default: false, null: false
     t.string "theme"

@@ -10,10 +10,7 @@ module WelcomeHelper
     return 'font-size-medium' unless user_signed_in?
     return 'font-size-medium' unless current_user.preference.present?
 
-    font_size = current_user.preference.font_size
-    return 'font-size-medium' unless Preference::FONT_SIZES.include?(font_size)
-
-    "font-size-#{font_size}"
+    "font-size-#{current_user.preference.normalized_font_size}"
   end
 
   def drawer_ui?

@@ -2,36 +2,36 @@
 gsd_state_version: 1.0
 milestone: v1.11
 milestone_name: Device-aware Font Size Baseline
-status: planning
-stopped_at: "Phase 37 context gathered"
-last_updated: "2026-05-06T14:42:00+09:00"
-last_activity: "2026-05-06 — Captured Phase 37 context decisions"
+status: complete
+stopped_at: "Lifecycle cleanup completed"
+last_updated: "2026-05-06T20:45:00+09:00"
+last_activity: "2026-05-06 — Phases 37-39 executed, audited, and archived"
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 37 (not started)  
-Plan: —  
-Status: Context gathered, ready for phase planning  
-Last activity: 2026-05-06 — Captured Phase 37 context decisions
+Phase: 39 (complete)  
+Plan: 039-01  
+Status: Milestone complete and archived  
+Last activity: 2026-05-06 — Lifecycle (audit → complete → cleanup) finished
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** Plan Phase 37 with locked context decisions.
+**Current focus:** v1.11 complete. Ready to start next milestone flow.
 
 ## Performance Metrics
 
-v1.8 planning baseline created with full requirement-to-phase mapping (11/11). Execution gate remains tri-suite green: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (known flake rerun policy applies).
+v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (second-run pass under known flake rerun policy).
 
 ## Accumulated Context
 
@@ -66,6 +66,10 @@ v1.8 planning baseline created with full requirement-to-phase mapping (11/11). E
 - Phase 37 added: Device-aware Typography Contract
 - Phase 38 added: Existing-user Migration and One-time Notice
 - Phase 39 added: Verification Gate
+- Phase 37 executed: typography contract switched to device-aware baseline with relative small/large multipliers and fallback normalization.
+- Phase 38 executed: legacy font-size migration (`nil/medium -> small`) with one-time notice flag and in-app rendering.
+- Phase 39 executed: verification gate expanded with model/controller/theme contract coverage and tri-suite pass.
+- v1.11 lifecycle executed: milestone audit generated, roadmap archived, active roadmap marked shipped.
 
 ### Pending Todos
 

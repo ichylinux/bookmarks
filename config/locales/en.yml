@@ -107,6 +107,7 @@ en:
     invalid_code: The verification code is invalid.
 
   preferences:
+    font_size_migration_notice: We updated the font-size baseline and migrated your existing setting to Small. You can change it anytime in Preferences > Font size.
     saved: Preferences saved.
     index:
       theme_options:
