@@ -4,7 +4,7 @@
       <%= link_to t('.root'), bookmarks_path, class: 'breadcrumbs-link' %>
       <% unless @parent %>
         <span class="breadcrumbs-item-actions">
-          <%= link_to new_bookmark_path(parent_id: nil, kind: 'folder'), class: 'breadcrumbs-create-folder', title: t('.create_folder') do %>
+          <%= link_to new_bookmark_path(parent_id: nil, kind: 'folder'), class: 'breadcrumbs-action-btn', title: t('.create_folder') do %>
             <span class="breadcrumbs-icon">📁</span><span class="breadcrumbs-label"><%= t('.folder') %></span>
           <% end %>
         </span>
@@ -17,7 +17,7 @@
     <% end %>
     <li class="breadcrumbs-item breadcrumbs-actions">
       <span class="breadcrumbs-item-actions">
-        <%= link_to new_bookmark_path(parent_id: @parent_id, kind: 'bookmark'), class: 'breadcrumbs-create-bookmark', title: t('.add_bookmark') do %>
+        <%= link_to new_bookmark_path(parent_id: @parent_id, kind: 'bookmark'), class: 'breadcrumbs-action-btn', title: t('.add_bookmark') do %>
           <span class="breadcrumbs-icon">🔖</span><span class="breadcrumbs-label"><%= t('.bookmark') %></span>
         <% end %>
       </span>

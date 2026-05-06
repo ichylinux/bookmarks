@@ -156,8 +156,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'nav.breadcrumbs', count: 1
     assert_select 'nav.breadcrumbs ol.breadcrumbs-list', count: 1
     assert_select 'a.breadcrumbs-link', text: 'ルート'
-    assert_select 'a.breadcrumbs-create-folder', count: 1
-    assert_select 'a.breadcrumbs-create-bookmark', count: 1
+    assert_select 'a.breadcrumbs-action-btn', count: 2
     assert_select '.breadcrumbs-label', text: 'フォルダ'
     assert_select '.breadcrumbs-label', text: 'ブックマーク'
   end
@@ -173,8 +172,8 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'en'
     assert_select 'nav.breadcrumbs[aria-label=?]', 'Breadcrumbs'
     assert_select 'a.breadcrumbs-link', text: 'Root'
-    assert_select 'a.breadcrumbs-create-folder[title=?]', 'Create Folder'
-    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'Add Bookmark'
+    assert_select 'a.breadcrumbs-action-btn[title=?]', 'Create Folder'
+    assert_select 'a.breadcrumbs-action-btn[title=?]', 'Add Bookmark'
     assert_select '.breadcrumbs-label', text: 'Folder'
     assert_select '.breadcrumbs-label', text: 'Bookmark'
     assert_select 'th', text: 'Actions'
@@ -190,8 +189,8 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-folder[href=?]', new_bookmark_path(parent_id: nil, kind: 'folder')
-    assert_select 'a.breadcrumbs-create-folder[title=?]', 'フォルダを作成'
+    assert_select 'a.breadcrumbs-action-btn[href=?]', new_bookmark_path(parent_id: nil, kind: 'folder')
+    assert_select 'a.breadcrumbs-action-btn[title=?]', 'フォルダを作成'
   end
 
   def test_ルートにいる場合のブックマーク追加ボタンのリンク
@@ -199,8 +198,8 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: nil, kind: 'bookmark')
-    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
+    assert_select 'a.breadcrumbs-action-btn[href=?]', new_bookmark_path(parent_id: nil, kind: 'bookmark')
+    assert_select 'a.breadcrumbs-action-btn[title=?]', 'ブックマークを追加'
   end
 
   def test_フォルダ内にいる場合のパンくず表示
@@ -213,8 +212,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'nav.breadcrumbs ol.breadcrumbs-list', count: 1
     assert_select 'a.breadcrumbs-link', text: 'ルート'
     assert_select '.breadcrumbs-current', text: folder.title
-    assert_select 'a.breadcrumbs-create-folder', count: 0
-    assert_select 'a.breadcrumbs-create-bookmark', count: 1
+    assert_select 'a.breadcrumbs-action-btn', count: 1
     assert_select '.breadcrumbs-label', text: 'ブックマーク'
   end
 
@@ -228,7 +226,7 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'en'
     assert_select 'a.breadcrumbs-link', text: 'Root'
     assert_select '.breadcrumbs-current', text: folder.title
-    assert_select 'a.breadcrumbs-create-folder', count: 0
+    assert_select 'a.breadcrumbs-action-btn', count: 1
     assert_select '.breadcrumbs-label', text: 'Bookmark'
   end
 
@@ -266,8 +264,8 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     get bookmarks_path(parent_id: folder.id)
 
     assert_response :success
-    assert_select 'a.breadcrumbs-create-bookmark[href=?]', new_bookmark_path(parent_id: folder.id, kind: 'bookmark')
-    assert_select 'a.breadcrumbs-create-bookmark[title=?]', 'ブックマークを追加'
+    assert_select 'a.breadcrumbs-action-btn[href=?]', new_bookmark_path(parent_id: folder.id, kind: 'bookmark')
+    assert_select 'a.breadcrumbs-action-btn[title=?]', 'ブックマークを追加'
   end
 
   def test_パンくずのルートリンクが正しい
