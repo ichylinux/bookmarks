@@ -441,6 +441,7 @@
   cursor: pointer;
   box-sizing: border-box;
   vertical-align: middle;
+  transition: filter 120ms ease;
 }
 
 .modern #notes-tab-panel .note-gadget-form input[type="submit"] {

@@ -255,6 +255,14 @@ div.gadgets {
     cursor: pointer;
     box-sizing: border-box;
     vertical-align: middle;
+    transition: background-color 120ms ease, border-color 120ms ease;
+  }
+
+  .note-gadget-form input[type="submit"]:hover,
+  .note-item-edit-form input[type="submit"]:hover,
+  .note-item-delete-form button:hover {
+    background: #e5e7eb;
+    border-color: rgba(0, 0, 0, 0.45);
   }
 
   .note-item .note-item-edit-form input[type="submit"],

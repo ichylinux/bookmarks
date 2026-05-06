@@ -249,6 +249,14 @@
   cursor: pointer;
   box-sizing: border-box;
   vertical-align: middle;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.classic #notes-tab-panel .note-gadget-form input[type="submit"]:hover,
+.classic #notes-tab-panel .note-item-edit-form input[type="submit"]:hover,
+.classic #notes-tab-panel .note-item-delete-form button:hover {
+  background: #e5e5e5;
+  border-color: #111;
 }
 
 .classic #notes-tab-panel .note-gadget-form input[type="submit"] {
