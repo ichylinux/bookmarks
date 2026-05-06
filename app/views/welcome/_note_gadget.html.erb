@@ -2,8 +2,7 @@
   <h2><%= t('.title') %></h2>
   <div class="note-gadget-composer">
     <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
-      <%= f.label :body, t('.body_label') %>
-      <%= f.text_area :body, rows: 4 %>
+      <%= f.text_area :body, rows: 4, aria: { label: t('.body_label') } %>
       <%= f.submit t('.submit') %>
     <% end %>
   </div>

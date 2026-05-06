@@ -138,8 +138,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel .note-gadget', count: 1
     assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
     assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
-    assert_select 'form.note-gadget-form textarea[name=?]', 'note[body]', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
     assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
   end
 
@@ -161,7 +160,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
     assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
   end
@@ -263,7 +262,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     get root_path(tab: 'notes')
     assert_response :success
     assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
     assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
     assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
   end
@@ -276,7 +275,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
     assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
   end
@@ -289,7 +288,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
     assert_select '#notes-tab-panel .note-gadget h2', text: 'ノート', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'メモ', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
     assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
     assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
   end
@@ -302,7 +301,7 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select '#notes-tab-panel .note-gadget h2', text: 'Notes', count: 1
-    assert_select 'label[for=?]', 'note_body', text: 'Note', count: 1
+    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
     assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
   end
