@@ -187,6 +187,11 @@ class WelcomeController::WelcomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#notes-tab-panel .note-list', count: 1
     assert_select '#notes-tab-panel .note-item', minimum: 2
+    assert_select '#notes-tab-panel .note-item .note-item-display', minimum: 2
+    assert_select '#notes-tab-panel .note-item.note-item--editing', count: 0
+    assert_select '#notes-tab-panel .note-item form.note-item-edit-form[hidden]', minimum: 2
+    assert_select '#notes-tab-panel .note-item form.note-item-delete-form[hidden]', minimum: 2
+    assert_select '#notes-tab-panel .note-item textarea[name=?]', 'note[body]', count: 2
     assert_operator response.body.index(newer.body), :<, response.body.index(older.body),
                     'newer note should render before older note'
     assert_includes response.body, newer_time.strftime('%Y-%m-%d %H:%M')

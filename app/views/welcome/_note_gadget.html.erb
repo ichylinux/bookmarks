@@ -13,15 +13,18 @@
     <div class="note-list">
       <% @notes.each do |note| %>
         <div class="note-item">
-          <%= form_with model: note, local: true, html: { class: 'note-item-edit-form' } do |f| %>
+          <div class="note-item-display" tabindex="0">
+            <div class="note-body"><%= note.body %></div>
+            <div class="note-timestamp"><%= note.created_at.strftime('%Y-%m-%d %H:%M') %></div>
+          </div>
+          <%= form_with model: note, local: true, html: { class: 'note-item-edit-form', hidden: true } do |f| %>
             <%= f.text_area :body, rows: 3 %>
             <%= f.submit t('.update') %>
           <% end %>
           <%= button_to t('.delete'),
                         note_path(note),
                         method: :delete,
-                        form: { class: 'note-item-delete-form' } %>
-          <div class="note-timestamp"><%= note.created_at.strftime('%Y-%m-%d %H:%M') %></div>
+                        form: { class: 'note-item-delete-form', hidden: true } %>
         </div>
       <% end %>
     </div>

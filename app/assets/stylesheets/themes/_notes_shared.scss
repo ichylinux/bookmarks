@@ -6,17 +6,61 @@
 
   .note-item {
     display: grid;
-    grid-template-columns: max-content max-content minmax(0, 1fr);
-    column-gap: 10px;
+    grid-template-columns: 1fr;
     row-gap: $row-gap;
-    align-items: center;
+    align-items: start;
   }
 
-  .note-item .note-item-edit-form {
+  .note-item.note-item--editing {
+    grid-template-columns: auto auto minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .note-item .note-item-display {
+    grid-column: 1 / -1;
+    cursor: pointer;
+  }
+
+  .note-item .note-item-edit-form,
+  .note-item .note-item-delete-form {
+    display: none;
+  }
+
+  .note-item .note-item-edit-form textarea,
+  .note-item .note-item-edit-form input[type="submit"] {
+    display: none;
+  }
+
+  .note-item.note-item--editing .note-item-edit-form {
     display: contents;
   }
 
-  .note-item .note-item-edit-form textarea {
+  .note-item.note-item--editing .note-item-delete-form {
+    display: block;
+  }
+
+  .note-item.note-item--editing .note-item-display {
+    display: none;
+  }
+
+  .note-item.note-item--editing .note-item-edit-form textarea,
+  .note-item.note-item--editing .note-item-edit-form input[type="submit"] {
+    display: block;
+  }
+
+  .note-item.note-item--editing .note-item-edit-form input[type="submit"] {
+    grid-column: 1;
+    grid-row: 3;
+    display: inline-flex;
+  }
+
+  .note-item.note-item--editing .note-item-delete-form {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .note-item .note-item-edit-form textarea,
+  .note-item.note-item--editing .note-item-edit-form textarea {
     grid-column: 1 / -1;
   }
 
@@ -41,16 +85,12 @@
   }
 
   @media (max-width: 767px) {
-    .note-item {
-      grid-template-columns: 1fr auto;
-    }
-
     .note-item .note-item-delete-form {
-      justify-self: end;
+      justify-self: start;
     }
 
     .note-item .note-item-delete-form button {
-      justify-self: end;
+      justify-self: start;
     }
   }
 }
