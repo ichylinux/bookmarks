@@ -24,17 +24,7 @@ $(function() {
     });
 
     syncPortalClasses($portal, index);
-    const portalEl = $portal[0];
-    portalEl.style.setProperty('--portal-active-index', index);
-    if ($portal.hasClass('portal--initializing')) {
-      // Ensure first restore lands on the saved column without animated sliding.
-      portalEl.offsetHeight;
-      window.requestAnimationFrame(function() {
-        $portal.removeClass('portal--initializing');
-      });
-    } else {
-      $portal.removeClass('portal--initializing');
-    }
+    $portal[0].style.setProperty('--portal-active-index', index);
     if (isMobileViewport()) {
       window.localStorage.setItem(STORAGE_KEY, String(index));
     }
@@ -124,7 +114,5 @@ $(function() {
       }
       activateColumn($portal, $tabs, restored);
     });
-  } else {
-    $('.portal').removeClass('portal--initializing');
   }
 });
