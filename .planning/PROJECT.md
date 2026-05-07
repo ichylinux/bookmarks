@@ -8,27 +8,28 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.11 Device-aware Font Size Baseline
+## Current Milestone: v1.12 Landing Page for User Acquisition (Phase 1) — Completed
 
-**Goal:** Keep the existing small/medium/large setting UX while making the medium baseline device-aware and protecting existing users with safe migration.
+**Goal:** Launch a dedicated `/landing` page focused on converting new visitors while keeping the existing `/` behavior unchanged.
 
 **Target features:**
-- Medium baseline split by device (`PC=14px`, `mobile=16px`)
-- Small/large as relative scales from medium (`0.875x`, `1.125x`)
-- One-time migration for existing users (`nil/medium -> small`) plus notice
+- Add a new public landing page at `/landing` for non-logged-in visitors
+- Present clear value propositions and primary calls-to-action to login/signup flows
+- Keep existing home/dashboard behavior intact for current users during validation
+- Explicitly defer existing-user news display to the next milestone
 
 ## Current State
 
-**Planning:** v1.11 — Device-aware Font Size Baseline (2026-05-06)
+**Status:** v1.12 shipped (2026-05-08)
 
-v1.11 focuses on typography behavior consistency across PC/mobile while keeping the existing preference surface stable and minimizing UX shock for existing users.
+v1.12 delivered a dedicated public landing entry point with conversion-focused messaging while preserving existing user flows.
 
 **Milestone goals:**
 
-- Keep small/medium/large selection and persisted values unchanged at the UI/API contract level
-- Apply device-aware medium baseline with relative scaling for small/large across all themes/pages
-- Migrate existing `nil` and `medium` users to `small` safely and idempotently
-- Inform migrated users with a one-time guidance notice
+- Deliver a new `/landing` entry point for acquisition experiments without replacing `/`
+- Provide concise product positioning and clear login/signup conversion paths
+- Keep current user dashboard and gadget experience stable during the rollout
+- Defer existing-user news delivery implementation to the next milestone scope
 
 Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
 
@@ -71,14 +72,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Note gadget on modern theme (`/?tab=notes`, drawer link when `use_note`, integration + E2E coverage) — **v1.6 Phases 23–25**
 - ✓ Note gadget on classic theme (same contracts and tests as modern for panel visibility and drawer link) — **v1.6 Phases 23–25**
 - ✓ Mobile portal column tabs on welcome (`$portal-mobile-breakpoint` 768px; tab strip + `portal--column-active-N`; modern/classic/simple) — **v1.7 Phases 26–28**
+- ✓ Public landing page is available at `/landing` for unauthenticated visitors, with localized acquisition messaging and clear sign-up/sign-in CTAs — **v1.12 Phases 40–42**
+- ✓ Existing `/` behavior remains unchanged while landing is introduced; auth-entry and sign-in/out messaging tone is consistent in ja/en — **v1.12 Phases 41–42**
 
 ### Active
 
-- [ ] Implement device-aware medium baseline (`PC=14px`, `mobile=16px`) with relative small/large scaling
-- [ ] Preserve existing small/medium/large preference UX and persistence contract
-- [ ] Migrate existing `nil/medium` users to `small` (idempotent, no change for existing `small/large`)
-- [ ] Show one-time migration notice for affected users
-- [ ] Add regression coverage for model/helper/controller/theme readability contracts
+- [ ] Define and deliver existing-user news surface (deferred from v1.12)
+- [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 
 ### Out of Scope (revisit when planning)
 
@@ -149,6 +149,14 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Shipped
 
+### v1.12 — Landing Page for User Acquisition (Phase 1) (2026-05-08)
+
+**Delivered:** Added a new public `/landing` page with localized value messaging and clear conversion CTAs, introduced consistent tone across landing/auth entry and sign-in/out messages, and locked contracts with route/view/CTA regression tests while preserving existing root behavior.
+
+### v1.11 — Device-aware Font Size Baseline (2026-05-06)
+
+**Delivered:** Device-aware medium font baseline (`PC=14px`, `mobile=16px`) with relative small/large scaling (`0.875x`/`1.125x`), safe fallback handling, idempotent migration for existing `nil/medium` users to `small`, and one-time in-app notice coverage through model/controller/theme verification contracts.
+
 ### v1.6 — Note Gadget for All Themes (2026-05-04)
 
 **Delivered:** Modern and classic themes render the shared `_note_gadget` on `/?tab=notes` with home/note panel exclusivity; drawer Note link when `use_note`; SCSS for `#notes-tab-panel` in theme files; ja/en verification tests; Cucumber modern-theme capture scenario. Phases 23–25 (plans tracked inline on roadmap). Milestone audit records accepted process debt (no per-phase VERIFICATION dirs).
@@ -174,4 +182,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-06 — after v1.11 milestone kickoff.*
+*Last updated: 2026-05-08 — after v1.12 milestone completion.*

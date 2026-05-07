@@ -48,6 +48,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'landing', to: 'landing#show'
+
   get 'up' => 'rails/health#show', as: :rails_health_check
   root to: 'welcome#index'
 end

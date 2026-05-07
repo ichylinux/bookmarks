@@ -13,43 +13,42 @@
 - ✅ **v1.9 — Mobile Regression Hardening** — Phases 33–33.2 (shipped 2026-05-05) — [archived](milestones/v1.9-ROADMAP.md)
 - ⚠️ **v1.10 — HTTP Client Consolidation** — Phases 34–36 (deferred 2026-05-06)
 - ✅ **v1.11 — Device-aware Font Size Baseline** — Phases 37–39 (shipped 2026-05-06) — [archived](milestones/v1.11-ROADMAP.md)
+- ✅ **v1.12 — Landing Page for User Acquisition (Phase 1)** — Phases 40–42 (shipped 2026-05-08) — [archived](milestones/v1.12-ROADMAP.md)
 
 ## Phases
 
-### Phase 37 — Device-aware Typography Contract
+### Phase 40 — Landing Structure and Messaging
 
-**Goal:** Keep the current small/medium/large UX while introducing device-aware medium baseline and safe fallback behavior.
+**Goal:** Add the `/landing` page with acquisition-focused structure and value messaging for first-time visitors.
 
-**Requirements:** FONT-01, FONT-02, FONT-03, FONT-04, SAFE-01
-
-**Success Criteria:**
-1. Preferences still present exactly Small/Medium/Large options.
-2. `medium` renders as `14px` baseline on PC and `16px` baseline on mobile.
-3. `small` and `large` render as `0.875x` and `1.125x` of the device-specific medium baseline.
-4. Unknown/invalid stored `font_size` values never crash rendering and resolve to a safe class.
-
-### Phase 38 — Existing-user Migration and One-time Notice
-
-**Goal:** Protect existing users from unintended UX shifts by migrating legacy values and showing a one-time explanation.
-
-**Requirements:** MIGR-01, MIGR-02, MIGR-03, UX-01
+**Requirements:** LAND-01, LAND-02
 
 **Success Criteria:**
-1. Existing `font_size = nil` users are migrated to `small`.
-2. Existing `font_size = medium` users are migrated to `small`.
-3. Existing `small` / `large` users remain unchanged; migration reruns remain idempotent.
-4. Affected users see one-time in-app notice explaining baseline change and where to adjust settings.
+1. `/landing` route responds successfully for unauthenticated visitors.
+2. Landing view contains core value sections explaining what the product offers.
+3. The page remains server-rendered and consistent with existing app stack conventions.
 
-### Phase 39 — Verification Gate
+### Phase 41 — Conversion CTA and Compatibility Guardrails
 
-**Goal:** Lock the milestone contract with automated regression coverage across behavior and theme readability.
+**Goal:** Add conversion CTAs and ensure introducing `/landing` does not alter existing `/` behavior.
 
-**Requirements:** TEST-01, TEST-02
+**Requirements:** LAND-03, COMP-01, COMP-02
 
 **Success Criteria:**
-1. Automated tests cover canonical mapping and migration behavior (model/helper/controller).
-2. Automated checks verify readability contract across modern/classic/simple themes.
-3. Regression suite catches font-size contract drift before merge.
+1. Landing includes clear and visible login/sign-up CTAs.
+2. Existing `/` route output and logged-in default flow remain unchanged.
+3. Landing content renders correctly under ja/en locale contexts.
+
+### Phase 42 — Landing Verification Gate
+
+**Goal:** Lock landing behavior with automated route/view regression coverage.
+
+**Requirements:** TEST-03
+
+**Success Criteria:**
+1. Automated tests assert `/landing` route availability and rendering contract.
+2. Tests assert expected CTA elements are present and linked.
+3. Regression suite fails on accidental removal of landing path or conversion CTAs.
 
 ---
-*Last updated: 2026-05-06 — v1.11 shipped.*
+*Last updated: 2026-05-08 — v1.12 shipped.*

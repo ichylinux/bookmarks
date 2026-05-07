@@ -1,0 +1,39 @@
+<div class="auth-page">
+  <h1><%= t('devise.registrations.new.sign_up') %></h1>
+  <p class="auth-intro"><%= t('landing.auth.sign_up_intro') %></p>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'auth-form' }) do |f| %>
+    <%= render 'devise/shared/error_messages', resource: resource %>
+
+    <div>
+      <%= f.label :name %><br />
+      <%= f.text_field :name, autofocus: true, autocomplete: 'name' %>
+    </div>
+
+    <div>
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autocomplete: 'email' %>
+    </div>
+
+    <div>
+      <%= f.label :password %>
+      <% if @minimum_password_length %>
+        <em>(<%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>)</em>
+      <% end %><br />
+      <%= f.password_field :password, autocomplete: 'new-password' %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: 'new-password' %>
+    </div>
+
+    <div>
+      <%= f.submit t('devise.registrations.new.sign_up') %>
+    </div>
+  <% end %>
+
+  <div class="auth-links">
+    <%= render 'devise/shared/links' %>
+  </div>
+</div>

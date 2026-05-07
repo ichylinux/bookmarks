@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.12 — Landing Page for User Acquisition (Phase 1) (shipped 2026-05-08)
+
+**Scope:** Phases 40–42 (3 plans) — landing page delivery, conversion/auth-entry tone alignment, and regression hardening.
+
+**Key accomplishments:**
+
+- **Phase 40:** Added public `/landing` route + controller/view with acquisition-focused hero/value sections and localized ja/en copy.
+- **Phase 41:** Unified CTA and auth-entry messaging tone across landing, sign-in, sign-up, and sign-in/out flash messages while preserving existing root behavior.
+- **Phase 42:** Expanded controller-level regression coverage for landing route/render/CTA contracts and auth-copy paths.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
+
+**Audit:** [Milestone audit](milestones/v1.12-MILESTONE-AUDIT.md) — `passed`, no critical requirement/integration/flow gaps.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.12-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.12-REQUIREMENTS.md) · [Milestone audit](milestones/v1.12-MILESTONE-AUDIT.md) · [Phase archive](phases/040-landing-structure-and-messaging/) / [Phase archive](phases/041-conversion-cta-and-compatibility-guardrails/) / [Phase archive](phases/042-landing-verification-gate/)
+
+---
+
 ## v1.11 — Device-aware Font Size Baseline (shipped 2026-05-06)
 
 **Scope:** Phases 37–39 (3 plans) — device-aware typography baseline, legacy-user migration, and verification hardening.
@@ -152,4 +169,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-04 — v1.6 Note Gadget for All Themes archived*
+*Last updated: 2026-05-08 — v1.12 Landing Page for User Acquisition (Phase 1) archived*

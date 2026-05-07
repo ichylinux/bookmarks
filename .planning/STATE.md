@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.11
-milestone_name: Device-aware Font Size Baseline
+milestone: v1.12
+milestone_name: Landing Page for User Acquisition (Phase 1)
 status: complete
-stopped_at: "Lifecycle cleanup completed"
-last_updated: "2026-05-06T20:45:00+09:00"
-last_activity: "2026-05-07 — Completed quick task 260507-10j: swipe transition effect"
+stopped_at: "Milestone archived"
+last_updated: "2026-05-08T01:10:00+09:00"
+last_activity: "2026-05-08 — Milestone v1.12 archived (audit + completion docs)"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,16 +18,16 @@ progress:
 
 ## Current Position
 
-Phase: 39 (complete)  
-Plan: 039-01  
+Phase: 42 (complete)  
+Plan: 042-01  
 Status: Milestone complete and archived  
-Last activity: 2026-05-06 — Lifecycle (audit → complete → cleanup) finished
+Last activity: 2026-05-08 — Milestone lifecycle (audit + archive) finished
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** v1.11 complete. Ready to start next milestone flow.
+**Current focus:** v1.12 complete. Ready to start next milestone flow.
 
 ## Performance Metrics
 
@@ -70,6 +70,12 @@ v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - Phase 38 executed: legacy font-size migration (`nil/medium -> small`) with one-time notice flag and in-app rendering.
 - Phase 39 executed: verification gate expanded with model/controller/theme contract coverage and tri-suite pass.
 - v1.11 lifecycle executed: milestone audit generated, roadmap archived, active roadmap marked shipped.
+- Phase 40 added: Landing Structure and Messaging
+- Phase 41 added: Conversion CTA and Compatibility Guardrails
+- Phase 42 added: Landing Verification Gate
+- Phase 40 executed: `/landing` public route, acquisition messaging blocks, and localized copy delivered.
+- Phase 41 executed: CTA/auth-entry tone unified; compatibility guardrails and sign-in/out messaging aligned.
+- Phase 42 executed: landing/auth regression tests expanded and verification gates passed.
 
 ### Pending Todos
 
