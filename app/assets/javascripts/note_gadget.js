@@ -1,24 +1,24 @@
 $(function() {
   'use strict';
 
-  var MOBILE_MQ = window.matchMedia('(max-width: 767px)');
-  var LONGPRESS_MS = 500;
-  var MOVE_THRESHOLD_PX = 10;
+  const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
+  const LONGPRESS_MS = 500;
+  const MOVE_THRESHOLD_PX = 10;
 
-  var $gadget = $('.note-gadget');
+  const $gadget = $('.note-gadget');
   if (!$gadget.length) return;
 
   function showEditControls($item) {
     if (!$item.length) return;
     if ($item.hasClass('note-item--editing')) return;
-    var $editForm = $item.find('.note-item-edit-form');
-    var $deleteForm = $item.find('.note-item-delete-form');
-    var $cancelButton = $item.find('.note-item-cancel-button');
+    const $editForm = $item.find('.note-item-edit-form');
+    const $deleteForm = $item.find('.note-item-delete-form');
+    const $cancelButton = $item.find('.note-item-cancel-button');
     $editForm.prop('hidden', false);
     $deleteForm.prop('hidden', false);
     $cancelButton.prop('hidden', false);
     $item.addClass('note-item--editing');
-    var textarea = $editForm.find('textarea')[0];
+    const textarea = $editForm.find('textarea')[0];
     if (!textarea) return;
     textarea.focus();
     textarea.selectionStart = textarea.value.length;
@@ -36,12 +36,12 @@ $(function() {
   }
 
   $('.note-item .note-item-display').each(function() {
-    var $display = $(this);
-    var $item = $display.closest('.note-item');
-    var timer = null;
-    var startX = 0;
-    var startY = 0;
-    var longPressTriggered = false;
+    const $display = $(this);
+    const $item = $display.closest('.note-item');
+    let timer = null;
+    let startX = 0;
+    let startY = 0;
+    let longPressTriggered = false;
 
     function clearTimer() {
       if (timer) {
@@ -80,12 +80,12 @@ $(function() {
 
     $display.on('touchstart.noteGadgetLongpress', function(e) {
       if (!MOBILE_MQ.matches) return;
-      var t = e.originalEvent.touches[0];
+      const t = e.originalEvent.touches[0];
       armTimer(t.clientX, t.clientY);
     });
     $display.on('touchmove.noteGadgetLongpress', function(e) {
       if (!MOBILE_MQ.matches) return;
-      var t = e.originalEvent.touches[0];
+      const t = e.originalEvent.touches[0];
       onMove(t.clientX, t.clientY);
     });
     $display.on('touchend.noteGadgetLongpress touchcancel.noteGadgetLongpress', function(e) {
