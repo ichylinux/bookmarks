@@ -5,6 +5,8 @@ require 'test_helper'
 class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
   def setup
     @source = Rails.root.join('app/assets/javascripts/portal_mobile_tabs.js').read
+    @portal_section = Rails.root.join('app/views/welcome/_portal_column_section.html.erb').read
+    @welcome_stylesheet = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read
   end
 
   test 'mobile column state is persisted and restored from localStorage' do
@@ -39,5 +41,14 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "return c && !/^portal--column-active-\\d+$/.test(c);"
     assert_includes @source, "base.push('portal--column-active-' + index);"
     assert_includes @source, 'syncPortalClasses($portal, index);'
+  end
+
+  test 'initial restore is rendered without transition animation' do
+    assert_includes @portal_section, 'portal--initializing'
+    assert_includes @welcome_stylesheet, '.portal--initializing .portal-track'
+    assert_includes @welcome_stylesheet, 'transition: none;'
+    assert_includes @source, "if ($portal.hasClass('portal--initializing')) {"
+    assert_includes @source, 'window.requestAnimationFrame(function() {'
+    assert_includes @source, "$portal.removeClass('portal--initializing');"
   end
 end

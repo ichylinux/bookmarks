@@ -91,6 +91,11 @@ div.gadgets {
     transform: translateX(calc(-100% * var(--portal-active-index, 0)));
   }
 
+  // During initial restore, disable slide animation to avoid reload flicker.
+  .portal--initializing .portal-track {
+    transition: none;
+  }
+
   .portal .gadgets.portal-column {
     flex: 0 0 100%;
     width: 100%;
