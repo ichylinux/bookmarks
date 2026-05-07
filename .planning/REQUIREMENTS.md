@@ -5,22 +5,23 @@
 
 ## v1 Requirements
 
-Requirements for milestone v1.12 (Landing Page for User Acquisition (Phase 1)).
+Requirements for milestone v1.13 (Root Entry Redirect to Landing for Guests).
 
-### Landing Foundation
+### Entry Routing
 
-- [x] **LAND-01**: New visitors can access a dedicated public landing page at `/landing`.
-- [x] **LAND-02**: Landing page communicates the product value clearly with acquisition-focused copy sections.
-- [x] **LAND-03**: Landing page exposes clear conversion CTAs for login and sign-up flows.
+- [x] **ENTRY-02**: Unauthenticated users who access `/` are redirected to `/landing`.
+- [x] **ENTRY-03**: Authenticated users who access `/` continue to see the existing dashboard behavior.
+- [x] **ENTRY-04**: Direct access to `/landing` remains available for unauthenticated visitors.
 
-### Compatibility + Safety
+### Conversion + Locale Safety
 
-- [x] **COMP-01**: Existing `/` behavior for current users remains unchanged while `/landing` is introduced.
-- [x] **COMP-02**: Landing route/view render safely under both Japanese and English locale contexts.
+- [x] **LAND-04**: `/landing` keeps visible login/sign-up CTAs after root-entry redirect changes.
+- [x] **COMP-03**: Entry routing and landing rendering remain correct under both Japanese and English locale contexts.
 
 ### Verification
 
-- [x] **TEST-03**: Automated tests verify `/landing` route/rendering and CTA visibility contracts.
+- [x] **TEST-04**: Automated tests cover auth-state-aware entry routing (`/` guest redirect vs signed-in dashboard).
+- [x] **TEST-05**: Automated tests cover locale-aware entry behavior and landing CTA regression contracts.
 
 ## v2 Requirements
 
@@ -33,7 +34,7 @@ Deferred to a future milestone.
 
 ### Entry-point Evolution
 
-- **ENTRY-01**: Replace `/` with the validated landing experience after conversion evaluation.
+- **ENTRY-01**: Evaluate whether full replacement of `/` with landing should remain permanent after conversion observation.
 
 ## Out of Scope
 
@@ -41,10 +42,10 @@ Explicitly excluded from this milestone.
 
 | Feature | Reason |
 |---------|--------|
-| Existing-user news rendering on current home/dashboard | User chose to defer news implementation to the next milestone |
-| News authoring/admin UI | Depends on news model and display contracts not in this phase |
-| Replacing `/` with landing now | User selected staged rollout via `/landing` first |
-| External feed ingestion for news | Adds integration complexity before baseline acquisition UX is validated |
+| Existing-user news rendering on current home/dashboard | Deferred by user; this milestone focuses only on guest entry routing |
+| News authoring/admin UI | Depends on future NEWS requirements and data model decisions |
+| Landing content redesign beyond current messaging baseline | Not needed for guest redirect scope; keep v1.12 content stable |
+| External feed ingestion for news | Adds integration complexity before entry-routing milestone is validated |
 
 ## Traceability
 
@@ -52,18 +53,19 @@ Which phases cover which requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LAND-01 | Phase 40 | Satisfied |
-| LAND-02 | Phase 40 | Satisfied |
-| LAND-03 | Phase 41 | Satisfied |
-| COMP-01 | Phase 41 | Satisfied |
-| COMP-02 | Phase 41 | Satisfied |
-| TEST-03 | Phase 42 | Satisfied |
+| ENTRY-02 | Phase 43 | Satisfied |
+| ENTRY-03 | Phase 43 | Satisfied |
+| ENTRY-04 | Phase 43 | Satisfied |
+| LAND-04 | Phase 44 | Satisfied |
+| COMP-03 | Phase 44 | Satisfied |
+| TEST-04 | Phase 45 | Satisfied |
+| TEST-05 | Phase 45 | Satisfied |
 
 **Coverage:**
-- v1 requirements: 6 total
-- Mapped to phases: 6
+- v1 requirements: 7 total
+- Mapped to phases: 7
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-08*
-*Last updated: 2026-05-08 after v1.12 phase execution sync*
+*Last updated: 2026-05-08 after v1.13 phase execution sync*

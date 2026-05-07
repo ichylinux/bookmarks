@@ -21,9 +21,15 @@ class LandingControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Simplify your daily information flow'
   end
 
-  def test_未ログインでrootは従来通りサインイン画面へリダイレクトされる
+  def test_未ログインでrootはlandingへリダイレクトされる
     get root_path
     assert_response :redirect
-    assert_redirected_to new_user_session_path
+    assert_redirected_to landing_path
+  end
+
+  def test_未ログインでrootへ英語優先でアクセスするとlanding英語表示へ到達する
+    get root_path, headers: { 'Accept-Language' => 'en-US,en;q=0.9,ja;q=0.8' }
+    assert_response :redirect
+    assert_redirected_to landing_path
   end
 end

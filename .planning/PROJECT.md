@@ -8,28 +8,28 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.12 Landing Page for User Acquisition (Phase 1) — Completed
+## Current Milestone: v1.13 Root Entry Redirect to Landing for Guests — Completed
 
-**Goal:** Launch a dedicated `/landing` page focused on converting new visitors while keeping the existing `/` behavior unchanged.
+**Goal:** Guide unauthenticated visitors to `/landing` by default while keeping authenticated dashboard behavior stable.
 
 **Target features:**
-- Add a new public landing page at `/landing` for non-logged-in visitors
-- Present clear value propositions and primary calls-to-action to login/signup flows
-- Keep existing home/dashboard behavior intact for current users during validation
-- Explicitly defer existing-user news display to the next milestone
+- Redirect unauthenticated access from `/` to `/landing`
+- Keep `/landing` as the central acquisition entry with clear login/signup CTAs
+- Preserve authenticated `/` dashboard behavior and related UX contracts
+- Add regression guardrails for auth-state-based entry routing in ja/en
 
 ## Current State
 
-**Status:** v1.12 shipped (2026-05-08)
+**Status:** v1.13 shipped (2026-05-08)
 
-v1.12 delivered a dedicated public landing entry point with conversion-focused messaging while preserving existing user flows.
+v1.13 delivered auth-state-based entry routing: guests are redirected from `/` to `/landing`, while signed-in users continue to use the existing dashboard at `/`.
 
 **Milestone goals:**
 
-- Deliver a new `/landing` entry point for acquisition experiments without replacing `/`
-- Provide concise product positioning and clear login/signup conversion paths
-- Keep current user dashboard and gadget experience stable during the rollout
-- Defer existing-user news delivery implementation to the next milestone scope
+- Route unauthenticated users from `root` to `/landing` with predictable behavior
+- Maintain localized, conversion-focused CTA flow on `/landing` and auth entry points
+- Preserve current signed-in home/dashboard behavior and portal gadgets
+- Add verification coverage for auth-state + locale aware entry behavior
 
 Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
 
@@ -74,6 +74,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Mobile portal column tabs on welcome (`$portal-mobile-breakpoint` 768px; tab strip + `portal--column-active-N`; modern/classic/simple) — **v1.7 Phases 26–28**
 - ✓ Public landing page is available at `/landing` for unauthenticated visitors, with localized acquisition messaging and clear sign-up/sign-in CTAs — **v1.12 Phases 40–42**
 - ✓ Existing `/` behavior remains unchanged while landing is introduced; auth-entry and sign-in/out messaging tone is consistent in ja/en — **v1.12 Phases 41–42**
+- ✓ Unauthenticated users are redirected from `/` to `/landing`, while signed-in users keep existing dashboard behavior at `/` — **v1.13 Phases 43–45**
+- ✓ Entry-routing and landing CTA regression contracts are verified under Japanese and English locale contexts with tri-suite green — **v1.13 Phases 43–45**
 
 ### Active
 
@@ -94,6 +96,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 ## Context
 
 - **Shipped v1.7 (2026-05-04):** Mobile portal layout — CSS breakpoint variable in `welcome.css.scss`, `portal_column_section` partial + `portal_mobile_tabs.js`, theme-scoped tab styling, Minitest + Cucumber. Gate: tri-suite green.
+- **Shipped v1.13 (2026-05-08):** Root entry now redirects unauthenticated users to `/landing`, preserves signed-in dashboard behavior at `/`, and adds regression coverage for auth-state + locale entry contracts.
 - **Shipped v1.6 (2026-05-04):** Note gadget extended to modern and classic themes per `.planning/milestones/v1.6-ROADMAP.md`. Audit: `.planning/milestones/v1.6-MILESTONE-AUDIT.md` (`tech_debt`: no formal per-phase `.planning/phases/` VERIFICATION/Nyquist artifacts; traceability via roadmap success criteria, REQUIREMENTS archive, tests).
 - **Shipped v1.5 (2026-05-04):** verification debt cleanup for v1.2 phases 05/06/09 — shared rubric (Phase 19), per-phase verification closures (Phases 20–22), and cross-document milestone sync. Details: `.planning/milestones/v1.5-ROADMAP.md`. Audit: `.planning/milestones/v1.5-MILESTONE-AUDIT.md` (`tech_debt`, no blockers).
 - Stack and architecture: see `.planning/codebase/STACK.md` and `ARCHITECTURE.md`
@@ -149,6 +152,10 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Shipped
 
+### v1.13 — Root Entry Redirect to Landing for Guests (2026-05-08)
+
+**Delivered:** Root entry behavior now routes unauthenticated visitors to `/landing` while keeping authenticated dashboard rendering unchanged at `/`; landing CTA and locale contracts remain intact, backed by integration tests and green tri-suite verification (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
+
 ### v1.12 — Landing Page for User Acquisition (Phase 1) (2026-05-08)
 
 **Delivered:** Added a new public `/landing` page with localized value messaging and clear conversion CTAs, introduced consistent tone across landing/auth entry and sign-in/out messages, and locked contracts with route/view/CTA regression tests while preserving existing root behavior.
@@ -182,4 +189,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-08 — after v1.12 milestone completion.*
+*Last updated: 2026-05-08 — after v1.13 milestone completion.*

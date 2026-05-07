@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.12
-milestone_name: Landing Page for User Acquisition (Phase 1)
+milestone: v1.13
+milestone_name: Root Entry Redirect to Landing for Guests
 status: complete
-stopped_at: "Milestone archived"
-last_updated: "2026-05-08T01:10:00+09:00"
-last_activity: "2026-05-08 — Milestone v1.12 archived (audit + completion docs)"
+stopped_at: "Milestone complete"
+last_updated: "2026-05-08T01:26:00+09:00"
+last_activity: "2026-05-08 — Milestone v1.13 completed with tri-suite verification"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,20 +18,20 @@ progress:
 
 ## Current Position
 
-Phase: 42 (complete)  
-Plan: 042-01  
-Status: Milestone complete and archived  
-Last activity: 2026-05-08 — Milestone lifecycle (audit + archive) finished
+Phase: 45 (complete)  
+Plan: 045-01  
+Status: Milestone complete  
+Last activity: 2026-05-08 — v1.13 phases 43–45 executed and verified
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** v1.12 complete. Ready to start next milestone flow.
+**Current focus:** v1.13 complete. Ready for next milestone flow.
 
 ## Performance Metrics
 
-v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (second-run pass under known flake rerun policy).
+v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (first-run pass).
 
 ## Accumulated Context
 
@@ -76,6 +76,12 @@ v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - Phase 40 executed: `/landing` public route, acquisition messaging blocks, and localized copy delivered.
 - Phase 41 executed: CTA/auth-entry tone unified; compatibility guardrails and sign-in/out messaging aligned.
 - Phase 42 executed: landing/auth regression tests expanded and verification gates passed.
+- Phase 43 added: Guest Entry Routing Foundation
+- Phase 44 added: Conversion and Locale Guardrails
+- Phase 45 added: Entry Routing Verification Gate
+- Phase 43 executed: unauthenticated root entry now redirects to `/landing` while signed-in dashboard behavior remains unchanged.
+- Phase 44 executed: landing CTA and locale-safe entry contracts kept intact after root-entry redirect behavior update.
+- Phase 45 executed: route/controller regression coverage updated and tri-suite verification passed.
 
 ### Pending Todos
 
@@ -100,8 +106,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-07
+Last session: 2026-05-08
 
-Stopped at: Quick task Q-08 (swipe transition effect) completed.
+Stopped at: Milestone v1.13 execution complete (phases 43–45) with tri-suite green.
 
-Resume: ready for next task.
+Resume: ready for next milestone initialization (`/gsd-new-milestone`).

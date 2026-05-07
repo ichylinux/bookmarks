@@ -14,41 +14,42 @@
 - ⚠️ **v1.10 — HTTP Client Consolidation** — Phases 34–36 (deferred 2026-05-06)
 - ✅ **v1.11 — Device-aware Font Size Baseline** — Phases 37–39 (shipped 2026-05-06) — [archived](milestones/v1.11-ROADMAP.md)
 - ✅ **v1.12 — Landing Page for User Acquisition (Phase 1)** — Phases 40–42 (shipped 2026-05-08) — [archived](milestones/v1.12-ROADMAP.md)
+- ✅ **v1.13 — Root Entry Redirect to Landing for Guests** — Phases 43–45 (shipped 2026-05-08)
 
 ## Phases
 
-### Phase 40 — Landing Structure and Messaging
+### Phase 43 — Guest Entry Routing Foundation
 
-**Goal:** Add the `/landing` page with acquisition-focused structure and value messaging for first-time visitors.
+**Goal:** Route unauthenticated users from `/` to `/landing` while preserving authenticated `/` dashboard behavior.
 
-**Requirements:** LAND-01, LAND-02
-
-**Success Criteria:**
-1. `/landing` route responds successfully for unauthenticated visitors.
-2. Landing view contains core value sections explaining what the product offers.
-3. The page remains server-rendered and consistent with existing app stack conventions.
-
-### Phase 41 — Conversion CTA and Compatibility Guardrails
-
-**Goal:** Add conversion CTAs and ensure introducing `/landing` does not alter existing `/` behavior.
-
-**Requirements:** LAND-03, COMP-01, COMP-02
+**Requirements:** ENTRY-02, ENTRY-03, ENTRY-04
 
 **Success Criteria:**
-1. Landing includes clear and visible login/sign-up CTAs.
-2. Existing `/` route output and logged-in default flow remain unchanged.
-3. Landing content renders correctly under ja/en locale contexts.
+1. Unauthenticated requests to `/` redirect to `/landing`.
+2. Authenticated requests to `/` still render the existing dashboard and gadgets.
+3. `/landing` remains directly accessible for unauthenticated visitors.
 
-### Phase 42 — Landing Verification Gate
+### Phase 44 — Conversion and Locale Guardrails
 
-**Goal:** Lock landing behavior with automated route/view regression coverage.
+**Goal:** Keep conversion CTA visibility and locale-safe rendering intact after guest entry routing changes.
 
-**Requirements:** TEST-03
+**Requirements:** LAND-04, COMP-03
 
 **Success Criteria:**
-1. Automated tests assert `/landing` route availability and rendering contract.
-2. Tests assert expected CTA elements are present and linked.
-3. Regression suite fails on accidental removal of landing path or conversion CTAs.
+1. `/landing` still exposes clear login/sign-up CTAs after root redirect changes.
+2. Entry routing behavior remains correct under ja/en locale contexts.
+3. Auth entry and landing messaging stay consistent with existing localized tone.
+
+### Phase 45 — Entry Routing Verification Gate
+
+**Goal:** Lock guest-entry routing and locale-aware landing behavior with automated regression coverage.
+
+**Requirements:** TEST-04, TEST-05
+
+**Success Criteria:**
+1. Automated tests assert auth-state-aware root behavior (guest redirect, signed-in dashboard).
+2. Tests assert `/landing` rendering and CTA contracts under ja/en contexts.
+3. Regression suite fails on accidental changes to entry routing or landing CTAs.
 
 ---
-*Last updated: 2026-05-08 — v1.12 shipped.*
+*Last updated: 2026-05-08 — v1.13 shipped.*

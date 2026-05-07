@@ -1,5 +1,18 @@
 # Milestones
 
+## v1.13 — Root Entry Redirect to Landing for Guests (shipped 2026-05-08)
+
+**Scope:** Phases 43–45 (3 plans) — guest root-entry redirect, conversion/locale guardrails, and verification hardening.
+
+**Key accomplishments:**
+
+- **Phase 43:** Updated root entry behavior so unauthenticated requests to `/` redirect to `/landing`, while authenticated users continue to receive existing dashboard behavior.
+- **Phase 44:** Preserved landing conversion CTAs and locale-safe rendering contracts for ja/en under the new entry behavior.
+- **Phase 45:** Expanded regression coverage for auth-state-aware entry routing and locale-aware landing contracts.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
+
+---
+
 ## v1.12 — Landing Page for User Acquisition (Phase 1) (shipped 2026-05-08)
 
 **Scope:** Phases 40–42 (3 plans) — landing page delivery, conversion/auth-entry tone alignment, and regression hardening.
@@ -169,4 +182,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-08 — v1.12 Landing Page for User Acquisition (Phase 1) archived*
+*Last updated: 2026-05-08 — v1.13 Root Entry Redirect to Landing for Guests shipped*
