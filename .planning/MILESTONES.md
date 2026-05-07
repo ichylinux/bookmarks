@@ -11,6 +11,10 @@
 - **Phase 45:** Expanded regression coverage for auth-state-aware entry routing and locale-aware landing contracts.
 - Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
 
+**Audit:** [Milestone audit](milestones/v1.13-MILESTONE-AUDIT.md) — `tech_debt`, no requirement/integration blockers; accepted debt is missing phase-level GSD artifact decomposition for 43–45 under manual orchestration.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.13-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.13-REQUIREMENTS.md) · [Milestone audit](milestones/v1.13-MILESTONE-AUDIT.md)
+
 ---
 
 ## v1.12 — Landing Page for User Acquisition (Phase 1) (shipped 2026-05-08)

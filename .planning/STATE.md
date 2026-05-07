@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.13
 milestone_name: Root Entry Redirect to Landing for Guests
 status: complete
-stopped_at: "Milestone complete"
-last_updated: "2026-05-08T01:26:00+09:00"
-last_activity: "2026-05-08 — Milestone v1.13 completed with tri-suite verification"
+stopped_at: "Milestone archived"
+last_updated: "2026-05-08T01:45:00+09:00"
+last_activity: "2026-05-08 — Milestone v1.13 archived"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -20,8 +20,8 @@ progress:
 
 Phase: 45 (complete)  
 Plan: 045-01  
-Status: Milestone complete  
-Last activity: 2026-05-08 — v1.13 phases 43–45 executed and verified
+Status: Milestone complete and archived  
+Last activity: 2026-05-08 — v1.13 milestone archival completed
 
 ## Project Reference
 
