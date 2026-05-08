@@ -91,6 +91,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   def test_非ログイン時はドロワーが存在しない
     get root_path
     assert_response :redirect
+    assert_redirected_to landing_path
   end
 
   def test_モダンテーマではuse_noteオフのときノートパネルが出力されない

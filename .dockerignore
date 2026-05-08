@@ -1,7 +1,8 @@
 .env
+.github
+.planning
 log
 node_modules
 tmp
-travis
 Dockerfile*
 Jenkinsfile

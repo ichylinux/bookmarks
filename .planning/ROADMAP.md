@@ -13,43 +13,13 @@
 - ✅ **v1.9 — Mobile Regression Hardening** — Phases 33–33.2 (shipped 2026-05-05) — [archived](milestones/v1.9-ROADMAP.md)
 - ⚠️ **v1.10 — HTTP Client Consolidation** — Phases 34–36 (deferred 2026-05-06)
 - ✅ **v1.11 — Device-aware Font Size Baseline** — Phases 37–39 (shipped 2026-05-06) — [archived](milestones/v1.11-ROADMAP.md)
+- ✅ **v1.12 — Landing Page for User Acquisition (Phase 1)** — Phases 40–42 (shipped 2026-05-08) — [archived](milestones/v1.12-ROADMAP.md)
+- ✅ **v1.13 — Root Entry Redirect to Landing for Guests** — Phases 43–45 (shipped 2026-05-08) — [archived](milestones/v1.13-ROADMAP.md)
 
 ## Phases
 
-### Phase 37 — Device-aware Typography Contract
-
-**Goal:** Keep the current small/medium/large UX while introducing device-aware medium baseline and safe fallback behavior.
-
-**Requirements:** FONT-01, FONT-02, FONT-03, FONT-04, SAFE-01
-
-**Success Criteria:**
-1. Preferences still present exactly Small/Medium/Large options.
-2. `medium` renders as `14px` baseline on PC and `16px` baseline on mobile.
-3. `small` and `large` render as `0.875x` and `1.125x` of the device-specific medium baseline.
-4. Unknown/invalid stored `font_size` values never crash rendering and resolve to a safe class.
-
-### Phase 38 — Existing-user Migration and One-time Notice
-
-**Goal:** Protect existing users from unintended UX shifts by migrating legacy values and showing a one-time explanation.
-
-**Requirements:** MIGR-01, MIGR-02, MIGR-03, UX-01
-
-**Success Criteria:**
-1. Existing `font_size = nil` users are migrated to `small`.
-2. Existing `font_size = medium` users are migrated to `small`.
-3. Existing `small` / `large` users remain unchanged; migration reruns remain idempotent.
-4. Affected users see one-time in-app notice explaining baseline change and where to adjust settings.
-
-### Phase 39 — Verification Gate
-
-**Goal:** Lock the milestone contract with automated regression coverage across behavior and theme readability.
-
-**Requirements:** TEST-01, TEST-02
-
-**Success Criteria:**
-1. Automated tests cover canonical mapping and migration behavior (model/helper/controller).
-2. Automated checks verify readability contract across modern/classic/simple themes.
-3. Regression suite catches font-size contract drift before merge.
+Current milestone phases are maintained in active planning cycles.  
+Completed milestone phase details are archived under `.planning/milestones/`.
 
 ---
-*Last updated: 2026-05-06 — v1.11 shipped.*
+*Last updated: 2026-05-08 — v1.13 shipped.*

@@ -1,5 +1,39 @@
 # Milestones
 
+## v1.13 — Root Entry Redirect to Landing for Guests (shipped 2026-05-08)
+
+**Scope:** Phases 43–45 (3 plans) — guest root-entry redirect, conversion/locale guardrails, and verification hardening.
+
+**Key accomplishments:**
+
+- **Phase 43:** Updated root entry behavior so unauthenticated requests to `/` redirect to `/landing`, while authenticated users continue to receive existing dashboard behavior.
+- **Phase 44:** Preserved landing conversion CTAs and locale-safe rendering contracts for ja/en under the new entry behavior.
+- **Phase 45:** Expanded regression coverage for auth-state-aware entry routing and locale-aware landing contracts.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
+
+**Audit:** [Milestone audit](milestones/v1.13-MILESTONE-AUDIT.md) — `tech_debt`, no requirement/integration blockers; accepted debt is missing phase-level GSD artifact decomposition for 43–45 under manual orchestration.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.13-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.13-REQUIREMENTS.md) · [Milestone audit](milestones/v1.13-MILESTONE-AUDIT.md)
+
+---
+
+## v1.12 — Landing Page for User Acquisition (Phase 1) (shipped 2026-05-08)
+
+**Scope:** Phases 40–42 (3 plans) — landing page delivery, conversion/auth-entry tone alignment, and regression hardening.
+
+**Key accomplishments:**
+
+- **Phase 40:** Added public `/landing` route + controller/view with acquisition-focused hero/value sections and localized ja/en copy.
+- **Phase 41:** Unified CTA and auth-entry messaging tone across landing, sign-in, sign-up, and sign-in/out flash messages while preserving existing root behavior.
+- **Phase 42:** Expanded controller-level regression coverage for landing route/render/CTA contracts and auth-copy paths.
+- Tri-suite gate green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
+
+**Audit:** [Milestone audit](milestones/v1.12-MILESTONE-AUDIT.md) — `passed`, no critical requirement/integration/flow gaps.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.12-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.12-REQUIREMENTS.md) · [Milestone audit](milestones/v1.12-MILESTONE-AUDIT.md) · [Phase archive](phases/040-landing-structure-and-messaging/) / [Phase archive](phases/041-conversion-cta-and-compatibility-guardrails/) / [Phase archive](phases/042-landing-verification-gate/)
+
+---
+
 ## v1.11 — Device-aware Font Size Baseline (shipped 2026-05-06)
 
 **Scope:** Phases 37–39 (3 plans) — device-aware typography baseline, legacy-user migration, and verification hardening.
@@ -152,4 +186,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-04 — v1.6 Note Gadget for All Themes archived*
+*Last updated: 2026-05-08 — v1.13 Root Entry Redirect to Landing for Guests shipped*

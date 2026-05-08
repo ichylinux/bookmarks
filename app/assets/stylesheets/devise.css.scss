@@ -3,3 +3,32 @@
     margin: 10px 0;
   }
 }
+
+.auth-page {
+  margin: 24px 20px;
+  max-width: 540px;
+}
+
+.auth-intro {
+  color: #4d5868;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.auth-form input[type='email'],
+.auth-form input[type='password'],
+.auth-form input[type='text'] {
+  box-sizing: border-box;
+  max-width: 420px;
+  width: 100%;
+}
+
+.auth-links {
+  margin-top: 14px;
+}
+
+#header .head-box .head-subtitle {
+  color: #2f4f77;
+  font-size: 13px;
+  margin-left: 6px;
+}

@@ -1,4 +1,6 @@
 class WelcomeController < ApplicationController
+  skip_before_action :authenticate_user!, only: :index
+  before_action :redirect_guest_to_landing, only: :index
 
   def index
     @portal = current_user.portals.first
@@ -12,6 +14,14 @@ class WelcomeController < ApplicationController
     end
 
     head :ok
+  end
+
+  private
+
+  def redirect_guest_to_landing
+    return if user_signed_in?
+
+    redirect_to landing_path
   end
 
 end

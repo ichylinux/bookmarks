@@ -5,6 +5,8 @@ require 'test_helper'
 class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
   def setup
     @source = Rails.root.join('app/assets/javascripts/portal_mobile_tabs.js').read
+    @welcome_stylesheet = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read
+    @welcome_view = Rails.root.join('app/views/welcome/index.html.erb').read
   end
 
   test 'mobile column state is persisted and restored from localStorage' do
@@ -39,5 +41,12 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "return c && !/^portal--column-active-\\d+$/.test(c);"
     assert_includes @source, "base.push('portal--column-active-' + index);"
     assert_includes @source, 'syncPortalClasses($portal, index);'
+  end
+
+  test 'first paint can use prehydrated index from localStorage' do
+    assert_includes @welcome_stylesheet, 'var(--portal-active-index, var(--portal-initial-active-index, 0))'
+    assert_includes @welcome_view, "window.localStorage.getItem('portalMobileActiveColumn');"
+    assert_includes @welcome_view, "window.matchMedia('(max-width: 767px)').matches"
+    assert_includes @welcome_view, "document.documentElement.style.setProperty('--portal-initial-active-index', String(restored));"
   end
 end

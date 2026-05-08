@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.11
-milestone_name: Device-aware Font Size Baseline
+milestone: v1.13
+milestone_name: Root Entry Redirect to Landing for Guests
 status: complete
-stopped_at: "Lifecycle cleanup completed"
-last_updated: "2026-05-06T20:45:00+09:00"
-last_activity: "2026-05-06 — Phases 37-39 executed, audited, and archived"
+stopped_at: "Milestone archived"
+last_updated: "2026-05-08T01:45:00+09:00"
+last_activity: "2026-05-08 — Milestone v1.13 archived"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -18,20 +18,20 @@ progress:
 
 ## Current Position
 
-Phase: 39 (complete)  
-Plan: 039-01  
+Phase: 45 (complete)  
+Plan: 045-01  
 Status: Milestone complete and archived  
-Last activity: 2026-05-06 — Lifecycle (audit → complete → cleanup) finished
+Last activity: 2026-05-08 — v1.13 milestone archival completed
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** v1.11 complete. Ready to start next milestone flow.
+**Current focus:** v1.13 complete. Ready for next milestone flow.
 
 ## Performance Metrics
 
-v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (second-run pass under known flake rerun policy).
+v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (first-run pass).
 
 ## Accumulated Context
 
@@ -70,6 +70,18 @@ v1.11 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - Phase 38 executed: legacy font-size migration (`nil/medium -> small`) with one-time notice flag and in-app rendering.
 - Phase 39 executed: verification gate expanded with model/controller/theme contract coverage and tri-suite pass.
 - v1.11 lifecycle executed: milestone audit generated, roadmap archived, active roadmap marked shipped.
+- Phase 40 added: Landing Structure and Messaging
+- Phase 41 added: Conversion CTA and Compatibility Guardrails
+- Phase 42 added: Landing Verification Gate
+- Phase 40 executed: `/landing` public route, acquisition messaging blocks, and localized copy delivered.
+- Phase 41 executed: CTA/auth-entry tone unified; compatibility guardrails and sign-in/out messaging aligned.
+- Phase 42 executed: landing/auth regression tests expanded and verification gates passed.
+- Phase 43 added: Guest Entry Routing Foundation
+- Phase 44 added: Conversion and Locale Guardrails
+- Phase 45 added: Entry Routing Verification Gate
+- Phase 43 executed: unauthenticated root entry now redirects to `/landing` while signed-in dashboard behavior remains unchanged.
+- Phase 44 executed: landing CTA and locale-safe entry contracts kept intact after root-entry redirect behavior update.
+- Phase 45 executed: route/controller regression coverage updated and tri-suite verification passed.
 
 ### Pending Todos
 
@@ -90,11 +102,12 @@ None.
 | Q-05 | Make notice messages disposable without refreshing the page | 2026-05-05 | 81babad | `.planning/quick/260505-q05-disposable-notice-message/` |
 | Q-06 | Use English for documents under .planning directory | 2026-05-05 | 4df0d6b | `.planning/quick/260505-q06-planning-docs-english/` |
 | Q-07 | Simple-theme welcome CSS belongs in simple.scss | 2026-05-06 | b58fb95 | `.planning/quick/260506-q07-simple-theme-css-relocation/` |
+| Q-08 | swipe transition effect | 2026-05-07 | 549104a | `.planning/quick/260507-10j-swipe-transition-effect/` |
 
 ## Session Continuity
 
-Last session: 2026-05-04
+Last session: 2026-05-08
 
-Stopped at: v1.8 milestone archived and all phase plans completed.
+Stopped at: Milestone v1.13 execution complete (phases 43–45) with tri-suite green.
 
-Resume: start next milestone planning flow.
+Resume: ready for next milestone initialization (`/gsd-new-milestone`).

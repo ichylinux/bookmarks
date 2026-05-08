@@ -3,6 +3,9 @@
     <div class="head-leading">
       <%= link_to root_path do %><%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %><% end %>
       <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
+      <% if !user_signed_in? && controller_name == 'landing' && action_name == 'show' %>
+        <span class="head-subtitle"><%= t('landing.header.subtitle') %></span>
+      <% end %>
     </div>
     <% if drawer_ui? %>
       <span class="head-user-email"><%= current_user.display_name %></span>

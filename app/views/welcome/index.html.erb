@@ -1,7 +1,19 @@
 <script>
+  (function prehydrateMobilePortalColumn() {
+    try {
+      if (!window.matchMedia || !window.matchMedia('(max-width: 767px)').matches) return;
+      const raw = window.localStorage.getItem('portalMobileActiveColumn');
+      const restored = Number.parseInt(raw, 10);
+      if (Number.isNaN(restored) || restored < 0) return;
+      document.documentElement.style.setProperty('--portal-initial-active-index', String(restored));
+    } catch (e) {
+      // Ignore localStorage access errors in private mode or restricted browsers.
+    }
+  })();
+
   function collect_portal_layout_params() {
     <% @portal.portal_column_count.times.each do |i| %>
-      var column_<%= i %> = new Array();
+      const column_<%= i %> = [];
       $('#column_<%= i %> > div').each(function() {
         column_<%= i %>.push($(this).attr('id'));
       });
@@ -26,7 +38,7 @@
         $(this).removeClass('dragging')
       },
       update: function(event, ui) {
-        var params = collect_portal_layout_params();
+        const params = collect_portal_layout_params();
         $.post('<%= url_for action: 'save_state' %>', params);
       }
     });

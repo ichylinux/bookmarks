@@ -1,0 +1,26 @@
+<main class="landing-page">
+  <section class="landing-hero">
+    <p class="landing-eyebrow"><%= t('landing.hero.eyebrow') %></p>
+    <h1><%= t('landing.hero.title') %></h1>
+    <p class="landing-description"><%= t('landing.hero.description') %></p>
+    <div class="landing-cta-group">
+      <%= link_to t('landing.cta.sign_up'), new_user_registration_path, class: 'landing-cta landing-cta--primary' %>
+      <%= link_to t('landing.cta.sign_in'), new_user_session_path, class: 'landing-cta landing-cta--secondary' %>
+    </div>
+  </section>
+
+  <section class="landing-value-grid">
+    <article class="landing-value-card">
+      <h2><%= t('landing.values.capture.title') %></h2>
+      <p><%= t('landing.values.capture.body') %></p>
+    </article>
+    <article class="landing-value-card">
+      <h2><%= t('landing.values.organize.title') %></h2>
+      <p><%= t('landing.values.organize.body') %></p>
+    </article>
+    <article class="landing-value-card">
+      <h2><%= t('landing.values.focus.title') %></h2>
+      <p><%= t('landing.values.focus.body') %></p>
+    </article>
+  </section>
+</main>

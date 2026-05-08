@@ -153,6 +153,30 @@ en:
       edited_tooltip: "Edited: %{time}"
     portal_column_tabs_aria_label: Switch portal columns
 
+  landing:
+    header:
+      subtitle: Organize information with ease
+    hero:
+      eyebrow: For first-time users
+      title: Simplify your daily information flow
+      description: Keep bookmarks, notes, tasks, and feeds in one place so your daily organization stays smooth.
+    cta:
+      sign_up: Get started for free
+      sign_in: I already have an account
+    values:
+      capture:
+        title: Capture ideas instantly
+        body: Save useful links and notes the moment you find them.
+      organize:
+        title: See everything in one place
+        body: Review what matters in one view and spend less time searching.
+      focus:
+        title: Easy to adopt
+        body: A familiar, intuitive flow helps you stay focused without a steep learning curve.
+    auth:
+      sign_in_intro: Welcome back. Jump straight into the information you saved.
+      sign_up_intro: Get started in minutes and keep everything important in one place.
+
   calendars:
     get_gadget:
       previous_month: Previous month
@@ -173,3 +197,10 @@ en:
   devise:
     sessions:
       invalid: "Invalid %{authentication_keys} or password."
+      signed_in: Welcome back. You can pick up right where you left off.
+      signed_out: See you again soon.
+    registrations:
+      signed_up: Welcome! Your account is ready.
+      signed_up_but_inactive: Your account has been created. It will be available soon.
+      signed_up_but_locked: Your account has been created, but it is currently locked.
+      signed_up_but_unconfirmed: Check your email to finish confirming your account.

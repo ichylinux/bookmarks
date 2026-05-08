@@ -153,6 +153,30 @@ ja:
       edited_tooltip: "編集: %{time}"
     portal_column_tabs_aria_label: ポータル列の切り替え
 
+  landing:
+    header:
+      subtitle: 情報整理を、やさしく
+    hero:
+      eyebrow: はじめての方へ
+      title: 情報整理を、もっとシンプルに
+      description: ブックマーク、メモ、タスク、フィードを 1 つにまとめて、毎日の整理をスムーズに進められます。
+    cta:
+      sign_up: 無料ではじめる
+      sign_in: アカウントをお持ちの方
+    values:
+      capture:
+        title: 気づきをすぐ残せる
+        body: 気になったページやメモを、その場でさっと保存できます。
+      organize:
+        title: まとめて見渡せる
+        body: 必要な情報をひとつの場所で確認でき、探し直しの時間を減らせます。
+      focus:
+        title: すぐに使いこなせる
+        body: 直感的に使えるので、新しいツールに慣れる負担なく整理に集中できます。
+    auth:
+      sign_in_intro: おかえりなさい。保存した情報にすぐアクセスできます。
+      sign_up_intro: 数分で始められます。気になる情報をひとつに整理しましょう。
+
   calendars:
     get_gadget:
       previous_month: 前の月
@@ -173,3 +197,10 @@ ja:
   devise:
     sessions:
       invalid: "%{authentication_keys}またはパスワードが違います。"
+      signed_in: おかえりなさい。すぐに続きから始められます。
+      signed_out: またのご利用をお待ちしています。
+    registrations:
+      signed_up: ようこそ。アカウント作成が完了しました。
+      signed_up_but_inactive: アカウントを作成しました。利用開始までしばらくお待ちください。
+      signed_up_but_locked: アカウントを作成しましたが、現在はロックされています。
+      signed_up_but_unconfirmed: 確認メールを送信しました。メール内の案内に沿って登録を完了してください。

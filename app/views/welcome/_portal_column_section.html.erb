@@ -15,16 +15,18 @@
   <% end %>
 </div>
 <div class="portal portal--column-active-0">
-  <% portal_columns.each_with_index do |gadgets, i| %>
-    <div
-      id="column_<%= i %>"
-      class="gadgets portal-column"
-      role="tabpanel"
-      aria-labelledby="portal-column-tab-<%= i %>"
-    >
-      <% gadgets.each do |g| %>
-        <%= render g.class.name.underscore, gadget: g %>
-      <% end %>
-    </div>
-  <% end %>
+  <div class="portal-track">
+    <% portal_columns.each_with_index do |gadgets, i| %>
+      <div
+        id="column_<%= i %>"
+        class="gadgets portal-column"
+        role="tabpanel"
+        aria-labelledby="portal-column-tab-<%= i %>"
+      >
+        <% gadgets.each do |g| %>
+          <%= render g.class.name.underscore, gadget: g %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

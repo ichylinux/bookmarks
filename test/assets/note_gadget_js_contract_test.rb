@@ -14,7 +14,7 @@ class NoteGadgetJsContractTest < ActiveSupport::TestCase
 
   test 'mobile uses long press on display area to enter edit mode' do
     assert_includes @source, ".on('touchstart.noteGadgetLongpress'"
-    assert_includes @source, 'var LONGPRESS_MS = 500;'
+    assert_includes @source, 'const LONGPRESS_MS = 500;'
     assert_includes @source, 'setTimeout(function() {'
     assert_includes @source, 'showEditControls($item);'
   end
