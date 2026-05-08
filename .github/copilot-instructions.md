@@ -1,5 +1,12 @@
 # Copilot instructions for Bookmarks
 
+## Operating principles
+
+1. Don't assume. Don't hide confusion. Surface tradeoffs.
+2. Minimum code that solves the problem. Nothing speculative.
+3. Touch only what you must. Clean up only your own mess.
+4. Define success criteria. Loop until verified.
+
 ## Build, test, and lint commands
 
 This is a Rails 8.1 / Ruby 3.4 app with Sprockets-managed JavaScript and MySQL. Install dependencies with:
