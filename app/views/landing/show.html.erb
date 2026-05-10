@@ -4,8 +4,12 @@
     <h1><%= t('landing.hero.title') %></h1>
     <p class="landing-description"><%= t('landing.hero.description') %></p>
     <div class="landing-cta-group">
-      <%= link_to t('landing.cta.sign_up'), new_user_registration_path, class: 'landing-cta landing-cta--primary' %>
-      <%= link_to t('landing.cta.sign_in'), new_user_session_path, class: 'landing-cta landing-cta--secondary' %>
+      <% if user_signed_in? %>
+        <%= link_to t('landing.cta.continue_to_app'), root_path, class: 'landing-cta landing-cta--primary' %>
+      <% else %>
+        <%= link_to t('landing.cta.sign_up'), new_user_registration_path, class: 'landing-cta landing-cta--primary' %>
+        <%= link_to t('landing.cta.sign_in'), new_user_session_path, class: 'landing-cta landing-cta--secondary' %>
+      <% end %>
     </div>
   </section>
 

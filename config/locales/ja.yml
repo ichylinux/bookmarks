@@ -163,6 +163,7 @@ ja:
     cta:
       sign_up: 無料ではじめる
       sign_in: アカウントをお持ちの方
+      continue_to_app: アプリを開く
     values:
       capture:
         title: 気づきをすぐ残せる

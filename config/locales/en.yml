@@ -163,6 +163,7 @@ en:
     cta:
       sign_up: Get started for free
       sign_in: I already have an account
+      continue_to_app: Open the app
     values:
       capture:
         title: Capture ideas instantly
