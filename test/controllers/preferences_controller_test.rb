@@ -311,4 +311,34 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][use_calendar]'
   end
 
+  def test_モダンテーマで設定フォームが描画される
+    user.preference.update!(theme: 'modern')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'form.preferences-form'
+    assert_select 'table.preferences-table'
+    assert_select 'input[type="submit"]'
+  end
+
+  def test_クラシックテーマで設定フォームが描画される
+    user.preference.update!(theme: 'classic')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'form.preferences-form'
+    assert_select 'table.preferences-table'
+    assert_select 'input[type="submit"]'
+  end
+
+  def test_シンプルテーマで設定フォームが描画される
+    user.preference.update!(theme: 'simple')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'form.preferences-form'
+    assert_select 'table.preferences-table'
+    assert_select 'input[type="submit"]'
+  end
+
 end
