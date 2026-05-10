@@ -4,24 +4,24 @@ milestone: v1.14
 milestone_name: Landing Page Changelog
 status: in_progress
 stopped_at: ""
-last_updated: "2026-05-10T03:25:00+09:00"
-last_activity: "2026-05-10 — Phase 46 Plan 01 completed: changelog data layer"
+last_updated: "2026-05-10T12:35:00+09:00"
+last_activity: "2026-05-10 — Phase 47 Plan 01 completed: changelog section view"
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
-  percent: 11
+  total_plans: 2
+  completed_plans: 2
+  percent: 22
 ---
 
 # State
 
 ## Current Position
 
-Phase: 46
+Phase: 47
 Plan: 01 (complete)
-Status: Phase 46 Plan 01 complete; ready for Phase 47
-Last activity: 2026-05-10 — Phase 46 Plan 01 complete: changelog YAML data layer + ApplicationHelper#changelog_entries
+Status: Phase 47 Plan 01 complete; ready for Phase 48
+Last activity: 2026-05-10 — Phase 47 Plan 01 complete: changelog section view on /landing with CSS and Minitest coverage
 
 ## Project Reference
 
@@ -38,6 +38,7 @@ v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 ### Decisions
 
 - changelog_entries uses I18n.t with default: [] so it returns [] gracefully when locale key is absent.
+- English heading "What's New" is HTML-escaped by ERB to What&#39;s New in the response body; tests must use assert_select with a regex rather than assert_includes on raw body.
 - Changelog data is locale-YAML-backed; no DB table or model needed; helper sorts and caps at 10.
 - Mobile portal UI uses viewport max-width one px below `$portal-mobile-breakpoint` (768px): columns switch to numbered tabs + single visible column via `portal--column-active-N` on `.portal`.
 - Tab strip is in the DOM for all viewports; hidden on wide screens with CSS (`display: none`).
@@ -85,7 +86,9 @@ v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - Phase 44 executed: landing CTA and locale-safe entry contracts kept intact after root-entry redirect behavior update.
 - Phase 45 executed: route/controller regression coverage updated and tri-suite verification passed.
 - Phase 46 added: Changelog Data Layer (v1.14)
+- Phase 46 executed: changelog YAML entries + ApplicationHelper#changelog_entries delivered.
 - Phase 47 added: Changelog Section View (v1.14)
+- Phase 47 executed: changelog section rendered on /landing with CSS rules and VIEW-01–VIEW-04 Minitest coverage.
 - Phase 48 added: Changelog Verification Gate (v1.14)
 
 ### Pending Todos
@@ -111,8 +114,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-10
+Last session: 2026-05-10 (Phase 47 Plan 01)
 
-Stopped at: Phase 46 Plan 01 complete.
+Stopped at: Phase 47 Plan 01 complete.
 
-Resume: run `/gsd-plan-phase 47` to begin Changelog Section View planning.
+Resume: run `/gsd-plan-phase 48` to begin Changelog Verification Gate planning.

@@ -22,7 +22,7 @@
 ### v1.14 — Landing Page Changelog
 
 - [x] **Phase 46: Changelog Data Layer** — Define YAML locale structure and loading logic for curated changelog entries
-- [ ] **Phase 47: Changelog Section View** — Render the "What's New" card section on `/landing` for all visitors
+- [x] **Phase 47: Changelog Section View** — Render the "What's New" card section on `/landing` for all visitors
 - [ ] **Phase 48: Changelog Verification Gate** — Test coverage for changelog rendering and locale key parity
 
 ## Phase Details
@@ -66,8 +66,8 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 46. Changelog Data Layer | 1/1 | Complete | 2026-05-10 |
-| 47. Changelog Section View | 0/? | Not started | - |
+| 47. Changelog Section View | 1/1 | Complete | 2026-05-10 |
 | 48. Changelog Verification Gate | 0/? | Not started | - |
 
 ---
-*Last updated: 2026-05-10 — Phase 46 complete.*
+*Last updated: 2026-05-10 — Phase 47 complete.*
