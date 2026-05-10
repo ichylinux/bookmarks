@@ -56,14 +56,14 @@ Audit all SCSS for architectural violations, migrate misplaced theme-specific st
 
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| ARCH-01 | — | — |
-| ARCH-02 | — | — |
-| ARCH-03 | — | — |
-| PREFS-01 | — | — |
-| PREFS-02 | — | — |
-| PREFS-03 | — | — |
-| CONS-01 | — | — |
-| CONS-02 | — | — |
-| CONS-03 | — | — |
-| MOB-01 | — | — |
-| MOB-02 | — | — |
+| ARCH-01 | 49 | — |
+| ARCH-02 | 49 | — |
+| ARCH-03 | 49 | — |
+| PREFS-01 | 50 | — |
+| PREFS-02 | 50 | — |
+| PREFS-03 | 50 | — |
+| CONS-01 | 50 | — |
+| CONS-02 | 50 | — |
+| CONS-03 | 50 | — |
+| MOB-01 | 51 | — |
+| MOB-02 | 51 | — |

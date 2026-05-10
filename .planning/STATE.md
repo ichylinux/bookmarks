@@ -7,7 +7,7 @@ stopped_at: ""
 last_updated: "2026-05-11T00:00:00+09:00"
 last_activity: "2026-05-11 — Milestone v1.15 started"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -120,4 +120,4 @@ Last session: 2026-05-11 (v1.15 milestone started)
 
 Stopped at: Requirements definition.
 
-Resume: run `/gsd-plan-phase 49` once REQUIREMENTS.md and ROADMAP.md are finalized.
+Resume: run `/gsd-plan-phase 49` to begin CSS Architecture Audit & Migration.
