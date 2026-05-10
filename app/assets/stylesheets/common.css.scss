@@ -318,6 +318,41 @@ table {
   }
 }
 
+@media (max-width: 767px) {
+  .preferences-table {
+    display: block;
+
+    tbody {
+      display: block;
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    th {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding-bottom: 2px;
+    }
+
+    td {
+      display: block;
+      width: 100%;
+      padding-top: 0;
+    }
+  }
+
+  .bookmarks-table {
+    th:nth-child(2),
+    td:nth-child(2) {
+      display: none;
+    }
+  }
+}
+
 .header {
   display: flow-root;
   margin: 4px 10px 0 10px;
