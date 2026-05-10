@@ -58,6 +58,11 @@
 
 **Requirements:** MOB-01, MOB-02 (+ all v1.15 requirements verified)
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 051-01-PLAN.md — Add mobile CSS for preferences + bookmarks tables; structural Minitest assertions; tri-suite gate
+
 **Success criteria:**
 1. Welcome, preferences, and bookmarks list render usably at ≤767px on all 3 themes
 2. No layout overflow or broken stacking on narrow viewports
