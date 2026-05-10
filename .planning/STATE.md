@@ -111,6 +111,7 @@ None.
 | Q-06 | Use English for documents under .planning directory | 2026-05-05 | 4df0d6b | `.planning/quick/260505-q06-planning-docs-english/` |
 | Q-07 | Simple-theme welcome CSS belongs in simple.scss | 2026-05-06 | b58fb95 | `.planning/quick/260506-q07-simple-theme-css-relocation/` |
 | Q-08 | swipe transition effect | 2026-05-07 | 549104a | `.planning/quick/260507-10j-swipe-transition-effect/` |
+| Q-09 | Simple-theme notice messages now expand to full wrapper width | 2026-05-11 | this commit | `.planning/quick/260511-q09-simple-theme-flash-width/` |
 
 ## Session Continuity
 

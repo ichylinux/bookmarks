@@ -319,11 +319,13 @@ table {
 }
 
 .header {
+  display: flow-root;
   margin: 4px 10px 0 10px;
   height: 20px;
   line-height: 20px;
-  
+
   ul.navigation {
+    margin: 0;
     padding: 0;
 
     li {
