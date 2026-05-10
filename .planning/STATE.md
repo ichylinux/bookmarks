@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Landing Page Changelog
-status: in_progress
+status: shipped
 stopped_at: ""
-last_updated: "2026-05-10T12:35:00+09:00"
-last_activity: "2026-05-10 — Phase 47 Plan 01 completed: changelog section view"
+last_updated: "2026-05-10T00:00:00+09:00"
+last_activity: "2026-05-10 — v1.14 shipped: all 3 phases complete, tri-suite green"
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 2
-  completed_plans: 2
-  percent: 22
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
