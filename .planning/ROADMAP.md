@@ -16,7 +16,7 @@
 - ✅ **v1.12 — Landing Page for User Acquisition (Phase 1)** — Phases 40–42 (shipped 2026-05-08) — [archived](milestones/v1.12-ROADMAP.md)
 - ✅ **v1.13 — Root Entry Redirect to Landing for Guests** — Phases 43–45 (shipped 2026-05-08) — [archived](milestones/v1.13-ROADMAP.md)
 - ✅ **v1.14 — Landing Page Changelog** — Phases 46–48 (shipped 2026-05-10) — [archived](milestones/v1.14-ROADMAP.md)
-- 🔄 **v1.15 — CSS & UI Polish** — Phases 49–51 (in progress)
+- 🔄 **v1.15 — CSS & UI Polish** — Phases 49–51 (in progress, Phase 49 ✅)
 
 ## Phases
 
