@@ -1,56 +1,69 @@
-# Requirements: v1.14 Landing Page Changelog
-
-**Status:** ✅ All requirements met — shipped 2026-05-10
+# Requirements: v1.15 CSS & UI Polish
 
 ## Milestone Goal
 
-Add a curated "What's New" section to `/landing` that shows visitors recent UX improvements as rich dated cards, backed by locale YAML and bilingual in Japanese and English.
+Audit all SCSS for architectural violations, migrate misplaced theme-specific styles to their correct theme files, and verify visual consistency across modern/classic/simple themes on all key surfaces.
 
-## v1.14 Requirements
+---
 
-### Changelog Data (CLOG)
+## v1.15 Requirements
 
-- [x] **CLOG-01**: Changelog entries are defined in locale YAML (ja/en) — each entry has a date, headline, tag, and description
-- [x] **CLOG-02**: Up to 10 most recent entries are shown on `/landing`
-- [x] **CLOG-03**: Tags categorize entries (e.g., UX, Fix, Performance) and are rendered as a visible label on each card
-- [x] **CLOG-04**: The changelog section has a localized section heading ("What's New" / 「新着情報」)
+### ARCH — CSS Architecture
 
-### Landing View (VIEW)
+- [ ] **ARCH-01**: All non-theme SCSS files (`*.css.scss` outside `themes/`) are audited for selectors prefixed with `.modern`, `.classic`, or `.simple`
+- [ ] **ARCH-02**: Any misplaced theme-specific selectors found in non-theme files are migrated to the appropriate `themes/` file
+- [ ] **ARCH-03**: Shared/generic base styles remain in their originating file (un-prefixed rules stay in source file)
 
-- [x] **VIEW-01**: The "What's New" section renders below the existing value-grid on `/landing`
-- [x] **VIEW-02**: Each card shows: date, tag label, headline, description — styled consistently with the landing page
-- [x] **VIEW-03**: The section renders correctly for all visitors (guests and redirected signed-in users)
+### PREFS — Preferences Page
 
-### Verification (VERF)
+- [ ] **PREFS-01**: Preferences page renders correctly on modern theme (form layout, labels, submit button, table alignment, spacing)
+- [ ] **PREFS-02**: Preferences page renders correctly on classic theme
+- [ ] **PREFS-03**: Preferences page renders correctly on simple theme
 
-- [x] **VERF-01**: Controller/view tests confirm changelog section renders on `/landing` with correct locale keys
-- [x] **VERF-02**: Locale key parity between ja.yml and en.yml is enforced (consistent with existing parity tests)
+### CONS — Cross-theme Consistency
+
+- [ ] **CONS-01**: Shared form controls (inputs, selects, textareas) render consistently across themes
+- [ ] **CONS-02**: Action links and buttons render consistently across themes
+- [ ] **CONS-03**: Flash/notice messages render consistently across themes
+
+### MOB — Mobile/Responsive
+
+- [ ] **MOB-01**: Key pages (welcome, preferences, bookmarks list) render usably at mobile widths on all 3 themes
+- [ ] **MOB-02**: No layout overflow or broken stacking on narrow viewports
+
+---
 
 ## Future Requirements
 
-- Interactive filtering by tag (UX / Fix / Performance)
-- Pagination or "show all" link for entries beyond 10
-- Per-user "last seen" tracking to highlight new entries since last visit
-- Admin UI for managing entries without editing YAML directly
+- Delete individual notes — deferred until core capture flow proves out on all themes
+- Rich text / markdown editor — conflicts with no-new-JS-deps constraint
+- Real-time autosave — explicit save is the correct UX
+- Decide whether `/landing` replaces `/` after conversion evaluation
+
+---
 
 ## Out of Scope
 
-- Database-backed changelog (static YAML is the source of truth for this milestone)
-- Git commit parsing — entries are manually curated
-- Real-time update mechanism
-- Separate `/changelog` route (section lives on `/landing` only)
-- Email notification of new entries
+- New user-facing features
+- New JavaScript or npm dependencies
+- Database migrations
+- Internationalization changes
+- Locale beyond ja/en
+
+---
 
 ## Traceability
 
-| REQ-ID | Phase | Plan | Status |
-|--------|-------|------|--------|
-| CLOG-01 | Phase 46 | 046-01 | ✅ Complete |
-| CLOG-02 | Phase 46 | 046-01 | ✅ Complete |
-| CLOG-03 | Phase 46 | 046-01 | ✅ Complete |
-| CLOG-04 | Phase 46 | 046-01 | ✅ Complete |
-| VIEW-01 | Phase 47 | 047-01 | ✅ Complete |
-| VIEW-02 | Phase 47 | 047-01 | ✅ Complete |
-| VIEW-03 | Phase 47 | 047-01 | ✅ Complete |
-| VERF-01 | Phase 48 | 048-01 | ✅ Complete |
-| VERF-02 | Phase 48 | 048-01 | ✅ Complete |
+| REQ-ID | Phase | Plan |
+|--------|-------|------|
+| ARCH-01 | — | — |
+| ARCH-02 | — | — |
+| ARCH-03 | — | — |
+| PREFS-01 | — | — |
+| PREFS-02 | — | — |
+| PREFS-03 | — | — |
+| CONS-01 | — | — |
+| CONS-02 | — | — |
+| CONS-03 | — | — |
+| MOB-01 | — | — |
+| MOB-02 | — | — |
