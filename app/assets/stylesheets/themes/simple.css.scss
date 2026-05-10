@@ -25,6 +25,11 @@
     padding: 0 10px 10px 10px;
   }
 
+  // モダン .wrapper の padding-top: 24px に揃え、内蔵ナビとフラッシュ/本文の間に余白を入れる
+  .header {
+    margin-bottom: 24px;
+  }
+
   .simple-tab-panel--hidden {
     display: none;
   }
