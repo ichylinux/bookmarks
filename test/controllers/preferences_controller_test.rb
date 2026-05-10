@@ -341,4 +341,11 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[type="submit"]'
   end
 
+  def test_MOB01_設定ページにpreferences_tableが描画される
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'table.preferences-table', minimum: 1
+  end
+
 end
