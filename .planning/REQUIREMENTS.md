@@ -8,10 +8,10 @@ Add a curated "What's New" section to `/landing` that shows visitors recent UX i
 
 ### Changelog Data (CLOG)
 
-- [ ] **CLOG-01**: Changelog entries are defined in locale YAML (ja/en) — each entry has a date, headline, tag, and description
-- [ ] **CLOG-02**: Up to 10 most recent entries are shown on `/landing`
-- [ ] **CLOG-03**: Tags categorize entries (e.g., UX, Fix, Performance) and are rendered as a visible label on each card
-- [ ] **CLOG-04**: The changelog section has a localized section heading ("What's New" / 「新着情報」)
+- [x] **CLOG-01**: Changelog entries are defined in locale YAML (ja/en) — each entry has a date, headline, tag, and description
+- [x] **CLOG-02**: Up to 10 most recent entries are shown on `/landing`
+- [x] **CLOG-03**: Tags categorize entries (e.g., UX, Fix, Performance) and are rendered as a visible label on each card
+- [x] **CLOG-04**: The changelog section has a localized section heading ("What's New" / 「新着情報」)
 
 ### Landing View (VIEW)
 
@@ -43,10 +43,10 @@ Add a curated "What's New" section to `/landing` that shows visitors recent UX i
 
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| CLOG-01 | Phase 46 | — |
-| CLOG-02 | Phase 46 | — |
-| CLOG-03 | Phase 46 | — |
-| CLOG-04 | Phase 46 | — |
+| CLOG-01 | Phase 46 | 046-01 |
+| CLOG-02 | Phase 46 | 046-01 |
+| CLOG-03 | Phase 46 | 046-01 |
+| CLOG-04 | Phase 46 | 046-01 |
 | VIEW-01 | Phase 47 | — |
 | VIEW-02 | Phase 47 | — |
 | VIEW-03 | Phase 47 | — |

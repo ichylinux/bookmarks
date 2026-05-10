@@ -2,26 +2,26 @@
 gsd_state_version: 1.0
 milestone: v1.14
 milestone_name: Landing Page Changelog
-status: planning
+status: in_progress
 stopped_at: ""
-last_updated: "2026-05-10T00:00:00+09:00"
-last_activity: "2026-05-10 — Roadmap created; Phases 46–48 defined"
+last_updated: "2026-05-10T03:25:00+09:00"
+last_activity: "2026-05-10 — Phase 46 Plan 01 completed: changelog data layer"
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 1
+  completed_plans: 1
+  percent: 11
 ---
 
 # State
 
 ## Current Position
 
-Phase: 46 (not yet started — roadmap approved, ready for planning)
-Plan: —
-Status: Roadmap defined; awaiting phase planning
-Last activity: 2026-05-10 — Roadmap created; Phases 46–48 defined
+Phase: 46
+Plan: 01 (complete)
+Status: Phase 46 Plan 01 complete; ready for Phase 47
+Last activity: 2026-05-10 — Phase 46 Plan 01 complete: changelog YAML data layer + ApplicationHelper#changelog_entries
 
 ## Project Reference
 
@@ -37,6 +37,8 @@ v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 
 ### Decisions
 
+- changelog_entries uses I18n.t with default: [] so it returns [] gracefully when locale key is absent.
+- Changelog data is locale-YAML-backed; no DB table or model needed; helper sorts and caps at 10.
 - Mobile portal UI uses viewport max-width one px below `$portal-mobile-breakpoint` (768px): columns switch to numbered tabs + single visible column via `portal--column-active-N` on `.portal`.
 - Tab strip is in the DOM for all viewports; hidden on wide screens with CSS (`display: none`).
 - Simple theme: column tabs live inside `#simple-home-panel`, above the existing Home/Note simple tabs (REQ THEME-03).
@@ -111,6 +113,6 @@ None.
 
 Last session: 2026-05-10
 
-Stopped at: v1.14 roadmap defined (Phases 46–48). Ready to plan Phase 46.
+Stopped at: Phase 46 Plan 01 complete.
 
-Resume: run `/gsd-plan-phase 46` to begin Changelog Data Layer planning.
+Resume: run `/gsd-plan-phase 47` to begin Changelog Section View planning.

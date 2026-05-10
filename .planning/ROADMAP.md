@@ -65,7 +65,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 46. Changelog Data Layer | 0/? | Not started | - |
+| 46. Changelog Data Layer | 1/1 | Complete | 2026-05-10 |
 | 47. Changelog Section View | 0/? | Not started | - |
 | 48. Changelog Verification Gate | 0/? | Not started | - |
 
