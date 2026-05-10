@@ -321,6 +321,13 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_equal '', response.body
   end
 
+  def test_MOB02_ブックマーク一覧にbookmarks_tableが描画される
+    sign_in user
+    get bookmarks_path
+    assert_response :success
+    assert_select 'table.bookmarks-table', minimum: 1
+  end
+
   private
 
   def with_faraday_new(fake_conn)
