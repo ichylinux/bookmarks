@@ -25,15 +25,14 @@ class VisualQaConsistencyContractTest < ActiveSupport::TestCase
   # Gap 1 — CSS-fix regression guard
   # -----------------------------------------------------------------------
 
-  # The redundant theme-scoped override was removed. If it returns, this test fails.
-  test 'modern.css.scss does not contain redundant preferences-table th text-align override' do
-    # The removed rule was: .modern .preferences-table th { text-align: right }
-    # We match loosely: the selector combination .modern + .preferences-table + th must be absent.
-    assert_no_match(
-      /\.modern\s+\.preferences-table\s+th\b/,
-      @modern,
-      'Regression: .modern .preferences-table th selector has returned to themes/modern.css.scss. ' \
-      'This is a redundant override — the base rule in common.css.scss covers all themes. Remove it.'
+  # PREFS-01: common.css.scss must use a child-combinator selector with specificity (0,1,3) so it
+  # beats .modern table th (0,1,2) without needing a theme-scoped override in modern.css.scss.
+  test 'common.css.scss defines high-specificity preferences-table th text-align right rule' do
+    assert_match(
+      /\.preferences-table\s*>\s*tbody\s*>\s*tr\s*>\s*th[\s\S]{0,60}text-align:\s*right/,
+      @common,
+      'common.css.scss must define .preferences-table > tbody > tr > th { text-align: right } ' \
+      '(specificity 0,1,3) to beat .modern table th (0,1,2). Do not revert to the lower-specificity form.'
     )
   end
 

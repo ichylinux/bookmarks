@@ -1,5 +1,34 @@
 # Milestones
 
+## v1.15 — CSS & UI Polish (shipped 2026-05-11)
+
+**Scope:** Phases 49–51 (3 plans) — CSS architecture audit, cross-theme visual QA, mobile responsive layout, and PREFS-01 specificity regression fix.
+
+**Key accomplishments:**
+
+- CSS architecture audit confirmed 0 violations across all 9 non-theme SCSS files. ARCH-01/02/03 satisfied.
+- Cross-theme visual QA complete: `.modern .actions a` blue-accent override added (CONS-02); preferences form verified across all 3 themes; flash messages and form controls confirmed consistent.
+- Mobile responsive layout for preferences table (stacked rows) and bookmarks table (URL column hidden) at ≤767px in `common.css.scss`; all 3 themes inherit with no per-theme duplication. MOB-01/02 satisfied.
+- PREFS-01 specificity regression resolved: `.preferences-table > tbody > tr > th` (0,1,3) beats `.modern table th` (0,1,2) without a theme-scoped override.
+- 30 new regression-guard contract tests added. 298 total Minitest tests, 0 failures.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.15-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.15-REQUIREMENTS.md) · [Milestone audit](milestones/v1.15-MILESTONE-AUDIT.md)
+
+---
+
+## v1.14 — Landing Page Changelog (shipped 2026-05-10)
+
+**Scope:** Phases 46–48 (3 plans) — changelog data layer, changelog section view, and verification gate.
+
+**Key accomplishments:**
+
+- Locale-YAML-backed `ApplicationHelper#changelog_entries` (no DB table); sorted by date, capped at 10.
+- Changelog section rendered on `/landing` with VIEW-01–VIEW-04 Minitest coverage; tri-suite green.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.14-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.14-REQUIREMENTS.md)
+
+---
+
 ## v1.13 — Root Entry Redirect to Landing for Guests (shipped 2026-05-08)
 
 **Scope:** Phases 43–45 (3 plans) — guest root-entry redirect, conversion/locale guardrails, and verification hardening.
@@ -186,4 +215,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-08 — v1.13 Root Entry Redirect to Landing for Guests shipped*
+*Last updated: 2026-05-11 — v1.15 CSS & UI Polish shipped*

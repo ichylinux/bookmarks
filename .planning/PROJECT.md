@@ -8,39 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.15 CSS & UI Polish
-
-**Goal:** Audit all SCSS for architectural violations, migrate misplaced theme-specific styles to their correct theme files, and verify visual consistency across modern/classic/simple themes on all key surfaces.
-
-**Target features:**
-- Full audit of non-theme SCSS files for misplaced theme-specific selectors (.modern, .classic, .simple)
-- Migrate all violations into the correct theme file
-- Visual QA of preferences page across all 3 themes
-- Cross-theme consistency check on shared components
-- Mobile/responsive layout review and fixes
-
 ## Current State
 
-**Status:** v1.13 shipped (2026-05-08)
+**Status:** v1.15 shipped (2026-05-11)
 
-v1.13 delivered auth-state-based entry routing: guests are redirected from `/` to `/landing`, while signed-in users continue to use the existing dashboard at `/`.
+v1.15 delivered CSS architecture audit (0 violations across 9 non-theme SCSS files), cross-theme visual QA with consistency fixes, and mobile responsive layout for preferences/bookmarks tables. Post-audit PREFS-01 specificity regression resolved: `common.css.scss` now uses `.preferences-table > tbody > tr > th` (specificity 0,1,3) which correctly beats `.modern table th` (0,1,2). 30 new regression-guard contract tests added.
 
-**Milestone goals:**
+**Previously shipped:** v1.14 — Landing Page Changelog (2026-05-10)
 
-- Route unauthenticated users from `root` to `/landing` with predictable behavior
-- Maintain localized, conversion-focused CTA flow on `/landing` and auth entry points
-- Preserve current signed-in home/dashboard behavior and portal gadgets
-- Add verification coverage for auth-state + locale aware entry behavior
+Changelog entries rendered on `/landing` via locale-YAML-backed `ApplicationHelper#changelog_entries`; VIEW-01–VIEW-04 Minitest coverage; tri-suite green.
 
-Narrow viewports (max-width below 768px) show a numbered tab strip above portal columns; one column is visible at a time (`portal--column-active-N`). Wide screens hide the tab strip and keep the prior multi-column layout. Implemented for modern, classic, and simple themes.
+**Previously shipped:** v1.13 — Root Entry Redirect to Landing for Guests (2026-05-08)
 
-**Previously shipped:** v1.6 — Note Gadget for All Themes (2026-05-04)
-
-The quick Note gadget is available on modern and classic themes: `/?tab=notes` shows `#notes-tab-panel` with `#welcome-home-panel` hidden (and the inverse on `/`). When `use_note` is enabled, the drawer nav includes a Note link (`t('nav.note')` / Japanese 「ノート」) to `root_path(tab: 'notes')`. Theme SCSS adds `#notes-tab-panel` styling under modern and classic token sets; `_note_gadget` labels remain locale-driven (ja/en). Regression coverage spans `welcome_controller_test`, `layout_structure_test`, and Cucumber (`モダンテーマでドロワーのノートリンクからメモを保存する`). Ship verified with `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test` green.
-
-**Previously shipped:** v1.5 — Verification Debt Cleanup (2026-05-04)
-
-v1.5 closed carry-forward verification debt for v1.2 phases 05/06/09. Each phase has a closure-ready verification document anchored to test methods and code references per the shared Phase 19 rubric. Phase 05 closes THEME-01/02/03 (`P05-C01..C03` PASS), Phase 06 closes NAV-01/02 with non-modern unaffected contract (`P06-C01..C03` PASS), Phase 09 closes STYLE-01..04 (`P09-C01..C04` PASS) anchored to `test/assets/modern_full_page_theme_contract_test.rb` selectors. Tracking documents (ROADMAP, STATE, MILESTONES, PROJECT) and milestone snapshots are consistent.
+Auth-state-based entry routing: guests are redirected from `/` to `/landing`, while signed-in users continue to use the existing dashboard at `/`.
 
 **Earlier:** v1.4 — Internationalization (2026-05-03)
 
@@ -77,14 +57,14 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Existing `/` behavior remains unchanged while landing is introduced; auth-entry and sign-in/out messaging tone is consistent in ja/en — **v1.12 Phases 41–42**
 - ✓ Unauthenticated users are redirected from `/` to `/landing`, while signed-in users keep existing dashboard behavior at `/` — **v1.13 Phases 43–45**
 - ✓ Entry-routing and landing CTA regression contracts are verified under Japanese and English locale contexts with tri-suite green — **v1.13 Phases 43–45**
+- ✓ All non-theme SCSS files audited for misplaced theme-specific selectors (0 violations found) — **v1.15 Phase 49**
+- ✓ Theme-specific styles confirmed in correct theme files; CSS architecture contract tests guard against regressions — **v1.15 Phase 49**
+- ✓ Preferences page visually verified across all 3 themes; PREFS-01 specificity regression resolved — **v1.15 Phases 50 + post-audit fix**
+- ✓ Shared components (form controls, action links, flash messages) verified for cross-theme consistency — **v1.15 Phase 50**
+- ✓ Mobile/responsive layout fixed for preferences and bookmarks tables at ≤767px across all themes — **v1.15 Phase 51**
 
 ### Active
 
-- [ ] All non-theme SCSS files audited for misplaced theme-specific selectors — v1.15
-- [ ] Theme-specific styles migrated to correct theme files (modern/classic/simple) — v1.15
-- [ ] Preferences page visually verified across all 3 themes — v1.15
-- [ ] Shared components verified for cross-theme consistency — v1.15
-- [ ] Mobile/responsive layout reviewed and issues fixed — v1.15
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 
 ### Out of Scope (revisit when planning)
@@ -100,6 +80,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.15 (2026-05-11):** CSS architecture audit (0 violations), cross-theme visual QA, mobile responsive layout, PREFS-01 specificity regression fix, 30 new contract tests. Details: `.planning/milestones/v1.15-ROADMAP.md`.
+- **Shipped v1.14 (2026-05-10):** Changelog section on `/landing` with YAML-backed data layer and VIEW test coverage. Details: `.planning/milestones/v1.14-ROADMAP.md`.
 - **Shipped v1.7 (2026-05-04):** Mobile portal layout — CSS breakpoint variable in `welcome.css.scss`, `portal_column_section` partial + `portal_mobile_tabs.js`, theme-scoped tab styling, Minitest + Cucumber. Gate: tri-suite green.
 - **Shipped v1.13 (2026-05-08):** Root entry now redirects unauthenticated users to `/landing`, preserves signed-in dashboard behavior at `/`, and adds regression coverage for auth-state + locale entry contracts.
 - **Shipped v1.6 (2026-05-04):** Note gadget extended to modern and classic themes per `.planning/milestones/v1.6-ROADMAP.md`. Audit: `.planning/milestones/v1.6-MILESTONE-AUDIT.md` (`tech_debt`: no formal per-phase `.planning/phases/` VERIFICATION/Nyquist artifacts; traceability via roadmap success criteria, REQUIREMENTS archive, tests).
@@ -138,6 +120,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Modern/classic note panels via SSR + CSS visibility classes | Matches simple-theme `?tab=notes` pattern without new client-side tab framework; `#welcome-home-panel` / `#notes-tab-panel` mutual exclusion via `welcome-tab-panel--hidden` | ✓ Good — POST/redirect friendly; `notes_tabs.js` remains simple-only |
 | Drawer Note link gated by `use_note` | Avoids surprising navigation when gadget disabled; uses `t('nav.note')` for ja/en parity | ✓ Good — aligns with existing gadget preference model |
 | Cucumber step naming for modern + `use_note` | Disambiguates “modern theme sign-in” steps from scenarios that must enable the note preference | ✓ Good — reduces ambiguous step matching |
+| Child-combinator selector for `.preferences-table th` (v1.15) | `.preferences-table > tbody > tr > th` (0,1,3) beats `.modern table th` (0,1,2) without a theme-scoped override; MOB-03 contract prohibits per-theme duplication | ✓ Good — single source of truth in `common.css.scss`; mobile media query uses same specificity for `text-align: left` |
+| Single `@media (max-width: 767px)` block for all tables (v1.15) | One block in `common.css.scss` covers all 3 themes; per-theme duplication would break MOB-03 contract | ✓ Good — clean, no duplication |
 
 ## Evolution
 
@@ -156,6 +140,14 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.15 — CSS & UI Polish (2026-05-11)
+
+**Delivered:** CSS architecture audit confirmed 0 violations across 9 non-theme SCSS files; cross-theme visual QA fixed action link colors and PREFS-01 specificity regression; mobile responsive stacking for preferences/bookmarks tables at ≤767px added to `common.css.scss`; 30 regression-guard contract tests added. Tri-suite green.
+
+### v1.14 — Landing Page Changelog (2026-05-10)
+
+**Delivered:** Changelog YAML data layer and `ApplicationHelper#changelog_entries` helper; changelog section rendered on `/landing`; VIEW-01–VIEW-04 Minitest coverage; tri-suite green.
 
 ### v1.13 — Root Entry Redirect to Landing for Guests (2026-05-08)
 
@@ -194,4 +186,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-11 — v1.15 milestone started.*
+*Last updated: 2026-05-11 after v1.15 milestone*

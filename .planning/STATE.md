@@ -18,16 +18,17 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: —
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-11 — Milestone v1.15 started
+Status: v1.15 archived. Planning next milestone.
+Last activity: 2026-05-11 — v1.15 archived, tag v1.15 created
 
 ## Project Reference
 
-See: `.planning/PROJECT.md`
+See: `.planning/PROJECT.md` (updated 2026-05-11)
 
-**Current focus:** v1.15 — CSS & UI Polish. Audit all SCSS for architectural violations, migrate misplaced theme-specific styles to their correct theme files, and verify visual consistency across modern/classic/simple themes.
+**Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
+**Current focus:** Planning v1.16
 
 ## Performance Metrics
 
