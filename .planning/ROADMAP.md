@@ -41,7 +41,7 @@
 ### Phase 47: Changelog Section View
 **Goal**: Visitors to `/landing` see a "What's New" section below the value grid with dated, tagged, localized changelog cards
 **Depends on**: Phase 46
-**Requirements**: VIEW-01, VIEW-02, VIEW-03
+**Requirements**: VIEW-01, VIEW-02, VIEW-03, VIEW-04
 **Success Criteria** (what must be TRUE):
   1. The changelog section appears below the existing value-grid on `/landing` when viewed as a guest
   2. Each card displays date, tag label, headline, and description — four distinct visual elements
