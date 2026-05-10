@@ -1,4 +1,4 @@
-<%= form_with model: @user, url: preference_path(@user) do |f| %>
+<%= form_with model: @user, url: preference_path(@user), html: { class: 'preferences-form' } do |f| %>
   <table class="preferences-table">
     <% if @user.has_valid_email? %>
       <tr>
