@@ -1,27 +1,27 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.13
-milestone_name: Root Entry Redirect to Landing for Guests
-status: complete
-stopped_at: "Milestone archived"
-last_updated: "2026-05-08T01:45:00+09:00"
-last_activity: "2026-05-08 — Milestone v1.13 archived"
+milestone: v1.14
+milestone_name: Landing Page Changelog
+status: planning
+stopped_at: ""
+last_updated: "2026-05-10T00:00:00+09:00"
+last_activity: "2026-05-10 — Milestone v1.14 started"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 45 (complete)  
-Plan: 045-01  
-Status: Milestone complete and archived  
-Last activity: 2026-05-08 — v1.13 milestone archival completed
+Phase: Not started (defining requirements)  
+Plan: —  
+Status: Defining requirements  
+Last activity: 2026-05-10 — Milestone v1.14 started
 
 ## Project Reference
 

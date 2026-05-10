@@ -8,15 +8,16 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.13 Root Entry Redirect to Landing for Guests — Completed
+## Current Milestone: v1.14 Landing Page Changelog
 
-**Goal:** Guide unauthenticated visitors to `/landing` by default while keeping authenticated dashboard behavior stable.
+**Goal:** Add a curated "What's New" section to `/landing` that shows visitors recent UX improvements as rich dated cards.
 
 **Target features:**
-- Redirect unauthenticated access from `/` to `/landing`
-- Keep `/landing` as the central acquisition entry with clear login/signup CTAs
-- Preserve authenticated `/` dashboard behavior and related UX contracts
-- Add regression guardrails for auth-state-based entry routing in ja/en
+- Curated news entries stored in locale YAML (ja/en)
+- Rich card format: date + headline + tag (UX/Fix/Performance/etc.) + description
+- ~10 most recent entries shown on `/landing`
+- Section visible to all visitors (guests + signed-in users)
+- Bilingual (Japanese + English) per existing i18n infrastructure
 
 ## Current State
 
@@ -79,7 +80,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- [ ] Define and deliver existing-user news surface (deferred from v1.12)
+- [ ] Curated changelog YAML data source with ja/en locale keys for recent UX news entries — v1.14
+- [ ] Rich "What's New" card section on `/landing` (date + headline + tag + description) — v1.14
+- [ ] ~10 most recent changelog entries rendered on `/landing` for all visitors — v1.14
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 
 ### Out of Scope (revisit when planning)
@@ -189,4 +192,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-08 — after v1.13 milestone completion.*
+*Last updated: 2026-05-10 — v1.14 milestone started.*
