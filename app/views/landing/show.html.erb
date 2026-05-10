@@ -23,4 +23,20 @@
       <p><%= t('landing.values.focus.body') %></p>
     </article>
   </section>
+
+  <section class="landing-changelog">
+    <h2 class="changelog-heading"><%= t('landing.changelog.heading') %></h2>
+    <% changelog_entries.each do |entry| %>
+      <article class="changelog-card">
+        <div class="changelog-card-meta">
+          <time class="changelog-date" datetime="<%= entry[:date] %>"><%= entry[:date] %></time>
+          <span class="changelog-tag changelog-tag--<%= entry[:tag] %>">
+            <%= t("landing.changelog.tags.#{entry[:tag]}") %>
+          </span>
+        </div>
+        <h3 class="changelog-headline"><%= entry[:headline] %></h3>
+        <p class="changelog-description"><%= entry[:description] %></p>
+      </article>
+    <% end %>
+  </section>
 </main>
