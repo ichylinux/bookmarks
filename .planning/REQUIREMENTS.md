@@ -43,12 +43,12 @@ Add a curated "What's New" section to `/landing` that shows visitors recent UX i
 
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| CLOG-01 | — | — |
-| CLOG-02 | — | — |
-| CLOG-03 | — | — |
-| CLOG-04 | — | — |
-| VIEW-01 | — | — |
-| VIEW-02 | — | — |
-| VIEW-03 | — | — |
-| VERF-01 | — | — |
-| VERF-02 | — | — |
+| CLOG-01 | Phase 46 | — |
+| CLOG-02 | Phase 46 | — |
+| CLOG-03 | Phase 46 | — |
+| CLOG-04 | Phase 46 | — |
+| VIEW-01 | Phase 47 | — |
+| VIEW-02 | Phase 47 | — |
+| VIEW-03 | Phase 47 | — |
+| VERF-01 | Phase 48 | — |
+| VERF-02 | Phase 48 | — |

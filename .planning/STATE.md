@@ -5,9 +5,9 @@ milestone_name: Landing Page Changelog
 status: planning
 stopped_at: ""
 last_updated: "2026-05-10T00:00:00+09:00"
-last_activity: "2026-05-10 — Milestone v1.14 started"
+last_activity: "2026-05-10 — Roadmap created; Phases 46–48 defined"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,16 +18,16 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)  
-Plan: —  
-Status: Defining requirements  
-Last activity: 2026-05-10 — Milestone v1.14 started
+Phase: 46 (not yet started — roadmap approved, ready for planning)
+Plan: —
+Status: Roadmap defined; awaiting phase planning
+Last activity: 2026-05-10 — Roadmap created; Phases 46–48 defined
 
 ## Project Reference
 
 See: `.planning/PROJECT.md`
 
-**Current focus:** v1.13 complete. Ready for next milestone flow.
+**Current focus:** v1.14 — Landing Page Changelog. Add curated "What's New" section to `/landing` with bilingual YAML-backed changelog cards.
 
 ## Performance Metrics
 
@@ -82,6 +82,9 @@ v1.13 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - Phase 43 executed: unauthenticated root entry now redirects to `/landing` while signed-in dashboard behavior remains unchanged.
 - Phase 44 executed: landing CTA and locale-safe entry contracts kept intact after root-entry redirect behavior update.
 - Phase 45 executed: route/controller regression coverage updated and tri-suite verification passed.
+- Phase 46 added: Changelog Data Layer (v1.14)
+- Phase 47 added: Changelog Section View (v1.14)
+- Phase 48 added: Changelog Verification Gate (v1.14)
 
 ### Pending Todos
 
@@ -106,8 +109,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08
+Last session: 2026-05-10
 
-Stopped at: Milestone v1.13 execution complete (phases 43–45) with tri-suite green.
+Stopped at: v1.14 roadmap defined (Phases 46–48). Ready to plan Phase 46.
 
-Resume: ready for next milestone initialization (`/gsd-new-milestone`).
+Resume: run `/gsd-plan-phase 46` to begin Changelog Data Layer planning.
