@@ -32,4 +32,38 @@ class LandingControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_redirected_to landing_path
   end
+
+  def test_changelogセクションがゲストに表示される
+    get landing_path
+    assert_response :success
+    assert_select 'section.landing-changelog', count: 1
+  end
+
+  def test_changelogカードに4要素が表示される
+    get landing_path
+    assert_response :success
+    assert_select '.changelog-date'
+    assert_select '.changelog-tag'
+    assert_select '.changelog-headline'
+    assert_select '.changelog-description'
+  end
+
+  def test_ログイン済みユーザーもchangelogセクションを見られる
+    sign_in User.first
+    get landing_path
+    assert_response :success
+    assert_select 'section.landing-changelog', count: 1
+  end
+
+  def test_日本語ロケールでchangelog見出しが新着情報になる
+    get landing_path
+    assert_response :success
+    assert_includes response.body, '新着情報'
+  end
+
+  def test_英語ロケールでchangelog見出しがWhatsNewになる
+    get landing_path, headers: { 'Accept-Language' => 'en-US,en;q=0.9,ja;q=0.8' }
+    assert_response :success
+    assert_select '.changelog-heading', text: /What.s New/
+  end
 end
