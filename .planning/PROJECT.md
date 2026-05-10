@@ -8,16 +8,16 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.14 Landing Page Changelog
+## Current Milestone: v1.15 CSS & UI Polish
 
-**Goal:** Add a curated "What's New" section to `/landing` that shows visitors recent UX improvements as rich dated cards.
+**Goal:** Audit all SCSS for architectural violations, migrate misplaced theme-specific styles to their correct theme files, and verify visual consistency across modern/classic/simple themes on all key surfaces.
 
 **Target features:**
-- Curated news entries stored in locale YAML (ja/en)
-- Rich card format: date + headline + tag (UX/Fix/Performance/etc.) + description
-- ~10 most recent entries shown on `/landing`
-- Section visible to all visitors (guests + signed-in users)
-- Bilingual (Japanese + English) per existing i18n infrastructure
+- Full audit of non-theme SCSS files for misplaced theme-specific selectors (.modern, .classic, .simple)
+- Migrate all violations into the correct theme file
+- Visual QA of preferences page across all 3 themes
+- Cross-theme consistency check on shared components
+- Mobile/responsive layout review and fixes
 
 ## Current State
 
@@ -80,9 +80,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- [ ] Curated changelog YAML data source with ja/en locale keys for recent UX news entries — v1.14
-- [ ] Rich "What's New" card section on `/landing` (date + headline + tag + description) — v1.14
-- [ ] ~10 most recent changelog entries rendered on `/landing` for all visitors — v1.14
+- [ ] All non-theme SCSS files audited for misplaced theme-specific selectors — v1.15
+- [ ] Theme-specific styles migrated to correct theme files (modern/classic/simple) — v1.15
+- [ ] Preferences page visually verified across all 3 themes — v1.15
+- [ ] Shared components verified for cross-theme consistency — v1.15
+- [ ] Mobile/responsive layout reviewed and issues fixed — v1.15
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 
 ### Out of Scope (revisit when planning)
@@ -192,4 +194,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-10 — v1.14 milestone started.*
+*Last updated: 2026-05-11 — v1.15 milestone started.*
