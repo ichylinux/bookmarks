@@ -176,6 +176,26 @@ ja:
     auth:
       sign_in_intro: おかえりなさい。保存した情報にすぐアクセスできます。
       sign_up_intro: 数分で始められます。気になる情報をひとつに整理しましょう。
+    changelog:
+      heading: 新着情報
+      tags:
+        ux: UX改善
+        fix: 不具合修正
+        performance: パフォーマンス
+        new: 新機能
+      entries:
+        - date: "2026-05-01"
+          headline: ランディングページを刷新しました
+          tag: ux
+          description: 訪問者向けのページデザインを一新し、サービスの特徴をより分かりやすく伝えられるようにしました。
+        - date: "2026-04-15"
+          headline: フィード読み込み速度を改善しました
+          tag: performance
+          description: フィードの更新処理を最適化し、大量のエントリがある場合の読み込み時間を短縮しました。
+        - date: "2026-03-28"
+          headline: 2段階認証に対応しました
+          tag: new
+          description: TOTPアプリを使った2段階認証を設定できるようになりました。アカウントの安全性を高めるためにご活用ください。
 
   calendars:
     get_gadget:

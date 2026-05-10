@@ -176,6 +176,26 @@ en:
     auth:
       sign_in_intro: Welcome back. Jump straight into the information you saved.
       sign_up_intro: Get started in minutes and keep everything important in one place.
+    changelog:
+      heading: What's New
+      tags:
+        ux: UX Improvement
+        fix: Bug Fix
+        performance: Performance
+        new: New Feature
+      entries:
+        - date: "2026-05-01"
+          headline: Redesigned the landing page
+          tag: ux
+          description: We refreshed the visitor-facing page to present the app's features more clearly.
+        - date: "2026-04-15"
+          headline: Faster feed loading
+          tag: performance
+          description: Optimized feed update processing to reduce load times when there are many entries.
+        - date: "2026-03-28"
+          headline: Two-factor authentication is now available
+          tag: new
+          description: You can now enable TOTP-based two-factor authentication from your preferences page.
 
   calendars:
     get_gadget:
