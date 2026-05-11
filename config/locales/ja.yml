@@ -8,6 +8,11 @@ ja:
         display_count: 表示件数
         feed_url: フィードURL
         title: サイト名
+      mastodon_account:
+        profile_url: プロフィールURL
+        display_count: 表示件数
+        instance: インスタンス
+        username: ユーザー名
       preference:
         default_priority: タスク追加時の初期優先度
         font_size: 文字サイズ
@@ -128,6 +133,7 @@ ja:
     bookmarks: ブックマーク
     todos: タスク
     feeds: フィード
+    mastodon: Mastodon
     sign_out: ログアウト
     menu_aria: メニュー
 
@@ -142,6 +148,9 @@ ja:
     feed:
       loading: フィードを取得中・・・
       fetch_failed: フィードを取得できませんでした。
+    mastodon_account:
+      loading: Mastodonのトゥートを読み込み中・・・
+      fetch_failed: Mastodonのトゥートを取得できませんでした。
     note_gadget:
       body_label: メモ
       submit: メモを保存
@@ -214,6 +223,24 @@ ja:
       feed_fetch_failed: フィードを取得できませんでした。
       submit_create: 登録
       submit_update: 更新
+
+  mastodon_accounts:
+    index:
+      add: 追加
+      empty: Mastodonアカウントが1件も登録されていません。
+      actions: 操作
+    form:
+      profile_url_placeholder: "例: https://ruby.social/@username"
+      submit_create: 登録
+      submit_update: 更新
+    show:
+      empty: 表示できる公開トゥートがありません。
+      errors:
+        timeout: Mastodonサーバーの応答が遅すぎます。
+        network: Mastodonサーバーに接続できませんでした。
+        not_found: そのインスタンス上にアカウントが見つかりません。
+        api_error: Mastodon APIがエラーを返しました。
+        parse_error: Mastodonの応答を解釈できませんでした。
 
   devise:
     sessions:

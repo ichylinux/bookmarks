@@ -1,0 +1,19 @@
+# Fixture rows set instance/username explicitly (URL callback does not run on SQL insert).
+
+one:
+  id: 1
+  user_id: 1
+  profile_url: "https://ruby.social/@FastRuby"
+  instance: ruby.social
+  username: FastRuby
+  display_count: 5
+  deleted: false
+
+two:
+  id: 2
+  user_id: 2
+  profile_url: "https://example.com/@Other"
+  instance: example.com
+  username: Other
+  display_count: 3
+  deleted: false

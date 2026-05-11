@@ -8,20 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.16 Mastodon Account Following
+## Current Milestone
 
-**Goal:** Users can follow public Mastodon accounts as live gadgets — register by profile URL, see a one-line preview of recent toots on the welcome page dashboard.
-
-**Target features:**
-- `MastodonAccount` model — per-user, stores profile URL (parsed to instance + username), user-configurable `display_count`, soft-delete via `Crud::ByUser`
-- CRUD screen (`/mastodon_accounts`) — index, new, edit, destroy; show page fetches live toots
-- Mastodon REST API client — lookup account by username on the instance, then fetch N statuses; no auth (public accounts)
-- Welcome page gadgets — each followed account is a collapsible panel (RSS feed pattern); one-line toot preview + link; auto-visible when accounts exist
-- Locale strings (ja/en) and full test coverage (Minitest + Cucumber)
+_Not started._ Use `/gsd-new-milestone` when ready to plan v1.17 (or the next chosen version).
 
 ## Current State
 
-**Status:** v1.15 shipped (2026-05-11)
+**Status:** v1.16 shipped (2026-05-12)
+
+v1.16 delivered read-only Mastodon account following: `mastodon_accounts` table and model, CRUD at `/mastodon_accounts`, `MastodonClient` service with explicit Faraday timeouts, `MastodonAccountsController#show` for HTML + XHR fragments, welcome-page gadgets wired through `Portal#get_gadgets`, Japanese/English strings, Minitest (including Faraday test adapter / stub paths) and Cucumber (`features/05.Mastodon.feature`). Tri-suite green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with documented Cucumber flake rerun).
+
+**Previously shipped:** v1.15 — CSS & UI Polish (2026-05-11)
 
 v1.15 delivered CSS architecture audit (0 violations across 9 non-theme SCSS files), cross-theme visual QA with consistency fixes, and mobile responsive layout for preferences/bookmarks tables. Post-audit PREFS-01 specificity regression resolved: `common.css.scss` now uses `.preferences-table > tbody > tr > th` (specificity 0,1,3) which correctly beats `.modern table th` (0,1,2). 30 new regression-guard contract tests added.
 
@@ -73,6 +70,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Preferences page visually verified across all 3 themes; PREFS-01 specificity regression resolved — **v1.15 Phases 50 + post-audit fix**
 - ✓ Shared components (form controls, action links, flash messages) verified for cross-theme consistency — **v1.15 Phase 50**
 - ✓ Mobile/responsive layout fixed for preferences and bookmarks tables at ≤767px across all themes — **v1.15 Phase 51**
+- ✓ Mastodon account persistence with profile URL parsing (`MastodonAccount`) and soft-delete — **v1.16 Phase 52**
+- ✓ Mastodon CRUD UI at `/mastodon_accounts` with ja/en chrome — **v1.16 Phase 53**
+- ✓ `MastodonClient` + `show` action: Faraday timeouts, HTML strip + truncate, linked previews, graceful API error states — **v1.16 Phase 54**
+- ✓ Welcome-page Mastodon gadgets (portal + AJAX load, RSS-style pattern) — **v1.16 Phase 55**
+- ✓ Minitest + Cucumber coverage for Mastodon surfaces; tri-suite gate — **v1.16 Phase 56**
 
 ### Active
 
@@ -91,6 +93,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.16 (2026-05-12):** Mastodon account following — data model, CRUD, `MastodonClient`, welcome gadgets, locales, tests. Details: `.planning/milestones/v1.16-ROADMAP.md`. Audit: `.planning/milestones/v1.16-MILESTONE-AUDIT.md`.
 - **Shipped v1.15 (2026-05-11):** CSS architecture audit (0 violations), cross-theme visual QA, mobile responsive layout, PREFS-01 specificity regression fix, 30 new contract tests. Details: `.planning/milestones/v1.15-ROADMAP.md`.
 - **Shipped v1.14 (2026-05-10):** Changelog section on `/landing` with YAML-backed data layer and VIEW test coverage. Details: `.planning/milestones/v1.14-ROADMAP.md`.
 - **Shipped v1.7 (2026-05-04):** Mobile portal layout — CSS breakpoint variable in `welcome.css.scss`, `portal_column_section` partial + `portal_mobile_tabs.js`, theme-scoped tab styling, Minitest + Cucumber. Gate: tri-suite green.
@@ -132,7 +135,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Drawer Note link gated by `use_note` | Avoids surprising navigation when gadget disabled; uses `t('nav.note')` for ja/en parity | ✓ Good — aligns with existing gadget preference model |
 | Cucumber step naming for modern + `use_note` | Disambiguates “modern theme sign-in” steps from scenarios that must enable the note preference | ✓ Good — reduces ambiguous step matching |
 | Child-combinator selector for `.preferences-table th` (v1.15) | `.preferences-table > tbody > tr > th` (0,1,3) beats `.modern table th` (0,1,2) without a theme-scoped override; MOB-03 contract prohibits per-theme duplication | ✓ Good — single source of truth in `common.css.scss`; mobile media query uses same specificity for `text-align: left` |
-| Single `@media (max-width: 767px)` block for all tables (v1.15) | One block in `common.css.scss` covers all 3 themes; per-theme duplication would break MOB-03 contract | ✓ Good — clean, no duplication |
+| `MastodonClient.stub_fetch_result` for Cucumber + controller tests | Isolates acceptance tests from the public network without WebMock | ✓ Good — cleared in hooks/teardown; documents test contract |
 
 ## Evolution
 
@@ -151,6 +154,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.16 — Mastodon Account Following (2026-05-12)
+
+**Delivered:** `mastodon_accounts` migration/model, CRUD controller + views, `MastodonClient` (lookup + statuses, strip/truncate, timeouts), `show` for gadget HTML, `Portal` gadget registration, welcome partial + jQuery AJAX, ja/en locales, Minitest + Cucumber (`@mastodon_gadget`). Tri-suite green at close.
 
 ### v1.15 — CSS & UI Polish (2026-05-11)
 
@@ -197,4 +204,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-11 after v1.15 milestone*
+*Last updated: 2026-05-12 after v1.16 milestone*

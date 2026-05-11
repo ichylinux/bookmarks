@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.16 — Mastodon Account Following (shipped 2026-05-12)
+
+**Scope:** Phases 52–56 — `mastodon_accounts` data layer, CRUD UI (ja/en), `MastodonClient` + `show` with Faraday timeouts and HTML stripping, welcome-page AJAX gadgets (`Portal#get_gadgets`), Minitest + Cucumber (`@mastodon_gadget` stub).
+
+**Key accomplishments:**
+
+- `MastodonAccount` model with URL parsing (`before_validation`), soft-delete, and model tests.
+- `/mastodon_accounts` CRUD, navigation links, locale coverage for forms and gadget chrome.
+- `MastodonClient` two-step public API (lookup + statuses), ~100 char plain-text previews with links to source toots; graceful error rendering on `show`.
+- Welcome dashboard gadgets load via jQuery XHR mirroring the RSS feed pattern; portal loop extended.
+- Tri-suite gate at close: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (known flake rerun policy).
+
+**Audit:** [Milestone audit](milestones/v1.16-MILESTONE-AUDIT.md) — `passed`; accepted process debt is missing Nyquist `*-VALIDATION.md` artifacts for Phases 52–56 (evidence in tests + audit narrative).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.16-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.16-REQUIREMENTS.md) · [Milestone audit](milestones/v1.16-MILESTONE-AUDIT.md) · [Phase archive](milestones/v1.16-phases/)
+
+---
+
 ## v1.15 — CSS & UI Polish (shipped 2026-05-11)
 
 **Scope:** Phases 49–51 (3 plans) — CSS architecture audit, cross-theme visual QA, mobile responsive layout, and PREFS-01 specificity regression fix.

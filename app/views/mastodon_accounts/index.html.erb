@@ -1,0 +1,27 @@
+<div class="actions">
+  <%= link_to t('mastodon_accounts.index.add'), new_mastodon_account_path %>
+</div>
+
+<% unless @mastodon_accounts.present? %>
+  <div><%= t('mastodon_accounts.index.empty') %></div>
+<% else %>
+  <table class="mastodon_accounts">
+    <tr>
+      <th><%= MastodonAccount.human_attribute_name :profile_url %></th>
+      <th><%= MastodonAccount.human_attribute_name :display_count %></th>
+      <th colspan="2"><%= t('mastodon_accounts.index.actions') %></th>
+    </tr>
+
+    <% @mastodon_accounts.each do |account| %>
+      <tr>
+        <td><div class="profile_url"><%= account.profile_url %></div></td>
+        <td class="center"><%= account.display_count %></td>
+        <td><%= link_to t('actions.edit'), edit_mastodon_account_path(account) %></td>
+        <td>
+          <%= link_to t('actions.delete'), mastodon_account_path(account), method: 'delete',
+                confirm: t('messages.confirm_delete', name: account.profile_url) %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

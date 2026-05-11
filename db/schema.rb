@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_12_120000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -29,6 +29,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_190000) do
     t.string "title", null: false
     t.datetime "updated_at"
     t.integer "user_id", null: false
+  end
+
+  create_table "mastodon_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "deleted", default: false, null: false
+    t.integer "display_count", default: 5, null: false
+    t.string "instance", null: false
+    t.string "profile_url", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.string "username", null: false
+    t.index ["user_id"], name: "index_mastodon_accounts_on_user_id"
   end
 
   create_table "notes", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

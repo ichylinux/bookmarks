@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :mastodon_accounts, only: %i[index show new create edit update destroy]
+
   resources :notes, only: [:create, :update, :destroy]
 
   resources :preferences, only: ['index', 'create', 'update']

@@ -71,7 +71,11 @@ class Portal < ApplicationRecord
     Feed.where(user_id: user.id, deleted: false).each do |f|
       ret[f.gadget_id] = f
     end
-    
+
+    MastodonAccount.where(user_id: user.id).not_deleted.order(:instance, :username).each do |m|
+      ret[m.gadget_id] = m
+    end
+
     ret
   end
 

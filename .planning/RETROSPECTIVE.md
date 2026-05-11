@@ -264,6 +264,45 @@
 
 ---
 
+## Milestone: v1.16 — Mastodon Account Following
+
+**Shipped:** 2026-05-12  
+**Phases:** 5 (52–56) | **Plans:** (inline / code-first; minimal `.planning/phases/` artifacts)
+
+### What Was Built
+
+- `mastodon_accounts` table + `MastodonAccount` model (`before_validation` URL parse, `Crud::ByUser`, `not_deleted` / `destroy_logically!`).
+- `MastodonAccountsController` CRUD + `show` (HTML + XHR); `MastodonClient` (Faraday lookup + statuses, `strip_tags` + truncate, structured errors).
+- `Portal#get_gadgets` registration + `welcome/_mastodon_account.html.erb` jQuery `$.get` gadget loads.
+- Locales (ja/en) for management UI, gadget chrome, and API error strings; nav links to `/mastodon_accounts`.
+- Minitest (`mastodon_client_test`, extended controller tests) and Cucumber `05.Mastodon.feature` with `@mastodon_gadget` + global `MastodonAccount.delete_all` in hooks to prevent scenario leakage.
+
+### What Worked
+
+- **Reuse of feed gadget contract:** same AJAX replace pattern reduced UX and JS surprise.
+- **Explicit stub seam:** `MastodonClient.stub_fetch_result` kept Cucumber off the live network without adding WebMock.
+
+### What Was Inefficient
+
+- **GSD automation unavailable:** `gsd-sdk query` / `milestone.complete` not present in this runtime — audit, archive, and roadmap/requirements surgery were done manually.
+- **Sparse phase artifacts:** only `052-*` context lived under `.planning/phases/`; no per-phase VERIFICATION/Nyquist files for 53–56.
+
+### Patterns Established
+
+- **Tri-suite as the ship gate** when formal phase VERIFICATION files are absent.
+- **Cucumber data isolation:** destructive `MastodonAccount.delete_all` in `Before` + tagged stub for Mastodon-only scenarios.
+
+### Key Lessons
+
+1. When automation CLIs are missing, still produce `v*-MILESTONE-AUDIT.md` + archived REQUIREMENTS so the next milestone starts clean.
+2. For third-party HTTP, Faraday `:test` stubs in unit tests plus a class-level stub for E2E is enough without WebMock — document the contract in audit tech_debt.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -276,6 +315,7 @@
 | v1.4 | 7 (14–18.2) | First milestone with mid-flight gap-closure phases (18.1, 18.2) added after audit; first cross-cutting concern (locale) wired through every surface |
 | v1.5 | 4 (19–22) | First verification-debt-only milestone; shared rubric phase + per-document closure phases + explicit milestone sync phase |
 | v1.6 | 3 (23–25) | First milestone shipped entirely without `.planning/phases/` directories — roadmap + audit + tests carry traceability |
+| v1.16 | 5 (52–56) | Manual milestone close (no `gsd-sdk`); tri-suite + audit file carry traceability; Cucumber uses global DB reset for new gadget type |
 
 ### Cumulative quality
 
@@ -287,6 +327,7 @@
 | v1.4 | Minitest 191/1101 + Cucumber 9/28 green | Locale key parity test enforced; pre-existing Cucumber scenario-order flake surfaced and deferred |
 | v1.5 | Minitest + Cucumber green (one-rerun policy) | No new user-facing features; evidence-only + 2 test file changes (+38+16 lines) |
 | v1.6 | Minitest + Cucumber green (one-rerun policy) | Theme/UI expansion only; milestone audit notes missing Nyquist artifacts |
+| v1.16 | Minitest + Cucumber green (one-rerun policy) | New external HTTP client + gadget; Faraday test adapter + class stub for E2E |
 
 ### Top lessons (carry forward)
 

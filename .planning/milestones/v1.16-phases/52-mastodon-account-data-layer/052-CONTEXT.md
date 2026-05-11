@@ -40,14 +40,14 @@ Accept both path styles that Mastodon instances emit:
 
 Both `https://` and `http://` schemes are accepted. Reject Mastodon handle notation (`@FastRuby@ruby.social`) — the form label guides users to enter a URL.
 
-Implementation: use `URI.parse` for host extraction; match path with a regex covering both patterns.
+Normalize trailing slashes before matching (browsers often append them):
 
 ```ruby
 PROFILE_URL_PATTERN = %r{\A(?:https?://)?([^/]+)/(?:@|users/)([^/?#]+)\z}
 
 def parse_profile_url
   return if profile_url.blank?
-  m = PROFILE_URL_PATTERN.match(profile_url.strip)
+  m = PROFILE_URL_PATTERN.match(profile_url.strip.chomp('/'))
   return unless m
   self.instance = m[1].downcase
   self.username = m[2]
@@ -86,6 +86,8 @@ end
 `destroy_logically!` and `.not_deleted` are both provided to all models by the daddy gem's railtie (`Daddy::Models::CrudExtension` and `Daddy::Models::QueryExtension` — included into `ActiveRecord::Base` at boot). No additional code needed in the model. The `deleted` column must exist in the migration with `null: false, default: false`.
 
 `Crud::ByUser` provides user-scoped authorization predicates only (`readable_by?`, `updatable_by?`, `deletable_by?`) — it does not add soft-delete behavior.
+
+Do NOT add a Rails `default_scope`. No other model in this codebase uses `default_scope` for soft-delete. Controllers and associations call `.not_deleted` explicitly (e.g., `MastodonAccount.where(user_id: user.id).not_deleted`). The model test for "削除済みレコードはデフォルトスコープで除外される" tests `.not_deleted` explicitly — the Japanese phrase "default scope" in the test name is informal, not a Rails `default_scope`.
 
 ### Migration Schema
 

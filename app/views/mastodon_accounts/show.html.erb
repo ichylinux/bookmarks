@@ -1,0 +1,19 @@
+<% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<div>
+  <div class="title"><%= link_to @mastodon_account.title, @mastodon_account.profile_url, link_opts %></div>
+  <% if @mastodon_error %>
+    <ol>
+      <li><span><%= t("mastodon_accounts.show.errors.#{@mastodon_error}") %></span></li>
+    </ol>
+  <% elsif @mastodon_items.blank? %>
+    <ol>
+      <li><span><%= t('mastodon_accounts.show.empty') %></span></li>
+    </ol>
+  <% else %>
+    <ol>
+      <% @mastodon_items.each do |item| %>
+        <li><%= link_to item[:text], item[:url], link_opts %></li>
+      <% end %>
+    </ol>
+  <% end %>
+</div>

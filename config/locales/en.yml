@@ -8,6 +8,11 @@ en:
         display_count: Display count
         feed_url: Feed URL
         title: Site name
+      mastodon_account:
+        profile_url: Profile URL
+        display_count: Display count
+        instance: Instance
+        username: Username
       preference:
         default_priority: Default priority
         font_size: Font size
@@ -128,6 +133,7 @@ en:
     bookmarks: Bookmarks
     todos: Tasks
     feeds: Feeds
+    mastodon: Mastodon
     sign_out: Sign out
     menu_aria: Menu
 
@@ -142,6 +148,9 @@ en:
     feed:
       loading: Loading feed...
       fetch_failed: Could not fetch the feed.
+    mastodon_account:
+      loading: Loading Mastodon toots...
+      fetch_failed: Could not load Mastodon toots.
     note_gadget:
       body_label: Note
       submit: Save Note
@@ -214,6 +223,24 @@ en:
       feed_fetch_failed: Could not fetch the feed.
       submit_create: Create
       submit_update: Update
+
+  mastodon_accounts:
+    index:
+      add: Add
+      empty: No Mastodon accounts have been added.
+      actions: Actions
+    form:
+      profile_url_placeholder: "e.g. https://ruby.social/@username"
+      submit_create: Create
+      submit_update: Update
+    show:
+      empty: No public toots to display.
+      errors:
+        timeout: The Mastodon server took too long to respond.
+        network: Could not reach the Mastodon server.
+        not_found: Account not found on that instance.
+        api_error: Mastodon API returned an error.
+        parse_error: Could not read the Mastodon response.
 
   devise:
     sessions:

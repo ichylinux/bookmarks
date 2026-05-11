@@ -1,0 +1,17 @@
+<%= form_for @mastodon_account do |f| %>
+  <table>
+    <tr>
+      <th><%= f.label :profile_url %></th>
+      <td>
+        <%= f.text_field :profile_url, class: 'profile_url', placeholder: t('.profile_url_placeholder') %>
+      </td>
+    </tr>
+    <tr>
+      <th><%= f.label :display_count %></th>
+      <td><%= f.number_field :display_count, class: 'display_count' %></td>
+    </tr>
+    <tr>
+      <td colspan="2"><%= f.submit @mastodon_account.new_record? ? t('.submit_create') : t('.submit_update') %></td>
+    </tr>
+  </table>
+<% end %>

@@ -14,6 +14,8 @@ class User < ApplicationRecord
   # hard-delete of User must not synchronously load/destroy unbounded notes (see ROADMAP).
   has_many :notes
 
+  has_many :mastodon_accounts
+
   has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
   after_save :create_default_portal
 

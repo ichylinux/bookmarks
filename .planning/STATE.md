@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.16
-milestone_name: Mastodon Account Following
-status: planning
-stopped_at: "Phase 52 context gathered"
-last_updated: "2026-05-12T00:00:00+09:00"
-last_activity: "2026-05-12 — Phase 52 context captured (self-discuss mode)"
+milestone: none
+milestone_name: (next not started)
+status: idle
+stopped_at: v1.16 milestone archived 2026-05-12. ROADMAP/REQUIREMENTS reset; git tag v1.16 recommended after commit.
+last_updated: "2026-05-12T12:00:00.000Z"
+last_activity: 2026-05-12
 progress:
-  total_phases: 5
+  total_phases: 0
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,34 +18,30 @@ progress:
 
 ## Current Position
 
-Phase: Not started (roadmap defined, ready to plan Phase 52)
+Phase: —
 Plan: —
-Status: Ready to plan
-Last activity: 2026-05-12 — v1.16 roadmap written, 5 phases (52–56), 12 requirements mapped
+Status: Awaiting `/gsd-new-milestone`
+Last activity: 2026-05-12
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] —
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-11)
+See: `.planning/PROJECT.md` (updated 2026-05-12)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.16 — Mastodon Account Following
+
+**Current focus:** Plan the next milestone (v1.17+).
 
 ## Performance Metrics
 
-v1.15 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`.
+v1.16 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (Cucumber flake rerun policy per `CLAUDE.md`).
 
 ## Accumulated Context
 
 ### Decisions
 
-- MastodonAccount uses `Crud::ByUser` soft-delete (same pattern as notes/todos/feeds).
-- MastodonClient uses Faraday with explicit connect + read timeouts; no OAuth (public accounts only).
-- Two-step API: `/api/v1/accounts/lookup?acct=username` then `/api/v1/accounts/{id}/statuses?limit=N`.
-- Show action on MastodonAccountsController renders full layout for non-XHR, layout-less for XHR (gadget pattern).
-- Test isolation: Faraday test adapter stubs in Minitest (no WebMock dependency).
-- Welcome page integration follows RSS feed gadget pattern: Portal#get_gadgets loop + `_mastodon_account.html.erb` partial.
+- v1.16 Mastodon: public API only; Faraday timeouts; gadget AJAX pattern matches feeds; `MastodonClient.stub_fetch_result` for Cucumber.
 
 ### Pending Todos
 
@@ -57,8 +53,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-12 (v1.16 roadmap created)
+Last session: 2026-05-12 (v1.16 milestone audit + archive + cleanup)
 
-Stopped at: Roadmap written. Requirements traceability table populated.
-
-Resume: run `/gsd-plan-phase 52` to begin MastodonAccount data layer.
+Resume: `/gsd-new-milestone` to start the next version; push `v1.16` tag after committing if desired.
