@@ -7,7 +7,6 @@ one:
   instance: ruby.social
   username: FastRuby
   display_count: 5
-  deleted: false
 
 two:
   id: 2
@@ -16,4 +15,3 @@ two:
   instance: example.com
   username: Other
   display_count: 3
-  deleted: false

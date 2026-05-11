@@ -50,11 +50,9 @@ class Portal < ApplicationRecord
   def get_gadgets
     ret = {}
     
-    [BookmarkGadget].each do |klass|
-      gadget = klass.new(user)
-      if gadget.visible?
-        ret[gadget.gadget_id] = gadget
-      end
+    gadget = BookmarkGadget.new(user)
+    if gadget.visible?
+      ret[gadget.gadget_id] = gadget
     end
 
     if user.preference.use_todo?
@@ -68,11 +66,11 @@ class Portal < ApplicationRecord
       ret[cal.gadget_id] = cal
     end
 
-    Feed.where(user_id: user.id, deleted: false).each do |f|
+    Feed.where(user_id: user.id).not_deleted.each do |f|
       ret[f.gadget_id] = f
     end
 
-    MastodonAccount.where(user_id: user.id).not_deleted.order(:instance, :username).each do |m|
+    MastodonAccount.where(user_id: user.id).not_deleted.each do |m|
       ret[m.gadget_id] = m
     end
 

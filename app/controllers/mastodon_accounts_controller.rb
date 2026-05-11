@@ -67,7 +67,7 @@ class MastodonAccountsController < ApplicationController
       head :not_found and return
     end
 
-    head :not_found and return if @mastodon_account.deleted
+    head :not_found and return if @mastodon_account.deleted?
   end
 
   def mastodon_account_params
