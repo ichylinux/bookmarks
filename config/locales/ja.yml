@@ -194,6 +194,14 @@ ja:
         performance: パフォーマンス
         new: 新機能
       entries:
+        - date: "2026-05-12"
+          headline: Mastodonアカウント連携に対応しました
+          tag: new
+          description: Mastodonアカウントを登録して、ダッシュボードのガジェットに最新トゥートを表示できるようになりました。
+        - date: "2026-05-12"
+          headline: ブックマーク作成時のタイトル取得を修正しました
+          tag: fix
+          description: 「URLから取得」でページタイトルを取得できないことがある不具合を修正しました。
         - date: "2026-05-01"
           headline: ランディングページを刷新しました
           tag: ux

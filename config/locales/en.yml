@@ -194,6 +194,14 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-12"
+          headline: Mastodon account integration
+          tag: new
+          description: You can now register a Mastodon account and show recent toots in the dashboard gadget.
+        - date: "2026-05-12"
+          headline: Fixed bookmark title fetching
+          tag: fix
+          description: We fixed an issue where "Fetch from URL" could not retrieve page titles during bookmark creation.
         - date: "2026-05-01"
           headline: Redesigned the landing page
           tag: ux
