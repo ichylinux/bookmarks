@@ -66,15 +66,15 @@ Users can follow public Mastodon accounts as live gadgets — register by profil
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| MAST-01 | — | pending |
-| MAST-02 | — | pending |
-| MAST-03 | — | pending |
-| MAST-04 | — | pending |
-| MAST-05 | — | pending |
-| MAST-06 | — | pending |
-| MAST-07 | — | pending |
-| MAST-08 | — | pending |
-| MAST-09 | — | pending |
-| MAST-10 | — | pending |
-| MAST-11 | — | pending |
-| MAST-12 | — | pending |
+| MAST-01 | Phase 53 | pending |
+| MAST-02 | Phase 53 | pending |
+| MAST-03 | Phase 53 | pending |
+| MAST-04 | Phase 53 | pending |
+| MAST-05 | Phase 52 | pending |
+| MAST-06 | Phase 54 | pending |
+| MAST-07 | Phase 54 | pending |
+| MAST-08 | Phase 55 | pending |
+| MAST-09 | Phase 54 | pending |
+| MAST-10 | Phase 53 | pending |
+| MAST-11 | Phase 56 | pending |
+| MAST-12 | Phase 56 | pending |
