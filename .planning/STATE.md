@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.16
 milestone_name: Mastodon Account Following
 status: planning
-stopped_at: ""
+stopped_at: "Phase 52 context gathered"
 last_updated: "2026-05-12T00:00:00+09:00"
-last_activity: "2026-05-12 — Roadmap created (Phases 52–56)"
+last_activity: "2026-05-12 — Phase 52 context captured (self-discuss mode)"
 progress:
   total_phases: 5
   completed_phases: 0
