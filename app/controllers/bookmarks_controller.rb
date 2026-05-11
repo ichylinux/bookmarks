@@ -1,3 +1,5 @@
+require 'uri'
+
 class BookmarksController < ApplicationController
   before_action :preload_bookmark, only: ['show', 'edit', 'update', 'destroy']
 
@@ -60,8 +62,9 @@ class BookmarksController < ApplicationController
   end
 
   def fetch_title
-    url = params[:url].to_s.strip
-    raise ArgumentError, 'blank url' if url.blank?
+    raw_url = params[:url].to_s.strip
+    raise ArgumentError, 'blank url' if raw_url.blank?
+    url = safe_fetch_title_url!(raw_url)
 
     conn = Faraday.new do |f|
       f.options.timeout      = 5
@@ -79,6 +82,30 @@ class BookmarksController < ApplicationController
   end
 
   private
+
+  def safe_fetch_title_url!(raw_url)
+    uri = URI.parse(raw_url)
+    raise ArgumentError, 'invalid url' unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+    raise ArgumentError, 'invalid host' if uri.host.blank?
+    raise ArgumentError, 'host not allowed' unless allowed_fetch_title_host?(uri.host)
+
+    uri.to_s
+  rescue URI::InvalidURIError
+    raise ArgumentError, 'invalid url'
+  end
+
+  def allowed_fetch_title_host?(host)
+    normalized_host = host.downcase
+    fetch_title_allowed_hosts.any? do |allowed|
+      normalized_host == allowed || normalized_host.end_with?(".#{allowed}")
+    end
+  end
+
+  def fetch_title_allowed_hosts
+    %w[
+      example.com
+    ]
+  end
 
   def preload_bookmark
     @bookmark = Bookmark.find(params[:id])
