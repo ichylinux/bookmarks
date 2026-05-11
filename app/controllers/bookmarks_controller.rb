@@ -87,24 +87,10 @@ class BookmarksController < ApplicationController
     uri = URI.parse(raw_url)
     raise ArgumentError, 'invalid url' unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
     raise ArgumentError, 'invalid host' if uri.host.blank?
-    raise ArgumentError, 'host not allowed' unless allowed_fetch_title_host?(uri.host)
 
     uri.to_s
   rescue URI::InvalidURIError
     raise ArgumentError, 'invalid url'
-  end
-
-  def allowed_fetch_title_host?(host)
-    normalized_host = host.downcase
-    fetch_title_allowed_hosts.any? do |allowed|
-      normalized_host == allowed || normalized_host.end_with?(".#{allowed}")
-    end
-  end
-
-  def fetch_title_allowed_hosts
-    %w[
-      example.com
-    ]
   end
 
   def preload_bookmark
