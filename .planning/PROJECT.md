@@ -8,6 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.16 Mastodon Account Following
+
+**Goal:** Users can follow public Mastodon accounts as live gadgets — register by profile URL, see a one-line preview of recent toots on the welcome page dashboard.
+
+**Target features:**
+- `MastodonAccount` model — per-user, stores profile URL (parsed to instance + username), user-configurable `display_count`, soft-delete via `Crud::ByUser`
+- CRUD screen (`/mastodon_accounts`) — index, new, edit, destroy; show page fetches live toots
+- Mastodon REST API client — lookup account by username on the instance, then fetch N statuses; no auth (public accounts)
+- Welcome page gadgets — each followed account is a collapsible panel (RSS feed pattern); one-line toot preview + link; auto-visible when accounts exist
+- Locale strings (ja/en) and full test coverage (Minitest + Cucumber)
+
 ## Current State
 
 **Status:** v1.15 shipped (2026-05-11)

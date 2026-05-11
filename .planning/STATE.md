@@ -1,27 +1,27 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.15
-milestone_name: CSS & UI Polish
-status: complete
+milestone: v1.16
+milestone_name: Mastodon Account Following
+status: planning
 stopped_at: ""
-last_updated: "2026-05-11T00:00:00+09:00"
-last_activity: "2026-05-11 — Phase 51 complete, v1.15 shipped"
+last_updated: "2026-05-12T00:00:00+09:00"
+last_activity: "2026-05-12 — Milestone v1.16 started"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 1
-  completed_plans: 1
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.15 archived. Planning next milestone.
-Last activity: 2026-05-11 — v1.15 archived, tag v1.15 created
+Status: Defining requirements
+Last activity: 2026-05-12 — Milestone v1.16 started
 
 ## Project Reference
 
