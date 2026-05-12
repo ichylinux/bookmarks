@@ -1,371 +1,227 @@
-# Architecture Research — Mastodon Account Following
+# Architecture Research — Email Registration for X/Twitter Users
 
-**Project:** Bookmarks v1.16
-**Researched:** 2026-05-12
-**Confidence:** HIGH (based on direct code inspection of all referenced files)
+**Researched:** 2026-05-13
+**Confidence:** HIGH (all findings from direct codebase inspection)
 
----
+## Summary
+
+Twitter/X users sign in via OmniAuth and are assigned a `dummy_<uuid>@example.com` email to satisfy Devise's `:validatable` uniqueness constraint. The email registration flow replaces that dummy email with a real one, which simultaneously unlocks Google OAuth account linking (because `User.from_omniauth` for the Google path matches on `email`). The feature is entirely self-contained within the existing Devise + preferences architecture — no new data model is needed, only a dedicated controller action, a model validation, locale keys, and a targeted view section.
+
+## Integration Points
+
+### 1. `User#has_valid_email?` (app/models/user.rb:43)
+
+The sentinel already exists. It returns `false` when `email` matches `/^dummy_.+@example.com$/`. The preferences view already gates the `name` field on `has_valid_email?` (line 3). The email registration UI uses the same guard — show the registration link when `!@user.has_valid_email?`.
+
+### 2. `User.from_omniauth` — Google branch (app/models/user.rb:29)
+
+```ruby
+user = User.where(email: data["email"]).first
+user ||= User.create(email: data['email'], ...)
+```
+
+Google sign-in already does an exact-match lookup on `email`. Once the Twitter user's dummy email is replaced with a real email, this lookup will find and sign in the same `User` record. No change to `from_omniauth` is needed.
+
+### 3. `PreferencesController` (app/controllers/preferences_controller.rb)
+
+The controller drives the preferences page. The email update action belongs in a dedicated `EmailRegistrationsController` rather than in `PreferencesController`. The pattern in this app is controller-per-concern (2FA has its own `users/two_factor_setup_controller.rb`). Email registration has different concerns from preferences: it requires a uniqueness guard at update time, it conditionally shows/hides the form based on dummy-email status, and it should not intermix with the preferences `user_params` permitted list.
+
+### 4. `users` table — no migration needed
+
+The `users` table already has `email` (string, unique index, not null). There is no `provider`-type lock. The dummy email is just a string — overwriting it with a real email is a plain `user.update(email:)` call. The unique index provides DB-level uniqueness enforcement to back up Devise's application-level check.
+
+### 5. Devise `:validatable` — existing validation surface
+
+`:validatable` provides email format and uniqueness validation automatically. No custom uniqueness validator needs to be written. The key addition is a model-level guard that rejects updates to a new dummy-pattern email (defense against a user manually constructing `dummy_x@example.com` to revert their status).
+
+### 6. `preferences/index.html.erb` — existing view touchpoint
+
+The view already checks `@user.has_valid_email?` to decide whether to show the `name` field. The email registration entry point (a link to the registration page) is added as a new row in this view, gated on `!@user.has_valid_email?`.
+
+### 7. Locale files (config/locales/en.yml, ja.yml)
+
+The `preferences.index` namespace is where preferences-page labels live. New keys for the link text belong there. Keys for the standalone registration page belong under `email_registrations.*`.
+
+### 8. Devise `:registerable` + `users/omniauth_callbacks_controller.rb`
+
+`handle_callback` calls `sign_in_and_redirect` directly (bypasses password). After an email update, the next Google sign-in will hit `User.where(email: data["email"]).first` and find the existing account. No change to the callbacks controller is needed.
 
 ## New Components
 
-| File | Type | Purpose |
-|------|------|---------|
-| `app/models/mastodon_account.rb` | Model | Per-user Mastodon account record; holds parsed instance_host + username; exposes `statuses`, `gadget_id`, `visible?` |
-| `app/models/mastodon_client.rb` | Service class | Calls Mastodon REST API: `/api/v1/accounts/lookup` then `/api/v1/accounts/:id/statuses`; stateless; injected with instance_host + username |
-| `app/controllers/mastodon_accounts_controller.rb` | Controller | CRUD mirroring FeedsController; `preload_mastodon_account` before_action; show fetches live statuses |
-| `app/views/mastodon_accounts/index.html.erb` | View | Table of registered accounts (mirrors feeds/index) |
-| `app/views/mastodon_accounts/new.html.erb` | View | Renders `_form` partial |
-| `app/views/mastodon_accounts/edit.html.erb` | View | Renders `_form` partial |
-| `app/views/mastodon_accounts/_form.html.erb` | Partial | Form with `profile_url`, `name`, `display_count` fields |
-| `app/views/mastodon_accounts/show.html.erb` | View | Renders live statuses list (server-side, no XHR) |
-| `app/views/welcome/_mastodon_account.html.erb` | Partial | Gadget panel; XHR-loads show action identical to `_feed.html.erb` pattern |
-| `db/migrate/TIMESTAMP_create_mastodon_accounts.rb` | Migration | Creates `mastodon_accounts` table |
-| `config/locales/ja.yml` (additions) | Locale | Keys for mastodon_accounts views |
-| `config/locales/en.yml` (additions) | Locale | Keys for mastodon_accounts views |
-| `test/models/mastodon_account_test.rb` | Test | URL parsing, validations, default display_count |
-| `test/models/mastodon_client_test.rb` | Test | HTTP call contract with stubbed responses |
-| `test/controllers/mastodon_accounts_controller_test.rb` | Test | CRUD actions, auth isolation |
-| `features/mastodon_account.feature` | Cucumber | E2E: register account → welcome gadget appears |
+### `EmailRegistrationsController`
 
----
+```
+app/controllers/email_registrations_controller.rb
+```
+
+Actions:
+- `new` (GET `/email_registration/new`) — renders the email entry form; redirects users who already have a valid email back to preferences (guard against URL manipulation)
+- `create` (POST `/email_registration`) — validates and saves the new email; on success, redirects to `preferences_path` with flash; on failure, re-renders form with errors
+
+Strong params: permit only `:email`. Never include password, preference, or other User attributes.
+
+### Route addition
+
+```ruby
+resource :email_registration, only: [:new, :create]
+```
+
+Singular resource — one email per user. Generates `GET /email_registration/new` and `POST /email_registration`.
+
+### View: `app/views/email_registrations/new.html.erb`
+
+A standalone page with a single email field and submit button. Inline error display using `@user.errors.full_messages` (consistent with Devise registration view pattern). The page is only reachable by authenticated users; `before_action :authenticate_user!` applies via `ApplicationController`.
+
+### Partial or inline section in `preferences/index.html.erb`
+
+A new table row visible only when `!@user.has_valid_email?`:
+
+```erb
+<% unless @user.has_valid_email? %>
+  <tr>
+    <th><%= t('preferences.index.email_registration.label') %></th>
+    <td><%= link_to t('preferences.index.email_registration.link'), new_email_registration_path %></td>
+  </tr>
+<% end %>
+```
+
+This is a link only, not a form — the update happens on the dedicated page.
 
 ## Modified Components
 
-| File | Change |
-|------|--------|
-| `app/models/portal.rb` — `get_gadgets` | Add `MastodonAccount.where(user_id: user.id, deleted: false).each { |a| ret[a.gadget_id] = a }` block, mirroring the Feed loop at the bottom of `get_gadgets` |
-| `config/routes.rb` | Add `resources :mastodon_accounts` |
-| `config/locales/ja.yml` | Add `mastodon_accounts:` namespace |
-| `config/locales/en.yml` | Add `mastodon_accounts:` namespace |
+### `app/models/user.rb`
 
-No changes required to `WelcomeController`, `ApplicationController`, or layout files. The portal machinery (`portal_column_section` partial + `Portal#get_gadgets`) already dispatches `render g.class.name.underscore, gadget: g` — adding `MastodonAccount` to `get_gadgets` is the only portal-level change needed.
-
----
-
-## Data Model
-
-### Table: `mastodon_accounts`
-
-| Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
-| `id` | integer | PK | |
-| `user_id` | integer | NOT NULL | FK to users; never in strong params |
-| `name` | string | NOT NULL | User-supplied display label (like Feed#title) |
-| `profile_url` | string | NOT NULL | Raw input: `https://mastodon.social/@alice` |
-| `instance_host` | string | NOT NULL | Parsed from profile_url: `mastodon.social` |
-| `username` | string | NOT NULL | Parsed from profile_url: `alice` |
-| `display_count` | integer | NOT NULL, default: 5 | Max toots to show |
-| `deleted` | boolean | NOT NULL, default: false | Soft-delete (matches Feed/Todo/Note pattern) |
-| `created_at` | datetime | | |
-| `updated_at` | datetime | | |
-
-### Indexes
+Add a validation that rejects dummy-pattern emails on any update:
 
 ```ruby
-add_index :mastodon_accounts, [:user_id, :deleted]
+validates :email, format: { without: /\Adummy_.+@example\.com\z/, message: :invalid }
 ```
 
-### Constraints / Validations (model layer)
+This fires on all saves, preventing any path from storing a dummy email except the Twitter `from_omniauth` path which bypasses validations via `User.create` (which does run validations — so the `from_omniauth` Twitter branch must continue using a non-dummy-pattern email format or the validation must be scoped to `on: :update` only).
 
-- `validates :name, presence: true`
-- `validates :profile_url, presence: true`
-- `validates :instance_host, presence: true`
-- `validates :username, presence: true`
-- `validates :display_count, numericality: { greater_than: 0 }`
-- `include Crud::ByUser` (provides `readable_by?`, `updatable_by?`, `deletable_by?`)
-
-The `deleted` boolean (not `deleted_at` timestamp) matches every other soft-deleted model in this codebase (Feed, Todo, Note, Portal). Use `deleted: false` scope or `.not_deleted` — do not introduce `deleted_at`.
-
----
-
-## API Client Design
-
-### Decision: Separate service class (`MastodonClient`), not a model method
-
-Feed uses private model methods (`retrieve_feed`, `base_url`, `request_path`, `request_params`) because the HTTP logic is tightly coupled to parsing the `feed_url` column. For Mastodon, the API interaction is a two-step operation (lookup by username to get numeric ID, then fetch statuses by that ID) and carries more error surface (rate limits, instance-level 404, JSON parsing vs Feedjira). Keeping it in a service class:
-
-- Keeps `MastodonAccount` focused on persistence and gadget contract
-- Makes the HTTP layer independently testable with stubbed responses
-- Follows the same motivation as the Feed pattern but separates concerns more cleanly for a heavier API surface
-
-### `MastodonClient` interface
+**Scoping decision:** Apply `on: :update` to avoid breaking the `from_omniauth` Twitter create path. The Twitter create path generates `dummy_<uuid>@example.com` on new record creation; `:validatable` uniqueness still applies. The new guard only needs to prevent a user from saving a dummy-pattern email via the registration form.
 
 ```ruby
-class MastodonClient
-  class NetworkError < StandardError; end
-  class AccountNotFound < StandardError; end
-  class RateLimitError < StandardError; end
-  class ApiError < StandardError
-    attr_reader :status
-    def initialize(msg, status: nil)
-      super(msg)
-      @status = status
-    end
-  end
-
-  def initialize(instance_host)
-    @instance_host = instance_host
-    @base_url = "https://#{instance_host}"
-  end
-
-  # Step 1: GET /api/v1/accounts/lookup?acct=username => account_id
-  # Step 2: GET /api/v1/accounts/:account_id/statuses?limit=N&exclude_replies=true&exclude_reblogs=true
-  # Returns array of status hashes with :content, :url, :created_at
-  def fetch_statuses(username, limit: 5)
-    ...
-  end
-end
+validates :email, format: { without: /\Adummy_.+@example\.com\z/, message: :invalid }, on: :update
 ```
 
-Use `Daddy::HttpClient` (already available, wraps Net::HTTP). Parse JSON with `JSON.parse`. Return plain Ruby hashes — no Feedjira-style parser objects needed.
+### `app/views/preferences/index.html.erb`
 
-### Mastodon public API endpoints used (HIGH confidence — official docs)
+Add the email registration link row (see New Components above). This is the only change to the existing view template.
 
-- `GET https://{instance}/api/v1/accounts/lookup?acct={username}` — no auth required; returns account JSON including `id`
-- `GET https://{instance}/api/v1/accounts/{id}/statuses?limit=N&exclude_replies=true&exclude_reblogs=true` — public access; returns array of status JSON
+### `config/locales/en.yml` and `ja.yml`
 
-Useful status fields: `url` (permalink), `content` (HTML), `created_at`.
+New keys:
 
-### `MastodonAccount` model methods (gadget contract)
+```yaml
+# Under preferences.index:
+email_registration:
+  label: "Email address"
+  link: "Register email address"
+
+# Top-level controller namespace:
+email_registrations:
+  new:
+    title: "Register email address"
+    submit: "Save"
+  saved: "Email address saved."
+```
+
+Japanese equivalents under the same key paths in `ja.yml`. Follow the parity enforcement contract already in place (locale key parity tests).
+
+### `config/routes.rb`
+
+Add one line inside the `unless ARGV.first =~ /^dad:setup/` block:
 
 ```ruby
-def statuses
-  return @statuses if defined?(@statuses)
-  @statuses = fetch_statuses_safely
-end
-
-def gadget_id
-  "mastodon_account_#{id}"
-end
-
-def visible?
-  statuses.present?
-end
-
-def entries
-  statuses.first(display_count)
-end
-
-private
-
-def fetch_statuses_safely
-  client = MastodonClient.new(instance_host)
-  client.fetch_statuses(username, limit: display_count)
-rescue => e
-  Rails.logger.error "MastodonAccount##{id}: #{e.class} #{e.message}"
-  []
-end
+resource :email_registration, only: [:new, :create]
 ```
 
-The model memoizes `@statuses` (like Feed memoizes `@feed`) and swallows all errors to an empty array. This means `visible?` returns false on API failure and the gadget silently disappears — same behaviour as Feed when `feed?` is false. However, the XHR `.fail` path in the gadget partial still surfaces the error message to the user (see Error Handling section).
-
----
-
-## Controller Pattern
-
-`MastodonAccountsController` mirrors `FeedsController` exactly:
+## Data Flow
 
 ```
-before_action :preload_mastodon_account, only: [:show, :edit, :update, :destroy]
-
-index   => @accounts = MastodonAccount.where(user_id: current_user.id).not_deleted
-show    => render layout: !request.xhr?   (same XHR pattern as FeedsController#show)
-new     => @account = MastodonAccount.new
-create  => save in conditional; redirect_to action: 'index' on success, render :new on failure
-edit    => (preload_mastodon_account sets @account)
-update  => save in conditional; redirect_to action: 'index' on success, render :edit on failure
-destroy => destroy_logically! in transaction; redirect_to action: 'index'
+User (Twitter-signed-up, email = dummy_<uuid>@example.com)
+  |
+  | visits /preferences
+  v
+PreferencesController#index
+  -> preferences/index.html.erb
+  -> !@user.has_valid_email? is true
+  -> shows "Register email address" link
+  |
+  | clicks link
+  v
+GET /email_registration/new
+  -> EmailRegistrationsController#new
+  -> Guard: current_user.has_valid_email? ? redirect to preferences : render form
+  -> renders email_registrations/new.html.erb
+  |
+  | submits email
+  v
+POST /email_registration
+  -> EmailRegistrationsController#create
+  -> Guard: current_user.has_valid_email? → redirect (no-op)
+  -> user = current_user
+  -> user.email = permitted_params[:email]
+  -> user.save
+     -> Devise :validatable: format check + uniqueness check (unique index backed)
+     -> new model validation: rejects dummy-pattern (on: :update)
+  -> On failure: re-render form with user.errors.full_messages
+  -> On success: flash[:notice] = t('email_registrations.saved')
+               redirect_to preferences_path
+  |
+  v
+preferences/index.html.erb (after redirect)
+  -> @user.has_valid_email? is now true
+  -> email registration row: HIDDEN
+  -> name field row: NOW VISIBLE (was also gated on has_valid_email?)
 ```
 
-### URL parsing: model `before_save` callback, not controller
+No background jobs. No email confirmation (`:confirmable` not enabled). No DB migration required. The update is a single `users.email` column write within the standard ActiveRecord transaction.
 
-Feed already sets defaults in `before_save :set_display_count`. URL parsing fits the same slot:
+## Google OAuth Linking
 
-```ruby
-before_save :parse_profile_url
+After the email update, the next Google OAuth sign-in automatically links to the same account:
 
-def parse_profile_url
-  return if profile_url.blank?
-  uri = URI.parse(profile_url.strip)
-  self.instance_host = uri.host
-  self.username = uri.path.split('/').reject(&:blank?).last&.delete_prefix('@')
-rescue URI::InvalidURIError
-  errors.add(:profile_url, :invalid)
-  throw :abort
-end
+```
+User clicks "Sign in with Google" on sign-in page
+  |
+  v
+OmniauthCallbacksController#google_oauth2
+  -> handle_callback('Google')
+  -> User.from_omniauth(request.env["omniauth.auth"])
+     -> case :google_oauth2 (else branch in from_omniauth)
+        -> User.where(email: data["email"]).first
+           # data["email"] from Google == users.email set during registration
+           # -> finds the Twitter user's existing record
+        -> user.persisted? == true
+        -> sign_in_and_redirect user
 ```
 
-Placing parse logic in the controller would require duplicating it for create and update, and would leave the model columns inconsistent if saved by any other path. `before_save` is the right place.
+Zero code changes required to `from_omniauth` or `handle_callback`. The link is purely data-driven: matching string in `users.email`.
 
-FeedsController uses `save!` with no rescue — this is acceptable for Feed because feed_url format is not validated server-side (the feed simply fails to load). For MastodonAccount, invalid URL format should produce a user-visible form error, so create/update must use `save` (not `save!`) and re-render the form on failure.
+**Edge case — email collision:** If a separate account already holds the email the Twitter user wants to register, `User.where(email: data["email"]).first` during Google sign-in would return the other user's account. The Devise uniqueness validation on `user.save` in `EmailRegistrationsController#create` prevents this from happening — a taken email is rejected before it is stored. This provides safe protection at the registration step.
 
-### Strong params
+**Edge case — `provider`/`uid` columns:** The `users` table has `provider` and `uid` columns (from an OmniAuth migration). Neither `from_omniauth` branch sets these on create. They appear unused in the current codebase. No change needed.
 
-```ruby
-def mastodon_account_params
-  ret = params.require(:mastodon_account).permit(:name, :profile_url, :display_count)
-  ret.merge!(user_id: current_user.id)
-  ret
-end
-```
-
-`instance_host` and `username` are never accepted from params — they are derived exclusively from `profile_url` in `before_save`. This prevents spoofing.
-
-### `preload_mastodon_account`
-
-```ruby
-def preload_mastodon_account
-  @account = MastodonAccount.find(params[:id])
-  unless @account.readable_by?(current_user)
-    head :not_found and return
-  end
-end
-```
-
-Identical pattern to `preload_feed`.
-
-### Show action and XHR rendering
-
-`show.html.erb` renders statuses as an `<ol>` with links (toot `url` + stripped `content`). The gadget partial issues `$.get(mastodon_account_path(gadget), {format: 'html'}, ...)` and injects the returned HTML, identical to `_feed.html.erb`. `render layout: !request.xhr?` in the show action suppresses the layout for XHR responses.
-
----
-
-## Welcome Page Integration
-
-### Gadget partial: `app/views/welcome/_mastodon_account.html.erb`
-
-Mirrors `_feed.html.erb` directly:
-
-```erb
-<script>
-  $(document).ready(function() {
-    $.get('<%= mastodon_account_path(gadget) %>', {format: 'html'}, function(html) {
-      $('#mastodon_account_<%= gadget.id %>').html(html);
-    })
-    .fail(function(xhr, status, error) {
-      const container = $('#mastodon_account_<%= gadget.id %>');
-      container.find('ol li span').first().text(container.data('fetchFailedMessage') + '(' + xhr.status + ')');
-    });
-  });
-</script>
-
-<div id="<%= gadget.gadget_id %>" class="gadget" data-fetch-failed-message="<%= t('.fetch_failed') %>">
-  <div>
-    <div class="title"><%= gadget.name %></div>
-    <ol>
-      <li>
-        <span style="line-height: <%= gadget.display_count * 1.5 %>em;"><%= t('.loading') %></span>
-      </li>
-    </ol>
-  </div>
-</div>
-```
-
-### CSS class: same `.gadget` class, no new CSS required
-
-All existing gadgets use `class="gadget"`. The existing `.gadget` rule in SCSS handles collapsibility and panel styling. Mastodon account gadgets use `class="gadget"` — no new CSS class required. If a Mastodon-specific visual treatment is ever needed, add `class="gadget mastodon"` as a later enhancement.
-
-### Portal registration: `Portal#get_gadgets`
-
-Add at the bottom of `get_gadgets`, after the Feed loop:
-
-```ruby
-MastodonAccount.where(user_id: user.id, deleted: false).each do |a|
-  ret[a.gadget_id] = a
-end
-```
-
-`portal_column_section` already calls `render g.class.name.underscore, gadget: g` which resolves `"mastodon_account"` to `welcome/_mastodon_account`. No other portal machinery changes needed.
-
-### Why gadgets are always included (not gated by `visible?`)
-
-`Portal#get_gadgets` includes Feed records unconditionally (all non-deleted feeds appear in the portal regardless of whether the feed is currently reachable). The same approach applies to MastodonAccount — the record is always registered as a gadget; the XHR failure message appears inside the panel if the API is down. This differs from `BookmarkGadget` and `TodoGadget` which gate on `visible?` because they represent preferences, not user-created records.
-
----
+**Consequence for `display_name`:** `User#display_name` returns `email` when `has_valid_email?` and `name` otherwise (app/models/user.rb:35-41). After registering an email, the display name shown in the UI will switch from the Twitter display name to the email address. This is existing designed behavior — no change needed, but it should be noted in phase verification.
 
 ## Suggested Build Order
 
-### Phase 1 — Data layer
-- Migration: create `mastodon_accounts` table
-- `MastodonAccount` model: columns, `Crud::ByUser`, `before_save :parse_profile_url`, `before_save :set_display_count`, validations, `gadget_id`
-- Model tests: URL parsing (valid URL, `@`-prefixed username, missing `@`, invalid URL raises validation error), `gadget_id`, `set_display_count` default
-- Locale keys: `activerecord.attributes.mastodon_account.*`
+### Phase 1 — Model validation hardening
 
-Rationale: everything downstream depends on the model. Parse logic here prevents duplication in controller.
+Add `validates :email, format: { without: /\Adummy_.+@example\.com\z/, message: :invalid }, on: :update` to `User`. Add Minitest unit tests covering: `has_valid_email?` returns false for dummy pattern, true for real email; the new validation blocks dummy-pattern saves on update while allowing create. This phase has no UI surface and cannot be broken by view/route churn.
 
-### Phase 2 — CRUD controller + views (no API calls yet)
-- `MastodonAccountsController`: index, new, create, edit, update, destroy (show deferred to Phase 3)
-- Views: index, new, edit, `_form` partial
-- Routes: `resources :mastodon_accounts`
-- Controller tests: CRUD actions, ownership check (`readable_by?`), strong params excludes `instance_host`/`username`
-- Locale keys: `mastodon_accounts.*` for all views
-- Tri-suite green
+### Phase 2 — Route + Controller
 
-Rationale: delivers a complete management UI before touching API or welcome page; phases are independently verifiable.
+Add `resource :email_registration` to routes. Create `EmailRegistrationsController` with `new` and `create`. The `create` action performs the update, handles validation errors, redirects on success. Minitest integration tests (subclassing `ActionDispatch::IntegrationTest` with `Devise::Test::IntegrationHelpers`) covering: success path updates email and redirects to preferences, duplicate email rejected with error, dummy-pattern rejected, guard redirect when user already has valid email.
 
-### Phase 3 — API client + show action
-- `MastodonClient` service class with `fetch_statuses` and typed error classes
-- `MastodonAccount#statuses`, `#entries`, `#visible?` using the client
-- `MastodonAccountsController#show` with `render layout: !request.xhr?`
-- `show.html.erb`
-- Client tests with stubbed HTTP (network error, 404, 429, 200 with statuses)
-- Controller test for show (XHR and full-page variants)
+### Phase 3 — Views + Locale keys
 
-Rationale: API client is independently testable without the gadget. Show action proves the API contract before wiring to the welcome page.
+Add `app/views/email_registrations/new.html.erb`. Add the link row to `preferences/index.html.erb` inside the `<% unless @user.has_valid_email? %>` guard. Add ja/en locale keys under `preferences.index.email_registration` and `email_registrations.*`. Minitest view-contract tests: link present when dummy email, link absent when valid email; form renders with email field and submit; display name changes after registration.
 
-### Phase 4 — Welcome page gadget
-- `app/views/welcome/_mastodon_account.html.erb` partial
-- `Portal#get_gadgets`: add MastodonAccount loop
-- Welcome page locale keys for `.loading` and `.fetch_failed`
-- Integration test: account registered → gadget appears on welcome page
-- Cucumber E2E: register account → welcome page shows loading placeholder
+### Phase 4 — Cucumber E2E + tri-suite gate
 
-Rationale: gadget integration is the last step; it depends on the show action existing and portal machinery recognizing the gadget_id format.
+Add `features/06.メール登録.feature` (or appended to an existing file) covering: sign in as a Twitter user (dummy email fixture), visit preferences, follow registration link, submit real email, verify preferences shows no registration link and shows name field. Run full tri-suite (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`) to close the phase.
 
-### Phase 5 — Test coverage and locale parity
-- Ensure `ja.yml` / `en.yml` key parity (enforced by existing test contract)
-- Minitest coverage sweep: any missed paths
-- Cucumber: destroy scenario, edit scenario
-- Tri-suite green gate before milestone close
-
----
-
-## Error Handling
-
-### API failures (network down, instance unreachable)
-
-`MastodonAccount#fetch_statuses_safely` rescues all errors and returns `[]`. The show action returns 500:
-
-```ruby
-def show
-  if @account.statuses.any?
-    render layout: !request.xhr?
-  else
-    render plain: :internal_server_error, status: :internal_server_error
-  end
-end
-```
-
-The XHR `.fail` callback in the gadget partial writes the `data-fetch-failed-message` text (plus HTTP status code) into the placeholder span — identical to how Feed surfaced errors before the partial was introduced.
-
-### Invalid profile URL (create/update form)
-
-`before_save :parse_profile_url` calls `throw :abort` on `URI::InvalidURIError`, adding `errors.add(:profile_url, :invalid)`. Because create/update use `save` (not `save!`), the action re-renders the form with the validation error visible. This is the standard Rails form UX that FeedsController skips (it uses `save!`) — MastodonAccountsController does it correctly from the start.
-
-### Rate limits (429 from Mastodon instance)
-
-`MastodonClient` raises `MastodonClient::RateLimitError` on 429. `fetch_statuses_safely` rescues it to `[]`, logs the event. The gadget shows the fetch-failed message. No retry logic — public accounts with `display_count: 5` will not hit rate limits under normal personal-use volume.
-
-### Account not found / moved (404 from lookup)
-
-`fetch_statuses` raises `MastodonClient::AccountNotFound`, rescued to `[]`. The user sees the fetch-failed message in the gadget and can delete the account registration from `/mastodon_accounts`. No automatic cleanup — soft-delete only on explicit user action.
-
----
-
-## Sources
-
-- Mastodon accounts API — `GET /api/v1/accounts/lookup` and `GET /api/v1/accounts/:id/statuses` (HIGH confidence, official Mastodon documentation): https://docs.joinmastodon.org/methods/accounts/
-- Feed pattern: direct code inspection of `app/models/feed.rb`, `app/controllers/feeds_controller.rb`, `app/views/welcome/_feed.html.erb`, `app/views/feeds/show.html.erb`
-- Portal gadget dispatch: direct code inspection of `app/models/portal.rb`, `app/models/concerns/gadget.rb`, `app/views/welcome/_portal_column_section.html.erb`
-- Soft-delete pattern: direct code inspection of `app/models/feed.rb`, `app/models/todo.rb`, `app/models/note.rb`, `app/models/crud/by_user.rb`
-- Schema confirmation: direct inspection of `db/schema.rb`
+**Rationale for ordering:** Model validation first prevents invalid state at any point. Controller before views means integration tests can run headlessly before the view is complete. Locale keys are wired in Phase 3 alongside views to avoid missing-key I18n errors during Phase 2 controller tests (controller tests that redirect do not render views, so missing keys are not hit). Cucumber last because it requires the full integrated stack.

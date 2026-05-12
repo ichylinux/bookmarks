@@ -1,250 +1,101 @@
-# Features Research — Mastodon Account Following
+# Features Research — Email Registration for X/Twitter Users
 
-**Domain:** Read-only Mastodon feed gadget in a personal Rails bookmarks app
-**Researched:** 2026-05-12
-**Confidence:** HIGH for API shape; MEDIUM for rate limit specifics (instance-variable)
-
----
-
-## Mastodon Public API
-
-### Two-step lookup: username → account ID → statuses
-
-Mastodon does not allow fetching statuses directly by username. The required flow is:
-
-**Step 1 — Resolve account ID by handle**
-
-```
-GET https://{instance}/api/v1/accounts/lookup?acct={username}
-```
-
-- `acct` parameter accepts bare username (for local accounts) or `username@domain` (for remote accounts).
-- OAuth: **public** — no token required as of Mastodon 3.4.0+. (An older 2017 regression briefly made search require auth; `/lookup` was introduced specifically to provide a public, no-WebFinger resolution path.)
-- Returns a single Account object. Key field: `id` (treat as opaque string, never cast to integer — some Mastodon forks use non-numeric IDs).
-- Response shape (abbreviated):
-
-```json
-{
-  "id": "109876543210",
-  "username": "FastRuby",
-  "acct": "FastRuby",
-  "display_name": "Fast Ruby",
-  "url": "https://ruby.social/@FastRuby",
-  "avatar": "https://ruby.social/system/accounts/avatars/...",
-  "followers_count": 1234,
-  "following_count": 56,
-  "statuses_count": 789
-}
-```
-
-**Step 2 — Fetch statuses for that account ID**
-
-```
-GET https://{instance}/api/v1/accounts/{id}/statuses
-```
-
-Key parameters:
-| Parameter | Default | Max | Notes |
-|-----------|---------|-----|-------|
-| `limit` | 20 | 40 | Number of statuses to return |
-| `exclude_replies` | false | — | Set `true` to omit reply toots (recommended for feed view) |
-| `exclude_reblogs` | false | — | Set `true` to omit boosted toots (optional, context-dependent) |
-| `max_id` | — | — | Cursor for older-page pagination |
-
-- OAuth: **public** for public-visibility statuses (visibility = "public" or "unlisted").
-- Private-visibility statuses (followers-only, direct) are silently omitted from unauthenticated responses — no error is raised.
-- Returns an array of Status objects (described below).
-
-### Rate limits
-
-Mastodon's documented limits (HIGH confidence for vanilla Mastodon, may vary per instance):
-- **Authenticated per-account:** 300 requests per 5 minutes
-- **Unauthenticated per-IP:** approximately 7,500 requests per 5 minutes (community-confirmed; not officially published in the rate-limits doc page)
-
-For a personal dashboard fetching N accounts on page load, the per-IP limit is not a concern in practice. The two-request round-trip (lookup + statuses) per account is negligible. No server-side caching is strictly necessary for MVP, though adding a short TTL cache (e.g., Rails cache with 5-minute expiry) would be a courteous and performance-improving addition.
-
-**Important caveat:** Some Mastodon instances disable public timeline access via admin settings. The lookup and account statuses endpoints are generally unaffected by this setting (they are profile-level, not timeline-level), but instance operators can impose additional restrictions. The API client must handle HTTP 401/403 and surface a user-friendly error rather than crashing.
-
-### Sources
-- [accounts API methods — Mastodon docs](https://docs.joinmastodon.org/methods/accounts/)
-- [Playing with public data — Mastodon docs](https://docs.joinmastodon.org/client/public/)
-- [Rate limits — Mastodon docs](https://docs.joinmastodon.org/api/rate-limits/)
+**Domain:** OAuth-only user email self-registration in a Rails/Devise app
+**Researched:** 2026-05-13
+**Overall confidence:** HIGH (codebase read directly; patterns verified against Devise modules already present)
 
 ---
 
-## Profile URL Parsing
+## Summary
 
-### Canonical format
-
-Mastodon profile URLs follow a consistent pattern:
-
-```
-https://{instance_domain}/@{username}
-```
-
-Examples:
-- `https://ruby.social/@FastRuby`
-- `https://mastodon.social/@Gargron`
-- `https://fosstodon.org/@user`
-
-### Parsing strategy
-
-Use `URI.parse` to extract the host (instance) and path. The username is the path component with the leading `/@` stripped.
-
-```ruby
-uri = URI.parse(profile_url)
-instance = uri.host                          # "ruby.social"
-username = uri.path.delete_prefix('/').delete_prefix('@')  # "FastRuby"
-```
-
-The `lookup?acct=` parameter accepts bare username when querying the correct instance, so no `@domain` suffix is needed in the API call.
-
-### Edge cases to handle
-
-| Case | Example | Handling |
-|------|---------|----------|
-| Trailing slash | `https://ruby.social/@FastRuby/` | `strip` + `chomp('/')` before parsing |
-| Missing scheme | `ruby.social/@FastRuby` | Prepend `https://` if no `://` present |
-| Wrong scheme (http) | `http://ruby.social/@FastRuby` | Accept; URI.parse handles it |
-| Query string / fragment | `https://ruby.social/@FastRuby?ref=x` | Ignore; parse path only |
-| Remote follow format | `@FastRuby@ruby.social` | Not a URL — validate that input starts with `http` |
-| Subdomain instances | `https://social.example.co.uk/@user` | URI.parse handles multi-part TLDs correctly |
-| No `@` prefix in path | Rare — some clients omit it | Guard: accept `/FastRuby` as well as `/@FastRuby` |
-
-### Recommended model validation
-
-```ruby
-validates :profile_url, format: {
-  with: %r{\Ahttps?://[^/]+/@?\w[\w.-]*\z}i,
-  message: :invalid_mastodon_url
-}
-```
-
-Store `instance` and `username` as derived columns (set in `before_validation` or `before_save`) so the API client does not re-parse on every fetch.
-
----
-
-## Toot Display
-
-### Which Status fields to use
-
-| Field | Type | Use |
-|-------|------|-----|
-| `content` | HTML string | Toot body — strip tags for one-line preview |
-| `url` | nullable string | Link to original toot on the instance |
-| `created_at` | ISO 8601 datetime | Formatted date or "X min ago" |
-| `spoiler_text` | string (may be empty) | Content warning — display instead of content when non-empty |
-| `reblog` | nullable Status | Non-null means this is a boost; use `reblog['content']` and `reblog['url']` |
-| `visibility` | enum string | Unauthenticated API only returns "public" and "unlisted" anyway |
-| `reblogs_count` | integer | Optional engagement signal (lower priority) |
-| `sensitive` | boolean | Could show a warning label, but low priority for read-only view |
-
-### HTML stripping for one-line preview
-
-Mastodon `content` is sanitized HTML. A typical toot looks like:
-
-```html
-<p>Interesting Ruby performance tip: avoid allocating objects in tight loops.
-  <a href="https://example.com/article">https://example.com/article</a>
-</p>
-```
-
-Rails provides `ActionView::Helpers::SanitizeHelper#strip_tags` (available in helpers and models via `ActionController::Base.helpers`). The recommended pipeline:
-
-```ruby
-def preview_text(status)
-  raw = status['spoiler_text'].presence || status['content']
-  plain = ActionController::Base.helpers.strip_tags(raw)
-  plain.squish.truncate(100)
-end
-```
-
-Key points:
-- `spoiler_text` takes priority when present — it is the author's declared subject/warning.
-- `.squish` collapses newlines and multiple spaces that remain after stripping `<p>` tags.
-- Truncate at 100 chars with the default `...` ellipsis.
-- For reblogs: use `status['reblog']['content']` (the original toot), not the outer status's empty content.
-
-### One-line preview format (welcome page gadget)
-
-Each toot renders as a single `<li>` with a link, matching the RSS feed gadget pattern exactly:
-
-```erb
-<li><%= link_to preview_text(toot), toot['url'], link_opts %></li>
-```
-
-This reuses the existing `open_links_in_new_tab` preference pattern from `feeds/show.html.erb`.
+X/Twitter users currently receive a `dummy_<uuid>@example.com` address on first sign-in (`User.from_omniauth`). Registering a real email unlocks Google OAuth sign-in (via the existing `from_omniauth` email lookup path), improves `display_name`, and makes the account recoverable in future. The entire flow fits inside the existing `PreferencesController` and preferences view — no new top-level route is needed. Email confirmation via Devise `:confirmable` is explicitly out of scope: the schema has no confirmation columns, the module is not activated, and the app's threat model and single-owner character do not justify it.
 
 ---
 
 ## Table Stakes
 
-Features that must exist for this to be a useful read-only Mastodon follower. Missing any of these makes the feature feel incomplete.
+Must be present for the feature to be correct and usable. Missing any one makes the flow broken or unsafe.
 
-| Feature | Why Essential | Complexity |
-|---------|--------------|------------|
-| Store profile URL + parsed instance/username | Without this, no API calls are possible | Low |
-| `display_count` per account (default 5) | Matches Feed model pattern; user controls density | Low |
-| CRUD at `/mastodon_accounts` (index, new, edit, destroy) | Standard management screen | Low–Med |
-| API client: lookup → statuses two-step | Core fetching logic | Medium |
-| Welcome page collapsible gadget per account | The actual product value | Medium |
-| One-line toot preview with link to original | Minimum useful display | Low |
-| Error handling when instance is unreachable | Network failures must not crash the page | Low |
-| Per-user data isolation via `Crud::ByUser` | Security — same pattern as Feed | Low |
-| Soft-delete (`deleted` boolean) | Matches all other models in this app | Low |
-| Locale strings (ja/en) for all UI chrome | App contract — every surface is bilingual | Low |
-| `exclude_replies: true` by default | Replies are usually out-of-context noise in a feed view | Low |
-
-**Dependency on existing RSS feed pattern:**
-The Feed model and its gadget partial (`_feed.html.erb`) provide the exact template to follow. The welcome page loads feed content via jQuery `$.get` to `feeds#show`; the Mastodon gadget should use the same approach — an equivalent `mastodon_accounts#show` endpoint returns an HTML fragment that the welcome partial injects via AJAX. This avoids new JS complexity and keeps the implementation consistent.
-
-The `Portal#get_gadgets` method explicitly iterates `Feed.where(user_id:, deleted: false)` to add feed gadgets. A MastodonAccount will need to be added to this same iteration to appear in the portal column layout system. The model must expose `gadget_id` (e.g., `"mastodon_account_#{id}"`).
+| Feature | Why Required | Complexity | Dependencies on Existing Code |
+|---------|-------------|------------|-------------------------------|
+| Email input field on preferences page, visible only when `!has_valid_email?` | Entry point for the entire flow | Low | `has_valid_email?` already exists; preferences view already gates the `name` row with this method — identical pattern |
+| Format validation (valid email format) | Prevents obviously bad input reaching the DB | Low | Devise `:validatable` already validates email format on `User`; no new code needed at the model level |
+| Uniqueness validation (reject already-registered emails) | Prevents account collision | Low | Devise `:validatable` already enforces `validates_uniqueness_of :email`; no new code needed |
+| Reject dummy-pattern input (`dummy_*@example.com`) | Prevents user from re-entering a dummy address and appearing to succeed | Low | Invert `has_valid_email?` regex into a custom `validates :email` callback or `validates_format_of` exclusion |
+| Server-side guard: ignore email param when current email is already real | Defense in depth; prevents the hidden field from being submitted to override a real email | Low | One `if !current_user.has_valid_email?` gate in the controller update action before assigning the email param |
+| Permit `:email` in `user_params` — guarded as above | Without it, strong params will strip the value | Low | `PreferencesController#user_params` currently permits `:name` and `preference_attributes`; add `:email` with guard |
+| Persist the real email to `users.email` on save | Core data mutation | Low | `@user.save!` inside the existing transaction already persists changes; only strong-params and guard need updating |
+| Flash message on success (ja + en) | User feedback; matches existing preferences save flow | Low | `preferences.saved` locale key already exists; reuse it — or add a more specific key for clarity |
+| Hide the email field once a real email is set | Prevents repeated mutation; avoids UX confusion | Low | Same `has_valid_email?` gate — the view condition handles it automatically after the redirect |
 
 ---
 
 ## Differentiators
 
-Nice-to-have features that add value but are not required for the first iteration.
+Nice-to-have additions that improve experience but are not required for correctness.
 
-| Feature | Value | Complexity | Priority |
-|---------|-------|-----------|----------|
-| Short-TTL Rails cache (5 min) for API responses | Reduces instance load; faster repeated page loads | Low | High-ish — add in implementation phase |
-| Show boost attribution ("boosted by @account") | More context for reblogged toots | Low | Medium |
-| `exclude_reblogs` preference per account | Let user choose whether to see boosts | Medium | Low |
-| Relative timestamps ("5 min ago") | More natural feel for live feed | Low | Low |
-| Show `spoiler_text` toggle (expand/collapse CW) | Respects author intent for content warnings | Medium | Low |
-| Show avatar in gadget header | Visual identity for the account | Low | Low |
-| Account display name vs. username display | `display_name` is more human-readable than `username` | Low | Low |
-| Show link to original profile in gadget header | `account.url` from the Account object | Low | Low |
+| Feature | Value Proposition | Complexity | Notes |
+|---------|------------------|------------|-------|
+| Helper text below the email field explaining why email is requested | Reduces confusion ("this lets you sign in with Google") | Low | One locale key per language; a `<small>` or `<span class="hint">` element |
+| Validation error rendered inline near the email row, not just in a global flash | Faster feedback for a single-field failure | Low | Devise model errors attach to `:email`; standard `@user.errors[:email]` rendering in the view |
+| Separate "email registered" flash vs generic "settings saved" | Confirms to user specifically what changed | Low | Separate locale key; one-line controller change |
+| Display current `display_name` or `name` as identity context near the field | Reassures user they are editing the right account | Low | `current_user.display_name` already available |
 
 ---
 
-## Anti-Features (Out of Scope)
+## Anti-Features
 
-These must be explicitly excluded. Building any of them would require OAuth, increase complexity significantly, or conflict with the app's personal-tool character.
+Explicitly do not build these.
 
-| Anti-Feature | Why Out of Scope |
-|--------------|-----------------|
-| OAuth authentication flow | App is read-only; public API covers all needed endpoints. OAuth requires registering an app on each instance, token storage, and refresh flows — complexity far exceeding the value. |
-| Posting / replying / boosting | This is a read-only feed viewer. Write operations require OAuth and conflict with the app's bookmark-tool identity. |
-| Mastodon social graph follow/unfollow via API | "Following" in this feature means registering locally to watch — not sending a Mastodon follow request. The Mastodon social graph is irrelevant. |
-| Notifications (mentions, favourites) | Requires OAuth + streaming. Out of scope. |
-| WebSocket / streaming timeline | Server-sent events / streaming API requires auth and persistent connections. Page-load fetch is the correct pattern for this app. |
-| Full toot rendering (custom emoji, polls, media) | Rich rendering requires parsing `emojis`, `poll`, and `media_attachments` arrays. One-line text preview is the target. |
-| Search across followed accounts' toots | Local search over cached content. No caching layer exists. |
-| Import/export followed accounts list | Nice for portability but irrelevant for v1.16 scope. |
-| Multi-user / social features | This is a personal tool; all data is per-user already. |
+| Anti-Feature | Why Avoid | What to Do Instead |
+|-------------|-----------|-------------------|
+| Devise `:confirmable` email confirmation | `users` table has no `confirmation_token`, `confirmed_at`, or `unconfirmed_email` columns. Adding these requires a migration and activating a Devise module with its own mailer, token-expiry logic, and access gates. `reconfirmable: true` is set in `devise.rb` but is dormant because `:confirmable` is not in the `User` model declaration. For a personal, authenticated-session app this complexity is entirely unwarranted. | Direct `users.email` update with format + uniqueness + dummy-rejection validation is sufficient |
+| Separate `/users/email` route and controller | Fragments the settings surface the user already knows; introduces a new controller for trivially few lines of logic | Keep the field inside `PreferencesController` / preferences view — consistent with how 2FA setup is surfaced there |
+| Allowing email edits after a real email is already set | Changing an established email is a higher-risk operation (potential account recovery implications) and is out of scope for v1.17 | Hide the field via `has_valid_email?` once set; a future milestone can introduce "change email" with stronger verification |
+| Password re-entry before saving email | Over-engineering for a personal app where the user is already authenticated via an active session | Standard authenticated session is sufficient |
+| Notification email to the old dummy address | The dummy address `dummy_uuid@example.com` is not a real mailbox; sending to it generates bounces and no user value | No email notification needed |
+| Exposing `:email` in `user_params` without the dummy-email guard | Would allow any authenticated user with a real email to overwrite it via a crafted POST, or allow future code paths to clobber the email unexpectedly | Gate the param assignment server-side behind `!current_user.has_valid_email?` |
 
 ---
 
-## Feature Dependencies on Existing Code
+## User Journey
 
-| New Feature | Depends On | Notes |
-|------------|-----------|-------|
-| Portal gadget registration | `Portal#get_gadgets` | Must add `MastodonAccount.where(user_id:, deleted: false).each` block |
-| `gadget_id` method | Feed model pattern | Return `"mastodon_account_#{id}"` |
-| Welcome page partial | `_feed.html.erb` + `feeds/show.html.erb` | Mirror the jQuery `$.get` pattern |
-| Soft delete | `Crud::ByUser` + `deleted` column | Same as Feed, Todo, Note, Bookmark |
-| Locale strings | `config/locales/ja.yml` + `en.yml` | Key parity enforced by existing tests |
-| User ownership security | `Crud::ByUser#readable_by?` | Never trust client-supplied `user_id` |
-| Link-opening preference | `preference.open_links_in_new_tab?` | Already used in `feeds/show.html.erb` |
+Step-by-step from the X/Twitter user's perspective (happy path):
+
+1. User signs in via X/Twitter as usual (existing flow unchanged).
+2. User navigates to `/preferences`.
+3. A new row "メールアドレスを登録 / Register email" appears in the preferences table. The existing `name` row is hidden for dummy-email users (current behaviour) — this new row appears in its place or just above it.
+4. User types a real email address into the text field.
+5. User clicks "保存 / Save" (the existing submit button — no new button needed).
+6. Server validates: format, uniqueness, not a dummy-pattern address, current user still has dummy email (guard).
+   - Failure path: preferences page re-renders with an error message near the email field (or in flash). User corrects input and resubmits.
+   - Success path: `users.email` updated; redirect to `/preferences` with flash "設定を保存しました".
+7. User returns to preferences page. Email registration row is gone (`has_valid_email?` now returns true). The `name` field row reappears (existing behaviour for real-email users).
+8. Downstream: user can now sign in with Google OAuth — `from_omniauth` for Google does `User.where(email: data["email"]).first` and finds their existing account.
+
+Edge cases to handle:
+
+- **Email already registered to another account:** show standard Devise uniqueness error; do not disclose that another account exists — Devise's default wording ("has already been taken") is correct.
+- **Empty submission (field left blank):** do not treat a blank value as "clear email"; skip the email param entirely in the controller when blank. The existing email (dummy) remains untouched, and the rest of preferences saves normally.
+- **User with real email somehow reaches the update action (direct POST):** server-side guard ignores the email param; preferences save proceeds without modifying the email column.
+- **Duplicate submission / double-click:** Rails CSRF token + redirect-after-POST pattern makes this safe by default.
+
+---
+
+## Email Confirmation Decision
+
+**Decision: Skip email confirmation. Direct update to `users.email` is correct for v1.17.**
+
+**Justification:**
+
+1. **Schema does not support `:confirmable`.** No `confirmation_token`, `confirmed_at`, or `unconfirmed_email` columns exist in `db/schema.rb`. Adding `:confirmable` requires a migration and activating the Devise module — non-trivial scope expansion.
+
+2. **App is a personal, single-owner authenticated-session tool.** The user is already signed in when registering the email. There is no anonymous registration path where confirmation prevents spam. The primary threat is a typo, which is self-correctable (Google sign-in simply won't work, and the user returns to preferences to fix it — once a "change email" flow exists, or once the dummy-email detection is extended to catch obviously wrong addresses).
+
+3. **No mailer infrastructure beyond the bare `ApplicationMailer` exists.** Production SMTP is configured, but there are no transactional mailer templates (ja/en), no test coverage patterns for mail delivery, and no user expectation of receiving email from the app. Building that pipeline exceeds the feature's scope.
+
+4. **Google OAuth is the natural implicit verification.** If the user registers `foo@gmail.com` and can subsequently sign in with Google OAuth on that account, the email is functionally verified. A mistyped address simply prevents Google sign-in without harming the existing Twitter sign-in path.
+
+5. **Consistency with existing direct-mutation patterns.** 2FA setup (`users/two_factor_setup`) performs a direct `update!` from the preferences surface without secondary confirmation. The app's established convention is in-session direct mutations for single-user settings.
+
+**If confirmation is needed in future** (e.g., the app adds account recovery via email), introduce Devise `:confirmable` at that point with the appropriate migration and mailer templates. Do not pre-build infrastructure for a use case that does not yet exist.
