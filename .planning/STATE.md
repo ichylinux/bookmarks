@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.17
 milestone_name: Email Registration for X/Twitter Users
 status: planning
-stopped_at: "Phase 57 context gathered"
-last_updated: "2026-05-13T00:01:00.000Z"
+stopped_at: "Phase 58 context gathered"
+last_updated: "2026-05-13T00:02:00.000Z"
 last_activity: 2026-05-13
 progress:
   total_phases: 3
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: 57 — Model Validation Foundation (context captured)
+Phase: 58 — Controller, Route, and Guards (context captured)
 Plan: —
-Status: Context discussed; ready to plan Phase 57
-Last activity: 2026-05-13 — Phase 57 context captured (self-discuss)
+Status: Context discussed; ready to plan Phase 58
+Last activity: 2026-05-13 — Phase 58 context captured (self-discuss)
 
 Progress: [░░░░░░░░░░] 0% (0/3 phases)
 
@@ -48,6 +48,10 @@ v1.16 execution gate passed with tri-suite policy: `yarn run lint`, `bin/rails t
 - v1.17 no new gems, no migration — `users.email` + unique index already exist; Devise `:validatable` handles format/uniqueness.
 - v1.17 PITFALL-02 (Twitter `from_omniauth` uses `name` not `uid`) is pre-existing; must NOT be mixed into v1.17 — log as separate task.
 - Collision error wording: use Devise default ("has already been taken") — safe; does not confirm another account exists.
+- Phase 58 route: `users/email_registration` under `users/` prefix (explicit routes, matching two_factor_setup convention). Controller: `Users::EmailRegistrationsController`. Path helper: `users_email_registration_path`.
+- Phase 58 save mechanism: `save` (not `save!`) in `create` — validation failures re-render form. `rescue ActiveRecord::RecordNotUnique` inline in `create` only.
+- Phase 58 strong params: `:email_registration` wrapper (not `:user`) — avoids Devise param collision.
+- Phase 58 success redirect: `preferences_path`.
 
 ### Pending Todos
 
@@ -61,8 +65,8 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-13 (Phase 57 context captured — self-discuss)
+Last session: 2026-05-13 (Phase 58 context captured — self-discuss)
 
-Resume file: `.planning/phases/057-model-validation-foundation/057-CONTEXT.md`
+Resume file: `.planning/phases/058-controller-route-and-guards/058-CONTEXT.md`
 
-Resume: `/gsd-plan-phase 57`
+Resume: `/gsd-plan-phase 58`
