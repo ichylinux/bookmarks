@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.17 — Email Registration for X/Twitter Users (shipped 2026-05-13)
+
+**Scope:** Phases 57–59 — `User` dummy-pattern email validator `on: :update`; `Users::EmailRegistrationsController` with dummy-only guard, collision handling, and `RecordNotUnique` rescue; preferences entry row; ja/en locales + i18n parity test; Minitest across model, controller, and preferences.
+
+**Key accomplishments:**
+
+- Dummy-email Twitter users can submit a real address via `users/email_registration` without affecting `from_omniauth` create path.
+- Security: duplicate-email and unique-index race paths return user-visible errors; real-email users cannot open the registration form.
+- Preferences surfaces a localized registration link only when `!has_valid_email?`; success flash localized (ja/en).
+- Tri-suite gate at close: `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` (Cucumber second run per flake policy in `CLAUDE.md`).
+
+**Audit:** [Milestone audit](milestones/v1.17-MILESTONE-AUDIT.md) — `passed`; documented process debt includes missing per-phase `*-SUMMARY.md` / Nyquist VALIDATION artifacts (evidence in `*-VERIFICATION.md` + tests + audit).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.17-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.17-REQUIREMENTS.md) · [Milestone audit](milestones/v1.17-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.16 — Mastodon Account Following (shipped 2026-05-12)
 
 **Scope:** Phases 52–56 — `mastodon_accounts` data layer, CRUD UI (ja/en), `MastodonClient` + `show` with Faraday timeouts and HTML stripping, welcome-page AJAX gadgets (`Portal#get_gadgets`), Minitest + Cucumber (`@mastodon_gadget` stub).

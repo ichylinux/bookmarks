@@ -348,4 +348,22 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'table.preferences-table', minimum: 1
   end
 
+  def test_ダミーメールユーザにはメール登録リンクが表示される
+    tw = users(:twitter_user)
+    tw.preference.update!(locale: 'ja')
+    sign_in tw
+    get preferences_path
+    assert_response :success
+    assert_select 'a[href=?]', users_email_registration_path,
+                  text: I18n.t('preferences.index.email_registration_link', locale: :ja)
+  end
+
+  def test_実メールユーザにはメール登録リンクが表示されない
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'a[href=?]', users_email_registration_path, count: 0
+  end
+
 end

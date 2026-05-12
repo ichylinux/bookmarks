@@ -1,0 +1,18 @@
+<h1 class="email-registrations-title"><%= t('email_registrations.new.title') %></h1>
+
+<% if @user.errors.any? %>
+  <ul class="email-registrations-errors">
+    <% @user.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= form_with scope: :email_registration, url: users_email_registration_path, method: :post, html: { class: 'email-registrations-form' } do |f| %>
+  <p>
+    <%= f.label :email, t('email_registrations.new.email_label') %><br>
+    <%= f.email_field :email, value: @user.email, required: true, autocomplete: 'email' %>
+  </p>
+  <p class="email-registrations-help"><%= t('email_registrations.new.help') %></p>
+  <p><%= f.submit t('email_registrations.new.submit') %></p>
+<% end %>

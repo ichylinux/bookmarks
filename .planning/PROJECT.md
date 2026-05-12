@@ -8,19 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.17 Email Registration for X/Twitter Users
+## Current milestone
 
-**Goal:** Allow users who signed up via X/Twitter (and hold a dummy email) to register a real email address, which unlocks Google OAuth sign-in for their existing account.
-
-**Target features:**
-- Email update flow for X/Twitter users with dummy emails
-- Validation: uniqueness, format, reject dummy-pattern addresses
-- Google OAuth compatibility: `from_omniauth` matches by real email
-- UI entry point on preferences/settings page (ja/en strings)
+**Status:** v1.17 shipped (2026-05-13). Use `/gsd-new-milestone` to author requirements and roadmap for the next version.
 
 ## Current State
 
-**Status:** v1.17 in planning (2026-05-13); v1.16 shipped (2026-05-12)
+**Status:** v1.17 shipped (2026-05-13)
+
+v1.17 delivered email registration for X/Twitter dummy-email users: `User` validates dummy-pattern emails `on: :update` only; `Users::EmailRegistrationsController` (`users/email_registration`) with `require_dummy_email`, collision handling and `ActiveRecord::RecordNotUnique` rescue; preferences entry row and ja/en strings (`email_registrations.*`, parity test); Minitest (`user_test`, `email_registrations_controller_test`, `preferences_controller_test`, i18n test). Tri-suite green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with documented Cucumber flake rerun).
+
+**Previously shipped:** v1.16 — Mastodon Account Following (2026-05-12)
 
 v1.16 delivered read-only Mastodon account following: `mastodon_accounts` table and model, CRUD at `/mastodon_accounts`, `MastodonClient` service with explicit Faraday timeouts, `MastodonAccountsController#show` for HTML + XHR fragments, welcome-page gadgets wired through `Portal#get_gadgets`, Japanese/English strings, Minitest (including Faraday test adapter / stub paths) and Cucumber (`features/05.Mastodon.feature`). Tri-suite green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with documented Cucumber flake rerun).
 
@@ -81,6 +79,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `MastodonClient` + `show` action: Faraday timeouts, HTML strip + truncate, linked previews, graceful API error states — **v1.16 Phase 54**
 - ✓ Welcome-page Mastodon gadgets (portal + AJAX load, RSS-style pattern) — **v1.16 Phase 55**
 - ✓ Minitest + Cucumber coverage for Mastodon surfaces; tri-suite gate — **v1.16 Phase 56**
+- ✓ Dummy-pattern email rejected on user update; Twitter OAuth create path unchanged — **v1.17 Phase 57**
+- ✓ Dedicated email registration controller, routes, dummy-only and collision guards, `RecordNotUnique` rescue — **v1.17 Phase 58**
+- ✓ Preferences registration entry, localized form and flash (ja/en), Minitest + i18n parity — **v1.17 Phase 59**
 
 ### Active
 
@@ -99,6 +100,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.17 (2026-05-13):** Email registration for dummy-email (X/Twitter) users — model update validation, `Users::EmailRegistrationsController`, preferences link, ja/en, Minitest. Details: `.planning/milestones/v1.17-ROADMAP.md`. Audit: `.planning/milestones/v1.17-MILESTONE-AUDIT.md`.
 - **Shipped v1.16 (2026-05-12):** Mastodon account following — data model, CRUD, `MastodonClient`, welcome gadgets, locales, tests. Details: `.planning/milestones/v1.16-ROADMAP.md`. Audit: `.planning/milestones/v1.16-MILESTONE-AUDIT.md`.
 - **Shipped v1.15 (2026-05-11):** CSS architecture audit (0 violations), cross-theme visual QA, mobile responsive layout, PREFS-01 specificity regression fix, 30 new contract tests. Details: `.planning/milestones/v1.15-ROADMAP.md`.
 - **Shipped v1.14 (2026-05-10):** Changelog section on `/landing` with YAML-backed data layer and VIEW test coverage. Details: `.planning/milestones/v1.14-ROADMAP.md`.
@@ -142,6 +144,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Cucumber step naming for modern + `use_note` | Disambiguates “modern theme sign-in” steps from scenarios that must enable the note preference | ✓ Good — reduces ambiguous step matching |
 | Child-combinator selector for `.preferences-table th` (v1.15) | `.preferences-table > tbody > tr > th` (0,1,3) beats `.modern table th` (0,1,2) without a theme-scoped override; MOB-03 contract prohibits per-theme duplication | ✓ Good — single source of truth in `common.css.scss`; mobile media query uses same specificity for `text-align: left` |
 | `MastodonClient.stub_fetch_result` for Cucumber + controller tests | Isolates acceptance tests from the public network without WebMock | ✓ Good — cleared in hooks/teardown; documents test contract |
+| Dedicated `Users::EmailRegistrationsController` (not preferences) | Avoids widening writable-email surface; keeps `save` vs `save!` control for validation UX | ✓ Good — aligns with CTRL/VIEW split |
+| Dummy email validator `on: :update` only | `from_omniauth` create legitimately sets dummy addresses | ✓ Good — no regression on Twitter sign-up |
+| Email registration strong params under `:email_registration` | Avoids collision with Devise `:user` param expectations | ✓ Good — explicit contract |
 
 ## Evolution
 
@@ -160,6 +165,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.17 — Email Registration for X/Twitter Users (2026-05-13)
+
+**Delivered:** Update-only dummy email rejection; `Users::EmailRegistrationsController` + `users/email_registration` routes; collision + `RecordNotUnique` handling; preferences entry; `config/locales` ja/en; Minitest + tri-suite green at close (Cucumber flake rerun policy).
 
 ### v1.16 — Mastodon Account Following (2026-05-12)
 
@@ -210,4 +219,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-13 — v1.17 Email Registration for X/Twitter Users started*
+*Last updated: 2026-05-13 after v1.17 milestone archive*

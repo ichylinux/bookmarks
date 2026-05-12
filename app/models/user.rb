@@ -5,6 +5,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          omniauth_providers: [:google_oauth2, :twitter]
 
+  validates :email,
+            format: { without: /\Adummy_.+@example\.com\z/, message: :dummy_email },
+            on: :update
+
   before_create :generate_otp_secret_if_missing
 
   has_one :preference, inverse_of: 'user'

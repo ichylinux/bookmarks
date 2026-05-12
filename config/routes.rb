@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     get    'users/two_factor_setup', to: 'users/two_factor_setup#show', as: :users_two_factor_setup
     post   'users/two_factor_setup', to: 'users/two_factor_setup#enable'
     delete 'users/two_factor_setup', to: 'users/two_factor_setup#disable'
+
+    get  'users/email_registration', to: 'users/email_registrations#new', as: :users_email_registration
+    post 'users/email_registration', to: 'users/email_registrations#create'
   end
 
   resources :bookmarks do

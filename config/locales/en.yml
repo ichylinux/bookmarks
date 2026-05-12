@@ -27,6 +27,13 @@ en:
         title: Title
       user:
         name: Username
+        email: Email
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              dummy_email: cannot be a placeholder address
 
   actions:
     add: Add
@@ -111,6 +118,14 @@ en:
     status_disabled: Two-factor authentication is disabled.
     invalid_code: The verification code is invalid.
 
+  email_registrations:
+    saved: Email address saved.
+    new:
+      title: Register email address
+      email_label: Email address
+      submit: Save email address
+      help: Enter a real email address you can access. Placeholder addresses are not allowed.
+
   preferences:
     font_size_migration_notice: We updated the font-size baseline and migrated your existing setting to Small. You can change it anytime in Preferences > Font size.
     saved: Preferences saved.
@@ -124,6 +139,8 @@ en:
         medium: Medium
         small: Small
       submit: Save
+      email_registration_section_title: Email address
+      email_registration_link: Register a real email address
 
   nav:
     home: Home

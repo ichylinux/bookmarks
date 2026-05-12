@@ -303,6 +303,43 @@
 
 ---
 
+## Milestone: v1.17 — Email Registration for X/Twitter Users
+
+**Shipped:** 2026-05-13  
+**Phases:** 3 (57–59) | **Plans:** (inline / VERIFICATION-led)
+
+### What Was Built
+
+- `User` dummy-pattern email validation `on: :update` so Twitter `from_omniauth` create keeps working; `twitter_user` fixture + `user_test.rb`.
+- `Users::EmailRegistrationsController` at `users/email_registration` with dummy-only guard, uniqueness collision messaging, `rescue ActiveRecord::RecordNotUnique`, `save` (not `save!`).
+- Preferences row + `new` form views; `ja.yml` / `en.yml` keys with parity test; preferences and i18n controller tests.
+
+### What Worked
+
+- **Audit before close:** `v1.17-MILESTONE-AUDIT.md` with **passed** and explicit evidence table aligned archive with implementation.
+- **Dedicated controller:** narrow surface vs extending preferences; strong params scoped to `:email_registration`.
+
+### What Was Inefficient
+
+- **GSD automation unavailable:** `gsd-sdk query` / `milestone.complete` not present in this runtime — archive and roadmap surgery manual again.
+- **No `*-SUMMARY.md`:** accomplishment extraction for `MILESTONES.md` was hand-authored from VERIFICATION + audit.
+
+### Patterns Established
+
+- **Dummy-only registration route** as the single writable path for elevating Twitter users to real email + Google OAuth compatibility.
+- **Tri-suite + VERIFICATION.md** as the acceptance record when SUMMARY/Nyquist artifacts are skipped.
+
+### Key Lessons
+
+1. Keep REQUIREMENTS checkboxes in sync during execution, or normalize at archive (audit called out checkbox drift).
+2. `RecordNotUnique` rescue belongs next to the `save` that can race the unique index — document in controller, test with stub.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -316,6 +353,7 @@
 | v1.5 | 4 (19–22) | First verification-debt-only milestone; shared rubric phase + per-document closure phases + explicit milestone sync phase |
 | v1.6 | 3 (23–25) | First milestone shipped entirely without `.planning/phases/` directories — roadmap + audit + tests carry traceability |
 | v1.16 | 5 (52–56) | Manual milestone close (no `gsd-sdk`); tri-suite + audit file carry traceability; Cucumber uses global DB reset for new gadget type |
+| v1.17 | 3 (57–59) | Security-first email elevation (dummy-only + collision + race rescue); VERIFICATION-led close without SUMMARY files |
 
 ### Cumulative quality
 
@@ -328,6 +366,7 @@
 | v1.5 | Minitest + Cucumber green (one-rerun policy) | No new user-facing features; evidence-only + 2 test file changes (+38+16 lines) |
 | v1.6 | Minitest + Cucumber green (one-rerun policy) | Theme/UI expansion only; milestone audit notes missing Nyquist artifacts |
 | v1.16 | Minitest + Cucumber green (one-rerun policy) | New external HTTP client + gadget; Faraday test adapter + class stub for E2E |
+| v1.17 | Minitest + Cucumber green (one-rerun policy) | No new gems/migrations; E2E for email path explicitly deferred per REQUIREMENTS |
 
 ### Top lessons (carry forward)
 

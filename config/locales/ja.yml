@@ -27,6 +27,13 @@ ja:
         title: タイトル
       user:
         name: ユーザー名
+        email: メールアドレス
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              dummy_email: プレースホルダーのメールアドレスは使えません
 
   actions:
     add: 追加
@@ -111,6 +118,14 @@ ja:
     status_disabled: 二段階認証は無効です。
     invalid_code: 認証コードが正しくありません。
 
+  email_registrations:
+    saved: メールアドレスを保存しました。
+    new:
+      title: メールアドレスを登録する
+      email_label: メールアドレス
+      submit: メールアドレスを保存
+      help: 受信できる実際のメールアドレスを入力してください。プレースホルダー形式のアドレスは使えません。
+
   preferences:
     font_size_migration_notice: 文字サイズの基準を見直したため、既存設定を「小」に移行しました。必要に応じて設定画面の「文字サイズ」から変更してください。
     saved: 設定を保存しました。
@@ -124,6 +139,8 @@ ja:
         medium: 中
         small: 小
       submit: 保存
+      email_registration_section_title: メールアドレス
+      email_registration_link: 実メールアドレスを登録する
 
   nav:
     home: ホーム

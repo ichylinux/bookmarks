@@ -5,6 +5,11 @@
         <th><%= f.label :name %></th>
         <td><%= f.text_field :name %></td>
       </tr>
+    <% else %>
+      <tr>
+        <th><%= t('preferences.index.email_registration_section_title') %></th>
+        <td><%= link_to t('preferences.index.email_registration_link'), users_email_registration_path %></td>
+      </tr>
     <% end %>
 
     <%= f.fields_for :preference_attributes, @user.preference do |f| %>
