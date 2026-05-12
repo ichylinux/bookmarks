@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: none
-milestone_name: (next not started)
-status: idle
-stopped_at: v1.16 milestone archived 2026-05-12. ROADMAP/REQUIREMENTS reset; git tag v1.16 recommended after commit.
-last_updated: "2026-05-12T12:00:00.000Z"
-last_activity: 2026-05-12
+milestone: v1.17
+milestone_name: Email Registration for X/Twitter Users
+status: planning
+stopped_at: ""
+last_updated: "2026-05-13T00:00:00.000Z"
+last_activity: 2026-05-13
 progress:
   total_phases: 0
   completed_phases: 0
@@ -18,20 +18,20 @@ progress:
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting `/gsd-new-milestone`
-Last activity: 2026-05-12
+Status: Defining requirements
+Last activity: 2026-05-13 — Milestone v1.17 started
 
 Progress: [░░░░░░░░░░] —
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-12)
+See: `.planning/PROJECT.md` (updated 2026-05-13)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-**Current focus:** Plan the next milestone (v1.17+).
+**Current focus:** v1.17 — Email Registration for X/Twitter Users.
 
 ## Performance Metrics
 
@@ -53,6 +53,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-12 (v1.16 milestone audit + archive + cleanup)
+Last session: 2026-05-13 (v1.17 milestone started)
 
-Resume: `/gsd-new-milestone` to start the next version; push `v1.16` tag after committing if desired.
+Resume: `/gsd-plan-phase [N]` after roadmap is created.

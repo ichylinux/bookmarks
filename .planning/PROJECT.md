@@ -8,13 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone
+## Current Milestone: v1.17 Email Registration for X/Twitter Users
 
-_Not started._ Use `/gsd-new-milestone` when ready to plan v1.17 (or the next chosen version).
+**Goal:** Allow users who signed up via X/Twitter (and hold a dummy email) to register a real email address, which unlocks Google OAuth sign-in for their existing account.
+
+**Target features:**
+- Email update flow for X/Twitter users with dummy emails
+- Validation: uniqueness, format, reject dummy-pattern addresses
+- Google OAuth compatibility: `from_omniauth` matches by real email
+- UI entry point on preferences/settings page (ja/en strings)
 
 ## Current State
 
-**Status:** v1.16 shipped (2026-05-12)
+**Status:** v1.17 in planning (2026-05-13); v1.16 shipped (2026-05-12)
 
 v1.16 delivered read-only Mastodon account following: `mastodon_accounts` table and model, CRUD at `/mastodon_accounts`, `MastodonClient` service with explicit Faraday timeouts, `MastodonAccountsController#show` for HTML + XHR fragments, welcome-page gadgets wired through `Portal#get_gadgets`, Japanese/English strings, Minitest (including Faraday test adapter / stub paths) and Cucumber (`features/05.Mastodon.feature`). Tri-suite green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with documented Cucumber flake rerun).
 
@@ -204,4 +210,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-12 after v1.16 milestone*
+*Last updated: 2026-05-13 — v1.17 Email Registration for X/Twitter Users started*
