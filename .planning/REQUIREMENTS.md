@@ -55,20 +55,20 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| EMAIL-01 | TBD | Pending |
-| CTRL-01 | TBD | Pending |
-| CTRL-02 | TBD | Pending |
-| CTRL-03 | TBD | Pending |
-| VIEW-01 | TBD | Pending |
-| VIEW-02 | TBD | Pending |
-| I18N-01 | TBD | Pending |
-| TEST-01 | TBD | Pending |
+| EMAIL-01 | Phase 57 | Pending |
+| CTRL-01 | Phase 58 | Pending |
+| CTRL-02 | Phase 58 | Pending |
+| CTRL-03 | Phase 58 | Pending |
+| VIEW-01 | Phase 59 | Pending |
+| VIEW-02 | Phase 59 | Pending |
+| I18N-01 | Phase 59 | Pending |
+| TEST-01 | Phase 59 | Pending |
 
 **Coverage:**
 - v1.17 requirements: 8 total
-- Mapped to phases: 0 (TBD — roadmapper assigns)
-- Unmapped: 8 ⚠ (pending roadmap)
+- Mapped to phases: 8 (100%)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-13*
-*Last updated: 2026-05-13 after initial definition*
+*Last updated: 2026-05-13 — traceability mapped to Phases 57–59*
