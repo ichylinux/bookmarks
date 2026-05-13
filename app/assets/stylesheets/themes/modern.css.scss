@@ -100,6 +100,11 @@
   text-align: left;
 }
 
+.modern table th.center,
+.modern table td.center {
+  text-align: center;
+}
+
 .modern table thead th {
   background: var(--modern-surface-alt);
   font-weight: 600;
