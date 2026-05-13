@@ -8,9 +8,24 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current milestone
+## Current Milestone: v1.18 X (Twitter) Account Following
 
-**Status:** v1.17 shipped (2026-05-13). Use `/gsd-new-milestone` to author requirements and roadmap for the next version.
+**Goal:** Twitter サインイン済みユーザー（`users.name` あり）が自分のフォロー中 X アカウントから選択した相手の最新ツイートを welcome ページのガジェットとして表示できる。
+
+**Target features:**
+- `User.from_omniauth` Twitter ブランチで `uid` / `token` / OAuth1 secret を保存（X API 呼び出しの前提、v1.17 PITFALL-02 解消も兼ねる）
+- `XClient` サービス：`GET /2/users/:id/following`（管理画面）+ `GET /2/users/:id/tweets`（ガジェット）。Faraday + 明示タイムアウト、graceful なエラー処理、テスト用 `stub_fetch_result`（v1.16 と同流儀）
+- `/x_accounts` 管理画面：`name` 入りユーザーのみアクセス可。フォロー中一覧を DB キャッシュ＋手動「再取得」、welcome 表示の選択／解除
+- welcome ガジェット：選択された X アカウントの最新ツイート N 件を AJAX 遅延ロード（v1.16 Mastodon と同型、`Portal#get_gadgets` 経由）
+- ja/en ローカライズ（管理画面・ガジェット・preferences エントリ・エラー表示）+ 鍵パリティテスト
+- Minitest（モデル/コントローラ/サービス、Faraday test adapter）+ Cucumber（`@x_gadget` 流）+ tri-suite gate
+
+**Key context:**
+- X API v2 Basic プラン($200/月〜) 前提（既契約／契約予定）。テストは実 API を叩かずスタブ契約で動かす
+- データ鮮度：フォロー一覧 = DB キャッシュ + 手動再取得 / ツイート = welcome 表示時ライブ取得（新規バックグラウンドインフラは入れない）
+- 既存 `omniauth-twitter`（OAuth 1.0a User Context）を維持。X API v2 も同方式で動作
+- v1.16 Mastodon の `MastodonAccount` / CRUD / `Portal#get_gadgets` / AJAX `show` パターンを最大限再利用。新規要素は「フォロー一覧 → 選択」フローのみ
+- 管理画面 / preferences 入り口は `users.name` ガード（Google サインインのみのユーザーには出さない）
 
 ## Current State
 
@@ -86,6 +101,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 ### Active
 
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
+- [ ] v1.18 X (Twitter) Account Following — Twitter サインインユーザーのフォロー一覧から選択 → welcome ガジェット表示（要件詳細は `.planning/REQUIREMENTS.md`）
 
 ### Out of Scope (revisit when planning)
 
@@ -219,4 +235,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-13 after v1.17 milestone archive*
+*Last updated: 2026-05-14 after v1.18 milestone start*
