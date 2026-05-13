@@ -114,44 +114,44 @@ Populated by the roadmapper after phase decomposition.
 
 | Requirement | Phase | Status |
 |---|---|---|
-| XAUTH-01 | TBD | Pending |
-| XAUTH-02 | TBD | Pending |
-| XAUTH-03 | TBD | Pending |
-| XAUTH-04 | TBD | Pending |
-| XAPI-01 | TBD | Pending |
-| XAPI-02 | TBD | Pending |
-| XAPI-03 | TBD | Pending |
-| XAPI-04 | TBD | Pending |
-| XAPI-05 | TBD | Pending |
-| XACCT-01 | TBD | Pending |
-| XACCT-02 | TBD | Pending |
-| XACCT-03 | TBD | Pending |
-| XACCT-04 | TBD | Pending |
-| XACCT-05 | TBD | Pending |
-| XACCT-06 | TBD | Pending |
-| XACCT-07 | TBD | Pending |
-| XACCT-08 | TBD | Pending |
-| XGAD-01 | TBD | Pending |
-| XGAD-02 | TBD | Pending |
-| XGAD-03 | TBD | Pending |
-| XGAD-04 | TBD | Pending |
-| XGAD-05 | TBD | Pending |
-| XI18N-01 | TBD | Pending |
-| XI18N-02 | TBD | Pending |
-| XI18N-03 | TBD | Pending |
-| XTEST-01 | TBD | Pending |
-| XTEST-02 | TBD | Pending |
-| XTEST-03 | TBD | Pending |
-| XTEST-04 | TBD | Pending |
-| XTEST-05 | TBD | Pending |
-| XTEST-06 | TBD | Pending |
+| XAUTH-01 | 60 | Pending |
+| XAUTH-02 | 60 | Pending |
+| XAUTH-03 | 60 | Pending |
+| XAUTH-04 | 60 | Pending |
+| XAPI-01 | 61 | Pending |
+| XAPI-02 | 61 | Pending |
+| XAPI-03 | 61 | Pending |
+| XAPI-04 | 61 | Pending |
+| XAPI-05 | 61 | Pending |
+| XACCT-01 | 62 | Pending |
+| XACCT-02 | 62 | Pending |
+| XACCT-03 | 62 | Pending |
+| XACCT-04 | 62 | Pending |
+| XACCT-05 | 62 | Pending |
+| XACCT-06 | 62 | Pending |
+| XACCT-07 | 62 | Pending |
+| XACCT-08 | 62 | Pending |
+| XGAD-01 | 63 | Pending |
+| XGAD-02 | 63 | Pending |
+| XGAD-03 | 63 | Pending |
+| XGAD-04 | 63 | Pending |
+| XGAD-05 | 63 | Pending |
+| XI18N-01 | 63 | Pending |
+| XI18N-02 | 63 | Pending |
+| XI18N-03 | 63 | Pending |
+| XTEST-01 | 60 | Pending |
+| XTEST-02 | 61 | Pending |
+| XTEST-03 | 62 | Pending |
+| XTEST-04 | 63 | Pending |
+| XTEST-05 | 63 | Pending |
+| XTEST-06 | 63 | Pending |
 
 **Coverage:**
 - v1.18 requirements: **31 total** (XAUTH: 4 / XAPI: 5 / XACCT: 8 / XGAD: 5 / XI18N: 3 / XTEST: 6)
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 31 (pending roadmap) ⚠️
+- Mapped to phases: 31
+- Unmapped: 0 ✓
 
 ---
 
 *Requirements defined: 2026-05-14*
-*Last updated: 2026-05-14 after research synthesis*
+*Last updated: 2026-05-14 after v1.18 roadmap creation (phases 60–63, 100% coverage)*

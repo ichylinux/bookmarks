@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: X (Twitter) Account Following
-status: planning
+status: ready
 stopped_at: null
-last_updated: "2026-05-14T01:05:00.000Z"
+last_updated: "2026-05-14T01:35:00.000Z"
 last_activity: 2026-05-14
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,12 +18,12 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 60 (not started — awaiting `/gsd-plan-phase 60`)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-14 — Milestone v1.18 started
+Status: Roadmap created, ready for phase planning
+Last activity: 2026-05-14 — v1.18 roadmap created (4 phases, 31 REQ-IDs, 100% coverage)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 0% (0/4 phases)
 
 ## Project Reference
 
@@ -49,9 +49,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-14)
 
 ### Pending Todos
 
-- v1.17 carry-forward: PITFALL-02 (`from_omniauth` Twitter branch should use `uid` + `provider` instead of `name`) — v1.18 の OAuth 拡張フェーズで同時に解消する想定。
-- v1.17 carry-forward: EDGE-03（email リンク + Google サインイン時に `provider`/`uid` カラムが Twitter のままになる）— 上の OAuth 拡張で再評価。
-- v1.17 carry-forward: `users.provider` / `users.uid` への書き込み一貫性確認 — 同上。
+- **v1.18 で解消される v1.17 carry-forward:** `users.{provider, uid, token}` への書き込み一貫性 — Phase 60 (XAUTH-01) で `from_omniauth` Twitter ブランチが create / update 両方で全 4 フィールド (`provider, uid, token, token_secret`) を保存するように改修される。
+- **v1.18 では解消しない v1.17 carry-forward（v1.19+ へ送り）:** PITFALL-02 (`from_omniauth` Twitter ブランチのルックアップを `name` ベース → `uid` ベースに切り替える) — Phase 60 で prerequisite（`users.uid` の persistence）は満たされるが、ルックアップ切り替え自体は pre-v1.18 ユーザーの identity semantics に影響するため別マイルストーン (`XAUTH-FUT-01`)。
+- **v1.18 で再評価する v1.17 carry-forward:** EDGE-03（email リンク + Google サインイン時に `provider`/`uid` カラムが Twitter のままになる）— XAUTH-01 で Twitter 再認可のたびに `provider/uid/token/token_secret` を上書きするため、Google サインイン時の挙動は変えない（Google ブランチでは依然書き込まない）。残る懸念は変わらず、別途タスク化。
 
 ### Blockers/Concerns
 
@@ -59,6 +59,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-14 — v1.18 milestone started (`/gsd-new-milestone X(Twitter) Account Following`). PROJECT.md updated with Current Milestone section.
+Last session: 2026-05-14 — v1.18 milestone started, リサーチ完了 (4 軸 + シンセサイザ), REQUIREMENTS.md 31 件作成, ロードマップ作成（Phases 60–63, 100% coverage）.
 
-Resume: 要件定義 → `/gsd-plan-phase 60` から実行開始（フェーズ番号は roadmap 作成で確定）。
+Resume: `/gsd-plan-phase 60` から実行開始。

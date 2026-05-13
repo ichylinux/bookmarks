@@ -19,8 +19,21 @@
 - ✅ **v1.15 — CSS & UI Polish** — Phases 49–51 (shipped 2026-05-11) — [archived](milestones/v1.15-ROADMAP.md)
 - ✅ **v1.16 — Mastodon Account Following** — Phases 52–56 (shipped 2026-05-12) — [archived](milestones/v1.16-ROADMAP.md)
 - ✅ **v1.17 — Email Registration for X/Twitter Users** — Phases 57–59 (shipped 2026-05-13) — [archived](milestones/v1.17-ROADMAP.md)
+- 🚧 **v1.18 — X (Twitter) Account Following** — Phases 60–63 (in progress) — [detail](milestones/v1.18-ROADMAP.md)
 
 ## Phases
+
+<details>
+<summary>🚧 v1.18 — X (Twitter) Account Following (Phases 60–63) — IN PROGRESS</summary>
+
+Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestones/v1.18-ROADMAP.md).
+
+- [ ] Phase 60: User OAuth Token Persistence
+- [ ] Phase 61: XClient Service + Stub Contract
+- [ ] Phase 62: x_accounts Model + Management UI + Refresh Diff
+- [ ] Phase 63: Welcome Gadget + Show Action + Tri-Suite Gate
+
+</details>
 
 <details>
 <summary>✅ v1.17 — Email Registration for X/Twitter Users (Phases 57–59) — SHIPPED 2026-05-13</summary>
@@ -48,4 +61,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-13 — v1.17 milestone archived*
+*Last updated: 2026-05-14 — v1.18 milestone started*
