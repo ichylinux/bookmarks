@@ -5,22 +5,27 @@
 <% unless @feeds.present? %>
   <div><%= t('feeds.index.empty') %></div>
 <% else %>
-  <table class="feeds">
-    <tr>
-      <th><%= Feed.human_attribute_name :title %></th>
-      <th class="center"><%= Feed.human_attribute_name :display_count %></th>
-      <th><%= Feed.human_attribute_name :feed_url %></th>
-      <th colspan="2"><%= t('feeds.index.actions') %></th>
-    </tr>
-    
-    <% @feeds.each do |feed| %>
-      <tr>
-        <td><%= feed.title %></td>
-        <td class="center"><%= feed.display_count %></td>
-        <td><div class="feed_url"><%= feed.feed_url %></div></td>
-        <td><%= link_to t('actions.edit'), edit_feed_path(feed) %></td>
-        <td><%= link_to t('actions.delete'), feed_path(feed), method: 'delete', confirm: t('messages.confirm_delete', name: feed.title) %></td>
-      </tr>
-    <% end %>
-  </table>
+  <div class="feeds-table-scroll">
+    <table class="feeds">
+      <thead>
+        <tr>
+          <th><%= Feed.human_attribute_name :title %></th>
+          <th class="center"><%= Feed.human_attribute_name :display_count %></th>
+          <th><%= Feed.human_attribute_name :feed_url %></th>
+          <th colspan="2"><%= t('feeds.index.actions') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @feeds.each do |feed| %>
+          <tr>
+            <td><%= feed.title %></td>
+            <td class="center"><%= feed.display_count %></td>
+            <td><div class="feed_url"><%= feed.feed_url %></div></td>
+            <td class="feeds-action"><%= link_to t('actions.edit'), edit_feed_path(feed) %></td>
+            <td class="feeds-action"><%= link_to t('actions.delete'), feed_path(feed), method: 'delete', confirm: t('messages.confirm_delete', name: feed.title) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% end %>

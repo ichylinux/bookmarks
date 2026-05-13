@@ -1,6 +1,15 @@
 div.feed_url,
 input[type="text"].feed_url {
-  width: 600px;
+  box-sizing: border-box;
+  max-width: 600px;
+  width: 100%;
+}
+
+div.feed_url {
+  overflow: hidden;
+}
+
+input[type="text"].feed_url {
   overflow: hidden;
 }
 
@@ -8,4 +17,68 @@ input[type="number"].display_count {
   text-align: right;
   width: 3em;
   padding: 0 0.5em;
+}
+
+// フィード一覧: 狭い画面では横スクロールで列を潰さず読めるようにする
+.feeds-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  margin: 20px 0;
+  box-sizing: border-box;
+}
+
+.feeds-table-scroll table.feeds {
+  margin: 0;
+  border-collapse: collapse;
+  min-width: 34rem;
+  // SassC が CSS の max() を数値用の max() と誤解釈しないよう、そのまま CSS に出す
+  width: #{"max(100%, min-content)"};
+}
+
+table.feeds thead th {
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+table.feeds tbody td {
+  vertical-align: top;
+}
+
+table.feeds th.center,
+table.feeds td.center {
+  white-space: nowrap;
+}
+
+table.feeds td.feeds-action {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+table.feeds th:nth-child(3),
+table.feeds td:nth-child(3) {
+  white-space: normal;
+  min-width: 11rem;
+  max-width: 24rem;
+}
+
+table.feeds div.feed_url {
+  max-width: none;
+  width: auto;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .feeds-table-scroll {
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .feeds-table-scroll {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
 }

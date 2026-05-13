@@ -42,6 +42,11 @@ a:hover {
   padding: 0 50px 50px 50px;
 }
 
+#header {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 #header .head-box {
   font-size: large;
   background: #AAA;
@@ -49,6 +54,8 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #header .head-box .head-leading {
