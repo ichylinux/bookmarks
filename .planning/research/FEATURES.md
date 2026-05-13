@@ -1,101 +1,206 @@
-# Features Research — Email Registration for X/Twitter Users
+# Features Research — v1.18 X (Twitter) Account Following
 
-**Domain:** OAuth-only user email self-registration in a Rails/Devise app
-**Researched:** 2026-05-13
-**Overall confidence:** HIGH (codebase read directly; patterns verified against Devise modules already present)
+**Project:** Bookmarks v1.18
+**Researched:** 2026-05-14
+**Confidence:** HIGH (v1.16 Mastodon code read directly; X API v2 surface and Basic-tier scopes are well-documented and stable; rate-limit ceilings carry MEDIUM confidence because Basic-tier quotas have shifted historically)
 
 ---
 
 ## Summary
 
-X/Twitter users currently receive a `dummy_<uuid>@example.com` address on first sign-in (`User.from_omniauth`). Registering a real email unlocks Google OAuth sign-in (via the existing `from_omniauth` email lookup path), improves `display_name`, and makes the account recoverable in future. The entire flow fits inside the existing `PreferencesController` and preferences view — no new top-level route is needed. Email confirmation via Devise `:confirmable` is explicitly out of scope: the schema has no confirmation columns, the module is not activated, and the app's threat model and single-owner character do not justify it.
+v1.18 puts an X (Twitter) following list behind `/x_accounts` and renders one welcome-page gadget per selected handle, showing the latest N tweets with live AJAX fetch on every page render. It is the X-flavored mirror of v1.16 Mastodon, with three structural differences forced by X:
+
+1. **Auth is required for every API call.** Public X read is no longer free; we must reuse the user's OAuth 1.0a credentials saved at sign-in (`uid` / `token` / OAuth1 `secret`) for both following-list and tweet fetches. v1.16 used purely public Mastodon endpoints with no token.
+2. **Following list is a real list.** v1.16 took a profile URL one row at a time; v1.18 pulls a snapshot of `GET /2/users/:id/following` into a DB cache and the user selects from it. A new cache table is needed (`x_followings`) plus a manual "Refresh" affordance — there is no v1.16 equivalent.
+3. **Surface is gated to Twitter sign-in users.** `users.name` (Twitter screen_name) is the gate; Google-only accounts never see `/x_accounts` or the gadget. v1.16 has no such gate.
+
+Everywhere else, lean hard on the v1.16 contract: same one-line truncated-text-with-link gadget shape, same AJAX `show` action with `stub_fetch_result` test seam, same `Portal#get_gadgets` registration, same Faraday-with-explicit-timeouts client, same soft-delete via `Crud::ByUser`, same ja/en locale parity test, same `@x_gadget` Cucumber stub.
 
 ---
 
-## Table Stakes
+## Following-List Management Screen
 
-Must be present for the feature to be correct and usable. Missing any one makes the flow broken or unsafe.
+The screen at `/x_accounts` has two concerns layered on the same page:
 
-| Feature | Why Required | Complexity | Dependencies on Existing Code |
-|---------|-------------|------------|-------------------------------|
-| Email input field on preferences page, visible only when `!has_valid_email?` | Entry point for the entire flow | Low | `has_valid_email?` already exists; preferences view already gates the `name` row with this method — identical pattern |
-| Format validation (valid email format) | Prevents obviously bad input reaching the DB | Low | Devise `:validatable` already validates email format on `User`; no new code needed at the model level |
-| Uniqueness validation (reject already-registered emails) | Prevents account collision | Low | Devise `:validatable` already enforces `validates_uniqueness_of :email`; no new code needed |
-| Reject dummy-pattern input (`dummy_*@example.com`) | Prevents user from re-entering a dummy address and appearing to succeed | Low | Invert `has_valid_email?` regex into a custom `validates :email` callback or `validates_format_of` exclusion |
-| Server-side guard: ignore email param when current email is already real | Defense in depth; prevents the hidden field from being submitted to override a real email | Low | One `if !current_user.has_valid_email?` gate in the controller update action before assigning the email param |
-| Permit `:email` in `user_params` — guarded as above | Without it, strong params will strip the value | Low | `PreferencesController#user_params` currently permits `:name` and `preference_attributes`; add `:email` with guard |
-| Persist the real email to `users.email` on save | Core data mutation | Low | `@user.save!` inside the existing transaction already persists changes; only strong-params and guard need updating |
-| Flash message on success (ja + en) | User feedback; matches existing preferences save flow | Low | `preferences.saved` locale key already exists; reuse it — or add a more specific key for clarity |
-| Hide the email field once a real email is set | Prevents repeated mutation; avoids UX confusion | Low | Same `has_valid_email?` gate — the view condition handles it automatically after the redirect |
+- **Cached list** — what the X API last said the user follows.
+- **Selection state** — which of those handles render as gadgets on `/`.
 
----
+These are intentionally one screen (not two) to keep the v1.16 single-CRUD surface familiar; selection is a checkbox per row, persisted into the `x_accounts` table on submit.
 
-## Differentiators
+### Table Stakes
 
-Nice-to-have additions that improve experience but are not required for correctness.
+| Feature | Complexity | Why required |
+|---------|-----------|--------------|
+| `users.name`-gated route + controller (`require_twitter_signed_in` filter) | S | Google-only users have no X tokens; entering the screen would 401 the first API call and surface a confusing error. Gate at the controller layer, not the view, to keep the contract testable. |
+| Manual "Refresh" button that calls `XClient#fetch_following` and upserts `x_followings` rows | M | The screen is useless without a way to populate / re-populate the cache. Q6 closed background sync, so this is the only refresh path. Must be POST (CSRF-protected) and idempotent. |
+| Persistent `x_followings` cache (per-viewer snapshot: `target_user_id`, `username`, `display_name`, `avatar_url`, `synced_at`) | M | X Basic-tier rate limits prohibit re-pulling on every page load. Cache row is the join target for the selection table. Per-viewer (not global) because following lists are private to the viewer. |
+| Per-row checkbox that toggles "show on welcome" → writes to `x_accounts` (selected handles) | S | The whole point of the screen. Submit via standard Rails form post; do not introduce per-row AJAX. |
+| Display per row: avatar, display name, `@handle` | S | Without these three, users cannot recognize an account in a multi-hundred list. Avatar and display name come from the same `user.fields` expansion as the username; cost is one extra query parameter. |
+| Empty state when cache is empty (never refreshed, or X returned zero follows) | S | First-time UX. Single locale key; render an explicit "Press Refresh to load your X following list" message instead of an empty table. |
+| Error state for refresh failures (timeout, rate-limited, token-revoked, network) | M | Each maps to a different user action: timeout → retry, rate-limited → wait, token-revoked → re-sign-in, network → check connection. Single generic flash is insufficient. Mirror v1.16 `:timeout / :network / :not_found / :api_error / :parse_error` plus new `:rate_limited` and `:auth_failed` symbols. |
+| ja/en localization with locale-key parity test | S | Project-wide standard; not optional. Reuses the parity test added in v1.4. |
+| Soft-delete via `Crud::ByUser` on `x_accounts` | S | Matches `MastodonAccount` and `Feed`. Necessary so unselecting an account does not lose the user's `display_count` override on a future re-select. |
+| Server-side enforcement that `x_accounts.target_user_id` exists in the viewer's current `x_followings` snapshot | S | Defense-in-depth: a crafted POST cannot create a gadget for an account the user does not actually follow. |
+| `display_count` per account, default 5 | S | Mirrors `MastodonAccount#set_display_count`. X API `/2/users/:id/tweets` `max_results` minimum is 5 — using 5 as default is both natural and the smallest legal value. |
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|------------------|------------|-------|
-| Helper text below the email field explaining why email is requested | Reduces confusion ("this lets you sign in with Google") | Low | One locale key per language; a `<small>` or `<span class="hint">` element |
-| Validation error rendered inline near the email row, not just in a global flash | Faster feedback for a single-field failure | Low | Devise model errors attach to `:email`; standard `@user.errors[:email]` rendering in the view |
-| Separate "email registered" flash vs generic "settings saved" | Confirms to user specifically what changed | Low | Separate locale key; one-line controller change |
-| Display current `display_name` or `name` as identity context near the field | Reassures user they are editing the right account | Low | `current_user.display_name` already available |
+### Differentiators
 
----
+| Feature | Complexity | Why nice |
+|---------|-----------|----------|
+| In-page client-side filter input (jQuery substring match on handle + display name) | S | Following lists run to hundreds. Pure DOM filter over already-rendered rows; no extra API, no new JS framework. High value-to-effort. |
+| Bio snippet (~140 chars, truncated) under display name | S | One extra `user.fields=description` parameter; helps users disambiguate similar handles. |
+| "Last refreshed at {timestamp}" line above the table | S | Communicates cache freshness; reduces panic when results look stale. Reuses `synced_at` already needed for the cache. |
+| Pagination of the cached list (server-side, 50/page) if cache grows past ~200 rows | M | DOM size matters for filter responsiveness. Defer until lint/performance pressure observed; not required for v1 correctness. |
+| Bulk select-all / clear-all controls | S | Convenience for users who want most-or-none. Pure form-state, no backend change. |
+| Per-row link to `https://x.com/{handle}` | S | Lets users visit the source profile when in doubt. Trivial. |
+| Selected-count indicator (`3 / 142 selected`) | S | Quick orientation; one helper call. |
+| Verified / protected badges (`user.fields=verified,protected`) | S | Two-pixel UX wins; minor API-cost increase. |
+| Followers-count column | S | Helps users decide which of two similar accounts to pick. |
+| Fallback "Add by @handle" input for handles not yet in the cache (e.g., newly followed) | M | Edge case but worth allowing without forcing a full refresh; calls `XClient#lookup_user` and inserts a single `x_followings` row. |
+| Sort toggle (alphabetical, by recent activity, by followers) | M | Diminishing returns past alphabetical; defer. |
 
-## Anti-Features
+### Anti-features
 
-Explicitly do not build these.
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|-------------|-----------|-------------------|
-| Devise `:confirmable` email confirmation | `users` table has no `confirmation_token`, `confirmed_at`, or `unconfirmed_email` columns. Adding these requires a migration and activating a Devise module with its own mailer, token-expiry logic, and access gates. `reconfirmable: true` is set in `devise.rb` but is dormant because `:confirmable` is not in the `User` model declaration. For a personal, authenticated-session app this complexity is entirely unwarranted. | Direct `users.email` update with format + uniqueness + dummy-rejection validation is sufficient |
-| Separate `/users/email` route and controller | Fragments the settings surface the user already knows; introduces a new controller for trivially few lines of logic | Keep the field inside `PreferencesController` / preferences view — consistent with how 2FA setup is surfaced there |
-| Allowing email edits after a real email is already set | Changing an established email is a higher-risk operation (potential account recovery implications) and is out of scope for v1.17 | Hide the field via `has_valid_email?` once set; a future milestone can introduce "change email" with stronger verification |
-| Password re-entry before saving email | Over-engineering for a personal app where the user is already authenticated via an active session | Standard authenticated session is sufficient |
-| Notification email to the old dummy address | The dummy address `dummy_uuid@example.com` is not a real mailbox; sending to it generates bounces and no user value | No email notification needed |
-| Exposing `:email` in `user_params` without the dummy-email guard | Would allow any authenticated user with a real email to overwrite it via a crafted POST, or allow future code paths to clobber the email unexpectedly | Gate the param assignment server-side behind `!current_user.has_valid_email?` |
-
----
-
-## User Journey
-
-Step-by-step from the X/Twitter user's perspective (happy path):
-
-1. User signs in via X/Twitter as usual (existing flow unchanged).
-2. User navigates to `/preferences`.
-3. A new row "メールアドレスを登録 / Register email" appears in the preferences table. The existing `name` row is hidden for dummy-email users (current behaviour) — this new row appears in its place or just above it.
-4. User types a real email address into the text field.
-5. User clicks "保存 / Save" (the existing submit button — no new button needed).
-6. Server validates: format, uniqueness, not a dummy-pattern address, current user still has dummy email (guard).
-   - Failure path: preferences page re-renders with an error message near the email field (or in flash). User corrects input and resubmits.
-   - Success path: `users.email` updated; redirect to `/preferences` with flash "設定を保存しました".
-7. User returns to preferences page. Email registration row is gone (`has_valid_email?` now returns true). The `name` field row reappears (existing behaviour for real-email users).
-8. Downstream: user can now sign in with Google OAuth — `from_omniauth` for Google does `User.where(email: data["email"]).first` and finds their existing account.
-
-Edge cases to handle:
-
-- **Email already registered to another account:** show standard Devise uniqueness error; do not disclose that another account exists — Devise's default wording ("has already been taken") is correct.
-- **Empty submission (field left blank):** do not treat a blank value as "clear email"; skip the email param entirely in the controller when blank. The existing email (dummy) remains untouched, and the rest of preferences saves normally.
-- **User with real email somehow reaches the update action (direct POST):** server-side guard ignores the email param; preferences save proceeds without modifying the email column.
-- **Duplicate submission / double-click:** Rails CSRF token + redirect-after-POST pattern makes this safe by default.
+| Feature | Why excluded |
+|---------|--------------|
+| Following / unfollowing accounts from this screen | Write-side X API requires elevated scopes and explicit user intent we should not synthesize. v1.18 is strictly read-only, mirroring v1.16. |
+| Muting, blocking, reporting | Same as above — write surfaces belong on x.com, not in a personal dashboard. |
+| Drag-and-drop reordering of selected accounts into portal columns | The welcome page already has a portal-layout mechanism (`PortalLayout`); reordering belongs there, not on `/x_accounts`. Adds DnD JS that violates the no-new-client-state constraint. |
+| Auto-refresh of following list (cron / Solid Queue / on every welcome render) | Q6 explicitly closed this. Manual button only. Background infra is out of scope for v1.18. |
+| Cross-platform merged list (Mastodon + X in one view) | Surfaces are intentionally separate; merging them couples two clients that fail independently. v1.16 set the precedent. |
+| Real-time updates via WebSocket / Turbo Streams | The app is Sprockets + jQuery + standard Rails responses; no ActionCable in stack. |
+| Lists / Bookmarks / Saved-from-Twitter integration | Each requires extra API surface and per-resource scopes. Out of v1.18 scope. |
+| Inline tweet preview inside the following row | Conflates two distinct features; the welcome gadget is where tweets render. |
+| OAuth re-connect / scope upgrade flow inside `/x_accounts` | If the token is revoked, redirect to standard sign-out → re-sign-in. Building an in-page reconnect is more surface area than the failure mode justifies. |
+| Importing the following list from a CSV / Twitter archive | One-time migration tool; no recurring user value. |
 
 ---
 
-## Email Confirmation Decision
+## Welcome-Page Gadget
 
-**Decision: Skip email confirmation. Direct update to `users.email` is correct for v1.17.**
+Each selected X account renders as one gadget panel on `/`, identical in shape to v1.16 Mastodon: the server renders a placeholder with a `<script>` block, jQuery fires a single XHR to `MastodonAccountsController#show`-equivalent (`XAccountsController#show`), and the response is HTML for the gadget body.
 
-**Justification:**
+### Table Stakes
 
-1. **Schema does not support `:confirmable`.** No `confirmation_token`, `confirmed_at`, or `unconfirmed_email` columns exist in `db/schema.rb`. Adding `:confirmable` requires a migration and activating the Devise module — non-trivial scope expansion.
+| Feature | Complexity | Why required |
+|---------|-----------|--------------|
+| `XAccountsController#show` returns HTML fragment when `request.xhr?`, full layout otherwise | S | Exact v1.16 contract; reuse the `render layout: !request.xhr?` line verbatim. |
+| Live fetch on every render via `XClient#fetch_recent_tweets(target_user_id:, limit:)` | M | Q6=2 confirmed. No tweet caching layer. Same in-request fetch shape as `MastodonClient#fetch_recent_status_previews`. |
+| Each tweet rendered as one-line truncated text linked to `https://x.com/{handle}/status/{id}` | S | Direct port of v1.16 `_mastodon_account.html.erb` ol/li shape. Truncation length ~140 (X tweets average longer than toots; 100 chars looks cramped but 140 still fits one line in all three themes). |
+| Link target obeys `current_user.preference.open_links_in_new_tab?` | S | Site-wide UX contract; same line as v1.16. |
+| Default tweet count = 5; per-account override via `display_count` | S | X API `max_results` minimum is 5; using anything smaller costs an extra slice. Matches Mastodon default. |
+| Exclude retweets AND replies by default (`exclude=retweets,replies` query param) | S | Without exclusion, RT-heavy accounts produce a gadget of "@handle: …" lines that all link out to other users. Defeats the "what this account said" premise. v1.16 toots have no equivalent retweet concept so this is X-specific. |
+| Plain-text rendering (strip URLs to display text, no HTML embedding) | S | Same `strip_tags` + `squish` + `truncate` chain as `MastodonClient#build_preview_item`. X returns plain text in `data.text` already, but URLs come as `t.co` short links — should be replaced with `entities.urls[].display_url` before truncation. |
+| Empty state (account has zero qualifying tweets in the fetched window) | S | Locale key `x_accounts.show.empty`; same shape as Mastodon. |
+| Error states with distinct symbols: `:timeout`, `:network`, `:not_found`, `:rate_limited`, `:auth_failed`, `:api_error`, `:parse_error` | M | `:rate_limited` and `:auth_failed` are X-specific additions. `:not_found` covers deleted / suspended / private accounts. Each gets its own locale key so the user can act on the message. |
+| Gadget title links to `https://x.com/{handle}` profile | S | Mirrors `mastodon_account.title` link. |
+| `XClient.stub_fetch_result` class accessor for Cucumber + integration tests | S | Required by the project's no-WebMock testing contract. Direct lift of `MastodonClient.stub_fetch_result`. |
+| Faraday with explicit `CONNECT_TIMEOUT` + `READ_TIMEOUT` constants | S | Project-wide pattern (Mastodon, Daddy::HttpClient). Non-negotiable; default Faraday timeouts hang Puma threads. |
+| `Portal#get_gadgets` registers one entry per `XAccount.where(user_id: ...).not_deleted` row | S | One-line addition in the existing method, after the Mastodon block. |
+| `welcome/_x_account.html.erb` partial parallel to `_mastodon_account.html.erb` | S | Same structure, same loading message, same `data-fetch-failed-message` data attribute. |
 
-2. **App is a personal, single-owner authenticated-session tool.** The user is already signed in when registering the email. There is no anonymous registration path where confirmation prevents spam. The primary threat is a typo, which is self-correctable (Google sign-in simply won't work, and the user returns to preferences to fix it — once a "change email" flow exists, or once the dummy-email detection is extended to catch obviously wrong addresses).
+### Differentiators
 
-3. **No mailer infrastructure beyond the bare `ApplicationMailer` exists.** Production SMTP is configured, but there are no transactional mailer templates (ja/en), no test coverage patterns for mail delivery, and no user expectation of receiving email from the app. Building that pipeline exceeds the feature's scope.
+| Feature | Complexity | Why nice |
+|---------|-----------|----------|
+| Pinned tweet rendered first (always), then the timeline (N − 1 items) | M | Adds one extra `tweets/:id` lookup OR an `expansions=pinned_tweet_id` on user lookup. Significant UX win because the pinned tweet is usually the account's most relevant message. Requires extra rate-limit budget per gadget render. |
+| Relative timestamp ("2h", "3d") next to each tweet | S | `tweet.fields=created_at` plus a `time_ago_in_words` helper. Cheap and adds temporal context Mastodon previews lack. |
+| Quote-tweet handling: append `→ quoted: {short-text-or-handle}` | M | Requires `expansions=referenced_tweets.id` and walking `referenced_tweets`. Without this, quote tweets read as bare commentary with no context. |
+| Media indicator icon (📎 or similar) when tweet has attachments | S | `tweet.fields=attachments` is enough to detect presence; no media expansion needed. Visual hint, no thumbnail rendering. |
+| Media thumbnail (single 64–96px preview) | L | Needs `expansions=attachments.media_keys` + `media.fields=preview_image_url,url,type`. Heavier API payload, theme-specific CSS, link rules. Defer behind the media-indicator. |
+| Verified-badge dot next to gadget title | S | One extra `user.fields=verified`; cheap. |
+| Distinguish included retweets (when user has unchecked the default-exclude) with `RT @x:` prefix | S | Only relevant if the per-account preference grows a "include retweets" toggle. Skip in v1 unless that toggle ships. |
+| Hover-tooltip with full untruncated tweet text | S | jQuery `title` attribute; zero-cost accessibility-questionable but common pattern. |
+| Loading shimmer or spinner instead of static "loading…" line | S | Cosmetic. Reuses existing AJAX-loading affordance pattern if one exists. |
+| Per-gadget "refresh" link (re-fires the same XHR) | S | The page-load fetch is already the refresh; an explicit button is rarely used. Low value. |
 
-4. **Google OAuth is the natural implicit verification.** If the user registers `foo@gmail.com` and can subsequently sign in with Google OAuth on that account, the email is functionally verified. A mistyped address simply prevents Google sign-in without harming the existing Twitter sign-in path.
+### Anti-features
 
-5. **Consistency with existing direct-mutation patterns.** 2FA setup (`users/two_factor_setup`) performs a direct `update!` from the preferences surface without secondary confirmation. The app's established convention is in-session direct mutations for single-user settings.
+| Feature | Why excluded |
+|---------|--------------|
+| Posting tweets / replying / liking / retweeting from the gadget | Read-only contract carries over from v1.16. Posting requires write scopes we have not requested and would not request for a personal dashboard. |
+| Embedded x.com widgets / oEmbed / `widgets.js` | Introduces third-party JS, breaks the "no new client-side state / no new bundler" constraint, and degrades over time as x.com changes embed rules. |
+| Threaded conversation view (replies expanded under the parent) | Each thread costs N more API calls per gadget render against Basic-tier limits. Out of scope; click-through to x.com is the answer. |
+| Real-time updates (WebSocket / SSE / Turbo Streams) | No ActionCable in stack; the welcome-render-time fetch is the contract. |
+| Push notifications | No notification infrastructure exists; v1.17 explicitly skipped the mailer beyond `ApplicationMailer`. |
+| Per-gadget auto-refresh on a timer | Wastes Basic-tier quota and provides marginal value. The whole-page reload is the refresh. |
+| Inline video / GIF playback | Heavy, third-party-dependent, theme-conflicting. Link out instead. |
+| Per-tweet engagement metric badges (replies / RTs / likes counts) | Available via `tweet.fields=public_metrics` but adds visual noise that does not help "what did this account say recently". |
+| Smart filters (mute words, content warnings, sentiment scoring) | Out of scope; users self-curate by selecting accounts. |
+| Cross-account merged timeline ("all selected X accounts in one stream") | Breaks the "one gadget per account" v1.16 parity contract and adds sorting / dedup complexity. |
+| DMs, Spaces, Communities surfaces | Out of Basic-tier scope and out of dashboard scope. |
+| Posting-as-gadget composer | Same as "posting tweets" above. |
+| In-gadget tweet search | Out of scope; users can click out. |
 
-**If confirmation is needed in future** (e.g., the app adds account recovery via email), introduce Devise `:confirmable` at that point with the appropriate migration and mailer templates. Do not pre-build infrastructure for a use case that does not yet exist.
+---
+
+## Feature Dependencies
+
+A few features are not standalone — they require specific API expansions, schema columns, or upstream features. Calling these out so the implementation order is unambiguous.
+
+| Dependent feature | Depends on |
+|-------------------|-----------|
+| Selection checkbox writes (`x_accounts.target_user_id`) | `x_followings` cache table populated by a successful Refresh |
+| `Portal#get_gadgets` X registration | `XAccount` model + `Crud::ByUser` mixin |
+| Welcome AJAX fetch | `XAccountsController#show` + `XClient#fetch_recent_tweets` + `XClient.stub_fetch_result` |
+| `XClient#fetch_recent_tweets` | `users.token` and `users.secret` persisted at OAuth callback (v1.17 PITFALL-02 fix); without these, every call returns `:auth_failed` |
+| `XClient#fetch_following` | Same as above + a Faraday connection with `Authorization: OAuth …` header signed via `omniauth-twitter`'s underlying `OAuth::Consumer` (or a thin replacement) |
+| `:rate_limited` error state | `XClient` must inspect `x-rate-limit-remaining` and 429 status; this is X-specific and absent from v1.16 |
+| `:auth_failed` error state | `XClient` must distinguish 401/403 from generic API errors; surfaces "re-sign-in" CTA |
+| Pinned-tweet-first rendering | User lookup with `user.fields=pinned_tweet_id` cached in `x_followings`, plus an extra `GET /2/tweets/:id` OR `expansions=pinned_tweet_id` on the user lookup → carry into `fetch_recent_tweets` |
+| Quote-tweet handling | `expansions=referenced_tweets.id,tweet.fields=referenced_tweets` on the timeline fetch |
+| Media indicator | `tweet.fields=attachments` (presence only) |
+| Media thumbnail | Media indicator + `expansions=attachments.media_keys` + `media.fields=preview_image_url,url,type` + theme CSS for the thumbnail box |
+| Verified badge in following list | `user.fields=verified` on `/2/users/:id/following` request |
+| Followers-count column | `user.fields=public_metrics` on the same request |
+| Bio snippet | `user.fields=description` on the same request |
+| Relative timestamp on tweets | `tweet.fields=created_at` (always include; near-zero cost) |
+| In-page filter input | None — pure DOM filter over rendered rows |
+| "Last refreshed at" line | `x_followings.synced_at` column (or a `x_following_syncs` summary row) |
+| Pagination of cached list | `x_followings.synced_at` index + offset/limit on the index query |
+| Bulk select-all / clear-all | Pure form-state; no backend dependency |
+| `display_count` per X account | `x_accounts.display_count` column, default 5, mirrors `mastodon_accounts.display_count` |
+| Soft-delete on `x_accounts` | `deleted` column + `Crud::ByUser` include |
+| ja/en parity | Locale keys under `x_accounts.*` and `x_accounts.show.errors.*` mirroring `mastodon_accounts.*`; existing parity test picks up new keys automatically |
+| `@x_gadget` Cucumber stub | `XClient.stub_fetch_result` set in a `Before('@x_gadget')` hook and cleared in `After('@x_gadget')` |
+
+---
+
+## Comparison to v1.16 Mastodon Pattern
+
+### Keep parity with v1.16
+
+- **Service-object shape.** `XClient` is a PORO with a class-level `stub_fetch_result` attr_accessor and a single public method per concern (`fetch_following`, `fetch_recent_tweets`). Errors come back as `{ success: false, error: <symbol> }` with the symbol set chosen for exhaustive `t('.errors.<sym>')` keys. No raised exceptions across the boundary.
+- **Faraday with explicit timeouts.** `CONNECT_TIMEOUT = 3`, `READ_TIMEOUT = 5` is the project floor; X over HTTPS is comparable to Mastodon over HTTPS, so same numbers are fine.
+- **`Portal#get_gadgets` registration.** One block after the existing `MastodonAccount.where(...)` block. Do not refactor the existing method shape — append, mirror, ship.
+- **AJAX `show` action.** `render layout: !request.xhr?` — same line, same behavior, same test seams.
+- **Welcome partial.** `welcome/_x_account.html.erb` is a near-clone of `_mastodon_account.html.erb`: `$(document).ready` → `$.get(x_account_path(gadget, format: :html))` → `.fail` writes a localized message into the first `<li>`. Same `data-fetch-failed-message` attribute pattern.
+- **Truncation + strip.** `ActionController::Base.helpers.strip_tags(html).squish.truncate(LIMIT, omission: '…')` — same chain. Constant name: `XClient::PREVIEW_LENGTH`.
+- **Soft-delete via `Crud::ByUser`.** Same mixin, same `not_deleted` scope, same `destroy_logically!` controller call.
+- **Strong params with `merge!(user_id: current_user.id)`.** Direct port of `MastodonAccountsController#mastodon_account_params`. `target_user_id` and `display_count` are the writable fields; never accept `user_id` from the client.
+- **Cucumber stubbing pattern.** `@x_gadget` tag → `Before` hook sets `XClient.stub_fetch_result = { success: true, items: [...] }`; `After` hook clears it. Mirrors `@mastodon_gadget`.
+- **Locale-key parity test.** No new test infrastructure; the existing parity test picks up `x_accounts.*` keys once both `ja.yml` and `en.yml` carry the same shape.
+
+### Diverge from v1.16 (justified)
+
+- **OAuth credential plumbing.** Mastodon needs none. X needs `users.uid`, `users.token`, `users.secret` persisted at the OAuth callback (currently a v1.17 PITFALL-02 gap). Without this, `XClient` cannot make a single call. This is the single largest non-Mastodon item in v1.18 and blocks every API-touching feature.
+- **`users.name` gate on the controller.** `MastodonAccountsController` is open to any signed-in user. `XAccountsController` must filter to Twitter-sign-in users (`current_user.name.present?` or an equivalent helper). Both the `/x_accounts` routes and the preferences entry link must enforce this.
+- **Two-table data model.** Mastodon is one table (`mastodon_accounts`). X needs two:
+  - `x_followings` — viewer-scoped snapshot of the X following list (cache; refreshed on demand).
+  - `x_accounts` — selected handles that render as welcome gadgets; references `x_followings.target_user_id` for the viewer.
+  The selection table is the analogue of `mastodon_accounts`; the cache table has no v1.16 equivalent.
+- **Manual "Refresh" affordance.** A POST route + controller action that calls `XClient#fetch_following`, paginates, upserts cache rows, and removes rows no longer present in the response (without cascading into selected `x_accounts`, which keep their `display_count` overrides). Mastodon has no equivalent because each row is its own profile URL.
+- **No profile-URL entry form on the index.** Selection replaces entry. Optional differentiator: a fallback "Add by @handle" input for handles not in the cache yet (calls `XClient#lookup_user`).
+- **Error symbol set expanded.** Add `:rate_limited` (HTTP 429 / `x-rate-limit-remaining: 0`) and `:auth_failed` (HTTP 401 / 403) to the v1.16 set. The localized messages must steer the user to distinct actions (wait vs. re-sign-in).
+- **Tweet-text post-processing.** X returns short `t.co` URLs in `text`; replace each via `entities.urls[]` (`url` → `display_url` or `expanded_url`) before truncation. Mastodon already returns HTML with anchor `display` text built in.
+- **Exclude retweets and replies by default.** `?exclude=retweets,replies` on every `/2/users/:id/tweets` call. Mastodon's "what they posted" semantics are baked into `accounts/:id/statuses`; X needs the flag.
+- **Rate-limit awareness.** Basic-tier `/2/users/:id/tweets` and `/2/users/:id/following` have tight per-15-minute ceilings. Two implications:
+  1. Welcome-render fetch storms must be bounded — N selected accounts means N concurrent XHRs. Document the practical ceiling (suggest M cap on selected accounts, e.g. 5–10) and surface `:rate_limited` cleanly.
+  2. Following-list Refresh button should disable itself for a cool-down window after a successful sync (CSS-only, no setTimeout state), or document the rate-limit error path and let the user retry.
+- **Token-revocation recovery path.** If the user revokes the app from their X settings, every subsequent call returns 401. Render `:auth_failed` with a localized "Re-sign-in to X" message linking to the standard `/users/auth/twitter` start URL. Mastodon has no equivalent because no token exists.
+
+### What is NOT different
+
+- Theme integration, mobile portal layout, drawer nav gating, preferences entry row pattern — all reuse existing infrastructure unchanged. The X feature should not touch any of these surfaces beyond adding a single preferences-page link to `/x_accounts` (and gating that link on `users.name.present?`).
+- Minitest patterns (Faraday `:test` adapter for unit tests, `stub_fetch_result` for integration / Cucumber) — identical conventions.
+- The tri-suite green-bar gate.
