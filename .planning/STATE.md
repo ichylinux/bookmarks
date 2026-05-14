@@ -51,6 +51,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-14 after v1.18)
 
 None.
 
+## Quick Tasks Completed
+
+| Date | Slug | Description |
+|------|------|-------------|
+| 2026-05-14 | update-whats-new | Added X (Twitter) following feature entry to What's New changelog (both locales) |
+
 ## Session Continuity
 
 Autonomous run completed implementation without `gsd-sdk query` (CLI unavailable); ROADMAP/STATE updated manually from disk.
