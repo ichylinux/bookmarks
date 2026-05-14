@@ -21,10 +21,48 @@
 - ✅ **v1.17 — Email Registration for X/Twitter Users** — Phases 57–59 (shipped 2026-05-13) — [archived](milestones/v1.17-ROADMAP.md)
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [archived](milestones/v1.18-ROADMAP.md)
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
+- 🔄 **v1.20 — Column Count Preference** — Phases 67–68 (active)
 
 ## Phases
 
-*(No active milestone — start next with `/gsd-new-milestone`)*
+### v1.20 — Column Count Preference
+
+- [ ] **Phase 67: Data + Model Layer** — Migration, Preference validation, Portal model column distribution
+- [ ] **Phase 68: Preferences UI + View + SCSS + Tri-suite Gate** — Select control, locale strings, welcome page 4-column layout, SCSS, full test sweep, gate
+
+## Phase Details
+
+### Phase 67: Data + Model Layer
+**Goal**: The portal column count is stored per user and drives column distribution in the model — no hardcoded 3
+**Depends on**: Nothing (first phase of v1.20)
+**Requirements**: COL-01, COL-04, COL-06
+**Success Criteria** (what must be TRUE):
+  1. A new `preferences.portal_column_count` column exists (integer, NOT NULL, default 3); existing users' rows are migrated without error
+  2. `Preference` model rejects any value outside [3, 4] and accepts 3 and 4 as valid
+  3. `Portal#portal_columns` returns an array of 3 or 4 sub-arrays driven by the user's stored preference, not a hardcoded 3
+  4. When a user's preference is 4 but a `PortalLayout` record has `column_no >= 3`, `portal_columns` skips that record and redistributes it via `i % column_count` fallback — original column-3 positions are preserved and restored when preference switches back to 4
+  5. `bin/rails test` is green after Phase 67 changes (model validation, portal distribution, downgrade path all covered by Minitest)
+**Plans**: TBD
+
+### Phase 68: Preferences UI + View + SCSS + Tri-suite Gate
+**Goal**: Users can select and save a column count from the preferences screen; the welcome page renders 3 or 4 columns correctly across all themes; tri-suite is green
+**Depends on**: Phase 67
+**Requirements**: COL-02, COL-03, COL-05, COL-07, COL-08
+**Success Criteria** (what must be TRUE):
+  1. The preferences page shows a select control with "3列 / 4列" (ja) or "3 columns / 4 columns" (en) options; the label renders in both locales
+  2. Submitting the preferences form with a new column count persists the value; reloading the preferences page shows the saved selection
+  3. The welcome page renders exactly 3 or 4 `portal-column` section elements matching the user's preference; switching from 3 to 4 leaves columns 0–2 unchanged and column 3 empty
+  4. Portal column CSS in all applicable theme files supports 4-column desktop layout without breaking 3-column or mobile tab-strip behavior
+  5. `yarn run lint` + `bin/rails test` (preference validation, controller save, portal distribution, locale key parity) + `bundle exec rake dad:test` all green
+**Plans**: TBD
+**UI hint**: yes
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 67. Data + Model Layer | 0/? | Not started | - |
+| 68. Preferences UI + View + SCSS + Tri-suite Gate | 0/? | Not started | - |
 
 ---
 
@@ -77,4 +115,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-14 — v1.19 archived; HTTP stubs → WebMock complete*
+*Last updated: 2026-05-15 — v1.20 roadmap created; Column Count Preference (Phases 67–68)*

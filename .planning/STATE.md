@@ -4,9 +4,9 @@ milestone: v1.20
 milestone_name: Column Count Preference
 status: planning
 last_updated: "2026-05-15T00:00:00.000Z"
-last_activity: 2026-05-15 — Milestone v1.20 started; defining requirements
+last_activity: 2026-05-15 — Roadmap created; Phases 67–68 defined
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,12 +17,12 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 67 — Data + Model Layer (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-15 — Milestone v1.20 started
+Status: Roadmap created; ready to plan Phase 67
+Last activity: 2026-05-15 — v1.20 roadmap created (Phases 67–68)
 
-Progress: [          ] 0% (0/0 phases)
+Progress: [          ] 0% (0/2 phases)
 
 ## Project Reference
 
@@ -62,3 +62,4 @@ None.
 ## Session Continuity
 
 Milestone v1.19 executed via `/gsd-autonomous` (all 3 phases in one session). STATE/ROADMAP updated manually post-execution.
+v1.20 roadmap created 2026-05-15 — 2 phases (67–68), 8 requirements (COL-01 through COL-08), 100% coverage.

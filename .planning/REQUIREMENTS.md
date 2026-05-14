@@ -41,11 +41,11 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 
 | REQ | Phase | Plan | Status |
 |-----|-------|------|--------|
-| COL-01 | — | — | Pending |
-| COL-02 | — | — | Pending |
-| COL-03 | — | — | Pending |
-| COL-04 | — | — | Pending |
-| COL-05 | — | — | Pending |
-| COL-06 | — | — | Pending |
-| COL-07 | — | — | Pending |
-| COL-08 | — | — | Pending |
+| COL-01 | Phase 67 | — | Pending |
+| COL-02 | Phase 68 | — | Pending |
+| COL-03 | Phase 68 | — | Pending |
+| COL-04 | Phase 67 | — | Pending |
+| COL-05 | Phase 68 | — | Pending |
+| COL-06 | Phase 67 | — | Pending |
+| COL-07 | Phase 68 | — | Pending |
+| COL-08 | Phase 68 | — | Pending |
