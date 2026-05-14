@@ -7,10 +7,12 @@ class Portal < ApplicationRecord
   end
 
   def portal_columns
-    return @portal_columns if @portal_columns
+    current_count = portal_column_count
+    return @portal_columns if @portal_columns && @portal_columns_count == current_count
 
+    @portal_columns_count = current_count
     gadgets = get_gadgets
-    count = portal_column_count
+    count = current_count
     @portal_columns = Array.new(count) { [] }
 
     PortalLayout.where(user_id: user.id).order('column_no, display_order').each do |pl|
