@@ -41,6 +41,11 @@ class Feed < ApplicationRecord
     "feed_#{self.id}"
   end
 
+  # Remote icon URL from parsed RSS/Atom metadata. May trigger #feed fetch.
+  def gadget_title_icon_image_url
+    normalize_feed_asset_url(raw_feed_icon_url_from_parser)
+  end
+
   def url
     feed? ? feed.url : nil
   end
@@ -64,6 +69,49 @@ class Feed < ApplicationRecord
     xml = client.get(request_path, request_params)
 
     Feedjira.parse(xml)
+  end
+
+  def raw_feed_icon_url_from_parser
+    return nil unless feed?
+
+    f = feed
+    if f.is_a?(Feedjira::Parser::Atom)
+      return f.icon.to_s.strip.presence
+    end
+    if f.respond_to?(:image) && f.image.respond_to?(:url)
+      return f.image.url.to_s.strip.presence
+    end
+
+    nil
+  end
+
+  def normalize_feed_asset_url(ref)
+    ref = ref.to_s.strip
+    return nil if ref.blank?
+    return "https:#{ref}" if ref.start_with?('//')
+
+    if ref.match?(/\Ahttps?:\/\//i)
+      return ref if http_https_scheme?(ref)
+
+      return nil
+    end
+
+    if ref.start_with?('/')
+      base = url
+      return nil if base.blank?
+
+      joined = URI.join(base, ref).to_s
+      return joined if http_https_scheme?(joined)
+    end
+
+    nil
+  rescue URI::InvalidURIError, ArgumentError
+    nil
+  end
+
+  def http_https_scheme?(u)
+    uri = URI.parse(u)
+    %w[http https].include?(uri.scheme&.downcase)
   end
 
   def base_url
