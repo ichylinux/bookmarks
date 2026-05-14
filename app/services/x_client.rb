@@ -2,10 +2,6 @@ require 'faraday/oauth1'
 
 # X (Twitter) API v2 client using OAuth 1.0a User Context (same credentials as omniauth-twitter).
 class XClient
-  class << self
-    attr_accessor :stub_fetch_following_result, :stub_fetch_tweets_result
-  end
-
   CONNECT_TIMEOUT = 3
   READ_TIMEOUT = 5
   PREVIEW_LENGTH = 100
@@ -17,9 +13,6 @@ class XClient
   # Returns { success: true, items: [...] } or { success: false, error: Symbol }
   # Each following item: { id:, username:, name:, profile_image_url:, protected: }
   def fetch_following(user:, max_results: 100)
-    stubbed = normalize_following_stub(self.class.stub_fetch_following_result)
-    return stubbed if stubbed
-
     uid = user.uid.to_s.presence
     return { success: false, error: :api_error } if uid.blank?
 
@@ -59,9 +52,6 @@ class XClient
 
   # Returns { success: true, items: [{ text:, url: }, ...] } or { success: false, error: Symbol }
   def fetch_recent_tweets(user:, x_user_id:, limit:)
-    stubbed = normalize_tweets_stub(self.class.stub_fetch_tweets_result)
-    return stubbed if stubbed
-
     xid = x_user_id.to_s.presence
     return { success: false, error: :not_found } if xid.blank?
 
@@ -199,67 +189,5 @@ class XClient
       out[start...nxt] = display
     end
     out
-  end
-
-  def normalize_following_stub(stub)
-    return nil if stub.nil?
-
-    unless stub.is_a?(Hash)
-      return { success: false, error: :api_error }
-    end
-
-    h = stub.with_indifferent_access
-    if ActiveModel::Type::Boolean.new.cast(h[:success])
-      items = Array(h[:items]).filter_map do |row|
-        next unless row.is_a?(Hash)
-
-        r = row.with_indifferent_access
-        next if r[:id].blank? || r[:username].blank?
-
-        {
-          id: r[:id].to_s,
-          username: r[:username].to_s,
-          name: r[:name].to_s,
-          profile_image_url: r[:profile_image_url].presence,
-          protected: ActiveModel::Type::Boolean.new.cast(r[:protected])
-        }
-      end
-      return { success: true, items: items }
-    end
-
-    err = h[:error].presence&.to_sym
-    err = :api_error unless valid_error_symbol?(err)
-    { success: false, error: err }
-  end
-
-  def normalize_tweets_stub(stub)
-    return nil if stub.nil?
-
-    unless stub.is_a?(Hash)
-      return { success: false, error: :api_error }
-    end
-
-    h = stub.with_indifferent_access
-    if ActiveModel::Type::Boolean.new.cast(h[:success])
-      items = Array(h[:items]).filter_map do |row|
-        next unless row.is_a?(Hash)
-
-        r = row.with_indifferent_access
-        next if r[:text].blank? || r[:url].blank?
-
-        { text: r[:text].to_s.squish.truncate(PREVIEW_LENGTH, omission: '…'), url: r[:url].to_s }
-      end
-      return { success: true, items: items }
-    end
-
-    err = h[:error].presence&.to_sym
-    err = :api_error unless valid_error_symbol?(err)
-    { success: false, error: err }
-  end
-
-  def valid_error_symbol?(sym)
-    %i[
-      timeout network not_found api_error parse_error unauthorized rate_limited
-    ].include?(sym)
   end
 end

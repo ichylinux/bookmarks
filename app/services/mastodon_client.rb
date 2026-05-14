@@ -1,12 +1,6 @@
 # Public Mastodon REST API client (read-only, no OAuth).
 # Uses Faraday with explicit connect + read timeouts.
 class MastodonClient
-  class << self
-    # When set to a Hash, {#fetch_recent_status_previews} returns it without HTTP
-    # (used by Cucumber and optional controller tests).
-    attr_accessor :stub_fetch_result
-  end
-
   CONNECT_TIMEOUT = 3
   READ_TIMEOUT = 5
   PREVIEW_LENGTH = 100
@@ -19,9 +13,6 @@ class MastodonClient
   # Returns { success: true, items: [{ text:, url: }, ...] }
   # or { success: false, error: :timeout | :network | :not_found | :api_error | :parse_error }
   def fetch_recent_status_previews(username:, limit:)
-    stub = self.class.stub_fetch_result
-    return normalize_stub_result(stub) if stub
-
     conn = build_connection
     acct = "#{username}@#{@instance_host}"
     lookup = conn.get('/api/v1/accounts/lookup', { acct: acct })
@@ -81,25 +72,5 @@ class MastodonClient
 
     text = plain.truncate(PREVIEW_LENGTH, omission: '…')
     { text: text, url: url }
-  end
-
-  def normalize_stub_result(stub)
-    return { success: false, error: :parse_error } unless stub.is_a?(Hash)
-
-    h = stub.with_indifferent_access
-    if ActiveModel::Type::Boolean.new.cast(h[:success])
-      items = Array(h[:items]).filter_map do |row|
-        next unless row.is_a?(Hash)
-
-        r = row.with_indifferent_access
-        next if r[:text].blank? || r[:url].blank?
-
-        { text: r[:text].to_s, url: r[:url].to_s }
-      end
-      return { success: true, items: items }
-    end
-
-    err = h[:error].presence&.to_sym || :api_error
-    { success: false, error: err }
   end
 end
