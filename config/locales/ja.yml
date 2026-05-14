@@ -26,7 +26,7 @@ ja:
         font_size: 文字サイズ
         locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
-        show_column_nav_buttons: 列切り替えボタンを表示する
+        show_column_nav_buttons: （モバイル）列切り替えボタンを表示する
         theme: テーマ
         use_note: ノートを表示する
         use_todo: タスクを表示する
@@ -243,6 +243,10 @@ ja:
         performance: パフォーマンス
         new: 新機能
       entries:
+        - date: "2026-05-14"
+          headline: 列切り替えボタンの表示・非表示を設定できるようになりました
+          tag: ux
+          description: 設定ページから、モバイル向けの列切り替えボタンを表示するかどうか切り替えられるようになりました。
         - date: "2026-05-14"
           headline: X（旧Twitter）フォロー中アカウントをダッシュボードに表示できるようになりました
           tag: new

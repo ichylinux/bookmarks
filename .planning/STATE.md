@@ -57,6 +57,7 @@ None.
 | Date | Slug | Description |
 |------|------|-------------|
 | 2026-05-14 | update-whats-new | Added X (Twitter) following feature entry to What's New changelog (both locales) |
+| 2026-05-14 | update-whats-new-column-nav | Added column navigation buttons toggle entry to What's New changelog (both locales) |
 
 ## Session Continuity
 

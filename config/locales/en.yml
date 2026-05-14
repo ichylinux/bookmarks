@@ -26,7 +26,7 @@ en:
         font_size: Font size
         locale: Language
         open_links_in_new_tab: Open links in new tab
-        show_column_nav_buttons: Show column navigation buttons
+        show_column_nav_buttons: (mobile) Show column navigation buttons
         theme: Theme
         use_note: Show notes
         use_todo: Show tasks
@@ -243,6 +243,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-14"
+          headline: Toggle column navigation buttons visibility in preferences
+          tag: ux
+          description: You can now show or hide the mobile column navigation buttons from your preferences page.
         - date: "2026-05-14"
           headline: Show X (Twitter) followed accounts on your dashboard
           tag: new
