@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.20
 milestone_name: — Column Count Preference
 status: in_progress
-last_updated: "2026-05-15T00:00:00Z"
-last_activity: 2026-05-15 — Phase 67 complete (Data + Model Layer)
+last_updated: "2026-05-15T00:00:00.000Z"
+last_activity: 2026-05-15 — Phase 68 planned (2 plans, 2 waves); ready to execute
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 4
+  total_plans: 2
   completed_plans: 2
   percent: 50
 ---
@@ -17,10 +17,10 @@ progress:
 
 ## Current Position
 
-Phase: Phase 68 — Preferences UI + View + SCSS + Tri-suite Gate (not started)
-Plan: —
-Status: Phase 67 complete; ready to discuss/plan Phase 68
-Last activity: 2026-05-15 — Phase 67 complete (Migration, Preference validation, Portal model parameterized)
+Phase: Phase 68 — Preferences UI + View + SCSS + Tri-suite Gate (planned, ready to execute)
+Plan: 068-01 (Wave 1), 068-02 (Wave 2)
+Status: Plans created and verified; ready to execute
+Last activity: 2026-05-15 — Phase 68 planned (2 plans, 2 waves); ready to execute
 
 Progress: [█████     ] 50% (1/2 phases)
 
