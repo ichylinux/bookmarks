@@ -1,10 +1,17 @@
 # Milestones
 
-## v1.19 — HTTP test stubs → WebMock (planning)
+## v1.19 — HTTP test stubs → WebMock (shipped 2026-05-14)
 
 **Scope:** Phases 64–66 — add WebMock to `:test`; migrate Minitest + Cucumber off `test/http_client_test_stubs.rb` prepend accessors; delete stub loader from `config/environments/test.rb`; document new contract in PROJECT / CLAUDE; tri-suite gate.
 
-**Planning artifacts:** [v1.19-ROADMAP.md](milestones/v1.19-ROADMAP.md) · [REQUIREMENTS.md](../REQUIREMENTS.md) (HTTP-01..05)
+**Key accomplishments:**
+
+- WebMock added to `:test` group; `WebMock.disable_net_connect!` configured globally in `test/test_helper.rb` and Cucumber `env.rb`.
+- All Minitest HTTP stubs migrated to WebMock (`stub_request`) and Faraday `:test` adapter; `XClient#fetch_recent_tweets` uses WebMock directly (bypasses Faraday connection injection).
+- `test/http_client_test_stubs.rb` deleted; `config/environments/test.rb` stub loader removed.
+- Tri-suite gate at close: `yarn run lint` — green; `bin/rails test` — 363 runs, 0 failures; `bundle exec rake dad:test` — 24 scenarios, 0 failed.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.19-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.19-REQUIREMENTS.md)
 
 ---
 
