@@ -12,7 +12,9 @@
 
 <div id="<%= gadget.gadget_id %>" class="gadget" data-fetch-failed-message="<%= t('.fetch_failed') %>">
   <div>
-    <div class="title"><%= gadget.title %></div>
+    <%= render 'common/gadget_title_with_icon', variant: :mastodon do %>
+      <%= gadget.title %>
+    <% end %>
     <ol>
       <li>
         <span style="line-height: <%= gadget.display_count * 1.5 %>em;"><%= t('.loading') %></span>

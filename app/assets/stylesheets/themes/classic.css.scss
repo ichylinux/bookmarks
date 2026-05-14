@@ -123,6 +123,276 @@
   filter: none;
 }
 
+// X アカウント管理 (/x_accounts) — モダンと同構造、クラシック配色・角丸
+.classic .x-accounts-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 12px 32px;
+  box-sizing: border-box;
+}
+
+.classic .x-accounts-page__header {
+  margin-bottom: 18px;
+}
+
+.classic .x-accounts-page__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.classic .x-accounts-page__title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #1a1a1a;
+}
+
+.classic .x-accounts-page__meta {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: #555;
+}
+
+.classic .x-accounts-page__refresh-form {
+  display: inline-block;
+  margin: 0;
+}
+
+.classic .x-accounts-page__refresh-btn {
+  appearance: none;
+  cursor: pointer;
+  border: 1px solid #222;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 8px 16px;
+  background: #333;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.classic .x-accounts-page__refresh-btn:hover {
+  background: #222;
+  border-color: #111;
+}
+
+.classic .x-accounts-page__refresh-btn:focus-visible {
+  outline: 2px solid #6b6b6b;
+  outline-offset: 2px;
+}
+
+.classic .x-accounts-page__refresh-btn:active {
+  background: #1a1a1a;
+}
+
+.classic .x-accounts-page__notice {
+  border-radius: 4px;
+  border: 1px solid #e5d5a8;
+  background: #fffbeb;
+  color: #5c4a12;
+}
+
+.classic .x-accounts-page__empty {
+  margin: 0;
+  padding: 18px 14px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #555;
+  border: 1px dashed #c4c4c4;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.classic .x-accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.classic .x-account-card {
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.classic .x-account-card:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.classic .x-account-card__head {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #f5f5f5;
+}
+
+.classic .x-account-card__identity {
+  min-width: 0;
+}
+
+.classic .x-account-card__display-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.classic .x-account-card__username {
+  margin: 3px 0 0;
+  font-size: 0.8125rem;
+  color: #666;
+}
+
+.classic .x-account-card__grid {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.75fr) repeat(2, minmax(0, 1fr)) minmax(88px, 0.85fr) minmax(100px, 0.9fr);
+  gap: 10px 14px;
+  padding: 12px 14px;
+  align-items: start;
+}
+
+.classic .x-account-card__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.classic .x-account-card__cell--toggle {
+  align-items: flex-start;
+}
+
+.classic .x-account-card__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #666;
+  line-height: 1.2;
+}
+
+.classic .x-account-card__value {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.classic .x-account-card__value--muted {
+  color: #999;
+}
+
+.classic .x-account-card__check-wrap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  cursor: pointer;
+}
+
+.classic .x-account-card__check-wrap input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+.classic .x-account-card__check-wrap--ack input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+.classic .x-account-card__footer {
+  padding: 10px 14px 14px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e5e5e5;
+  background: #fafafa;
+}
+
+.classic .x-account-card__footer input[type="submit"] {
+  appearance: none;
+  cursor: pointer;
+  border: 1px solid #c4c4c4;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 7px 18px;
+  background: #f5f5f5;
+  color: #3a3a3a;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.classic .x-account-card__footer input[type="submit"]:hover {
+  background: #ebebeb;
+  border-color: #9a9a9a;
+  color: #222;
+}
+
+.classic .x-account-card__footer input[type="submit"]:focus-visible {
+  outline: 2px solid #6b6b6b;
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .classic .x-account-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .classic .x-account-card__cell--toggle {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .classic .x-account-card__cell--toggle .x-account-card__label {
+    margin: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .classic .x-account-card__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .classic .x-account-card__cell--toggle {
+    grid-column: auto;
+  }
+
+  .classic .x-account-card__footer {
+    justify-content: stretch;
+  }
+
+  .classic .x-account-card__footer input[type="submit"] {
+    width: 100%;
+  }
+
+  .classic .x-accounts-page__title-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .classic .x-accounts-page__refresh-form {
+    width: 100%;
+  }
+
+  .classic .x-accounts-page__refresh-btn {
+    width: 100%;
+  }
+}
+
 // v1.7 THEME-02: mobile portal column tabs (narrow only)
 @media (max-width: 767px) {
   .classic .portal-column-tabs {

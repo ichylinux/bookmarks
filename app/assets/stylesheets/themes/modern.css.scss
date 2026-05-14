@@ -330,6 +330,276 @@
   border: 1px solid rgba(59, 130, 246, 0.28);
 }
 
+// X アカウント管理 (/x_accounts) — カードリスト + ページヘッダー
+.modern .x-accounts-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  box-sizing: border-box;
+}
+
+.modern .x-accounts-page__header {
+  margin-bottom: 20px;
+}
+
+.modern .x-accounts-page__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.modern .x-accounts-page__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--modern-text);
+}
+
+.modern .x-accounts-page__meta {
+  margin: 10px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
+.modern .x-accounts-page__refresh-form {
+  display: inline-block;
+  margin: 0;
+}
+
+.modern .x-accounts-page__refresh-btn {
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 10px 18px;
+  background: var(--modern-color-primary);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: filter 120ms ease, box-shadow 120ms ease;
+}
+
+.modern .x-accounts-page__refresh-btn:hover {
+  filter: brightness(0.96);
+}
+
+.modern .x-accounts-page__refresh-btn:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
+}
+
+.modern .x-accounts-page__refresh-btn:active {
+  filter: brightness(0.9);
+}
+
+.modern .x-accounts-page__notice {
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: rgba(59, 130, 246, 0.08);
+  color: #1e40af;
+}
+
+.modern .x-accounts-page__empty {
+  margin: 0;
+  padding: 20px 16px;
+  text-align: center;
+  font-size: 0.9375rem;
+  color: #6b7280;
+  border: 1px dashed var(--modern-border);
+  border-radius: 10px;
+  background: var(--modern-surface-alt);
+}
+
+.modern .x-accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modern .x-account-card {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--modern-border);
+  border-radius: 10px;
+  background: var(--modern-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.modern .x-account-card:hover {
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.08);
+}
+
+.modern .x-account-card__head {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--modern-border);
+  background: linear-gradient(180deg, var(--modern-surface-alt) 0%, var(--modern-bg) 100%);
+}
+
+.modern .x-account-card__identity {
+  min-width: 0;
+}
+
+.modern .x-account-card__display-name {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--modern-text);
+  word-break: break-word;
+}
+
+.modern .x-account-card__username {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.modern .x-account-card__grid {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.75fr) repeat(2, minmax(0, 1fr)) minmax(88px, 0.85fr) minmax(100px, 0.9fr);
+  gap: 12px 16px;
+  padding: 14px 16px;
+  align-items: start;
+}
+
+.modern .x-account-card__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.modern .x-account-card__cell--toggle {
+  align-items: flex-start;
+}
+
+.modern .x-account-card__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+  line-height: 1.2;
+}
+
+.modern .x-account-card__value {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--modern-text);
+  word-break: break-word;
+}
+
+.modern .x-account-card__value--muted {
+  color: #9ca3af;
+}
+
+.modern .x-account-card__check-wrap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+.modern .x-account-card__check-wrap input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--modern-color-primary);
+  cursor: pointer;
+}
+
+.modern .x-account-card__check-wrap--ack input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+.modern .x-account-card__footer {
+  padding: 12px 16px 16px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid rgba(209, 213, 219, 0.6);
+  background: rgba(243, 244, 246, 0.35);
+}
+
+.modern .x-account-card__footer input[type="submit"] {
+  appearance: none;
+  cursor: pointer;
+  border: 1px solid var(--modern-border);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 8px 20px;
+  background: var(--modern-bg);
+  color: var(--modern-text);
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.modern .x-account-card__footer input[type="submit"]:hover {
+  border-color: var(--modern-color-primary);
+  color: var(--modern-color-primary);
+  background: rgba(59, 130, 246, 0.06);
+}
+
+.modern .x-account-card__footer input[type="submit"]:focus-visible {
+  outline: 2px solid var(--modern-color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .modern .x-account-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modern .x-account-card__cell--toggle {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .modern .x-account-card__cell--toggle .x-account-card__label {
+    margin: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .modern .x-account-card__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modern .x-account-card__cell--toggle {
+    grid-column: auto;
+  }
+
+  .modern .x-account-card__footer {
+    justify-content: stretch;
+  }
+
+  .modern .x-account-card__footer input[type="submit"] {
+    width: 100%;
+  }
+
+  .modern .x-accounts-page__title-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modern .x-accounts-page__refresh-form {
+    width: 100%;
+  }
+
+  .modern .x-accounts-page__refresh-btn {
+    width: 100%;
+  }
+}
+
 // v1.7 THEME-01: mobile portal column tabs (narrow only; breakpoint matches welcome.css.scss $portal-mobile-breakpoint − 1px)
 @media (max-width: 767px) {
   .modern .portal-column-tabs {

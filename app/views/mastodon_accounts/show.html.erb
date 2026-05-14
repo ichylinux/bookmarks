@@ -1,6 +1,8 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <div>
-  <div class="title"><%= link_to @mastodon_account.title, @mastodon_account.profile_url, link_opts %></div>
+  <%= render 'common/gadget_title_with_icon', variant: :mastodon do %>
+    <%= link_to @mastodon_account.title, @mastodon_account.profile_url, link_opts %>
+  <% end %>
   <% if @mastodon_error %>
     <ol>
       <li><span><%= t("mastodon_accounts.show.errors.#{@mastodon_error}") %></span></li>

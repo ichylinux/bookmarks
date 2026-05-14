@@ -1,6 +1,8 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <div>
-  <div class="title"><%= link_to @x_account.title, @x_account.profile_url, link_opts %></div>
+  <%= render 'common/gadget_title_with_icon', variant: :x do %>
+    <%= link_to @x_account.title, @x_account.profile_url, link_opts %>
+  <% end %>
   <% if @x_error %>
     <ol>
       <li>
