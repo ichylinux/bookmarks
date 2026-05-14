@@ -26,6 +26,7 @@ ja:
         font_size: 文字サイズ
         locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
+        show_column_nav_buttons: 列切り替えボタンを表示する
         theme: テーマ
         use_note: ノートを表示する
         use_todo: タスクを表示する

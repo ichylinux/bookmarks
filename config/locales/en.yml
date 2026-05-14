@@ -26,6 +26,7 @@ en:
         font_size: Font size
         locale: Language
         open_links_in_new_tab: Open links in new tab
+        show_column_nav_buttons: Show column navigation buttons
         theme: Theme
         use_note: Show notes
         use_todo: Show tasks
