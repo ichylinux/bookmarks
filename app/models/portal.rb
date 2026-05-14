@@ -42,9 +42,7 @@ class Portal < ApplicationRecord
       end
     end
 
-    PortalLayout.where('user_id = ? and id not in(?)', user.id, valid_layouts).each do |pl|
-      pl.destroy
-    end
+    PortalLayout.where(user_id: user.id).where.not(id: valid_layouts).each(&:destroy)
   end
 
   private
