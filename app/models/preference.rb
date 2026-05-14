@@ -31,6 +31,7 @@ class Preference < ApplicationRecord
     ret.theme = "modern"
     ret.use_todo = true
     ret.use_calendar = true
+    ret.portal_column_count = PORTAL_COLUMN_COUNTS.first
     ret
   end
 

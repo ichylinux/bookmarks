@@ -135,6 +135,12 @@ div.gadgets {
   }
 }
 
+@media (min-width: $portal-mobile-breakpoint) {
+  .portal--4col .gadgets {
+    width: 25%;
+  }
+}
+
 .folder-header {
   cursor: pointer;
   user-select: none;

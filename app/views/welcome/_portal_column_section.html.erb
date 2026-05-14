@@ -17,7 +17,8 @@
   <% end %>
 </div>
 <% end %>
-<div class="portal portal--column-active-0">
+<% col_class = portal_columns.size == 4 ? 'portal--4col' : '' %>
+<div class="portal portal--column-active-0<%= col_class.present? ? " #{col_class}" : '' %>">
   <div class="portal-track">
     <% portal_columns.each_with_index do |gadgets, i| %>
       <div

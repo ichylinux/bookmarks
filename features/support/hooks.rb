@@ -14,7 +14,8 @@ Before do
     use_calendar: true,
     locale: "ja",
     default_priority: Todo::PRIORITY_NORMAL,
-    open_links_in_new_tab: false
+    open_links_in_new_tab: false,
+    portal_column_count: 3
   )
 end
 
