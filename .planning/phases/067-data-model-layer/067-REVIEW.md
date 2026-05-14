@@ -11,11 +11,11 @@ files_reviewed_list:
   - db/schema.rb
   - test/models/preference_test.rb
 findings:
-  critical: 1
-  warning: 2
+  critical: 0
+  warning: 0
   info: 2
-  total: 5
-status: issues_found
+  total: 2
+status: clean
 ---
 
 # Phase 067: Code Review Report
@@ -23,90 +23,57 @@ status: issues_found
 **Reviewed:** 2026-05-15T00:00:00Z
 **Depth:** standard
 **Files Reviewed:** 6
-**Status:** issues_found
+**Status:** clean
 
 ## Summary
 
 This phase adds a `portal_column_count` column to `preferences` and wires it through `Portal#portal_column_count` and `Portal#portal_columns`. The migration, schema, model validation, and delegation are structurally sound. The newly added tests cover the happy path and the out-of-range `column_no` boundary case adequately.
 
-However, one pre-existing method in `portal.rb` — `update_layout` — is brought into scope and contains a crash-level defect when the layout is saved with all-empty columns (empty `valid_layouts` array). This is a BLOCKER because the column-count feature makes it easier to reach this code path (user shrinks from 4 to 3 columns, all gadgets move to valid columns leaving some columns empty). Two additional warnings cover memoization staleness and a nil-params crash path. Two info items cover missing test coverage and an implicit reliance on AR schema defaults.
+All Critical and Warning findings from the initial review have been resolved. Two Info items remain open.
 
 ---
 
-## Critical Issues
+## Fixes Applied
 
-### CR-01: `update_layout` crashes / silently misbehaves with empty `valid_layouts`
+### CR-01 — Resolved
 
-**File:** `app/models/portal.rb:45`
+**`update_layout` empty `valid_layouts` crash fixed.**
 
-**Issue:** When `update_layout` is called and all `gadget_ids` arrays in `params` are empty (e.g., all columns have zero gadgets after a drag operation), `valid_layouts` remains `[]`. The query on line 45 then executes:
-
-```ruby
-PortalLayout.where('user_id = ? and id not in(?)', user.id, [])
-```
-
-In Rails 8 / ActiveRecord 8.1, passing an empty array to a raw SQL `?` placeholder raises `ArgumentError` at runtime, crashing the `save_state` action inside a transaction. Even on adapter versions that silently expand `[]` to `NULL`, `id NOT IN (NULL)` evaluates to `FALSE` for every row — causing zero records to be deleted when all records should be deleted. Either outcome is wrong.
-
-This path is reachable today whenever all gadgets happen to be invisible (`BookmarkGadget#visible?` false, `use_todo` false, `use_calendar` false, no feeds, no accounts). Adding the 4-column option increases the likelihood of encountering all-empty column submissions.
-
-**Fix:** Guard the deletion query against an empty array:
-
-```ruby
-# Replace line 45 with:
-if valid_layouts.empty?
-  PortalLayout.where(user_id: user.id).each(&:destroy)
-else
-  PortalLayout.where('user_id = ? and id not in(?)', user.id, valid_layouts).each(&:destroy)
-end
-```
-
-Or use the safer AR form that handles empty arrays correctly in both branches:
+`app/models/portal.rb:48` now reads:
 
 ```ruby
 PortalLayout.where(user_id: user.id).where.not(id: valid_layouts).each(&:destroy)
 ```
 
----
+ActiveRecord's `where.not(id: [])` safely expands to a no-op (deletes all matching rows when the array is empty, which is the correct semantic) without the `ArgumentError` or `NOT IN (NULL)` misfire from the raw SQL form. Fix is correct.
 
-## Warnings
+### WR-01 — Resolved
 
-### WR-01: `Portal#portal_columns` memoization is stale after `portal_column_count` changes on the same instance
+**`portal_columns` memoization is now count-aware.**
 
-**File:** `app/models/portal.rb:10-11`
-
-**Issue:** `portal_columns` memoizes into `@portal_columns` using `return @portal_columns if @portal_columns`. The `portal_column_count` is read once inside the method and baked into the result array size. If `user.preference.portal_column_count` is updated (e.g., via `update_columns`) while the same `Portal` instance is live, subsequent calls to `portal_columns` return the cached array built with the old count. The new test `test_portal_column_countはpreference設定を委譲する` re-fetches the portal with `Portal.find(portal.id)` specifically to work around this — confirming the staleness is real and observable.
-
-In the view, `@portal` is a single controller-assigned instance. Within a single request this is benign, but the pattern is fragile and could silently produce wrong column counts if the instance is reused across actions (e.g., via controller memoization in a future refactor).
-
-**Fix:** Either clear `@portal_columns` when `portal_column_count` changes, or make memoization dependent on the count value:
+`app/models/portal.rb:11-13` now reads:
 
 ```ruby
-def portal_columns
-  current_count = portal_column_count
-  return @portal_columns if @portal_columns && @portal_columns_count == current_count
+current_count = portal_column_count
+return @portal_columns if @portal_columns && @portal_columns_count == current_count
 
-  @portal_columns_count = current_count
-  # ... rest of method unchanged ...
-end
+@portal_columns_count = current_count
 ```
 
-### WR-02: `update_layout` receives `nil` params without a guard
+The memoized result is invalidated whenever `portal_column_count` returns a different value from when it was last computed. Fix is correct.
 
-**File:** `app/models/portal.rb:29`
+### WR-02 — Resolved
 
-**Issue:** The method signature is `def update_layout(params = {})`. The default only applies when the argument is absent entirely — not when `nil` is passed explicitly. In `welcome_controller.rb:13`, the call is `update_layout(params[:portal])`. If the request arrives without a `portal` key (e.g., a direct POST to `save_state` without the portal param), `params[:portal]` evaluates to `nil`, and `nil.each` raises `NoMethodError` inside the transaction.
+**`update_layout` nil-params guard added.**
 
-**Fix:** Normalize the argument at the start of the method:
+`app/models/portal.rb:31-32` now reads:
 
 ```ruby
 def update_layout(params = {})
-  params = params.to_h if params.respond_to?(:to_h)
   params ||= {}
-  # ...
-end
 ```
 
-Or guard in the controller before calling `update_layout`.
+When the caller passes `nil` explicitly (e.g., `params[:portal]` is absent from the request), the `||=` guard normalises it to `{}` before `params.each` is called. Fix is correct.
 
 ---
 
