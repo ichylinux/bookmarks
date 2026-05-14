@@ -38,6 +38,8 @@
 ```bash
 bundle install
 yarn install
+bundle exec rake dad:setup
+bundle exec rake dad:setup:test
 ```
 
 ### データベース
@@ -47,20 +49,20 @@ yarn install
 # MYSQL_HOST, MYSQL_PORT, MYSQL_USERNAME, MYSQL_PASSWORD
 
 bundle exec rake dad:db:create
-rails db:reset
+bin/rails db:reset
 ```
 
 ### サーバー起動
 
 ```bash
-rails s
+bin/rails s
 ```
 
 ## テスト
 
 ```bash
 # Minitest（ユニット・結合テスト）
-rails test
+bin/rails test
 
 # Cucumber（受け入れテスト）
 bundle exec rake dad:test
