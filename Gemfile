@@ -54,4 +54,5 @@ group :test do
   gem 'minitest-reporters'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
+  gem 'webmock'
 end
