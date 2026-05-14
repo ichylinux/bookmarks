@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'test_helper'
 
 # MOB-01: .preferences-table block-layout stacking rules inside @media (max-width: 767px)

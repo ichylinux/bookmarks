@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'test_helper'
 
 # ARCH-01 + ARCH-02: Non-theme SCSS files must contain no theme-specific selectors.

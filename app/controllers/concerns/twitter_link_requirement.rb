@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Enforces Phase 60 gate: X surfaces require persisted Twitter OAuth user context
 # (`uid` + `token`; `name` is intentionally excluded).
 module TwitterLinkRequirement

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Public Mastodon REST API client (read-only, no OAuth).
 # Uses Faraday with explicit connect + read timeouts.
 class MastodonClient

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Before do
   # Ensure browser/session artifacts never leak across scenarios.
   Capybara.reset_sessions!

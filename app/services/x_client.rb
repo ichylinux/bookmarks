@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'faraday/oauth1'
 
 # X (Twitter) API v2 client using OAuth 1.0a User Context (same credentials as omniauth-twitter).

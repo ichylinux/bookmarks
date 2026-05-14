@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 もし /^最初のXガジェットに "([^"]*)" が表示される$/ do |text|
   acc = XAccount.where(user_id: user.id).order(:id).last
   assert acc, 'Xアカウントが作成されているはずです'
