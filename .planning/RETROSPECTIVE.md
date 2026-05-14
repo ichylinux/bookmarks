@@ -340,6 +340,49 @@
 
 ---
 
+## Milestone: v1.18 — X (Twitter) Account Following
+
+**Shipped:** 2026-05-14  
+**Phases:** 4 (60–63) | **Plans:** (autonomous execution, no GSD artifacts)
+
+### What Was Built
+
+- `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` Twitter branch persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gates on `uid + token`.
+- `XClient` Faraday + `faraday-oauth1` service: `fetch_following` / `fetch_recent_tweets`, 7-symbol error enum, t.co display_url substitution before truncation, following pagination via `pagination_token`/`meta.next_token`, class-level stub accessors.
+- `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, gadget_id derivation); `/x_accounts` management UI: refresh diff-upsert (all-soft-delete semantics), per-row selection cap 12 / warn 9, protected-account `🔒` confirmation toggle, last-refreshed timestamp.
+- Welcome-page AJAX gadgets via `Portal#get_gadgets`; per-error-symbol localized states; `:unauthorized` re-sign-in CTA; tweet text never `html_safe`; click-through URL constructed server-side.
+- `features/06.X.feature` with `@x_gadget` Before/After stub hooks + global state-isolation Before hook; tri-suite green (364 Minitest, 24 Cucumber scenarios).
+
+### What Worked
+
+- **v1.16 Mastodon pattern reuse:** `Crud::ByUser`, `Portal#get_gadgets`, AJAX `show` with `render layout: !request.xhr?`, `stub_fetch_result`-shaped class accessors, Faraday `:test` adapter, Cucumber feature stub hooks — carried over wholesale, reducing design surface to "following list → selection" flow only.
+- **Audit-first close:** Milestone audit produced 31/31 requirement evidence before archival; no surprises at close. XTEST-03 controller gap was caught and closed before the audit was signed off.
+- **Tech debt acknowledged honestly:** All-soft-delete deviation (XACCT-06) and XAUTH-FUT-01 carry-forward documented in audit + REQUIREMENTS archive with commit reference.
+
+### What Was Inefficient
+
+- **GSD automation unavailable:** `gsd-sdk query` not in runtime — all archive surgery manual.
+- **REQUIREMENTS checkbox drift:** Traceability table left as "Pending" throughout execution; normalized at archive time via audit evidence. Keeping checkboxes live during execution would save cross-referencing at close.
+- **No per-phase SUMMARY.md:** Accomplishment extraction hand-authored from audit; same pattern as v1.16/v1.17 — accepted but adds close overhead.
+
+### Patterns Established
+
+- **`require_twitter_linked` on `uid + token` (not `name`):** User-editable name is the wrong identity predicate; uid + token is the API credential predicate.
+- **All-soft-delete over selective hard/soft-delete:** More recoverable; fewer branches in diff logic; confirm with tests rather than spec complexity.
+- **CSS `max()` → `width: 100%` for Dart Sass compatibility:** When Dart Sass interprets a CSS `max()` call as Sass `max()`, replace with explicit property rather than fighting syntax escaping.
+
+### Key Lessons
+
+1. Keep REQUIREMENTS traceability checkboxes in sync during execution — audit evidence already exists in tests, so updating `[x]` inline costs nothing and saves close-time normalization.
+2. When a spec says "hard-delete condition-A, soft-delete condition-B" and implementation collapses to all-soft-delete, capture the rationale in the commit message immediately — audit cross-referencing becomes trivial.
+3. Test controller endpoints (index, refresh, update, show) before milestone audit — `XTEST-03` gap surfaced at audit time, not phase time.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -354,6 +397,7 @@
 | v1.6 | 3 (23–25) | First milestone shipped entirely without `.planning/phases/` directories — roadmap + audit + tests carry traceability |
 | v1.16 | 5 (52–56) | Manual milestone close (no `gsd-sdk`); tri-suite + audit file carry traceability; Cucumber uses global DB reset for new gadget type |
 | v1.17 | 3 (57–59) | Security-first email elevation (dummy-only + collision + race rescue); VERIFICATION-led close without SUMMARY files |
+| v1.18 | 4 (60–63) | Highest requirement count (31 REQ-IDs); v1.16 Mastodon pattern reused wholesale; all-soft-delete intentional deviation documented in commit + audit |
 
 ### Cumulative quality
 
@@ -367,6 +411,7 @@
 | v1.6 | Minitest + Cucumber green (one-rerun policy) | Theme/UI expansion only; milestone audit notes missing Nyquist artifacts |
 | v1.16 | Minitest + Cucumber green (one-rerun policy) | New external HTTP client + gadget; Faraday test adapter + class stub for E2E |
 | v1.17 | Minitest + Cucumber green (one-rerun policy) | No new gems/migrations; E2E for email path explicitly deferred per REQUIREMENTS |
+| v1.18 | Minitest 364/364 + Cucumber 24 scenarios green | OAuth1 + new HTTP client + gadget pattern; XTEST-03 controller gap caught at audit, closed before archive |
 
 ### Top lessons (carry forward)
 
