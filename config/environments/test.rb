@@ -54,9 +54,4 @@ Rails.application.configure do
   # Allow reading unencrypted otp_secret from fixtures
   config.active_record.encryption.support_unencrypted_data = true
 
-  # Prepends stub seams onto HTTP service clients (see test/http_client_test_stubs.rb).
-  # Keeps app/services free of test-only hooks; runs for Minitest and Cucumber (RAILS_ENV=test).
-  config.after_initialize do
-    require Rails.root.join('test/http_client_test_stubs').to_s
-  end
 end

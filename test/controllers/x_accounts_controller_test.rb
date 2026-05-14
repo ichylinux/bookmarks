@@ -4,14 +4,10 @@ require 'test_helper'
 
 class XAccountsControllerTest < ActionDispatch::IntegrationTest
   def setup
-    XClient.stub_fetch_following_result = nil
-    XClient.stub_fetch_tweets_result = nil
     XAccount.where(user_id: twitter_user.id).delete_all
   end
 
   def teardown
-    XClient.stub_fetch_following_result = nil
-    XClient.stub_fetch_tweets_result = nil
     XAccount.where(user_id: twitter_user.id).delete_all
   end
 
@@ -48,10 +44,12 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
   # --- refresh ---
 
   def test_再取得が成功するとリダイレクトされる
-    XClient.stub_fetch_following_result = {
-      success: true,
-      items: [{ id: '1', username: 'alice', name: 'Alice', protected: false }]
-    }
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/fixture_twitter_uid\/following/)
+      .to_return(
+        status: 200,
+        body: { data: [{ id: '1', username: 'alice', name: 'Alice', protected: false }], meta: {} }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
     sign_in twitter_user
     post refresh_x_accounts_path
     assert_redirected_to x_accounts_path
@@ -59,7 +57,8 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_再取得が失敗するとアラートでリダイレクトされる
-    XClient.stub_fetch_following_result = { success: false, error: :timeout }
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/fixture_twitter_uid\/following/)
+      .to_return(status: 503)
     sign_in twitter_user
     post refresh_x_accounts_path
     assert_redirected_to x_accounts_path
@@ -121,10 +120,12 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
 
   def test_showがXHRでフラグメントを返す
     acc = create_account(username: 'charlie', selected: true)
-    XClient.stub_fetch_tweets_result = {
-      success: true,
-      items: [{ text: 'Hello world', url: 'https://x.com/i/status/1' }]
-    }
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/charlie\/tweets/)
+      .to_return(
+        status: 200,
+        body: { data: [{ id: '1', text: 'Hello world' }] }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
     sign_in twitter_user
     get x_account_path(acc, format: :html), xhr: true
     assert_response :success
@@ -134,7 +135,8 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
 
   def test_showがエラー時にローカライズされたメッセージを返す
     acc = create_account(username: 'charlie', selected: true)
-    XClient.stub_fetch_tweets_result = { success: false, error: :timeout }
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/charlie\/tweets/)
+      .to_timeout
     twitter_user.preference.update!(locale: 'en')
     sign_in twitter_user
     get x_account_path(acc, format: :html), xhr: true

@@ -6,9 +6,6 @@ Before do
   MastodonAccount.delete_all
   XAccount.delete_all
 
-  XClient.stub_fetch_following_result = nil
-  XClient.stub_fetch_tweets_result = nil
-
   pref = user.preference
   pref.update!(
     theme: "modern",
@@ -28,14 +25,23 @@ Before('@mastodon_gadget') do
     display_count: 3
   )
 
-  MastodonClient.stub_fetch_result = {
-    success: true,
-    items: [{ text: 'Cucumber stub toot preview', url: 'https://ruby.social/@FastRuby/999' }]
-  }
+  @_mastodon_stub_lookup = WebMock.stub_request(:get, /ruby\.social\/api\/v1\/accounts\/lookup/)
+    .to_return(
+      status: 200,
+      body: { id: 9876, username: 'FastRuby' }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
+  @_mastodon_stub_statuses = WebMock.stub_request(:get, /ruby\.social\/api\/v1\/accounts\/9876\/statuses/)
+    .to_return(
+      status: 200,
+      body: [{ content: '<p>Cucumber stub toot preview</p>', url: 'https://ruby.social/@FastRuby/999' }].to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
 end
 
 After('@mastodon_gadget') do
-  MastodonClient.stub_fetch_result = nil
+  WebMock.remove_request_stub(@_mastodon_stub_lookup) if @_mastodon_stub_lookup
+  WebMock.remove_request_stub(@_mastodon_stub_statuses) if @_mastodon_stub_statuses
 end
 
 Before('@x_gadget') do
@@ -58,15 +64,16 @@ Before('@x_gadget') do
     display_count: 5
   )
 
-  XClient.stub_fetch_tweets_result = {
-    success: true,
-    items: [{ text: 'Cucumber stub X preview', url: 'https://x.com/i/status/1234567890123456789' }]
-  }
+  @_x_stub_tweets = WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/551199\/tweets/)
+    .to_return(
+      status: 200,
+      body: { data: [{ id: '1234567890123456789', text: 'Cucumber stub X preview' }] }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
 end
 
 After('@x_gadget') do
-  XClient.stub_fetch_tweets_result = nil
-  XClient.stub_fetch_following_result = nil
+  WebMock.remove_request_stub(@_x_stub_tweets) if @_x_stub_tweets
   XAccount.where(user_id: user.id).delete_all
   user.update_columns(provider: nil, uid: nil, token: nil, token_secret: nil)
 end

@@ -1,14 +1,6 @@
 require 'test_helper'
 
 class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
-  def setup
-    MastodonClient.stub_fetch_result = nil
-  end
-
-  def teardown
-    MastodonClient.stub_fetch_result = nil
-  end
-
   def test_一覧
     sign_in user
     get mastodon_accounts_path
@@ -100,12 +92,9 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
     assert account.reload.deleted
   end
 
-  def test_show_renders_preview_links_from_stub
+  def test_show_renders_preview_links
     account = mastodon_account_of(user.id)
-    MastodonClient.stub_fetch_result = {
-      success: true,
-      items: [{ text: 'Preview line', url: 'https://ruby.social/@x/1' }]
-    }
+    stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>Preview line</p>', url: 'https://ruby.social/@x/1' }])
     sign_in user
     get mastodon_account_path(account, format: :html)
 
@@ -113,9 +102,9 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', 'https://ruby.social/@x/1', text: 'Preview line'
   end
 
-  def test_show_renders_error_message_when_stub_reports_failure
+  def test_show_renders_error_message_on_timeout
     account = mastodon_account_of(user.id)
-    MastodonClient.stub_fetch_result = { success: false, error: :timeout }
+    WebMock.stub_request(:get, /ruby\.social\/api\/v1\/accounts\/lookup/).to_timeout
     user.preference.update!(locale: 'en')
     sign_in user
     get mastodon_account_path(account, format: :html)
@@ -126,10 +115,7 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
 
   def test_show_xhr_returns_fragment_without_html_wrapper
     account = mastodon_account_of(user.id)
-    MastodonClient.stub_fetch_result = {
-      success: true,
-      items: [{ text: 'XHR line', url: 'https://ruby.social/@x/2' }]
-    }
+    stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>XHR line</p>', url: 'https://ruby.social/@x/2' }])
     sign_in user
     get mastodon_account_path(account, format: :html), xhr: true
 
@@ -144,5 +130,22 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
 
     get mastodon_account_path(other, format: :html)
     assert_response :not_found
+  end
+
+  private
+
+  def stub_mastodon_success(instance, username, statuses)
+    WebMock.stub_request(:get, /#{Regexp.escape(instance)}\/api\/v1\/accounts\/lookup/)
+      .to_return(
+        status: 200,
+        body: { id: 99, username: username }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+    WebMock.stub_request(:get, /#{Regexp.escape(instance)}\/api\/v1\/accounts\/99\/statuses/)
+      .to_return(
+        status: 200,
+        body: statuses.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
   end
 end

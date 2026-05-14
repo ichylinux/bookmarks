@@ -1,41 +1,40 @@
 require 'test_helper'
 
 class XClientTest < ActiveSupport::TestCase
-  def setup
-    XClient.stub_fetch_following_result = nil
-    XClient.stub_fetch_tweets_result = nil
-  end
-
-  def teardown
-    XClient.stub_fetch_following_result = nil
-    XClient.stub_fetch_tweets_result = nil
-  end
-
-  def test_fetch_following_stub_short_circuits
-    XClient.stub_fetch_following_result = {
-      success: true,
-      items: [
-        { id: '1', username: 'a', name: 'A', protected: false }
-      ]
-    }
-    u = users(:twitter_user)
-    r = XClient.new.fetch_following(user: u)
+  def test_fetch_following_returns_normalized_items
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/\w+/following}) do
+      [200, { 'Content-Type' => 'application/json' },
+       { data: [{ id: '1', username: 'a', name: 'A', protected: false }], meta: {} }.to_json]
+    end
+    conn = Faraday.new do |f|
+      f.adapter :test, stubs
+      f.options.timeout = 5
+      f.options.open_timeout = 3
+    end
+    r = XClient.new(connection: conn).fetch_following(user: users(:twitter_user))
     assert r[:success]
     assert_equal 'a', r[:items].first[:username]
   end
 
-  def test_fetch_following_malformed_stub_returns_api_error
-    XClient.stub_fetch_following_result = 'nope'
-    r = XClient.new.fetch_following(user: users(:twitter_user))
+  def test_fetch_following_non_200_returns_api_error
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/\w+/following}) { [500, {}, 'Server Error'] }
+    conn = Faraday.new do |f|
+      f.adapter :test, stubs
+    end
+    r = XClient.new(connection: conn).fetch_following(user: users(:twitter_user))
     assert_not r[:success]
     assert_equal :api_error, r[:error]
   end
 
   def test_fetch_tweets_expands_tco_and_truncates
-    XClient.stub_fetch_tweets_result = {
-      success: true,
-      items: [{ text: 'a' * 200, url: 'https://x.com/i/status/9' }]
-    }
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/9\/tweets/)
+      .to_return(
+        status: 200,
+        body: { data: [{ id: '9', text: 'a' * 200 }] }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
     r = XClient.new.fetch_recent_tweets(user: users(:twitter_user), x_user_id: '9', limit: 5)
     assert r[:success]
     assert_operator r[:items].first[:text].length, :<=, 100

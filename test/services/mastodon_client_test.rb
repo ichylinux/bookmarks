@@ -1,14 +1,6 @@
 require 'test_helper'
 
 class MastodonClientTest < ActiveSupport::TestCase
-  def setup
-    MastodonClient.stub_fetch_result = nil
-  end
-
-  def teardown
-    MastodonClient.stub_fetch_result = nil
-  end
-
   def test_fetch_previews_returns_truncated_plain_text_and_url
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get(%r{/api/v1/accounts/lookup}) do
@@ -52,16 +44,4 @@ class MastodonClientTest < ActiveSupport::TestCase
     assert_equal :not_found, result[:error]
   end
 
-  def test_stub_fetch_result_short_circuits_http
-    MastodonClient.stub_fetch_result = {
-      success: true,
-      items: [{ text: 'Stub line', url: 'https://ex.test/1' }]
-    }
-
-    client = MastodonClient.new(instance_host: 'ruby.social')
-    result = client.fetch_recent_status_previews(username: 'FastRuby', limit: 5)
-
-    assert result[:success]
-    assert_equal 'Stub line', result[:items].first[:text]
-  end
 end

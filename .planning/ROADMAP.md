@@ -20,11 +20,11 @@
 - ✅ **v1.16 — Mastodon Account Following** — Phases 52–56 (shipped 2026-05-12) — [archived](milestones/v1.16-ROADMAP.md)
 - ✅ **v1.17 — Email Registration for X/Twitter Users** — Phases 57–59 (shipped 2026-05-13) — [archived](milestones/v1.17-ROADMAP.md)
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [detail](milestones/v1.18-ROADMAP.md)
-- **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (planning) — [detail](milestones/v1.19-ROADMAP.md)
+- ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [detail](milestones/v1.19-ROADMAP.md)
 
 ## Phases
 
-### v1.19 — HTTP test stubs → WebMock (Phases 64–66) — PLANNING
+### v1.19 — HTTP test stubs → WebMock (Phases 64–66) — SHIPPED 2026-05-14
 
 Full goals, success criteria, and notes: [milestones/v1.19-ROADMAP.md](milestones/v1.19-ROADMAP.md).
 
@@ -35,8 +35,8 @@ Full goals, success criteria, and notes: [milestones/v1.19-ROADMAP.md](milestone
 | 66 | Cucumber + cleanup + docs | HTTP-03, HTTP-04, HTTP-05 |
 
 - [x] Phase 64: WebMock gem + global test configuration (no real external HTTP by default) — 2026-05-14
-- [ ] Phase 65: Minitest — replace stub accessors with WebMock and/or Faraday `:test`
-- [ ] Phase 66: Cucumber hooks + delete `test/http_client_test_stubs.rb` + remove test env `require` + tri-suite + PROJECT/CLAUDE updates
+- [x] Phase 65: Minitest — replace stub accessors with WebMock and/or Faraday `:test` — 2026-05-14
+- [x] Phase 66: Cucumber hooks + delete `test/http_client_test_stubs.rb` + remove test env `require` + tri-suite + PROJECT/CLAUDE updates — 2026-05-14
 
 ---
 
@@ -78,4 +78,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-14 — v1.19 milestone opened (Phases 64–66); v1.18 shipped*
+*Last updated: 2026-05-14 — v1.19 shipped (Phases 64–66); HTTP stubs → WebMock complete*
