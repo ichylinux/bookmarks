@@ -8,22 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.19 — HTTP test stubs → WebMock
+## Current Milestone: (none — planning next)
 
-**Goal:** Replace test-only HTTP stub seams (`test/http_client_test_stubs.rb` prepend + `config/environments/test.rb` loader) with **WebMock** for integration/Cucumber paths, while keeping **Faraday `:test`** where `connection:` injection already isolates unit tests.
+**Last shipped:** v1.19 — HTTP test stubs → WebMock (2026-05-14)
 
-**Target features:**
+All 133 lines of prepend stub machinery removed. WebMock + Faraday `:test` are now the sole HTTP interception mechanisms in tests. Tri-suite green.
 
-- WebMock in the `:test` gem group with safe global config (no accidental real calls to `api.twitter.com` / Mastodon hosts during suite runs).
-- Minitest: controller + service tests rewritten off `stub_fetch_*` accessors; prefer `:test` adapter when injectable.
-- Cucumber: `@mastodon_gadget` / `@x_gadget` and global hooks use WebMock stubs instead of class-level stub state.
-- Remove `test/http_client_test_stubs.rb` and document the new contract in **Key Decisions** + `CLAUDE.md`; tri-suite gate green at milestone close.
-
-**Status:** Planning — roadmap Phases 64–66; see `.planning/REQUIREMENTS.md`, `.planning/milestones/v1.19-ROADMAP.md`, `.planning/ROADMAP.md`.
+**Status:** Between milestones — run `/gsd-new-milestone` to start v1.20.
 
 ## Current State
 
-**Status:** v1.18 shipped (2026-05-14); **v1.19** (HTTP → WebMock) in planning
+**Status:** v1.19 shipped (2026-05-14); between milestones
 
 v1.18 delivered X (Twitter) Account Following: `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gate on `uid + token`; `XClient` Faraday service (OAuth1, timeouts, 7-symbol error contract, t.co expansion, pagination, stub accessors); `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, selection cap 12 / warn 9, protected-account confirmation); `/x_accounts` management UI (refresh diff-upsert, per-row toggle, last-refreshed timestamp); welcome-page AJAX gadgets via `Portal#get_gadgets` with per-error-symbol localized states + `:unauthorized` re-sign-in CTA; `features/06.X.feature` with `@x_gadget` hooks + global state-isolation Before hook; ja/en across `x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`; Minitest (364/364) + Cucumber (24 scenarios) tri-suite green.
 
@@ -191,6 +186,10 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Shipped
 
+### v1.19 — HTTP test stubs → WebMock (2026-05-14)
+
+**Delivered:** WebMock gem + global `disable_net_connect!` config; service tests migrated to Faraday `:test` adapter; controller tests and Cucumber hooks migrated to `WebMock.stub_request`; `test/http_client_test_stubs.rb` deleted (133 lines); `config/environments/test.rb` loader removed. No class-level stub accessors remain. Tri-suite green (lint ✓ · 363 Minitest ✓ · 24 Cucumber ✓).
+
 ### v1.18 — X (Twitter) Account Following (2026-05-14)
 
 **Delivered:** OAuth 1.0a token persistence + encryption; `XClient` Faraday service (OAuth1, error contract, stubs); `x_accounts` cache + `/x_accounts` management UI (refresh diff, selection cap, protected toggle); welcome AJAX gadgets via `Portal#get_gadgets` (per-error states, no `html_safe`); Cucumber `@x_gadget`; ja/en (`x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`). Tri-suite green (364 Minitest, 24 Cucumber scenarios).
@@ -248,4 +247,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-14 — started milestone v1.19 (HTTP stubs → WebMock)*
+*Last updated: 2026-05-14 — v1.19 shipped and archived; between milestones*
