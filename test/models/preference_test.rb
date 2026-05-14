@@ -77,6 +77,11 @@ class PreferenceTest < ActiveSupport::TestCase
     assert_not p.valid?, 'nil should be invalid (NOT NULL column)'
   end
 
+  def test_デフォルトのポータル列数は3
+    p = user.preference
+    assert_equal 3, p.portal_column_count
+  end
+
   def test_localeはsupported_localesのみ有効
     p = Preference.default_preference(user)
 
