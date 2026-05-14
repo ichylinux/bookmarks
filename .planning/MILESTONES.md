@@ -11,7 +11,9 @@
 - `test/http_client_test_stubs.rb` deleted; `config/environments/test.rb` stub loader removed.
 - Tri-suite gate at close: `yarn run lint` — green; `bin/rails test` — 363 runs, 0 failures; `bundle exec rake dad:test` — 24 scenarios, 0 failed.
 
-**Archives:** [ROADMAP snapshot](milestones/v1.19-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.19-REQUIREMENTS.md)
+**Audit:** [Milestone audit](milestones/v1.19-MILESTONE-AUDIT.md) — `tech_debt`; 5/5 requirements satisfied; 0 integration blockers. Process debt: Phases 65–66 inline (no per-phase GSD artifacts); Phase 64 VALIDATION.md draft state; HTTP-FUT-01 deferred.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.19-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.19-REQUIREMENTS.md) · [Milestone audit](milestones/v1.19-MILESTONE-AUDIT.md)
 
 ---
 
