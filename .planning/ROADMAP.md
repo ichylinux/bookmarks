@@ -59,8 +59,8 @@ Plans:
   5. `yarn run lint` + `bin/rails test` (preference validation, controller save, portal distribution, locale key parity) + `bundle exec rake dad:test` all green
 **Plans**: 2 plans
 Plans:
-- [ ] 067-01-PLAN.md — Migration + Preference validation + Portal model parameterization
-- [ ] 067-02-PLAN.md — Minitest coverage (portal_test.rb + preference_test.rb additions)
+- [ ] 068-01-PLAN.md — Controller strong params + locale keys + preferences view + portal SCSS + partial class + default_preference fix + hooks reset
+- [ ] 068-02-PLAN.md — Minitest controller + layout tests + preference_params helper + Cucumber scenario + tri-suite gate
 **UI hint**: yes
 
 ## Progress Table
@@ -68,7 +68,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 67. Data + Model Layer | 2/2 | ✅ Complete | 2026-05-15 |
-| 68. Preferences UI + View + SCSS + Tri-suite Gate | 0/? | Not started | - |
+| 68. Preferences UI + View + SCSS + Tri-suite Gate | 0/2 | Not started | - |
 
 ---
 
@@ -121,4 +121,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-15 — v1.20 roadmap created; Column Count Preference (Phases 67–68)*
+*Last updated: 2026-05-15 — Phase 68 planned (2 plans, 2 waves)*
