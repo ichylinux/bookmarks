@@ -34,7 +34,7 @@ Full goals, success criteria, and notes: [milestones/v1.19-ROADMAP.md](milestone
 | 65 | Minitest migration | HTTP-02 |
 | 66 | Cucumber + cleanup + docs | HTTP-03, HTTP-04, HTTP-05 |
 
-- [ ] Phase 64: WebMock gem + global test configuration (no real external HTTP by default)
+- [x] Phase 64: WebMock gem + global test configuration (no real external HTTP by default) — 2026-05-14
 - [ ] Phase 65: Minitest — replace stub accessors with WebMock and/or Faraday `:test`
 - [ ] Phase 66: Cucumber hooks + delete `test/http_client_test_stubs.rb` + remove test env `require` + tri-suite + PROJECT/CLAUDE updates
 
