@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.19
-milestone_name: — HTTP test stubs → WebMock
-status: completed
-last_updated: "2026-05-14T15:00:00.000Z"
-last_activity: 2026-05-14 — Phase 66 complete (HTTP-03–05 ✓; tri-suite green; stub file deleted)
+milestone: v1.20
+milestone_name: Column Count Preference
+status: planning
+last_updated: "2026-05-15T00:00:00.000Z"
+last_activity: 2026-05-15 — Milestone v1.20 started; defining requirements
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: — (all complete)
+Phase: Not started (defining requirements)
 Plan: —
-Status: Milestone v1.19 complete — all phases done; tri-suite green; ready to close milestone
-Last activity: 2026-05-14 — Phase 66 complete (HTTP-03–05 ✓; tri-suite green; stub file deleted)
+Status: Defining requirements
+Last activity: 2026-05-15 — Milestone v1.20 started
 
-Progress: [██████████] 100% (3/3 phases)
+Progress: [          ] 0% (0/0 phases)
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (Current Milestone: v1.19)
+See: `.planning/PROJECT.md` (Current Milestone: v1.20)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.  
-**Current focus:** v1.19 complete — HTTP stubs replaced by WebMock + Faraday `:test`
+**Current focus:** v1.20 — User-selectable portal column count (3 or 4) on preferences screen
 
 ## Performance Metrics
 

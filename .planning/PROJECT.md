@@ -8,13 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: (none — planning next)
+## Current Milestone: v1.20 — Column Count Preference
 
-**Last shipped:** v1.19 — HTTP test stubs → WebMock (2026-05-14)
+**Goal:** Users can choose 3 or 4 portal columns from the preferences screen; mobile layout is unaffected.
 
-All 133 lines of prepend stub machinery removed. WebMock + Faraday `:test` are now the sole HTTP interception mechanisms in tests. Tri-suite green.
-
-**Status:** Between milestones — run `/gsd-new-milestone` to start v1.20.
+**Target features:**
+- New `portal_column_count` preference column (integer, default 3, values 3 or 4)
+- Preferences page: select control for column count (ja/en)
+- Portal uses the stored preference instead of the hardcoded 3-column layout
+- Switching to 4 columns keeps existing gadget positions; column 4 starts empty
+- Mobile tab strip behavior unchanged (column count is desktop-only)
+- Tri-suite gate (lint + Minitest + Cucumber)
 
 ## Current State
 
@@ -100,6 +104,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
+- [ ] User can select portal column count (3 or 4) from the preferences screen — v1.20
+- [ ] Portal renders the user-chosen column count on desktop; mobile layout unchanged — v1.20
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 - [ ] Fix XAUTH-FUT-01: `from_omniauth` Twitter branch still looks up by `name` — switch to `uid` (prerequisite `users.uid` persisted by v1.18 Phase 60; deferred to v1.19+ to avoid breaking pre-v1.18 users who haven't re-authed)
 
@@ -251,4 +257,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-14 — v1.19 shipped and archived; between milestones*
+*Last updated: 2026-05-15 — v1.20 started; column count preference*
