@@ -5,6 +5,7 @@ def preference_params(options = {})
     open_links_in_new_tab: options.fetch(:open_links_in_new_tab, false),
     font_size: options.fetch(:font_size, nil),
     default_priority: options.fetch(:default_priority, Todo::PRIORITY_NORMAL),
-    locale: options.fetch(:locale, nil)
+    locale: options.fetch(:locale, nil),
+    portal_column_count: options.fetch(:portal_column_count, 3)
   }
 end
