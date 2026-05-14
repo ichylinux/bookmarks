@@ -8,22 +8,22 @@ class PortalTest < ActiveSupport::TestCase
 
   def test_portal_column_countはpreference設定を委譲する
     user.preference.update_columns(portal_column_count: 3)
-    assert_equal 3, portal.portal_column_count
+    p3 = Portal.find(portal.id)
+    assert_equal 3, p3.portal_column_count
 
     user.preference.update_columns(portal_column_count: 4)
-    portal.instance_variable_set(:@portal_columns, nil)
-    assert_equal 4, portal.portal_column_count
+    p4 = Portal.find(portal.id)
+    assert_equal 4, p4.portal_column_count
   end
 
   def test_portal_columnsは設定カラム数の配列を返す
     user.preference.update_columns(portal_column_count: 3)
-    columns = portal.portal_columns
+    columns = Portal.find(portal.id).portal_columns
     assert_equal 3, columns.size
     columns.each { |c| assert_kind_of Array, c }
 
     user.preference.update_columns(portal_column_count: 4)
-    portal.instance_variable_set(:@portal_columns, nil)
-    columns = portal.portal_columns
+    columns = Portal.find(portal.id).portal_columns
     assert_equal 4, columns.size
     columns.each { |c| assert_kind_of Array, c }
   end
@@ -37,7 +37,7 @@ class PortalTest < ActiveSupport::TestCase
       display_order: 0,
       gadget_id: 'bookmark'
     )
-    columns = portal.portal_columns
+    columns = Portal.find(portal.id).portal_columns
     assert_equal 3, columns.size
     # No nil entries and no IndexError
     columns.each { |c| assert_kind_of Array, c }
