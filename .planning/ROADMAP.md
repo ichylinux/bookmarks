@@ -20,8 +20,25 @@
 - ✅ **v1.16 — Mastodon Account Following** — Phases 52–56 (shipped 2026-05-12) — [archived](milestones/v1.16-ROADMAP.md)
 - ✅ **v1.17 — Email Registration for X/Twitter Users** — Phases 57–59 (shipped 2026-05-13) — [archived](milestones/v1.17-ROADMAP.md)
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [detail](milestones/v1.18-ROADMAP.md)
+- **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (planning) — [detail](milestones/v1.19-ROADMAP.md)
 
 ## Phases
+
+### v1.19 — HTTP test stubs → WebMock (Phases 64–66) — PLANNING
+
+Full goals, success criteria, and notes: [milestones/v1.19-ROADMAP.md](milestones/v1.19-ROADMAP.md).
+
+| Phase | Name | Requirements |
+|-------|------|----------------|
+| 64 | WebMock baseline | HTTP-01 |
+| 65 | Minitest migration | HTTP-02 |
+| 66 | Cucumber + cleanup + docs | HTTP-03, HTTP-04, HTTP-05 |
+
+- [ ] Phase 64: WebMock gem + global test configuration (no real external HTTP by default)
+- [ ] Phase 65: Minitest — replace stub accessors with WebMock and/or Faraday `:test`
+- [ ] Phase 66: Cucumber hooks + delete `test/http_client_test_stubs.rb` + remove test env `require` + tri-suite + PROJECT/CLAUDE updates
+
+---
 
 <details>
 <summary>✅ v1.18 — X (Twitter) Account Following (Phases 60–63) — SHIPPED 2026-05-14</summary>
@@ -61,4 +78,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-14 — v1.18 phases 60–63 implemented (tri-suite green)*
+*Last updated: 2026-05-14 — v1.19 milestone opened (Phases 64–66); v1.18 shipped*

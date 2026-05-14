@@ -1,5 +1,13 @@
 # Milestones
 
+## v1.19 — HTTP test stubs → WebMock (planning)
+
+**Scope:** Phases 64–66 — add WebMock to `:test`; migrate Minitest + Cucumber off `test/http_client_test_stubs.rb` prepend accessors; delete stub loader from `config/environments/test.rb`; document new contract in PROJECT / CLAUDE; tri-suite gate.
+
+**Planning artifacts:** [v1.19-ROADMAP.md](milestones/v1.19-ROADMAP.md) · [REQUIREMENTS.md](../REQUIREMENTS.md) (HTTP-01..05)
+
+---
+
 ## v1.18 — X (Twitter) Account Following (shipped 2026-05-14)
 
 **Scope:** Phases 60–63 — OAuth 1.0a token persistence on `users`, `XClient` Faraday service, `x_accounts` cache table + management UI, welcome-page AJAX gadgets, ja/en localization, Minitest + Cucumber tri-suite gate.

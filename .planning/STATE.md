@@ -1,40 +1,40 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.18
-milestone_name: X (Twitter) Account Following
-status: archived
+milestone: v1.19
+milestone_name: HTTP test stubs → WebMock
+status: planning
 stopped_at: null
-last_updated: "2026-05-14T00:00:00.000Z"
+last_updated: "2026-05-14T12:00:00.000Z"
 last_activity: 2026-05-14
 progress:
-  total_phases: 4
-  completed_phases: 4
+  total_phases: 3
+  completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 100
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 63 (complete — milestone archived)
+Phase: Not started (roadmap defined; begin Phase 64)
 Plan: —
-Status: v1.18 shipped and archived. Ready for v1.19 planning.
-Last activity: 2026-05-14 — milestone close: REQUIREMENTS archived, MILESTONES.md updated, PROJECT.md evolved, git tagged v1.18.
+Status: Milestone v1.19 — replace test-only HTTP prepend stubs with WebMock (+ Faraday `:test` where injection already works)
+Last activity: 2026-05-14 — `/gsd-new-milestone`: REQUIREMENTS + ROADMAP created for WebMock migration
 
-Progress: [██████████] 100% (4/4 phases)
+Progress: [░░░░░░░░░░] 0% (0/3 phases)
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-14 after v1.18)
+See: `.planning/PROJECT.md` (Current Milestone: v1.19)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.  
-**Current focus:** Planning next milestone (v1.19)
+**Current focus:** v1.19 — HTTP test isolation via WebMock; remove `test/http_client_test_stubs.rb` and `config/environments/test.rb` stub loader
 
 ## Performance Metrics
 
-- Gate (2026-05-14): `yarn run lint` — green; `bin/rails test` — green; `bundle exec rake dad:test` — green (24 scenarios).
+- Baseline (v1.18 close): `yarn run lint` — green; `bin/rails test` — green; `bundle exec rake dad:test` — green (24 scenarios).
 
 ## Accumulated Context
 
@@ -45,7 +45,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-14 after v1.18)
 
 ### Pending Todos
 
-- (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred per roadmap.
+- (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred; can ship in same or later milestone as v1.19 scope allows.
 
 ### Blockers/Concerns
 
@@ -59,4 +59,4 @@ None.
 
 ## Session Continuity
 
-Autonomous run completed implementation without `gsd-sdk query` (CLI unavailable); ROADMAP/STATE updated manually from disk.
+Milestone opened via `/gsd-new-milestone` (GSD `gsd-sdk query` unavailable in this environment; STATE/ROADMAP/REQUIREMENTS/PROJECT updated manually).
