@@ -29,6 +29,7 @@ class Portal < ApplicationRecord
   end
 
   def update_layout(params = {})
+    params ||= {}
     valid_layouts = []
 
     params.each do |column, gadget_ids|
