@@ -8,7 +8,7 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 
 ### Data Layer
 
-- [ ] **COL-01**: `preferences.portal_column_count` integer column (default 3, NOT NULL); `Preference` model validates value is in [3, 4] and rejects anything else
+- [x] **COL-01**: `preferences.portal_column_count` integer column (default 3, NOT NULL); `Preference` model validates value is in [3, 4] and rejects anything else
 
 ### Preferences UI
 
@@ -17,9 +17,9 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 
 ### Portal Behavior
 
-- [ ] **COL-04**: `Portal#portal_columns` uses `user.preference.portal_column_count` instead of the hardcoded 3; `Portal#portal_column_count` delegates to the preference value
+- [x] **COL-04**: `Portal#portal_columns` uses `user.preference.portal_column_count` instead of the hardcoded 3; `Portal#portal_column_count` delegates to the preference value
 - [ ] **COL-05**: Welcome page renders the correct number of column sections for the user's preference (3 or 4); existing gadget placements in columns 0–2 are preserved when switching to 4; column 3 is empty on first switch to 4
-- [ ] **COL-06**: Downgrading from 4 → 3 columns is safe: `Portal#portal_columns` skips `PortalLayout` records with `column_no >= column_count`; those gadgets are redistributed via the existing fallback (`i % column_count`); saved positions in column 3 are restored when switching back to 4
+- [x] **COL-06**: Downgrading from 4 → 3 columns is safe: `Portal#portal_columns` skips `PortalLayout` records with `column_no >= column_count`; those gadgets are redistributed via the existing fallback (`i % column_count`); saved positions in column 3 are restored when switching back to 4
 
 ### Test Coverage
 
@@ -41,11 +41,11 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 
 | REQ | Phase | Plan | Status |
 |-----|-------|------|--------|
-| COL-01 | Phase 67 | — | Pending |
+| COL-01 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
 | COL-02 | Phase 68 | — | Pending |
 | COL-03 | Phase 68 | — | Pending |
-| COL-04 | Phase 67 | — | Pending |
+| COL-04 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
 | COL-05 | Phase 68 | — | Pending |
-| COL-06 | Phase 67 | — | Pending |
+| COL-06 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
 | COL-07 | Phase 68 | — | Pending |
 | COL-08 | Phase 68 | — | Pending |

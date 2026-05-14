@@ -1,28 +1,28 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.20
-milestone_name: Column Count Preference
-status: planning
-last_updated: "2026-05-15T00:00:00.000Z"
-last_activity: 2026-05-15 — Roadmap created; Phases 67–68 defined
+milestone_name: — Column Count Preference
+status: in_progress
+last_updated: "2026-05-15T00:00:00Z"
+last_activity: 2026-05-15 — Phase 67 complete (Data + Model Layer)
 progress:
   total_phases: 2
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 1
+  total_plans: 4
+  completed_plans: 2
+  percent: 50
 ---
 
 # State
 
 ## Current Position
 
-Phase: Phase 67 — Data + Model Layer (not started)
+Phase: Phase 68 — Preferences UI + View + SCSS + Tri-suite Gate (not started)
 Plan: —
-Status: Roadmap created; ready to plan Phase 67
-Last activity: 2026-05-15 — v1.20 roadmap created (Phases 67–68)
+Status: Phase 67 complete; ready to discuss/plan Phase 68
+Last activity: 2026-05-15 — Phase 67 complete (Migration, Preference validation, Portal model parameterized)
 
-Progress: [          ] 0% (0/2 phases)
+Progress: [█████     ] 50% (1/2 phases)
 
 ## Project Reference
 
@@ -63,3 +63,4 @@ None.
 
 Milestone v1.19 executed via `/gsd-autonomous` (all 3 phases in one session). STATE/ROADMAP updated manually post-execution.
 v1.20 roadmap created 2026-05-15 — 2 phases (67–68), 8 requirements (COL-01 through COL-08), 100% coverage.
+v1.20 Phase 67 executed via `/gsd-autonomous` on 2026-05-15 — migration + model + tests complete; 373 runs, 0 failures. COL-01, COL-04, COL-06 validated.

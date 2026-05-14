@@ -27,7 +27,7 @@
 
 ### v1.20 — Column Count Preference
 
-- [ ] **Phase 67: Data + Model Layer** — Migration, Preference validation, Portal model column distribution
+- [x] **Phase 67: Data + Model Layer** — Migration, Preference validation, Portal model column distribution — 2026-05-15
 - [ ] **Phase 68: Preferences UI + View + SCSS + Tri-suite Gate** — Select control, locale strings, welcome page 4-column layout, SCSS, full test sweep, gate
 
 ## Phase Details
@@ -67,7 +67,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 67. Data + Model Layer | 0/? | Not started | - |
+| 67. Data + Model Layer | 2/2 | ✅ Complete | 2026-05-15 |
 | 68. Preferences UI + View + SCSS + Tri-suite Gate | 0/? | Not started | - |
 
 ---
