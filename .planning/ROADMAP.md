@@ -42,7 +42,10 @@
   3. `Portal#portal_columns` returns an array of 3 or 4 sub-arrays driven by the user's stored preference, not a hardcoded 3
   4. When a user's preference is 4 but a `PortalLayout` record has `column_no >= 3`, `portal_columns` skips that record and redistributes it via `i % column_count` fallback — original column-3 positions are preserved and restored when preference switches back to 4
   5. `bin/rails test` is green after Phase 67 changes (model validation, portal distribution, downgrade path all covered by Minitest)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 067-01-PLAN.md — Migration + Preference validation + Portal model parameterization
+- [ ] 067-02-PLAN.md — Minitest coverage (portal_test.rb + preference_test.rb additions)
 
 ### Phase 68: Preferences UI + View + SCSS + Tri-suite Gate
 **Goal**: Users can select and save a column count from the preferences screen; the welcome page renders 3 or 4 columns correctly across all themes; tri-suite is green
@@ -54,7 +57,10 @@
   3. The welcome page renders exactly 3 or 4 `portal-column` section elements matching the user's preference; switching from 3 to 4 leaves columns 0–2 unchanged and column 3 empty
   4. Portal column CSS in all applicable theme files supports 4-column desktop layout without breaking 3-column or mobile tab-strip behavior
   5. `yarn run lint` + `bin/rails test` (preference validation, controller save, portal distribution, locale key parity) + `bundle exec rake dad:test` all green
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 067-01-PLAN.md — Migration + Preference validation + Portal model parameterization
+- [ ] 067-02-PLAN.md — Minitest coverage (portal_test.rb + preference_test.rb additions)
 **UI hint**: yes
 
 ## Progress Table
