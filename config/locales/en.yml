@@ -242,6 +242,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-14"
+          headline: Show X (Twitter) followed accounts on your dashboard
+          tag: new
+          description: Sign in with X to import your following list and display selected accounts' tweets in a dashboard gadget.
         - date: "2026-05-12"
           headline: Mastodon account integration
           tag: new
