@@ -383,6 +383,46 @@
 
 ---
 
+## Milestone: v1.19 — HTTP test stubs → WebMock
+
+**Shipped:** 2026-05-14  
+**Phases:** 3 (64–66) | **Plans:** (autonomous execution — Phase 64 has phase dir; Phases 65–66 inline)
+
+### What Was Built
+
+- `webmock` gem added to `:test` group; `test/support/webmock.rb` with `disable_net_connect!(allow_localhost: true)` and fixture feed stubs auto-loaded by both Minitest and Cucumber (Phase 64).
+- All Minitest HTTP stubs migrated to Faraday `:test` adapter (service tests via `connection:` injection) and `WebMock.stub_request` (controller integration tests and `XClient#fetch_recent_tweets`); all class-level stub accessors removed from `MastodonClient` and `XClient` (Phase 65).
+- Cucumber `@mastodon_gadget` and `@x_gadget` hooks migrated from class-level stub accessors to `WebMock.stub_request` / `WebMock.remove_request_stub`; `test/http_client_test_stubs.rb` deleted (133 lines); `config/environments/test.rb` stub loader removed (Phase 66).
+- Tri-suite green: `yarn run lint` ✓ · 363 Minitest ✓ · 24 Cucumber scenarios ✓.
+
+### What Worked
+
+- **WebMock + Faraday `:test` split was the right decomposition:** Service layer tests use Faraday `:test` adapter (injected via `connection:`) for unit-style isolation; full-stack controller and Cucumber tests use WebMock `stub_request` for cross-layer interception. The boundary was clear and required no retrofitting.
+- **Deleting 133-line stub file in one phase:** Having a dedicated "cleanup + delete" phase (66) meant the deletion was gated on confirmed green Cucumber, not trusted speculatively.
+- **Audit-first close:** `tech_debt` status (not `gaps_found`) confirmed all 5 requirements satisfied before archival; inline execution of Phases 65–66 is accepted-pattern debt consistent with v1.16–1.18.
+
+### What Was Inefficient
+
+- **Phases 65–66 inline (no GSD artifacts):** Same pattern as v1.16–v1.18 — accepted but closes without per-phase SUMMARY.md or VERIFICATION.md. Audit evidence carried traceability.
+- **Phase 64 VALIDATION.md draft state:** `nyquist_compliant: false` / `wave_0_complete: false` at close because the file was auto-generated but never signed off. Tests were green; the artifact status was cosmetically wrong.
+
+### Patterns Established
+
+- **`XClient#fetch_recent_tweets` builds its own Faraday connection:** WebMock (not Faraday `:test`) is the right interception layer for methods that don't accept an injected `connection:`. The rule: inject connection → Faraday `:test`; no injection possible → WebMock.
+- **`disable_net_connect!(allow_localhost: true)` in shared support file:** A single shared file loaded by both Minitest (`test/test_helper.rb`) and Cucumber (`features/support/env.rb`) enforces the net-connect policy consistently across all test runners without per-file duplication.
+
+### Key Lessons
+
+1. WebMock and Faraday `:test` are complementary, not alternatives — pick by whether the production code accepts a `connection:` injection parameter.
+2. When deleting a shared stub file, gate deletion on the test suite that most depends on it (Cucumber in this case) being green first.
+3. Auto-generated VALIDATION.md files left in draft/pending state create cosmetic audit noise without affecting quality — sign off or delete them at phase close.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -398,6 +438,7 @@
 | v1.16 | 5 (52–56) | Manual milestone close (no `gsd-sdk`); tri-suite + audit file carry traceability; Cucumber uses global DB reset for new gadget type |
 | v1.17 | 3 (57–59) | Security-first email elevation (dummy-only + collision + race rescue); VERIFICATION-led close without SUMMARY files |
 | v1.18 | 4 (60–63) | Highest requirement count (31 REQ-IDs); v1.16 Mastodon pattern reused wholesale; all-soft-delete intentional deviation documented in commit + audit |
+| v1.19 | 3 (64–66) | Infrastructure-only milestone (no user-facing features); WebMock + Faraday `:test` replaces bespoke 133-line prepend stub file |
 
 ### Cumulative quality
 
@@ -412,6 +453,7 @@
 | v1.16 | Minitest + Cucumber green (one-rerun policy) | New external HTTP client + gadget; Faraday test adapter + class stub for E2E |
 | v1.17 | Minitest + Cucumber green (one-rerun policy) | No new gems/migrations; E2E for email path explicitly deferred per REQUIREMENTS |
 | v1.18 | Minitest 364/364 + Cucumber 24 scenarios green | OAuth1 + new HTTP client + gadget pattern; XTEST-03 controller gap caught at audit, closed before archive |
+| v1.19 | Minitest 363/363 + Cucumber 24 scenarios green | Infrastructure cleanup only; WebMock `disable_net_connect!` now enforced globally; no regressions |
 
 ### Top lessons (carry forward)
 
@@ -424,3 +466,4 @@
 7. Archive snapshots (milestones/v*-ROADMAP.md, v*-REQUIREMENTS.md) must be created after all phases complete — mid-execution snapshots are stale at close (v1.5).
 8. Verification-debt milestones need a shared rubric phase first; the rubric investment pays for itself across all downstream closure phases (v1.5).
 9. If you skip `.planning/phases/` artifacts for speed, publish a milestone audit early so archival/reviews cite one authoritative gap ledger instead of inferring from git history (v1.6).
+10. WebMock and Faraday `:test` are complementary: use Faraday `:test` when the production code accepts a `connection:` injection parameter, and WebMock `stub_request` when it doesn't (v1.19).

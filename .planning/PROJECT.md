@@ -94,6 +94,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `XClient` Faraday service with `fetch_following` / `fetch_recent_tweets`, 7-symbol error contract, t.co expansion, pagination, stub accessors — **v1.18 Phase 61**
 - ✓ `x_accounts` cache table + `/x_accounts` management UI: refresh diff-upsert, per-row selection (cap 12, warn 9), protected-account confirmation, last-refreshed timestamp, ja/en — **v1.18 Phase 62**
 - ✓ Welcome-page X account gadgets (AJAX via `Portal#get_gadgets`, per-error localized states, `:unauthorized` re-sign-in CTA, tweet text never `html_safe`, URL server-constructed) + Cucumber `@x_gadget` + tri-suite gate — **v1.18 Phase 63**
+- ✓ `webmock` gem in `:test` group; `test/support/webmock.rb` with `disable_net_connect!(allow_localhost: true)` + fixture feed stubs auto-loaded by both Minitest and Cucumber — **v1.19 Phase 64**
+- ✓ All Minitest HTTP stubs migrated to Faraday `:test` (service tests with `connection:` injection) and WebMock `stub_request` (controller integration tests, `fetch_recent_tweets`); no class-level stub accessors remain — **v1.19 Phase 65**
+- ✓ Cucumber gadget hooks (`@mastodon_gadget`, `@x_gadget`) migrated to `WebMock.stub_request` / `WebMock.remove_request_stub`; `test/http_client_test_stubs.rb` deleted (133 lines); stub loader removed from `config/environments/test.rb` — **v1.19 Phase 66**
 
 ### Active
 
@@ -113,6 +116,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.19 (2026-05-14):** HTTP test stubs → WebMock — `webmock 3.26.2` in `:test` group; `test/support/webmock.rb` global config; Minitest service/controller tests migrated to Faraday `:test` + WebMock; Cucumber hooks migrated to per-scenario `WebMock.stub_request`; 133-line prepend stub file deleted. Tri-suite green (363 Minitest, 24 Cucumber). Details: `.planning/milestones/v1.19-ROADMAP.md`. Audit: `.planning/milestones/v1.19-MILESTONE-AUDIT.md` (`tech_debt`; 5/5 requirements; accepted: no per-phase artifacts for Phases 65–66).
 - **Shipped v1.17 (2026-05-13):** Email registration for dummy-email (X/Twitter) users — model update validation, `Users::EmailRegistrationsController`, preferences link, ja/en, Minitest. Details: `.planning/milestones/v1.17-ROADMAP.md`. Audit: `.planning/milestones/v1.17-MILESTONE-AUDIT.md`.
 - **Shipped v1.16 (2026-05-12):** Mastodon account following — data model, CRUD, `MastodonClient`, welcome gadgets, locales, tests. Details: `.planning/milestones/v1.16-ROADMAP.md`. Audit: `.planning/milestones/v1.16-MILESTONE-AUDIT.md`.
 - **Shipped v1.15 (2026-05-11):** CSS architecture audit (0 violations), cross-theme visual QA, mobile responsive layout, PREFS-01 specificity regression fix, 30 new contract tests. Details: `.planning/milestones/v1.15-ROADMAP.md`.
