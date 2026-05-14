@@ -26,7 +26,7 @@ class XAccount < ApplicationRecord
     display_name.presence || "@#{username}"
   end
 
-  # Applies XClient following payload: upsert rows, soft-delete missing selected pins, hard-delete others.
+  # Applies XClient following payload: upsert rows, soft-delete any row missing from the response.
   def self.refresh_cache_from_items!(user, items, refreshed_at: Time.current)
     user.transaction do
       seen = {}
@@ -51,11 +51,7 @@ class XAccount < ApplicationRecord
       XAccount.where(user_id: user.id).find_each do |acc|
         next if seen[acc.x_user_id]
 
-        if acc.selected?
-          acc.update!(deleted: true)
-        else
-          acc.destroy!
-        end
+        acc.update!(deleted: true)
       end
 
       user.update_column(:x_accounts_last_refreshed_at, refreshed_at)
