@@ -32,7 +32,14 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_match(/if \(newIndex !== currentIndex\) \{\s*activateColumn\(\$portal, \$tabs, newIndex\);/m, @source)
   end
 
+  test 'swipe works when column tab buttons are not in the DOM' do
+    assert_includes @source, 'parseActiveColumnIndexFromPortal'
+    assert_includes @source, 'portalColumnCount($portal)'
+    assert_includes @source, 'if (colCount < 2) return;'
+  end
+
   test 'activateColumn keeps tab ui and portal state synchronized' do
+    assert_includes @source, 'if ($tabs.length) {'
     assert_includes @source, "$tabs.find('.portal-column-tab').each(function() {"
     assert_includes @source, "$t.toggleClass('portal-column-tab--active', active);"
     assert_includes @source, "$t.attr('aria-selected', active ? 'true' : 'false');"

@@ -191,6 +191,16 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'button.portal-column-tab--active', count: 1
   end
 
+  def test_列ナビ非表示設定ではタブが出力されずポータル列は残る
+    user.preference.update!(theme: 'modern', show_column_nav_buttons: false)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal-column-tabs', count: 0
+    assert_select '.portal .portal-column', count: 3
+    assert_select '.portal.portal--column-active-0', count: 1
+  end
+
   def test_クラシックテーマでポータル列タブと既定の列状態が出力される
     user.preference.update!(theme: 'classic')
     sign_in user

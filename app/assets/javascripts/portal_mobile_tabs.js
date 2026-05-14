@@ -14,14 +14,27 @@ $(function() {
     $portal.attr('class', base.join(' ').trim());
   };
 
+  const parseActiveColumnIndexFromPortal = function($portal) {
+    const m = ($portal.attr('class') || '').match(/portal--column-active-(\d+)/);
+    if (!m) return 0;
+    const n = parseInt(m[1], 10);
+    return Number.isNaN(n) ? 0 : n;
+  };
+
+  const portalColumnCount = function($portal) {
+    return $portal.find('.portal-column').length;
+  };
+
   const activateColumn = function($portal, $tabs, index) {
-    $tabs.find('.portal-column-tab').each(function() {
-      const $t = $(this);
-      const i = parseInt($t.attr('data-portal-column-index'), 10);
-      const active = i === index;
-      $t.toggleClass('portal-column-tab--active', active);
-      $t.attr('aria-selected', active ? 'true' : 'false');
-    });
+    if ($tabs.length) {
+      $tabs.find('.portal-column-tab').each(function() {
+        const $t = $(this);
+        const i = parseInt($t.attr('data-portal-column-index'), 10);
+        const active = i === index;
+        $t.toggleClass('portal-column-tab--active', active);
+        $t.attr('aria-selected', active ? 'true' : 'false');
+      });
+    }
 
     syncPortalClasses($portal, index);
     $portal[0].style.setProperty('--portal-active-index', index);
@@ -85,13 +98,18 @@ $(function() {
 
       const $portal = $(portalEl);
       const $tabs = $portal.prev('.portal-column-tabs');
-      if (!$tabs.length) return;
+      const colCount = portalColumnCount($portal);
+      if (colCount < 2) return;
 
-      const $activeTab = $tabs.find('.portal-column-tab--active');
-      const currentIndex = parseInt($activeTab.attr('data-portal-column-index'), 10);
-      if (Number.isNaN(currentIndex)) return;
+      let currentIndex;
+      if ($tabs.length) {
+        const $activeTab = $tabs.find('.portal-column-tab--active');
+        currentIndex = parseInt($activeTab.attr('data-portal-column-index'), 10);
+        if (Number.isNaN(currentIndex)) return;
+      } else {
+        currentIndex = parseActiveColumnIndexFromPortal($portal);
+      }
 
-      const colCount = $tabs.find('.portal-column-tab').length;
       const direction = totalDx < 0 ? 1 : -1;
       const newIndex = Math.min(Math.max(currentIndex + direction, 0), colCount - 1);
       if (newIndex !== currentIndex) {
@@ -104,8 +122,9 @@ $(function() {
     $('.portal').each(function() {
       const $portal = $(this);
       const $tabs = $portal.prev('.portal-column-tabs');
-      if (!$tabs.length) return;
-      const colCount = $tabs.find('.portal-column-tab').length;
+      const colCount = portalColumnCount($portal);
+      if (colCount < 1) return;
+
       const raw = window.localStorage.getItem(STORAGE_KEY);
       const restored = parseInt(raw, 10);
       if (Number.isNaN(restored) || restored < 0 || restored >= colCount) {
