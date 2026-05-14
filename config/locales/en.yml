@@ -235,6 +235,14 @@ en:
     auth:
       sign_in_intro: Welcome back. Jump straight into the information you saved.
       sign_up_intro: Get started in minutes and keep everything important in one place.
+    integrations:
+      heading: Integrations
+      x:
+        title: X (formerly Twitter)
+        body: Sign in with X to import the accounts you follow and view their latest tweets in a dashboard gadget.
+      mastodon:
+        title: Mastodon
+        body: Connect your Mastodon account and display recent toots directly on your dashboard.
     changelog:
       heading: What's New
       tags:

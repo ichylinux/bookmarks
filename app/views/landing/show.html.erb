@@ -28,6 +28,20 @@
     </article>
   </section>
 
+  <section class="landing-integrations">
+    <h2 class="landing-integrations-heading"><%= t('landing.integrations.heading') %></h2>
+    <div class="landing-integration-list">
+      <article class="landing-integration-card">
+        <h3><%= t('landing.integrations.x.title') %></h3>
+        <p><%= t('landing.integrations.x.body') %></p>
+      </article>
+      <article class="landing-integration-card">
+        <h3><%= t('landing.integrations.mastodon.title') %></h3>
+        <p><%= t('landing.integrations.mastodon.body') %></p>
+      </article>
+    </div>
+  </section>
+
   <section class="landing-changelog">
     <h2 class="changelog-heading"><%= t('landing.changelog.heading') %></h2>
     <% changelog_entries.each do |entry| %>

@@ -75,6 +75,44 @@
   margin: 0;
 }
 
+.landing-integrations {
+  margin-top: 24px;
+}
+
+.landing-integrations-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.landing-integration-list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.landing-integration-card {
+  background: #fff;
+  border: 1px solid #d6dbe5;
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.landing-integration-card h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.landing-integration-card p {
+  line-height: 1.5;
+  margin: 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
 .landing-changelog {
   display: flex;
   flex-direction: column;
@@ -164,6 +202,10 @@
   }
 
   .landing-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-integration-list {
     grid-template-columns: 1fr;
   }
 }

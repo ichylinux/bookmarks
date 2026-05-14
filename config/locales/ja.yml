@@ -235,6 +235,14 @@ ja:
     auth:
       sign_in_intro: おかえりなさい。保存した情報にすぐアクセスできます。
       sign_up_intro: 数分で始められます。気になる情報をひとつに整理しましょう。
+    integrations:
+      heading: 連携サービス
+      x:
+        title: X（旧Twitter）
+        body: Xアカウントでサインインしてフォロー中のアカウントを取り込み、ダッシュボードで最新ツイートを確認できます。
+      mastodon:
+        title: Mastodon
+        body: Mastodonアカウントを登録して、ダッシュボードに最新トゥートを表示できます。
     changelog:
       heading: 新着情報
       tags:
