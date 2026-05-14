@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.19
 milestone_name: HTTP test stubs → WebMock
-status: planning
+status: ready_to_execute
 stopped_at: null
-last_updated: "2026-05-14T12:00:00.000Z"
+last_updated: "2026-05-14T13:00:00.000Z"
 last_activity: 2026-05-14
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
+  total_plans: 1
   completed_plans: 0
   percent: 0
 ---
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (roadmap defined; begin Phase 64)
-Plan: —
-Status: Milestone v1.19 — replace test-only HTTP prepend stubs with WebMock (+ Faraday `:test` where injection already works)
-Last activity: 2026-05-14 — `/gsd-new-milestone`: REQUIREMENTS + ROADMAP created for WebMock migration
+Phase: 64 — WebMock baseline (planned, ready to execute)
+Plan: 064-01 (1 plan, Wave 1)
+Status: Milestone v1.19 — Phase 64 planned; execute to install WebMock and wire test/support/webmock.rb
+Last activity: 2026-05-14 — Phase 64 planned (1 plan, HTTP-01)
 
 Progress: [░░░░░░░░░░] 0% (0/3 phases)
 
