@@ -8,6 +8,8 @@ class Preference < ApplicationRecord
     FONT_SIZE_SMALL
   ].freeze
 
+  PORTAL_COLUMN_COUNTS = [3, 4].freeze
+
   SUPPORTED_LOCALES = %w[ja en].freeze
   LOCALE_OPTIONS = {
     '自動' => nil,
@@ -19,6 +21,7 @@ class Preference < ApplicationRecord
 
   validates :font_size, inclusion: { in: FONT_SIZES }, allow_nil: true
   validates :locale, inclusion: { in: SUPPORTED_LOCALES }, allow_nil: true
+  validates :portal_column_count, inclusion: { in: PORTAL_COLUMN_COUNTS }
 
   scope :font_size_notice_pending, -> { where(font_size_notice_pending: true) }
 

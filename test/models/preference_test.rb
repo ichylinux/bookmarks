@@ -55,6 +55,28 @@ class PreferenceTest < ActiveSupport::TestCase
     assert_equal 0, Preference.migrate_legacy_font_sizes!
   end
 
+  def test_portal_column_countsは3と4のみ有効
+    p = Preference.default_preference(user)
+
+    assert_equal [3, 4], Preference::PORTAL_COLUMN_COUNTS
+
+    p.portal_column_count = 3
+    assert p.valid?, '3 should be valid'
+
+    p.portal_column_count = 4
+    assert p.valid?, '4 should be valid'
+
+    p.portal_column_count = 2
+    assert_not p.valid?, '2 should be invalid'
+    assert p.errors[:portal_column_count].any?, 'should have error on portal_column_count'
+
+    p.portal_column_count = 5
+    assert_not p.valid?, '5 should be invalid'
+
+    p.portal_column_count = nil
+    assert_not p.valid?, 'nil should be invalid (NOT NULL column)'
+  end
+
   def test_localeはsupported_localesのみ有効
     p = Preference.default_preference(user)
 

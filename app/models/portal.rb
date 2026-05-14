@@ -3,24 +3,26 @@ class Portal < ApplicationRecord
   validates :name, presence: true
 
   def portal_column_count
-    portal_columns.size
+    user.preference.portal_column_count
   end
 
   def portal_columns
     return @portal_columns if @portal_columns
 
     gadgets = get_gadgets
-    @portal_columns = [[], [], []]
+    count = portal_column_count
+    @portal_columns = Array.new(count) { [] }
 
     PortalLayout.where(user_id: user.id).order('column_no, display_order').each do |pl|
+      next if pl.column_no >= count
       g = gadgets.delete(pl.gadget_id)
       @portal_columns[pl.column_no] << g if g
     end
 
     gadgets.each_with_index do |g, i|
-      @portal_columns[i % 3].unshift(g[1])
+      @portal_columns[i % count].unshift(g[1])
     end
-    
+
     @portal_columns
   end
 
