@@ -47,7 +47,6 @@ See: `.planning/PROJECT.md` (Current Milestone: v1.19)
 ### Pending Todos
 
 - (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred to v1.20+.
-- (Planning hygiene) Run `/gsd-audit-milestone v1.19` to produce `v1.19-MILESTONE-AUDIT.md` — see `todos/pending/2026-05-15-run-v1-19-milestone-audit.md`
 
 ### Blockers/Concerns
 
