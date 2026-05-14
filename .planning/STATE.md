@@ -47,6 +47,9 @@ See: `.planning/PROJECT.md` (Current Milestone: v1.19)
 ### Pending Todos
 
 - (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred to v1.20+.
+- (Planning hygiene) Move 5 misplaced `*-MILESTONE-AUDIT.md` files from `.planning/` root to `milestones/` — see `todos/pending/2026-05-15-move-misplaced-milestone-audit-files.md`
+- (Planning hygiene) Archive v1.7 milestone — create `milestones/v1.7-ROADMAP.md` and add `[archived]` link — see `todos/pending/2026-05-15-archive-v1-7-milestone.md`
+- (Planning hygiene) Run `/gsd-audit-milestone v1.19` to produce `v1.19-MILESTONE-AUDIT.md` — see `todos/pending/2026-05-15-run-v1-19-milestone-audit.md`
 
 ### Blockers/Concerns
 
