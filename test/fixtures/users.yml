@@ -26,3 +26,7 @@ twitter_user:
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
   otp_secret: KCWJDXNH2EJIHB7NUZL42TFZYDRWERPB
   otp_required_for_login: false
+  provider: twitter
+  uid: fixture_twitter_uid
+  token: fixture_plain_token
+  token_secret: fixture_plain_secret

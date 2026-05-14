@@ -13,6 +13,14 @@ en:
         display_count: Display count
         instance: Instance
         username: Username
+      x_account:
+        selected: Show on welcome
+        display_name: Display name
+        username: Username
+        x_user_id: X user id
+        protected: Protected
+        protected_acknowledged: Protected acknowledgement
+        display_count: Display count
       preference:
         default_priority: Default priority
         font_size: Font size
@@ -34,6 +42,11 @@ en:
           attributes:
             email:
               dummy_email: cannot be a placeholder address
+        x_account:
+          attributes:
+            selected:
+              too_many: You can select at most 12 accounts.
+              protected_not_acknowledged: Check the acknowledgement box before selecting a protected account.
 
   actions:
     add: Add
@@ -141,6 +154,8 @@ en:
       submit: Save
       email_registration_section_title: Email address
       email_registration_link: Register a real email address
+      x_accounts_section_title: X (Twitter)
+      x_accounts_link: Manage followed accounts for the welcome page
 
   nav:
     home: Home
@@ -151,6 +166,7 @@ en:
     todos: Tasks
     feeds: Feeds
     mastodon: Mastodon
+    x_accounts: X (Twitter)
     sign_out: Sign out
     menu_aria: Menu
 
@@ -158,6 +174,16 @@ en:
     dismiss: Dismiss notification
     errors:
       generic: Something went wrong.
+
+  errors:
+    x_client:
+      timeout: The request timed out.
+      network: A network error occurred.
+      not_found: No data was found.
+      api_error: The API returned an error.
+      parse_error: The response could not be parsed.
+      unauthorized: Your X connection is invalid. Please re-authorize.
+      rate_limited: Rate limit reached. Try again later.
 
   welcome:
     calendar_gadget:
@@ -168,6 +194,11 @@ en:
     mastodon_account:
       loading: Loading Mastodon toots...
       fetch_failed: Could not load Mastodon toots.
+    x_account:
+      loading: Loading posts from X...
+      fetch_failed: Could not load posts from X.
+      empty: No posts to display.
+      reauthorize: Re-authorize with X
     note_gadget:
       body_label: Note
       submit: Save Note
@@ -266,6 +297,26 @@ en:
         not_found: Account not found on that instance.
         api_error: Mastodon API returned an error.
         parse_error: Could not read the Mastodon response.
+
+  x_accounts:
+    errors:
+      not_linked: Sign in with X again to finish linking before using X account settings.
+    index:
+      title: X accounts
+      empty: No following list yet. Use Refresh to fetch it.
+      refresh: Refresh following list
+      last_refreshed: "Last refreshed: %{time}"
+      selection_soft_warning: You have 9 accounts selected. You can select up to 12.
+      protected_column: Protected
+      ack_column: Acknowledgement
+      protected_badge: Protected
+      actions: Actions
+      row_submit: Save
+    refresh:
+      success: Following list updated.
+    update:
+      success: Saved.
+      failure: Could not save.
 
   devise:
     sessions:

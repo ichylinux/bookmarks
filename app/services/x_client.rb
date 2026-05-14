@@ -1,0 +1,267 @@
+# frozen_string_literal: true
+
+require 'faraday/oauth1'
+
+# X (Twitter) API v2 client using OAuth 1.0a User Context (same credentials as omniauth-twitter).
+class XClient
+  class << self
+    attr_accessor :stub_fetch_following_result, :stub_fetch_tweets_result
+  end
+
+  CONNECT_TIMEOUT = 3
+  READ_TIMEOUT = 5
+  PREVIEW_LENGTH = 100
+
+  def initialize(connection: nil)
+    @forced_connection = connection
+  end
+
+  # Returns { success: true, items: [...] } or { success: false, error: Symbol }
+  # Each following item: { id:, username:, name:, profile_image_url:, protected: }
+  def fetch_following(user:, max_results: 100)
+    stubbed = normalize_following_stub(self.class.stub_fetch_following_result)
+    return stubbed if stubbed
+
+    uid = user.uid.to_s.presence
+    return { success: false, error: :api_error } if uid.blank?
+
+    per_page = [max_results.to_i, 5].max.clamp(5, 100)
+    items = []
+    next_token = nil
+    loop do
+      path = "/2/users/#{uid}/following"
+      res = following_connection(user).get(path) do |req|
+        req.params['max_results'] = per_page
+        req.params['pagination_token'] = next_token if next_token.present?
+        req.params['user.fields'] = 'id,name,username,profile_image_url,protected'
+      end
+
+      parsed = parse_following_response(res)
+      return parsed unless parsed[:success]
+
+      payload = parsed[:payload]
+      Array(payload['data']).each do |row|
+        next unless row.is_a?(Hash)
+
+        items << normalize_following_row(row)
+      end
+
+      next_token = payload.dig('meta', 'next_token')
+      break if next_token.blank?
+    end
+
+    { success: true, items: items }
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+    { success: false, error: :timeout }
+  rescue Faraday::Error
+    { success: false, error: :network }
+  rescue JSON::ParserError
+    { success: false, error: :parse_error }
+  end
+
+  # Returns { success: true, items: [{ text:, url: }, ...] } or { success: false, error: Symbol }
+  def fetch_recent_tweets(user:, x_user_id:, limit:)
+    stubbed = normalize_tweets_stub(self.class.stub_fetch_tweets_result)
+    return stubbed if stubbed
+
+    xid = x_user_id.to_s.presence
+    return { success: false, error: :not_found } if xid.blank?
+
+    lim = limit.to_i.clamp(1, 100)
+    qs = []
+    qs << "max_results=#{lim}"
+    %w[retweets replies].each { |ex| qs << "exclude=#{ex}" }
+    qs << 'tweet.fields=entities,edit_history_tweet_ids'
+    path = "/2/users/#{xid}/tweets?#{qs.join('&')}"
+
+    res = oauth_faraday('https://api.twitter.com', user).get(path)
+    parse_tweets_response(res)
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+    { success: false, error: :timeout }
+  rescue Faraday::Error
+    { success: false, error: :network }
+  rescue JSON::ParserError
+    { success: false, error: :parse_error }
+  end
+
+  private
+
+  def following_connection(user)
+    return @forced_connection if @forced_connection
+
+    oauth_faraday('https://api.twitter.com', user)
+  end
+
+  def oauth_faraday(base_url, user)
+    ck = Rails.application.config.app_config.omniauth_twitter_client_id.to_s
+    cs = Rails.application.config.app_config.omniauth_twitter_client_secret.to_s
+
+    Faraday.new(url: base_url, request: { open_timeout: CONNECT_TIMEOUT, timeout: READ_TIMEOUT }) do |f|
+      f.request :oauth1, 'header',
+        consumer_key: ck,
+        consumer_secret: cs,
+        token: user.token.to_s,
+        token_secret: user.token_secret.to_s
+      f.adapter Faraday.default_adapter
+    end
+  end
+
+  def parse_following_response(res)
+    case res.status
+    when 200
+      body = parse_json_safe(res.body)
+      return { success: false, error: :parse_error } unless body.is_a?(Hash)
+
+      { success: true, payload: body }
+    when 401
+      { success: false, error: :unauthorized }
+    when 404
+      { success: false, error: :not_found }
+    when 429
+      { success: false, error: :rate_limited }
+    else
+      { success: false, error: :api_error }
+    end
+  end
+
+  def parse_tweets_response(res)
+    case res.status
+    when 200
+      body = parse_json_safe(res.body)
+      return { success: false, error: :parse_error } unless body.is_a?(Hash)
+
+      list = Array(body['data'])
+      items = list.filter_map { |tweet| build_tweet_preview(tweet) }
+      { success: true, items: items }
+    when 401
+      { success: false, error: :unauthorized }
+    when 404
+      { success: false, error: :not_found }
+    when 429
+      { success: false, error: :rate_limited }
+    else
+      { success: false, error: :api_error }
+    end
+  end
+
+  def parse_json_safe(raw)
+    JSON.parse(raw.to_s)
+  rescue JSON::ParserError
+    nil
+  end
+
+  def normalize_following_row(row)
+    {
+      id: row['id'].to_s,
+      username: row['username'].to_s,
+      name: row['name'].to_s,
+      profile_image_url: row['profile_image_url'].presence,
+      protected: ActiveModel::Type::Boolean.new.cast(row['protected'])
+    }
+  end
+
+  def build_tweet_preview(tweet)
+    return nil unless tweet.is_a?(Hash)
+
+    text = tweet['text'].to_s
+    text = expand_tco_entities(text, tweet['entities'])
+    text = text.squish.truncate(PREVIEW_LENGTH, omission: '…')
+    return nil if text.blank?
+
+    tid = latest_tweet_id(tweet)
+    return nil if tid.blank?
+
+    { text: text, url: "https://x.com/i/status/#{tid}" }
+  end
+
+  def latest_tweet_id(tweet)
+    ids = tweet['edit_history_tweet_ids']
+    if ids.is_a?(Array) && ids.last.present?
+      ids.last.to_s
+    else
+      tweet['id'].to_s
+    end
+  end
+
+  def expand_tco_entities(text, entities)
+    return text if text.blank? || !entities.is_a?(Hash)
+
+    urls = Array(entities['urls'])
+    return text if urls.empty?
+
+    sorted = urls.sort_by { |u| -(u['start'].to_i) }
+    out = text.dup
+    sorted.each do |u|
+      start = u['start'].to_i
+      nxt = u['end'].to_i
+      display = u['display_url'].presence || u['expanded_url'].presence
+      next if display.blank?
+      next if start.negative? || nxt > out.length || start >= nxt
+
+      out[start...nxt] = display
+    end
+    out
+  end
+
+  def normalize_following_stub(stub)
+    return nil if stub.nil?
+
+    unless stub.is_a?(Hash)
+      return { success: false, error: :api_error }
+    end
+
+    h = stub.with_indifferent_access
+    if ActiveModel::Type::Boolean.new.cast(h[:success])
+      items = Array(h[:items]).filter_map do |row|
+        next unless row.is_a?(Hash)
+
+        r = row.with_indifferent_access
+        next if r[:id].blank? || r[:username].blank?
+
+        {
+          id: r[:id].to_s,
+          username: r[:username].to_s,
+          name: r[:name].to_s,
+          profile_image_url: r[:profile_image_url].presence,
+          protected: ActiveModel::Type::Boolean.new.cast(r[:protected])
+        }
+      end
+      return { success: true, items: items }
+    end
+
+    err = h[:error].presence&.to_sym
+    err = :api_error unless valid_error_symbol?(err)
+    { success: false, error: err }
+  end
+
+  def normalize_tweets_stub(stub)
+    return nil if stub.nil?
+
+    unless stub.is_a?(Hash)
+      return { success: false, error: :api_error }
+    end
+
+    h = stub.with_indifferent_access
+    if ActiveModel::Type::Boolean.new.cast(h[:success])
+      items = Array(h[:items]).filter_map do |row|
+        next unless row.is_a?(Hash)
+
+        r = row.with_indifferent_access
+        next if r[:text].blank? || r[:url].blank?
+
+        { text: r[:text].to_s.squish.truncate(PREVIEW_LENGTH, omission: '…'), url: r[:url].to_s }
+      end
+      return { success: true, items: items }
+    end
+
+    err = h[:error].presence&.to_sym
+    err = :api_error unless valid_error_symbol?(err)
+    { success: false, error: err }
+  end
+
+  def valid_error_symbol?(sym)
+    %i[
+      timeout network not_found api_error parse_error unauthorized rate_limited
+    ].include?(sym)
+  end
+end

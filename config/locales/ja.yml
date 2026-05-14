@@ -13,6 +13,14 @@ ja:
         display_count: 表示件数
         instance: インスタンス
         username: ユーザー名
+      x_account:
+        selected: 表示
+        display_name: 表示名
+        username: ユーザー名
+        x_user_id: XユーザーID
+        protected: 非公開
+        protected_acknowledged: 非公開アカウントの確認
+        display_count: 表示件数
       preference:
         default_priority: タスク追加時の初期優先度
         font_size: 文字サイズ
@@ -34,6 +42,11 @@ ja:
           attributes:
             email:
               dummy_email: プレースホルダーのメールアドレスは使えません
+        x_account:
+          attributes:
+            selected:
+              too_many: 選択できるアカウントは最大12件までです。
+              protected_not_acknowledged: 非公開アカウントを表示対象にするには確認にチェックしてください。
 
   actions:
     add: 追加
@@ -141,6 +154,8 @@ ja:
       submit: 保存
       email_registration_section_title: メールアドレス
       email_registration_link: 実メールアドレスを登録する
+      x_accounts_section_title: X（Twitter）
+      x_accounts_link: フォロー中アカウントの表示設定
 
   nav:
     home: ホーム
@@ -151,6 +166,7 @@ ja:
     todos: タスク
     feeds: フィード
     mastodon: Mastodon
+    x_accounts: X (旧Twitter)
     sign_out: ログアウト
     menu_aria: メニュー
 
@@ -158,6 +174,16 @@ ja:
     dismiss: 通知を閉じる
     errors:
       generic: エラーが発生しました
+
+  errors:
+    x_client:
+      timeout: 応答がタイムアウトしました。
+      network: ネットワークエラーが発生しました。
+      not_found: データが見つかりませんでした。
+      api_error: APIがエラーを返しました。
+      parse_error: 応答を解釈できませんでした。
+      unauthorized: Xとの連携が無効です。再認可が必要です。
+      rate_limited: レート制限に達しました。しばらくしてから再度お試しください。
 
   welcome:
     calendar_gadget:
@@ -168,6 +194,11 @@ ja:
     mastodon_account:
       loading: Mastodonのトゥートを読み込み中・・・
       fetch_failed: Mastodonのトゥートを取得できませんでした。
+    x_account:
+      loading: Xのツイートを読み込み中・・・
+      fetch_failed: Xのツイートを取得できませんでした。
+      empty: 表示できるツイートがありません。
+      reauthorize: Xで再認可する
     note_gadget:
       body_label: メモ
       submit: メモを保存
@@ -266,6 +297,26 @@ ja:
         not_found: そのインスタンス上にアカウントが見つかりません。
         api_error: Mastodon APIがエラーを返しました。
         parse_error: Mastodonの応答を解釈できませんでした。
+
+  x_accounts:
+    errors:
+      not_linked: Xの表示設定を使うには、Xで再度サインインして連携を完了してください。
+    index:
+      title: Xアカウント
+      empty: フォロー一覧がありません。「更新」で取得してください。
+      refresh: フォロー一覧を更新
+      last_refreshed: "最終更新: %{time}"
+      selection_soft_warning: 表示中のアカウントが9件に達しました。最大12件まで選択できます。
+      protected_column: 非公開
+      ack_column: 非公開の確認
+      protected_badge: 非公開
+      actions: 操作
+      row_submit: 保存
+    refresh:
+      success: フォロー一覧を更新しました。
+    update:
+      success: 保存しました。
+      failure: 保存できませんでした。
 
   devise:
     sessions:

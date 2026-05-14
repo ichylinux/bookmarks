@@ -5,6 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          omniauth_providers: [:google_oauth2, :twitter]
 
+  encrypts :token, :token_secret
+
   validates :email,
             format: { without: /\Adummy_.+@example\.com\z/, message: :dummy_email },
             on: :update
@@ -19,6 +21,7 @@ class User < ApplicationRecord
   has_many :notes
 
   has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
+  has_many :x_accounts, dependent: :destroy
   after_save :create_default_portal
 
   def self.from_omniauth(access_token)
@@ -26,9 +29,33 @@ class User < ApplicationRecord
 
     case access_token['provider'].to_sym
     when :twitter
-      user = User.where(name: data["name"]).first
-      user ||= User.create(name: data['name'], email: "dummy_#{SecureRandom.uuid}@example.com", password: Devise.friendly_token[0,20])
-      user
+      creds = access_token.credentials || {}
+      oauth_token = creds['token'].presence || creds[:token].presence
+      oauth_secret = creds['secret'].presence || creds[:token_secret].presence
+      uid = access_token.uid.to_s
+      provider = access_token.provider.to_s
+
+      attrs = {
+        provider: provider,
+        uid: uid,
+        token: oauth_token,
+        token_secret: oauth_secret
+      }
+
+      user = User.where(name: data['name']).first
+      if user
+        user.assign_attributes(attrs)
+        user.save(validate: false)
+        user
+      else
+        User.create!(
+          attrs.merge(
+            name: data['name'],
+            email: "dummy_#{SecureRandom.uuid}@example.com",
+            password: Devise.friendly_token[0, 20]
+          )
+        )
+      end
     else
       user = User.where(email: data["email"]).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])

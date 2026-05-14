@@ -74,6 +74,10 @@ class Portal < ApplicationRecord
       ret[m.gadget_id] = m
     end
 
+    XAccount.where(user_id: user.id).not_deleted.where(selected: true).each do |x|
+      ret[x.gadget_id] = x
+    end
+
     ret
   end
 

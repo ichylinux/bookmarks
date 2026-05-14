@@ -32,8 +32,7 @@ input[type="number"].display_count {
   margin: 0;
   border-collapse: collapse;
   min-width: 34rem;
-  // SassC が CSS の max() を数値用の max() と誤解釈しないよう、そのまま CSS に出す
-  width: #{"max(100%, min-content)"};
+  width: 100%;
 }
 
 table.feeds thead th {

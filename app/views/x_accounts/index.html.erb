@@ -1,0 +1,58 @@
+<h1><%= t('x_accounts.index.title') %></h1>
+
+<% if current_user.x_accounts_last_refreshed_at.present? %>
+  <p class="x-accounts-refreshed-at">
+    <%= t('x_accounts.index.last_refreshed',
+          time: l(current_user.x_accounts_last_refreshed_at, format: :short)) %>
+  </p>
+<% end %>
+
+<% if @selection_soft_warning %>
+  <div class="flash-message flash-notice" role="status">
+    <span class="flash-message__body"><%= t('x_accounts.index.selection_soft_warning') %></span>
+  </div>
+<% end %>
+
+<%= button_to t('x_accounts.index.refresh'), refresh_x_accounts_path, method: :post, class: 'button' %>
+
+<% if @x_accounts.blank? %>
+  <p><%= t('x_accounts.index.empty') %></p>
+<% else %>
+  <div class="x_accounts">
+    <% @x_accounts.each do |account| %>
+      <%= form_with model: account, url: x_account_path(account), method: :patch, local: true, html: { class: 'x-account-row' } do |f| %>
+        <div class="x-account-row__field">
+          <span class="x-account-row__label"><%= XAccount.human_attribute_name(:selected) %></span>
+          <%= f.check_box :selected %>
+        </div>
+        <div class="x-account-row__field">
+          <span class="x-account-row__label"><%= XAccount.human_attribute_name(:display_name) %></span>
+          <%= account.display_name %>
+        </div>
+        <div class="x-account-row__field">
+          <span class="x-account-row__label"><%= XAccount.human_attribute_name(:username) %></span>
+          @<%= account.username %>
+        </div>
+        <div class="x-account-row__field">
+          <span class="x-account-row__label"><%= t('x_accounts.index.protected_column') %></span>
+          <% if account.protected? %>
+            <%= t('x_accounts.index.protected_badge') %>
+          <% else %>
+            —
+          <% end %>
+        </div>
+        <div class="x-account-row__field">
+          <span class="x-account-row__label"><%= t('x_accounts.index.ack_column') %></span>
+          <% if account.protected? %>
+            <%= f.check_box :protected_acknowledged %>
+          <% else %>
+            —
+          <% end %>
+        </div>
+        <div class="x-account-row__actions">
+          <%= f.submit t('x_accounts.index.row_submit') %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
