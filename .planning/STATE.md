@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.18
 milestone_name: X (Twitter) Account Following
-status: complete
+status: archived
 stopped_at: null
-last_updated: "2026-05-14T12:00:00.000Z"
+last_updated: "2026-05-14T00:00:00.000Z"
 last_activity: 2026-05-14
 progress:
   total_phases: 4
@@ -18,16 +18,19 @@ progress:
 
 ## Current Position
 
-Phase: 63 (complete)
+Phase: 63 (complete — milestone archived)
 Plan: —
-Status: v1.18 implementation landed; tri-suite verified (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`).
-Last activity: 2026-05-14 — OAuth persistence, XClient, x_accounts UI, welcome gadget, Cucumber `@x_gadget`, ja/en keys.
+Status: v1.18 shipped and archived. Ready for v1.19 planning.
+Last activity: 2026-05-14 — milestone close: REQUIREMENTS archived, MILESTONES.md updated, PROJECT.md evolved, git tagged v1.18.
 
 Progress: [██████████] 100% (4/4 phases)
 
 ## Project Reference
 
-See: `.planning/PROJECT.md`
+See: `.planning/PROJECT.md` (updated 2026-05-14 after v1.18)
+
+**Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.  
+**Current focus:** Planning next milestone (v1.19)
 
 ## Performance Metrics
 

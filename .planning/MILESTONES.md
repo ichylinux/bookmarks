@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.18 — X (Twitter) Account Following (shipped 2026-05-14)
+
+**Scope:** Phases 60–63 — OAuth 1.0a token persistence on `users`, `XClient` Faraday service, `x_accounts` cache table + management UI, welcome-page AJAX gadgets, ja/en localization, Minitest + Cucumber tri-suite gate.
+
+**Key accomplishments:**
+
+- OAuth 1.0a credentials (`uid`/`token`/`token_secret`) persisted on Twitter sign-in and encrypted at rest; `require_twitter_linked` gate on `uid + token` (not `name`) applied to all X surfaces.
+- `XClient` service with `fetch_following` / `fetch_recent_tweets`, 7-symbol error contract, t.co URL expansion before truncation, following pagination, and class-level stub accessors mirroring MastodonClient pattern.
+- `/x_accounts` management page: diff-upsert refresh (all-soft-delete semantics — intentional safer deviation), per-row gadget selection capped at 12 (warn at 9), 🔒 protected-account confirmation toggle, last-refreshed timestamp, ja/en.
+- Selected X accounts render as individual AJAX-loaded welcome gadgets via `Portal#get_gadgets`; tweet text never `html_safe`; click-through URLs constructed server-side; `:unauthorized` error state includes re-sign-in CTA.
+- Full ja/en coverage (`x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`) enforced by parity test; `features/06.X.feature` with `@x_gadget` Before/After hooks + global state-isolation Before hook.
+- Tri-suite gate green at close: `yarn run lint`, `bin/rails test` (364/364), `bundle exec rake dad:test` (24 scenarios).
+
+**Audit:** [Milestone audit](milestones/v1.18-MILESTONE-AUDIT.md) — `tech_debt`; 31/31 requirements satisfied; no requirement/integration/flow gaps. Tech debt: no per-phase GSD artifact files (accepted pattern, same as v1.16/v1.17); XACCT-06 intentional all-soft-delete deviation; XAUTH-FUT-01 deferred to v1.19+.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.18-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.18-REQUIREMENTS.md) · [Milestone audit](milestones/v1.18-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.17 — Email Registration for X/Twitter Users (shipped 2026-05-13)
 
 **Scope:** Phases 57–59 — `User` dummy-pattern email validator `on: :update`; `Users::EmailRegistrationsController` with dummy-only guard, collision handling, and `RecordNotUnique` rescue; preferences entry row; ja/en locales + i18n parity test; Minitest across model, controller, and preferences.
@@ -250,4 +269,4 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-11 — v1.15 CSS & UI Polish shipped*
+*Last updated: 2026-05-14 — v1.18 X (Twitter) Account Following shipped*

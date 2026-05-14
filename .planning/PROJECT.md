@@ -8,28 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.18 X (Twitter) Account Following
+## Current Milestone: v1.19 (planning)
 
-**Goal:** Twitter サインイン済みユーザー（`users.name` あり）が自分のフォロー中 X アカウントから選択した相手の最新ツイートを welcome ページのガジェットとして表示できる。
-
-**Target features:**
-- `User.from_omniauth` Twitter ブランチで `uid` / `token` / OAuth1 secret を保存（X API 呼び出しの前提、v1.17 PITFALL-02 解消も兼ねる）
-- `XClient` サービス：`GET /2/users/:id/following`（管理画面）+ `GET /2/users/:id/tweets`（ガジェット）。Faraday + 明示タイムアウト、graceful なエラー処理、テスト用 `stub_fetch_result`（v1.16 と同流儀）
-- `/x_accounts` 管理画面：`name` 入りユーザーのみアクセス可。フォロー中一覧を DB キャッシュ＋手動「再取得」、welcome 表示の選択／解除
-- welcome ガジェット：選択された X アカウントの最新ツイート N 件を AJAX 遅延ロード（v1.16 Mastodon と同型、`Portal#get_gadgets` 経由）
-- ja/en ローカライズ（管理画面・ガジェット・preferences エントリ・エラー表示）+ 鍵パリティテスト
-- Minitest（モデル/コントローラ/サービス、Faraday test adapter）+ Cucumber（`@x_gadget` 流）+ tri-suite gate
-
-**Key context:**
-- X API v2 Basic プラン($200/月〜) 前提（既契約／契約予定）。テストは実 API を叩かずスタブ契約で動かす
-- データ鮮度：フォロー一覧 = DB キャッシュ + 手動再取得 / ツイート = welcome 表示時ライブ取得（新規バックグラウンドインフラは入れない）
-- 既存 `omniauth-twitter`（OAuth 1.0a User Context）を維持。X API v2 も同方式で動作
-- v1.16 Mastodon の `MastodonAccount` / CRUD / `Portal#get_gadgets` / AJAX `show` パターンを最大限再利用。新規要素は「フォロー一覧 → 選択」フローのみ
-- 管理画面 / preferences 入り口は `users.name` ガード（Google サインインのみのユーザーには出さない）
+**Status:** v1.18 shipped 2026-05-14. Next milestone TBD — run `/gsd-new-milestone` to start planning.
 
 ## Current State
 
-**Status:** v1.17 shipped (2026-05-13)
+**Status:** v1.18 shipped (2026-05-14)
+
+v1.18 delivered X (Twitter) Account Following: `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gate on `uid + token`; `XClient` Faraday service (OAuth1, timeouts, 7-symbol error contract, t.co expansion, pagination, stub accessors); `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, selection cap 12 / warn 9, protected-account confirmation); `/x_accounts` management UI (refresh diff-upsert, per-row toggle, last-refreshed timestamp); welcome-page AJAX gadgets via `Portal#get_gadgets` with per-error-symbol localized states + `:unauthorized` re-sign-in CTA; `features/06.X.feature` with `@x_gadget` hooks + global state-isolation Before hook; ja/en across `x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`; Minitest (364/364) + Cucumber (24 scenarios) tri-suite green.
+
+**Previously shipped:** v1.17 — Email Registration for X/Twitter Users (2026-05-13)
 
 v1.17 delivered email registration for X/Twitter dummy-email users: `User` validates dummy-pattern emails `on: :update` only; `Users::EmailRegistrationsController` (`users/email_registration`) with `require_dummy_email`, collision handling and `ActiveRecord::RecordNotUnique` rescue; preferences entry row and ja/en strings (`email_registrations.*`, parity test); Minitest (`user_test`, `email_registrations_controller_test`, `preferences_controller_test`, i18n test). Tri-suite green at close (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` with documented Cucumber flake rerun).
 
@@ -97,11 +86,15 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Dummy-pattern email rejected on user update; Twitter OAuth create path unchanged — **v1.17 Phase 57**
 - ✓ Dedicated email registration controller, routes, dummy-only and collision guards, `RecordNotUnique` rescue — **v1.17 Phase 58**
 - ✓ Preferences registration entry, localized form and flash (ja/en), Minitest + i18n parity — **v1.17 Phase 59**
+- ✓ Twitter OAuth 1.0a credentials (`uid`/`token`/`token_secret`) persisted on sign-in and encrypted at rest; `require_twitter_linked` gate on `uid + token` — **v1.18 Phase 60**
+- ✓ `XClient` Faraday service with `fetch_following` / `fetch_recent_tweets`, 7-symbol error contract, t.co expansion, pagination, stub accessors — **v1.18 Phase 61**
+- ✓ `x_accounts` cache table + `/x_accounts` management UI: refresh diff-upsert, per-row selection (cap 12, warn 9), protected-account confirmation, last-refreshed timestamp, ja/en — **v1.18 Phase 62**
+- ✓ Welcome-page X account gadgets (AJAX via `Portal#get_gadgets`, per-error localized states, `:unauthorized` re-sign-in CTA, tweet text never `html_safe`, URL server-constructed) + Cucumber `@x_gadget` + tri-suite gate — **v1.18 Phase 63**
 
 ### Active
 
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
-- [ ] v1.18 X (Twitter) Account Following — Twitter サインインユーザーのフォロー一覧から選択 → welcome ガジェット表示（要件詳細は `.planning/REQUIREMENTS.md`）
+- [ ] Fix XAUTH-FUT-01: `from_omniauth` Twitter branch still looks up by `name` — switch to `uid` (prerequisite `users.uid` persisted by v1.18 Phase 60; deferred to v1.19+ to avoid breaking pre-v1.18 users who haven't re-authed)
 
 ### Out of Scope (revisit when planning)
 
@@ -163,6 +156,12 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Dedicated `Users::EmailRegistrationsController` (not preferences) | Avoids widening writable-email surface; keeps `save` vs `save!` control for validation UX | ✓ Good — aligns with CTRL/VIEW split |
 | Dummy email validator `on: :update` only | `from_omniauth` create legitimately sets dummy addresses | ✓ Good — no regression on Twitter sign-up |
 | Email registration strong params under `:email_registration` | Avoids collision with Devise `:user` param expectations | ✓ Good — explicit contract |
+| `faraday-oauth1` with `:header` signing for X API v2 (v1.18) | X API v2 Basic supports OAuth 1.0a User Context; same OmniAuth adapter already in use | ✓ Good — no new auth infra; `f.request :oauth1, 'header', consumer_key:, …` wires cleanly |
+| All-soft-delete on refresh diff for missing rows (v1.18 XACCT-06) | Developer judgment: safer to always preserve for recovery; original spec said hard-delete `selected:false` rows | ✓ Good — intentional deviation documented in audit; tests validate new behavior |
+| `require_twitter_linked` gates on `uid + token`, not `name` (v1.18) | `users.name` is user-editable; `uid + token` is the OAuth identity predicate | ✓ Good — aligns gate with actual credential availability |
+| Reuse existing `users.{provider, uid, token}` dead columns + add only `token_secret` (v1.18 Q8=1) | Avoids schema-level column rename/migration risk; keeps column footprint minimal | ✓ Good — no migration rollback risk; `encrypts :token, :token_secret` on User |
+| Selection cap 12 / soft-warning 9 (v1.18 Q9=1) | Welcome page performance bound; arbitrary but explicit and user-adjustable via deselect | ✓ Good — cap enforced at model + controller; warning surfaced in view |
+| CSS `max(100%, min-content)` → `width: 100%` in `feeds.css.scss` (v1.18) | Dart Sass interprets CSS `max()` as Sass `max()` during `application` bundle compile in test | ✓ Good — pragmatic fix; avoids Sass/CSS function ambiguity |
 
 ## Evolution
 
@@ -181,6 +180,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.18 — X (Twitter) Account Following (2026-05-14)
+
+**Delivered:** OAuth 1.0a token persistence + encryption; `XClient` Faraday service (OAuth1, error contract, stubs); `x_accounts` cache + `/x_accounts` management UI (refresh diff, selection cap, protected toggle); welcome AJAX gadgets via `Portal#get_gadgets` (per-error states, no `html_safe`); Cucumber `@x_gadget`; ja/en (`x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`). Tri-suite green (364 Minitest, 24 Cucumber scenarios).
 
 ### v1.17 — Email Registration for X/Twitter Users (2026-05-13)
 
@@ -235,4 +238,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-14 after v1.18 milestone start*
+*Last updated: 2026-05-14 after v1.18 milestone*
