@@ -22,13 +22,13 @@
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [archived](milestones/v1.18-ROADMAP.md)
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
 - ✅ **v1.20 — Column Count Preference** — Phases 67–68 (shipped 2026-05-15) — [archived](milestones/v1.20-ROADMAP.md)
-- 🔄 **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (active 2026-05-16)
+- ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16)
 
 ## Phases
 
 ### v1.21 — X Gadget Tweet Count Preference
 
-- [ ] **Phase 69: Tweet Count UI, Persistence & Tests** - Add display_count number field to /x_accounts form, permit in strong params, and cover with controller + model tests
+- [x] **Phase 69: Tweet Count UI, Persistence & Tests** - Add display_count number field to /x_accounts form, permit in strong params, and cover with controller + model tests — 2026-05-16
 
 ## Phase Details
 
@@ -50,7 +50,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 69. Tweet Count UI, Persistence & Tests | 0/? | Not started | - |
+| 69. Tweet Count UI, Persistence & Tests | 1/1 | Complete | 2026-05-16 |
 
 ---
 
@@ -113,4 +113,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-16 — v1.21 started (X Gadget Tweet Count Preference, Phase 69)*
+*Last updated: 2026-05-16 — v1.21 shipped (X Gadget Tweet Count Preference, Phase 69 complete)*
