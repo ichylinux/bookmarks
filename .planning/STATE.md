@@ -4,7 +4,7 @@ milestone: v1.20
 milestone_name: — Column Count Preference
 status: Awaiting next milestone
 last_updated: "2026-05-15T10:18:06.276Z"
-last_activity: 2026-05-15 — Milestone v1.20 completed and archived
+last_activity: 2026-05-15 — Completed quick task: add icon to calendar gadget header
 progress:
   total_phases: 2
   completed_phases: 2
@@ -54,6 +54,7 @@ None.
 
 | Date | Slug | Description |
 |------|------|-------------|
+| 2026-05-15 | add-icon-calendar-gadget-header | Added calendar icon to calendar gadget header (shared gadget_title_with_icon partial) |
 | 2026-05-14 | update-whats-new | Added X (Twitter) following feature entry to What's New changelog (both locales) |
 | 2026-05-14 | update-whats-new-column-nav | Added column navigation buttons toggle entry to What's New changelog (both locales) |
 
