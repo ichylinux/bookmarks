@@ -68,6 +68,6 @@ class XAccountsController < ApplicationController
   end
 
   def x_account_params
-    params.require(:x_account).permit(:selected, :protected_acknowledged)
+    params.require(:x_account).permit(:selected, :protected_acknowledged, :display_count)
   end
 end

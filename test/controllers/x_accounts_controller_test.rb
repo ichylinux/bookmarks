@@ -102,6 +102,14 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
     assert acc.reload.selected?
   end
 
+  def test_display_countを変更できる
+    acc = create_account(username: 'dctest', selected: false)
+    sign_in twitter_user
+    patch x_account_path(acc), params: { x_account: { display_count: '10' } }
+    assert_redirected_to x_accounts_path
+    assert_equal 10, acc.reload.display_count
+  end
+
   def test_他人のアカウントは更新できない
     other_acc = XAccount.create!(
       user: user,

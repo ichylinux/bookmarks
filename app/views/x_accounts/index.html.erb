@@ -51,6 +51,10 @@
               <span class="x-account-card__value">@<%= account.username %></span>
             </div>
             <div class="x-account-card__cell">
+              <span class="x-account-card__label"><%= XAccount.human_attribute_name(:display_count) %></span>
+              <%= f.number_field :display_count, min: 1, class: 'x-account-card__number-input' %>
+            </div>
+            <div class="x-account-card__cell">
               <span class="x-account-card__label"><%= t('x_accounts.index.protected_column') %></span>
               <span class="x-account-card__value">
                 <% if account.protected? %>
