@@ -1,7 +1,9 @@
 <% bookmark_link_html_options = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
-    <div class="title"><%= gadget.title %></div>
+    <%= render 'common/gadget_title_with_icon', variant: :bookmark do %>
+      <%= gadget.title %>
+    <% end %>
     
     <% # フォルダを先頭に、その後ブックマークをタイトル順で表示（フォルダは開閉可能） %>
     <div class="bookmark-folders">
