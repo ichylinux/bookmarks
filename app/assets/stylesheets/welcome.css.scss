@@ -141,11 +141,15 @@ div.gadgets {
   }
 }
 
-.folder-header {
+#bookmark_gadget > div {
+  margin-left: 0;
+}
+
+#bookmark_gadget .folder-header {
   cursor: pointer;
   user-select: none;
-  padding: 4px 6px;
-  margin: -2px 0;
+  padding: 0 6px 0 0;
+  margin: 0;
   border-radius: 4px;
   transition: background-color 0.15s ease;
 
@@ -164,9 +168,13 @@ div.gadgets {
   }
 }
 
-.folder-toggle {
+#bookmark_gadget .folder-toggle {
   display: inline-block;
-  width: 12px;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .folder-name {
@@ -182,12 +190,12 @@ div.gadgets {
   }
 }
 
-.bookmark-list {
-  padding-left: 20px;
+#bookmark_gadget .bookmark-list {
+  padding: 0;
   margin: 0;
   
   &.folder-bookmarks {
-    margin-left: 16px;
+    margin-left: 12px;
     
     // フォルダ内のブックマーク間の縦の余白を設定（フォルダ間と同じ）
     li + li {
@@ -196,7 +204,7 @@ div.gadgets {
   }
   
   &.root-bookmarks {
-    padding-left: 20px;
+    padding-left: 0;
     margin: 0;
   }
   
