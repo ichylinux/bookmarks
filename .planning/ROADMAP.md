@@ -21,14 +21,14 @@
 - ✅ **v1.17 — Email Registration for X/Twitter Users** — Phases 57–59 (shipped 2026-05-13) — [archived](milestones/v1.17-ROADMAP.md)
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [archived](milestones/v1.18-ROADMAP.md)
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
-- 🔄 **v1.20 — Column Count Preference** — Phases 67–68 (active)
+- ✅ **v1.20 — Column Count Preference** — Phases 67–68 (shipped 2026-05-15)
 
 ## Phases
 
 ### v1.20 — Column Count Preference
 
 - [x] **Phase 67: Data + Model Layer** — Migration, Preference validation, Portal model column distribution — 2026-05-15
-- [ ] **Phase 68: Preferences UI + View + SCSS + Tri-suite Gate** — Select control, locale strings, welcome page 4-column layout, SCSS, full test sweep, gate
+- [x] **Phase 68: Preferences UI + View + SCSS + Tri-suite Gate** — Select control, locale strings, welcome page 4-column layout, SCSS, full test sweep, gate — 2026-05-15
 
 ## Phase Details
 
@@ -68,7 +68,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 67. Data + Model Layer | 2/2 | ✅ Complete | 2026-05-15 |
-| 68. Preferences UI + View + SCSS + Tri-suite Gate | 0/2 | Not started | - |
+| 68. Preferences UI + View + SCSS + Tri-suite Gate | 2/2 | ✅ Complete | 2026-05-15 |
 
 ---
 
