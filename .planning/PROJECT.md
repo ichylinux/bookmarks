@@ -8,20 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.21 — X Gadget Tweet Count Preference
+## Current Milestone
 
-**Goal:** Let the user configure how many tweets are displayed per X account gadget, with the count stored per `x_accounts` row (not a global preference).
-
-**Target features:**
-- `x_accounts.tweet_count` integer column (DB-defaulted to a sensible value, e.g. 5)
-- `/x_accounts` management UI allows editing the tweet count per row
-- Welcome gadget passes per-account count to `XClient#fetch_recent_tweets`
-- ja/en locale coverage for the new field
-- Tri-suite gate (lint + Minitest + Cucumber)
+**Status:** v1.21 shipped (2026-05-16) — planning v1.22
 
 ## Current State
 
-**Status:** v1.21 started (2026-05-16); planning
+**Status:** v1.21 complete (2026-05-16)
+
+v1.21 delivered per-account tweet display count: `display_count` integer column (DB-default 5) on `x_accounts`; number input on `/x_accounts` management card; `display_count` permitted in strong params; `XClient#fetch_recent_tweets` clamps API `max_results` to minimum 5 (X API constraint) then slices result to user preference; `test_display_countを変更できる` controller test + 3 model tests (default callback, numericality validation). Tri-suite green (382 Minitest, 25 Cucumber).
+
+**Previously shipped:** v1.18 — X (Twitter) Account Following (2026-05-14)
 
 v1.18 delivered X (Twitter) Account Following: `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gate on `uid + token`; `XClient` Faraday service (OAuth1, timeouts, 7-symbol error contract, t.co expansion, pagination, stub accessors); `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, selection cap 12 / warn 9, protected-account confirmation); `/x_accounts` management UI (refresh diff-upsert, per-row toggle, last-refreshed timestamp); welcome-page AJAX gadgets via `Portal#get_gadgets` with per-error-symbol localized states + `:unauthorized` re-sign-in CTA; `features/06.X.feature` with `@x_gadget` hooks + global state-isolation Before hook; ja/en across `x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`; Minitest (364/364) + Cucumber (24 scenarios) tri-suite green.
 
@@ -102,6 +99,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Cucumber gadget hooks (`@mastodon_gadget`, `@x_gadget`) migrated to `WebMock.stub_request` / `WebMock.remove_request_stub`; `test/http_client_test_stubs.rb` deleted (133 lines); stub loader removed from `config/environments/test.rb` — **v1.19 Phase 66**
 - ✓ User can select portal column count (3 or 4) from the preferences screen (ja/en locale strings, `PORTAL_COLUMN_COUNTS` constant) — **v1.20 Phase 68**
 - ✓ Portal renders user-chosen column count on desktop; `Portal#portal_columns` parameterized via stored preference; mobile tab strip unchanged; downgrade 4→3 redistributes gracefully — **v1.20 Phases 67–68**
+- ✓ Per-account tweet display count configurable from `/x_accounts`; persisted on `x_accounts.display_count`; welcome gadget honours per-account value via `XClient#fetch_recent_tweets(limit:)` — **v1.21 Phase 69**
 
 ### Active
 
@@ -179,6 +177,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | `PORTAL_COLUMN_COUNTS = [3, 4]` constant on Preference model (v1.20) | Matches `FONT_SIZES` pattern; single source of truth for valid values used by validation, view `map`, and `default_preference` | ✓ Good — consistent with existing model constants |
 | `portal--4col` modifier class + SCSS `@media` rule (v1.20) | Isolates 4-column width override to desktop breakpoint; theme files unchanged | ✓ Good — no per-theme duplication; mobile tab strip unaffected |
 | Cucumber step uses `form.preferences-form` not `form.edit_user` (v1.20) | `form_with` with explicit `html: { class: }` doesn't append the default `edit_user` class unlike `form_for` | ✓ Good — correct selector; documented deviation from initial 068-01 implementation |
+| `before_save` callback as nil-guard only for display_count (v1.21) | Validation fires before `before_save`; callback protects against nil only (DB default handles this in practice) | ✓ Good — redundancy harmless; documented in audit |
+| XClient requests `max(limit, 5)` for X API constraint (v1.21) | X API v2 requires `max_results >= 5`; slicing result after fetch honours exact user preference | ✓ Good — fixes `display_count < 5` API error without any UX change |
 
 ## Evolution
 
@@ -197,6 +197,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.21 — X Gadget Tweet Count Preference (2026-05-16)
+
+**Delivered:** Per-account tweet display count on `/x_accounts`: `display_count` integer column (DB-default 5); number input on management card; `:display_count` permitted in strong params; `XClient` requests `max(limit, 5)` from X API then slices to user preference (fixes API error for display_count < 5); controller + model tests. Tri-suite green (382 Minitest, 25 Cucumber).
 
 ### v1.20 — Column Count Preference (2026-05-15)
 
@@ -263,4 +267,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-15 after v1.20 milestone*
+*Last updated: 2026-05-16 after v1.21 milestone*

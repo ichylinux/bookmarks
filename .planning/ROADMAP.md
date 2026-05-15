@@ -22,37 +22,18 @@
 - ✅ **v1.18 — X (Twitter) Account Following** — Phases 60–63 (shipped 2026-05-14) — [archived](milestones/v1.18-ROADMAP.md)
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
 - ✅ **v1.20 — Column Count Preference** — Phases 67–68 (shipped 2026-05-15) — [archived](milestones/v1.20-ROADMAP.md)
-- ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16)
+- ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16) — [archived](milestones/v1.21-ROADMAP.md)
 
 ## Phases
 
-### v1.21 — X Gadget Tweet Count Preference
+<details>
+<summary>✅ v1.21 — X Gadget Tweet Count Preference (Phase 69) — SHIPPED 2026-05-16</summary>
 
-- [x] **Phase 69: Tweet Count UI, Persistence & Tests** - Add display_count number field to /x_accounts form, permit in strong params, and cover with controller + model tests — 2026-05-16
+Full goals, success criteria, and notes: [milestones/v1.21-ROADMAP.md](milestones/v1.21-ROADMAP.md).
 
-## Phase Details
+- [x] Phase 69: Tweet Count UI, Persistence & Tests — 2026-05-16
 
-### Phase 69: Tweet Count UI, Persistence & Tests
-**Goal**: Users can view and change the per-account tweet display count on the /x_accounts management page, with the count persisted and honored by the welcome page X gadget
-**Depends on**: Nothing (single-phase milestone; schema column, model callback, validation, locale keys, and XClient limit wiring are already in place)
-**Requirements**: XCNT-01, XCNT-02, XCNT-03, XCNT-04, XCNT-05, XCNT-06
-**Success Criteria** (what must be TRUE):
-  1. The /x_accounts management page displays the current display_count value for each X account card
-  2. User can edit the display_count via a number input on the /x_accounts page, submit the form, and the new value is saved to the database
-  3. The welcome page X gadget fetches and renders the number of tweets matching the saved per-account display_count (not a hardcoded default)
-  4. PATCH /x_accounts/:id with a valid display_count param succeeds — display_count is permitted in x_account_params strong params
-  5. A Minitest controller test asserts that PATCH /x_accounts/:id persists a changed display_count value
-  6. A Minitest model test covers the display_count numericality validation (integer, greater than 0) and the set_display_count_default before_save callback
-**Plans**: TBD
-**UI hint**: yes
-
-## Progress
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 69. Tweet Count UI, Persistence & Tests | 1/1 | Complete | 2026-05-16 |
-
----
+</details>
 
 <details>
 <summary>✅ v1.20 — Column Count Preference (Phases 67–68) — SHIPPED 2026-05-15</summary>
@@ -113,4 +94,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-16 — v1.21 shipped (X Gadget Tweet Count Preference, Phase 69 complete)*
+*Last updated: 2026-05-16 — v1.21 archived (X Gadget Tweet Count Preference, Phase 69 complete)*

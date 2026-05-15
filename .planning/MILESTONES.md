@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.21 — X Gadget Tweet Count Preference (shipped 2026-05-16)
+
+**Scope:** Phase 69 — per-account tweet display count UI, persistence, and tests.
+
+**Key accomplishments:**
+
+- Added `display_count` number input to each X account card on `/x_accounts`; value bound to persisted `x_accounts.display_count` (DB-default 5).
+- Permitted `:display_count` in `x_account_params` strong params, enabling PATCH persistence.
+- Fixed `XClient#fetch_recent_tweets`: requests `max(limit, 5)` from X API (API minimum constraint), then slices result to user's exact preference — resolves API error for display_count < 5.
+- Controller test verifies PATCH persists changed display_count; model tests cover numericality validation + `set_display_count_default` callback.
+- Tri-suite gate: `yarn run lint` ✓ · 382 Minitest ✓ · 25 Cucumber ✓
+
+**Archives:** [ROADMAP snapshot](milestones/v1.21-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.21-REQUIREMENTS.md) · [Milestone audit](milestones/v1.21-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.20 Column Count Preference (Shipped: 2026-05-15)
 
 **Phases completed:** 2 phases, 4 plans, 2 tasks
@@ -308,4 +324,4 @@ Pre–GSD planning work on this repo:
 
 ---
 
-*Last updated: 2026-05-15 — v1.20 Column Count Preference started (Phases 67–68)*
+*Last updated: 2026-05-16 — v1.21 X Gadget Tweet Count Preference shipped (Phase 69)*

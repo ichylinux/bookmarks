@@ -71,4 +71,4 @@ Milestone v1.21 completed (2026-05-16) — 1 phase (69), 6 requirements (XCNT-01
 
 ## Operator Next Steps
 
-- Run /gsd:complete-milestone to archive v1.21 and prepare for v1.22
+- Run /gsd:new-milestone to plan v1.22
