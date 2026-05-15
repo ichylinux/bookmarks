@@ -170,6 +170,7 @@ div.gadgets {
 
 $bookmark-folder-toggle-width: 1.1em;
 $bookmark-folder-toggle-gap: 0.25em;
+$bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-name text start
 
 #bookmark_gadget .folder-toggle {
   display: inline-block;
@@ -225,7 +226,7 @@ $bookmark-folder-toggle-gap: 0.25em;
   margin: 0;
   
   &.folder-bookmarks {
-    margin-left: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap});
+    margin-left: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
     
     // フォルダ内のブックマーク間の縦の余白を設定（フォルダ間と同じ）
     li + li {
