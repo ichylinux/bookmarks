@@ -4,9 +4,9 @@ milestone: v1.21
 milestone_name: — X Gadget Tweet Count Preference
 status: planning
 last_updated: "2026-05-16T00:00:00.000Z"
-last_activity: 2026-05-16 — Milestone v1.21 started
+last_activity: 2026-05-16 — Roadmap created; Phase 69 ready for planning
 progress:
-  total_phases: 0
+  total_phases: 1
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,10 +17,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 69 — Tweet Count UI, Persistence & Tests (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-16 — Milestone v1.21 started
+Status: Roadmap created; awaiting /gsd:plan-phase 69
+Last activity: 2026-05-16 — Roadmap created; Phase 69 ready for planning
 
 ## Project Reference
 
@@ -65,7 +65,7 @@ None.
 ## Session Continuity
 
 Milestone v1.20 completed (2026-05-15) — 2 phases (67–68), 8 requirements (COL-01 through COL-08), tri-suite green.
-Milestone v1.21 started (2026-05-16) — per-account tweet count on x_accounts; phases start at 69.
+Milestone v1.21 started (2026-05-16) — per-account tweet count on x_accounts; single phase (69); roadmap created.
 
 ## Operator Next Steps
 
