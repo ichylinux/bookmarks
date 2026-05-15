@@ -144,6 +144,22 @@ div.gadgets {
 .folder-header {
   cursor: pointer;
   user-select: none;
+  padding: 4px 6px;
+  margin: -2px 0;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
 }
 
 .folder-toggle {
