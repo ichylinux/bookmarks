@@ -52,6 +52,13 @@
         <th><%= f.label :show_column_nav_buttons %></th>
         <td><%= f.check_box :show_column_nav_buttons %></td>
       </tr>
+      <tr>
+        <th><%= f.label :portal_column_count %></th>
+        <td><%= f.select :portal_column_count,
+              Preference::PORTAL_COLUMN_COUNTS.map { |n|
+                [t(".portal_column_count_options.#{n == 3 ? 'three' : 'four'}"), n]
+              } %></td>
+      </tr>
     <% end %>
     <tr>
       <th><%= t('two_factor.section_title') %></th>

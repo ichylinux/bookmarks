@@ -366,4 +366,27 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', users_email_registration_path, count: 0
   end
 
+  def test_portal_column_countを4に保存する
+    user.preference.update!(portal_column_count: 3)
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(portal_column_count: 4).merge(id: user.preference.id)
+      }
+    }
+    assert_response :redirect
+    assert_equal 4, user.preference.reload.portal_column_count
+  end
+
+  def test_設定画面にportal_column_count選択肢を表示する
+    user.preference.update!(portal_column_count: 4, locale: 'ja')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'select[name=?]', 'user[preference_attributes][portal_column_count]' do
+      assert_select 'option[value="3"]', text: '3列'
+      assert_select 'option[value="4"][selected=?]', 'selected', text: '4列'
+    end
+  end
+
 end

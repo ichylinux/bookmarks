@@ -26,6 +26,7 @@ ja:
         font_size: 文字サイズ
         locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
+        portal_column_count: ポータル列数
         show_column_nav_buttons: （モバイル）列切り替えボタンを表示する
         theme: テーマ
         use_note: ノートを表示する
@@ -152,6 +153,9 @@ ja:
         large: 大
         medium: 中
         small: 小
+      portal_column_count_options:
+        three: '3列'
+        four: '4列'
       submit: 保存
       email_registration_section_title: メールアドレス
       email_registration_link: 実メールアドレスを登録する

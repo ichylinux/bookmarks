@@ -26,6 +26,7 @@ en:
         font_size: Font size
         locale: Language
         open_links_in_new_tab: Open links in new tab
+        portal_column_count: Portal columns
         show_column_nav_buttons: (mobile) Show column navigation buttons
         theme: Theme
         use_note: Show notes
@@ -152,6 +153,9 @@ en:
         large: Large
         medium: Medium
         small: Small
+      portal_column_count_options:
+        three: '3 columns'
+        four: '4 columns'
       submit: Save
       email_registration_section_title: Email address
       email_registration_link: Register a real email address
