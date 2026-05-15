@@ -1,38 +1,39 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.20
-milestone_name: — Column Count Preference
-status: Awaiting next milestone
-last_updated: "2026-05-15T10:18:06.276Z"
-last_activity: 2026-05-16 — Completed quick task: add icon to bookmark gadget header
+milestone: v1.21
+milestone_name: — X Gadget Tweet Count Preference
+status: planning
+last_updated: "2026-05-16T00:00:00.000Z"
+last_activity: 2026-05-16 — Milestone v1.21 started
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: Milestone v1.20 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-05-15 — Milestone v1.20 completed and archived
+Status: Defining requirements
+Last activity: 2026-05-16 — Milestone v1.21 started
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (Current Milestone: v1.20)
+See: `.planning/PROJECT.md` (Current Milestone: v1.21)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.  
-**Current focus:** v1.20 — User-selectable portal column count (3 or 4) on preferences screen
+**Current focus:** v1.21 — Per-account tweet count preference on the X gadget
 
 ## Performance Metrics
 
 - Baseline (v1.18 close): `yarn run lint` — green; `bin/rails test` — green; `bundle exec rake dad:test` — green (24 scenarios).
 - v1.19 close: `yarn run lint` — green; `bin/rails test` — 363 runs, 0 failures; `bundle exec rake dad:test` — 24 scenarios, 0 failed.
+- v1.20 close: tri-suite green (confirmed before milestone archive).
 
 ## Accumulated Context
 
@@ -44,7 +45,7 @@ See: `.planning/PROJECT.md` (Current Milestone: v1.20)
 
 ### Pending Todos
 
-- (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred to v1.20+.
+- (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred to v1.21+.
 
 ### Blockers/Concerns
 
@@ -63,10 +64,9 @@ None.
 
 ## Session Continuity
 
-Milestone v1.19 executed via `/gsd-autonomous` (all 3 phases in one session). STATE/ROADMAP updated manually post-execution.
-v1.20 roadmap created 2026-05-15 — 2 phases (67–68), 8 requirements (COL-01 through COL-08), 100% coverage.
-v1.20 Phase 67 executed via `/gsd-autonomous` on 2026-05-15 — migration + model + tests complete; 373 runs, 0 failures. COL-01, COL-04, COL-06 validated.
+Milestone v1.20 completed (2026-05-15) — 2 phases (67–68), 8 requirements (COL-01 through COL-08), tri-suite green.
+Milestone v1.21 started (2026-05-16) — per-account tweet count on x_accounts; phases start at 69.
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Run /gsd:plan-phase 69 to start execution

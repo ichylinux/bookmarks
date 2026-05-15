@@ -8,9 +8,20 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.21 — X Gadget Tweet Count Preference
+
+**Goal:** Let the user configure how many tweets are displayed per X account gadget, with the count stored per `x_accounts` row (not a global preference).
+
+**Target features:**
+- `x_accounts.tweet_count` integer column (DB-defaulted to a sensible value, e.g. 5)
+- `/x_accounts` management UI allows editing the tweet count per row
+- Welcome gadget passes per-account count to `XClient#fetch_recent_tweets`
+- ja/en locale coverage for the new field
+- Tri-suite gate (lint + Minitest + Cucumber)
+
 ## Current State
 
-**Status:** v1.20 shipped (2026-05-15); between milestones
+**Status:** v1.21 started (2026-05-16); planning
 
 v1.18 delivered X (Twitter) Account Following: `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gate on `uid + token`; `XClient` Faraday service (OAuth1, timeouts, 7-symbol error contract, t.co expansion, pagination, stub accessors); `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, selection cap 12 / warn 9, protected-account confirmation); `/x_accounts` management UI (refresh diff-upsert, per-row toggle, last-refreshed timestamp); welcome-page AJAX gadgets via `Portal#get_gadgets` with per-error-symbol localized states + `:unauthorized` re-sign-in CTA; `features/06.X.feature` with `@x_gadget` hooks + global state-isolation Before hook; ja/en across `x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`; Minitest (364/364) + Cucumber (24 scenarios) tri-suite green.
 
