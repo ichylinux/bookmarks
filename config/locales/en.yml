@@ -256,6 +256,10 @@ en:
         new: New Feature
       entries:
         - date: "2026-05-16"
+          headline: Set the number of tweets displayed in the X gadget
+          tag: new
+          description: You can now configure how many tweets appear in the X dashboard gadget from the X account settings page.
+        - date: "2026-05-16"
           headline: Icons added to dashboard gadget headers
           tag: ux
           description: Calendar, task, and bookmark gadgets now display a matching icon in their header for quicker at-a-glance recognition.
