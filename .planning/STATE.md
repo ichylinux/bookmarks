@@ -54,6 +54,7 @@ None.
 
 | Date | Slug | Description |
 |------|------|-------------|
+| 2026-05-16 | landing-page-icons-changelog | Added SVG icons to landing page value cards + changelog entry for gadget header icons |
 | 2026-05-16 | add-icon-bookmark-gadget-header | Added bookmark icon to bookmark gadget header (shared gadget_title_with_icon partial) |
 | 2026-05-16 | add-icon-task-gadget-header | Added todo icon to task gadget header (shared gadget_title_with_icon partial) |
 | 2026-05-15 | add-icon-calendar-gadget-header | Added calendar icon to calendar gadget header (shared gadget_title_with_icon partial) |

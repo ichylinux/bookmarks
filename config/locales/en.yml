@@ -255,6 +255,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-16"
+          headline: Icons added to dashboard gadget headers
+          tag: ux
+          description: Calendar, task, and bookmark gadgets now display a matching icon in their header for quicker at-a-glance recognition.
         - date: "2026-05-14"
           headline: Toggle column navigation buttons visibility in preferences
           tag: ux
