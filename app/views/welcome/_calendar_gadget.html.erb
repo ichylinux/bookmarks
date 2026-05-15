@@ -1,6 +1,8 @@
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
-    <div class="title"><%= gadget.title %></div>
+    <%= render 'common/gadget_title_with_icon', variant: :calendar do %>
+      <%= gadget.title %>
+    <% end %>
     <div style="line-height: 30em;">
       <script>
         $(document).ready(function() {
