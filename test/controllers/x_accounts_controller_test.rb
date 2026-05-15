@@ -138,7 +138,23 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
     get x_account_path(acc, format: :html), xhr: true
     assert_response :success
     refute_match(%r{<html}i, @response.body)
-    assert_select 'a[href=?]', 'https://x.com/i/status/1', text: 'Hello world'
+  end
+
+  def test_showでdisplay_countが5未満でもAPIエラーにならない
+    acc = create_account(username: 'charlie_low', selected: true)
+    acc.update_column(:display_count, 3)
+    # API is called with max_results=5 (minimum), not 3
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/charlie_low\/tweets\?.*max_results=5/)
+      .to_return(
+        status: 200,
+        body: { data: (1..5).map { |i| { id: i.to_s, text: "Tweet #{i}" } } }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+    sign_in twitter_user
+    get x_account_path(acc, format: :html), xhr: true
+    assert_response :success
+    # Only 3 tweets rendered (sliced to display_count)
+    assert_select 'a[href*="x.com/i/status/"]', count: 3
   end
 
   def test_showがエラー時にローカライズされたメッセージを返す

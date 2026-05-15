@@ -56,14 +56,19 @@ class XClient
     return { success: false, error: :not_found } if xid.blank?
 
     lim = limit.to_i.clamp(1, 100)
+    # X API requires max_results >= 5; request the minimum if lim is below it
+    api_lim = [lim, 5].max
     qs = []
-    qs << "max_results=#{lim}"
+    qs << "max_results=#{api_lim}"
     %w[retweets replies].each { |ex| qs << "exclude=#{ex}" }
     qs << 'tweet.fields=entities,edit_history_tweet_ids'
     path = "/2/users/#{xid}/tweets?#{qs.join('&')}"
 
     res = oauth_faraday('https://api.twitter.com', user).get(path)
-    parse_tweets_response(res)
+    result = parse_tweets_response(res)
+    return result unless result[:success]
+
+    result.merge(items: result[:items].first(lim))
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed
     { success: false, error: :timeout }
   rescue Faraday::Error
