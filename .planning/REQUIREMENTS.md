@@ -12,19 +12,19 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 
 ### Preferences UI
 
-- [ ] **COL-02**: Preferences page shows a select control for portal column count (3 or 4 columns); ja/en locale strings for the label and option values
-- [ ] **COL-03**: Submitting the preferences form persists the column count; the select control reflects the saved value on page reload
+- [x] **COL-02**: Preferences page shows a select control for portal column count (3 or 4 columns); ja/en locale strings for the label and option values
+- [x] **COL-03**: Submitting the preferences form persists the column count; the select control reflects the saved value on page reload
 
 ### Portal Behavior
 
 - [x] **COL-04**: `Portal#portal_columns` uses `user.preference.portal_column_count` instead of the hardcoded 3; `Portal#portal_column_count` delegates to the preference value
-- [ ] **COL-05**: Welcome page renders the correct number of column sections for the user's preference (3 or 4); existing gadget placements in columns 0–2 are preserved when switching to 4; column 3 is empty on first switch to 4
+- [x] **COL-05**: Welcome page renders the correct number of column sections for the user's preference (3 or 4); existing gadget placements in columns 0–2 are preserved when switching to 4; column 3 is empty on first switch to 4
 - [x] **COL-06**: Downgrading from 4 → 3 columns is safe: `Portal#portal_columns` skips `PortalLayout` records with `column_no >= column_count`; those gadgets are redistributed via the existing fallback (`i % column_count`); saved positions in column 3 are restored when switching back to 4
 
 ### Test Coverage
 
-- [ ] **COL-07**: Minitest covers preference validation (valid values 3/4, default 3, invalid value rejected), preferences controller (save column count), portal column distribution (3 and 4 columns, downgrade path), and locale key parity for new strings
-- [ ] **COL-08**: Tri-suite gate green at milestone close (`yarn run lint` + `bin/rails test` + `bundle exec rake dad:test`)
+- [x] **COL-07**: Minitest covers preference validation (valid values 3/4, default 3, invalid value rejected), preferences controller (save column count), portal column distribution (3 and 4 columns, downgrade path), and locale key parity for new strings
+- [x] **COL-08**: Tri-suite gate green at milestone close (`yarn run lint` + `bin/rails test` + `bundle exec rake dad:test`)
 
 ## Future Requirements (deferred)
 
@@ -42,10 +42,10 @@ Users can select 3 or 4 portal columns from the preferences screen. The portal r
 | REQ | Phase | Plan | Status |
 |-----|-------|------|--------|
 | COL-01 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
-| COL-02 | Phase 68 | — | Pending |
-| COL-03 | Phase 68 | — | Pending |
+| COL-02 | Phase 68 | 068-01 | ✅ Validated — Phase 68 |
+| COL-03 | Phase 68 | 068-01, 068-02 | ✅ Validated — Phase 68 |
 | COL-04 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
-| COL-05 | Phase 68 | — | Pending |
+| COL-05 | Phase 68 | 068-01, 068-02 | ✅ Validated — Phase 68 |
 | COL-06 | Phase 67 | 067-01 | ✅ Validated — Phase 67 |
-| COL-07 | Phase 68 | — | Pending |
-| COL-08 | Phase 68 | — | Pending |
+| COL-07 | Phase 68 | 068-02 | ✅ Validated — Phase 68 |
+| COL-08 | Phase 68 | 068-02 | ✅ Validated — Phase 68 |
