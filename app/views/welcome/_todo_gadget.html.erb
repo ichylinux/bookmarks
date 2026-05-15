@@ -6,7 +6,9 @@
   </script>
 
   <div>
-    <div class="title"><%= gadget.title %></div>
+    <%= render 'common/gadget_title_with_icon', variant: :todo do %>
+      <%= gadget.title %>
+    <% end %>
     <ol>
       <%= render 'todos/actions' %>
 
