@@ -27,7 +27,7 @@ $(document).ready(() => {
     
     if (!$bookmarks.is(':visible')) {
       $bookmarks.show();
-      $toggle.text('▼');
+      $toggle.addClass('is-expanded');
     }
   }
   
@@ -49,7 +49,7 @@ $(document).ready(() => {
     
     if ($bookmarks.is(':visible')) {
       $bookmarks.slideUp();
-      $toggle.text('▶');
+      $toggle.removeClass('is-expanded');
       // localStorageから削除
       if (index > -1) {
         expandedFolders.splice(index, 1);
@@ -57,7 +57,7 @@ $(document).ready(() => {
       }
     } else {
       $bookmarks.slideDown();
-      $toggle.text('▼');
+      $toggle.addClass('is-expanded');
       // localStorageに追加
       if (index === -1) {
         expandedFolders.push(folderId.toString());

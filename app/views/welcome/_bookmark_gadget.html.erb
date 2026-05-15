@@ -9,7 +9,7 @@
         <% if item.folder? %>
           <div class="bookmark-folder">
             <div class="folder-header" data-folder-id="<%= item.id %>">
-              <span class="folder-toggle">▶</span>
+              <span class="folder-toggle" aria-hidden="true"></span>
               <span class="folder-name"><%= item.title %></span>
             </div>
             <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
