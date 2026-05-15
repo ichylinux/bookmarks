@@ -1,5 +1,13 @@
 # Milestones
 
+## v1.20 — Column Count Preference (active 2026-05-15)
+
+**Scope:** Phases 67–68 — `preferences.portal_column_count` migration; `Preference` validation; `Portal#portal_columns` driven by preference; downgrade safety (skip `column_no >= column_count`, redistribute); preferences select control + ja/en locale; welcome-page 4-column layout; SCSS for 4th column across themes; Minitest + tri-suite gate.
+
+**Status:** Roadmap created. Phase 67 (Data + Model Layer) next.
+
+---
+
 ## v1.19 — HTTP test stubs → WebMock (shipped 2026-05-14)
 
 **Scope:** Phases 64–66 — add WebMock to `:test`; migrate Minitest + Cucumber off `test/http_client_test_stubs.rb` prepend accessors; delete stub loader from `config/environments/test.rb`; document new contract in PROJECT / CLAUDE; tri-suite gate.
@@ -286,4 +294,5 @@ Pre–GSD planning work on this repo:
 - **Automatic title scrape** — `GET /bookmarks/fetch_title` with jQuery blur handler; see git history in `.planning/phases/` if present.
 
 ---
-*Last updated: 2026-05-14 — v1.18 X (Twitter) Account Following shipped*
+
+*Last updated: 2026-05-15 — v1.20 Column Count Preference started (Phases 67–68)*
