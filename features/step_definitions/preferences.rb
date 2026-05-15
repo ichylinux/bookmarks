@@ -3,7 +3,7 @@
 
   begin
     visit '/preferences'
-    assert has_selector?('form.edit_user')
+    assert has_selector?('form.preferences-form')
   ensure
     capture
   end

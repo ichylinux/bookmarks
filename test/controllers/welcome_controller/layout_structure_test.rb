@@ -219,4 +219,22 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.portal.portal--column-active-0', count: 1
   end
 
+  def test_portal_column_count_4のとき4列のportal_columnが出力される
+    user.preference.update!(portal_column_count: 4)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal .portal-column', count: 4
+    assert_select '.portal.portal--4col', count: 1
+  end
+
+  def test_portal_column_count_3のとき3列のportal_columnが出力される
+    user.preference.update!(portal_column_count: 3)
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal .portal-column', count: 3
+    assert_select '.portal.portal--4col', count: 0
+  end
+
 end
