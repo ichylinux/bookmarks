@@ -8,21 +8,9 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.20 — Column Count Preference
-
-**Goal:** Users can choose 3 or 4 portal columns from the preferences screen; mobile layout is unaffected.
-
-**Target features:**
-- New `portal_column_count` preference column (integer, default 3, values 3 or 4)
-- Preferences page: select control for column count (ja/en)
-- Portal uses the stored preference instead of the hardcoded 3-column layout
-- Switching to 4 columns keeps existing gadget positions; column 4 starts empty
-- Mobile tab strip behavior unchanged (column count is desktop-only)
-- Tri-suite gate (lint + Minitest + Cucumber)
-
 ## Current State
 
-**Status:** v1.19 shipped (2026-05-14); between milestones
+**Status:** v1.20 shipped (2026-05-15); between milestones
 
 v1.18 delivered X (Twitter) Account Following: `users.token_secret` column + `encrypts :token, :token_secret`; `User.from_omniauth` persists `uid`/`token`/`token_secret` on create + re-auth; `TwitterLinkRequirement#require_twitter_linked` gate on `uid + token`; `XClient` Faraday service (OAuth1, timeouts, 7-symbol error contract, t.co expansion, pagination, stub accessors); `x_accounts` cache table + `XAccount` model (`Crud::ByUser`, soft-delete, selection cap 12 / warn 9, protected-account confirmation); `/x_accounts` management UI (refresh diff-upsert, per-row toggle, last-refreshed timestamp); welcome-page AJAX gadgets via `Portal#get_gadgets` with per-error-symbol localized states + `:unauthorized` re-sign-in CTA; `features/06.X.feature` with `@x_gadget` hooks + global state-isolation Before hook; ja/en across `x_accounts.*`, `welcome.x_account.*`, `errors.x_client.*`; Minitest (364/364) + Cucumber (24 scenarios) tri-suite green.
 
@@ -101,11 +89,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `webmock` gem in `:test` group; `test/support/webmock.rb` with `disable_net_connect!(allow_localhost: true)` + fixture feed stubs auto-loaded by both Minitest and Cucumber — **v1.19 Phase 64**
 - ✓ All Minitest HTTP stubs migrated to Faraday `:test` (service tests with `connection:` injection) and WebMock `stub_request` (controller integration tests, `fetch_recent_tweets`); no class-level stub accessors remain — **v1.19 Phase 65**
 - ✓ Cucumber gadget hooks (`@mastodon_gadget`, `@x_gadget`) migrated to `WebMock.stub_request` / `WebMock.remove_request_stub`; `test/http_client_test_stubs.rb` deleted (133 lines); stub loader removed from `config/environments/test.rb` — **v1.19 Phase 66**
+- ✓ User can select portal column count (3 or 4) from the preferences screen (ja/en locale strings, `PORTAL_COLUMN_COUNTS` constant) — **v1.20 Phase 68**
+- ✓ Portal renders user-chosen column count on desktop; `Portal#portal_columns` parameterized via stored preference; mobile tab strip unchanged; downgrade 4→3 redistributes gracefully — **v1.20 Phases 67–68**
 
 ### Active
 
-- [ ] User can select portal column count (3 or 4) from the preferences screen — v1.20
-- [ ] Portal renders the user-chosen column count on desktop; mobile layout unchanged — v1.20
 - [ ] Decide whether `/landing` replaces `/` after conversion evaluation
 - [ ] Fix XAUTH-FUT-01: `from_omniauth` Twitter branch still looks up by `name` — switch to `uid` (prerequisite `users.uid` persisted by v1.18 Phase 60; deferred to v1.19+ to avoid breaking pre-v1.18 users who haven't re-authed)
 
@@ -177,6 +165,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Reuse existing `users.{provider, uid, token}` dead columns + add only `token_secret` (v1.18 Q8=1) | Avoids schema-level column rename/migration risk; keeps column footprint minimal | ✓ Good — no migration rollback risk; `encrypts :token, :token_secret` on User |
 | Selection cap 12 / soft-warning 9 (v1.18 Q9=1) | Welcome page performance bound; arbitrary but explicit and user-adjustable via deselect | ✓ Good — cap enforced at model + controller; warning surfaced in view |
 | CSS `max(100%, min-content)` → `width: 100%` in `feeds.css.scss` (v1.18) | Dart Sass interprets CSS `max()` as Sass `max()` during `application` bundle compile in test | ✓ Good — pragmatic fix; avoids Sass/CSS function ambiguity |
+| `PORTAL_COLUMN_COUNTS = [3, 4]` constant on Preference model (v1.20) | Matches `FONT_SIZES` pattern; single source of truth for valid values used by validation, view `map`, and `default_preference` | ✓ Good — consistent with existing model constants |
+| `portal--4col` modifier class + SCSS `@media` rule (v1.20) | Isolates 4-column width override to desktop breakpoint; theme files unchanged | ✓ Good — no per-theme duplication; mobile tab strip unaffected |
+| Cucumber step uses `form.preferences-form` not `form.edit_user` (v1.20) | `form_with` with explicit `html: { class: }` doesn't append the default `edit_user` class unlike `form_for` | ✓ Good — correct selector; documented deviation from initial 068-01 implementation |
 
 ## Evolution
 
@@ -195,6 +186,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.20 — Column Count Preference (2026-05-15)
+
+**Delivered:** `preferences.portal_column_count` integer column (default 3, NOT NULL); `PORTAL_COLUMN_COUNTS = [3, 4]` with inclusion validation; `Portal#portal_columns` fully parameterized (no hardcoded 3); downgrade guard (`next if pl.column_no >= count`); preferences select control with ja/en locale strings (`3列`/`4列`); `portal--4col` conditional class + `.portal--4col .gadgets { width: 25% }` SCSS rule; Cucumber `features/07.設定.feature` scenario; Minitest controller save/render and layout 3/4-column tests. Tri-suite green (377 Minitest, 25 Cucumber scenarios, 0 failures).
 
 ### v1.19 — HTTP test stubs → WebMock (2026-05-14)
 
@@ -257,4 +252,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-15 — v1.20 started; column count preference*
+*Last updated: 2026-05-15 after v1.20 milestone*

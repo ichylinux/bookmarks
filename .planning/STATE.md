@@ -2,27 +2,25 @@
 gsd_state_version: 1.0
 milestone: v1.20
 milestone_name: — Column Count Preference
-status: in_progress
-last_updated: "2026-05-15T00:00:00.000Z"
-last_activity: 2026-05-15 — Phase 68 planned (2 plans, 2 waves); ready to execute
+status: Awaiting next milestone
+last_updated: "2026-05-15T10:18:06.276Z"
+last_activity: 2026-05-15 — Milestone v1.20 completed and archived
 progress:
   total_phases: 2
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 50
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: Phase 68 — Preferences UI + View + SCSS + Tri-suite Gate (planned, ready to execute)
-Plan: 068-01 (Wave 1), 068-02 (Wave 2)
-Status: Plans created and verified; ready to execute
-Last activity: 2026-05-15 — Phase 68 planned (2 plans, 2 waves); ready to execute
-
-Progress: [█████     ] 50% (1/2 phases)
+Phase: Milestone v1.20 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-05-15 — Milestone v1.20 completed and archived
 
 ## Project Reference
 
@@ -64,3 +62,7 @@ None.
 Milestone v1.19 executed via `/gsd-autonomous` (all 3 phases in one session). STATE/ROADMAP updated manually post-execution.
 v1.20 roadmap created 2026-05-15 — 2 phases (67–68), 8 requirements (COL-01 through COL-08), 100% coverage.
 v1.20 Phase 67 executed via `/gsd-autonomous` on 2026-05-15 — migration + model + tests complete; 373 runs, 0 failures. COL-01, COL-04, COL-06 validated.
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

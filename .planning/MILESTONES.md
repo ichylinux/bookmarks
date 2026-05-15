@@ -1,5 +1,18 @@
 # Milestones
 
+## v1.20 Column Count Preference (Shipped: 2026-05-15)
+
+**Phases completed:** 2 phases, 4 plans, 2 tasks
+
+**Key accomplishments:**
+
+- One-liner:
+- Added `test_デフォルトのポータル列数は3` to preference_test.rb to assert DB default value of 3, completing all plan 02 must_haves against Wave 1's pre-built portal and preference tests.
+- Task 1 — Strong params + locale files:
+- Task 1 — Minitest layout tests (welcome_controller/layout_structure_test.rb):
+
+---
+
 ## v1.20 — Column Count Preference (active 2026-05-15)
 
 **Scope:** Phases 67–68 — `preferences.portal_column_count` migration; `Preference` validation; `Portal#portal_columns` driven by preference; downgrade safety (skip `column_no >= column_count`, redistribute); preferences select control + ja/en locale; welcome-page 4-column layout; SCSS for 4th column across themes; Minitest + tri-suite gate.
