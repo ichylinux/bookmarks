@@ -7,15 +7,15 @@
 
 ### Display Count UI & Persistence
 
-- [ ] **XCNT-01**: User can see the current tweet display count for each X account on the /x_accounts management page
-- [ ] **XCNT-02**: User can change the tweet display count per X account via a number input on the /x_accounts page and save it
-- [ ] **XCNT-03**: The welcome page X gadget loads and renders the number of tweets matching the saved per-account display count
-- [ ] **XCNT-04**: `display_count` is permitted in `x_account_params` strong params so the value persists on update
+- [x] **XCNT-01**: User can see the current tweet display count for each X account on the /x_accounts management page
+- [x] **XCNT-02**: User can change the tweet display count per X account via a number input on the /x_accounts page and save it
+- [x] **XCNT-03**: The welcome page X gadget loads and renders the number of tweets matching the saved per-account display count
+- [x] **XCNT-04**: `display_count` is permitted in `x_account_params` strong params so the value persists on update
 
 ### Test Coverage
 
-- [ ] **XCNT-05**: Controller test verifies `display_count` is updated and persisted on PATCH /x_accounts/:id
-- [ ] **XCNT-06**: Model test covers `display_count` validation (integer, greater than 0) and `set_display_count_default` callback
+- [x] **XCNT-05**: Controller test verifies `display_count` is updated and persisted on PATCH /x_accounts/:id
+- [x] **XCNT-06**: Model test covers `display_count` validation (integer, greater than 0) and `set_display_count_default` callback
 
 ## Future Requirements
 
@@ -36,18 +36,18 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| XCNT-01 | Phase 69 | Pending |
-| XCNT-02 | Phase 69 | Pending |
-| XCNT-03 | Phase 69 | Pending |
-| XCNT-04 | Phase 69 | Pending |
-| XCNT-05 | Phase 69 | Pending |
-| XCNT-06 | Phase 69 | Pending |
+| XCNT-01 | Phase 69 | ✅ Satisfied |
+| XCNT-02 | Phase 69 | ✅ Satisfied |
+| XCNT-03 | Phase 69 | ✅ Satisfied |
+| XCNT-04 | Phase 69 | ✅ Satisfied |
+| XCNT-05 | Phase 69 | ✅ Satisfied |
+| XCNT-06 | Phase 69 | ✅ Satisfied |
 
 **Coverage:**
 - v1 requirements: 6 total
-- Mapped to phases: 6
+- Satisfied: 6 ✓
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-16*
-*Last updated: 2026-05-16 after initial definition*
+*Last updated: 2026-05-16 — v1.21 audit passed; all requirements satisfied*
