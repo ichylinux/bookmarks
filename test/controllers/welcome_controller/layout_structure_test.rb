@@ -90,10 +90,10 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'ul.navigation a[href=?]', root_path
   end
 
-  def test_非ログイン時はドロワーが存在しない
+  def test_非ログイン時はランディングページが表示される
     get root_path
-    assert_response :redirect
-    assert_redirected_to landing_path
+    assert_response :success
+    assert_select '.landing-page', count: 1
   end
 
   def test_モダンテーマではuse_noteオフのときノートパネルが出力されない

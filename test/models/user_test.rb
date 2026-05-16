@@ -54,13 +54,12 @@ class UserTest < ActiveSupport::TestCase
     u = users(:twitter_user)
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter',
-      'uid' => 'tw-uid-2',
+      'uid' => u.uid,
       'info' => { 'name' => u.name },
       'credentials' => { 'token' => 'rotated_t', 'secret' => 'rotated_s' }
     )
     User.from_omniauth(auth)
     u.reload
-    assert_equal 'tw-uid-2', u.uid
     assert_equal 'rotated_t', u.token
     assert_equal 'rotated_s', u.token_secret
   ensure
@@ -71,6 +70,39 @@ class UserTest < ActiveSupport::TestCase
       token: 'fixture_plain_token',
       token_secret: 'fixture_plain_secret'
     )
+  end
+
+  def test_twitter_from_omniauth_finds_existing_user_by_uid
+    existing = users(:twitter_user)
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter',
+      'uid' => existing.uid,
+      'info' => { 'name' => 'Different Name' },
+      'credentials' => { 'token' => 'tok', 'secret' => 'sec' }
+    )
+    result = User.from_omniauth(auth)
+    assert_equal existing.id, result.id
+    assert_equal User.where(uid: existing.uid, provider: 'twitter').count, 1
+  ensure
+    existing.reload
+    existing.update_columns(
+      token: 'fixture_plain_token',
+      token_secret: 'fixture_plain_secret'
+    )
+  end
+
+  def test_twitter_from_omniauth_creates_user_when_uid_not_found
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter',
+      'uid' => 'brand-new-uid-999',
+      'info' => { 'name' => 'Newcomer' },
+      'credentials' => { 'token' => 'tok', 'secret' => 'sec' }
+    )
+    assert_difference 'User.count', 1 do
+      User.from_omniauth(auth)
+    end
+  ensure
+    User.where(uid: 'brand-new-uid-999', provider: 'twitter').delete_all
   end
 
   def test_token_encrypted_at_rest

@@ -1,8 +1,9 @@
 class WelcomeController < ApplicationController
   skip_before_action :authenticate_user!, only: :index
-  before_action :redirect_guest_to_landing, only: :index
 
   def index
+    return unless user_signed_in?
+
     @portal = current_user.portals.first
     @note = Note.new
     @notes = current_user.notes.active.recent
@@ -15,13 +16,4 @@ class WelcomeController < ApplicationController
 
     head :ok
   end
-
-  private
-
-  def redirect_guest_to_landing
-    return if user_signed_in?
-
-    redirect_to landing_path
-  end
-
 end

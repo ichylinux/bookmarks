@@ -42,7 +42,7 @@ class User < ApplicationRecord
         token_secret: oauth_secret
       }
 
-      user = User.where(name: data['name']).first
+      user = User.where(uid: uid, provider: provider).first
       if user
         user.assign_attributes(attrs)
         user.save(validate: false)

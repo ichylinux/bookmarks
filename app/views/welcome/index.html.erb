@@ -1,3 +1,4 @@
+<% if user_signed_in? %>
 <script>
   (function prehydrateMobilePortalColumn() {
     try {
@@ -69,4 +70,7 @@
       <%= render 'note_gadget' %>
     </div>
   <% end %>
+<% end %>
+<% else %>
+  <%= render 'landing' %>
 <% end %>
