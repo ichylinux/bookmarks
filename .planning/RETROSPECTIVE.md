@@ -423,6 +423,87 @@
 
 ---
 
+## Milestone: v1.20 — Column Count Preference
+
+**Shipped:** 2026-05-15
+**Phases:** 2 (67–68) | **Plans:** 4
+
+### What Was Built
+
+- `preferences.portal_column_count` integer column (NOT NULL, default 3); existing rows migrated silently (Phase 67).
+- `PORTAL_COLUMN_COUNTS = [3, 4]` constant on `Preference` with inclusion validation; matches `FONT_SIZES` pattern.
+- `Portal#portal_columns` fully parameterized — no hardcoded 3; downgrade guard skips `column_no >= column_count` and redistributes via `i % column_count` (Phase 67).
+- Preferences select control with `3列`/`4列` (ja) and `3 columns`/`4 columns` (en) locale strings; `portal--4col` conditional class; `.portal--4col .gadgets { width: 25% }` SCSS rule; mobile tab strip unchanged (Phase 68).
+- Cucumber scenario in `features/07.設定.feature`; Minitest controller save/render and portal layout 3/4-column tests (Phase 68).
+- Tri-suite green: `yarn run lint` ✓ · 377 Minitest ✓ · 25 Cucumber scenarios ✓.
+
+### What Worked
+
+- **`FONT_SIZES` constant as direct template:** `PORTAL_COLUMN_COUNTS = [3, 4]` + inclusion validation + `default_preference` initialization followed the established pattern exactly, requiring no new decisions on the validation shape.
+- **Two-phase split (data first, UI second):** Phase 67 delivered green Minitest on the model/portal layer before Phase 68 touched views and Cucumber, keeping blast radius small on each gate.
+
+### What Was Inefficient
+
+- **Phases 67–68 executed without `.planning/phases/` SUMMARY.md artifacts:** Same pattern as v1.19; MILESTONES.md entry carried the accomplishments. Milestone audit file not created for v1.20 (no blocking gaps found).
+- **Cucumber selector deviation discovered mid-phase:** `form.preferences-form` (from explicit `html: { class: }` in `form_with`) required instead of `form.edit_user`; the deviation was found during test authoring, not spec time.
+
+### Patterns Established
+
+- **`form_with` with explicit `html: { class: }` drops `edit_user` class:** Use `.preferences-form` as the Cucumber selector for preferences form steps, not `.edit_user`.
+- **`portal--4col` modifier + SCSS `@media` rule:** Desktop-only column override stays in `welcome.css.scss`; theme files unchanged; mobile breakpoint unaffected.
+
+### Key Lessons
+
+1. When the new preference value is a fixed small set, a constant (`[3, 4]`) + inclusion validation is the right shape — avoids range boundary edge cases.
+2. Confirm the exact CSS class emitted by `form_with` before writing Cucumber steps; `form_for`-era assumptions (`edit_user`) do not apply.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
+## Milestone: v1.21 — X Gadget Tweet Count Preference
+
+**Shipped:** 2026-05-16
+**Phases:** 1 (69) | **Plans:** 1
+
+### What Was Built
+
+- `display_count` integer column (DB-default 5) on `x_accounts`; `f.number_field :display_count` bound to account value on `/x_accounts` management card.
+- `:display_count` permitted in `x_account_params` strong params; PATCH saves to DB.
+- `XClient#fetch_recent_tweets(limit:)` requests `[limit, 5].max` from the X API (minimum 5 per API contract), then slices result to user's exact preference — fixes API error when `display_count < 5`.
+- `set_display_count_default` `before_save` callback as nil-guard only (fires after validation, which already blocks ≤ 0); DB default handles the practical nil case.
+- Controller test verifies PATCH persists changed value; 3 model tests cover callback (default), negative rejection, and float rejection.
+- Tri-suite green: `yarn run lint` ✓ · 382 Minitest ✓ · 25 Cucumber scenarios ✓.
+
+### What Worked
+
+- **Single-phase milestone with clear column + UI + test scope:** `display_count` was a natural addition to the existing `x_accounts` row; schema change, UI, and tests landed atomically in one commit.
+- **Audit-first close:** `v1.21-MILESTONE-AUDIT.md` reached `passed` (6/6 requirements, 2/2 flows) before archive, giving clean traceability despite autonomous execution.
+
+### What Was Inefficient
+
+- **No GSD discuss → plan → execute workflow for Phase 69:** Executed autonomously without standard artifacts; VALIDATION.md not produced. Tri-suite is the verification gate; Nyquist compliance noted as `missing` in the audit.
+- **Debug logging lines required cleanup before milestone close:** `display_count` debug log left in the controller was caught during milestone review, not during implementation.
+
+### Patterns Established
+
+- **X API `max_results` lower-bound clamping pattern:** When passing a user preference as `max_results`, always apply `[pref, API_MINIMUM].max` then slice result to `pref` — separates API constraint (≥ 5) from user preference (any positive integer).
+- **Per-account preference on the resource row (not global):** `display_count` on `x_accounts` (not `preferences`) follows the principle of storing preference nearest to the entity it describes.
+
+### Key Lessons
+
+1. The X API `max_results` minimum is 5 — always clamp at call site and slice after; do not expose the constraint to the user.
+2. A `before_save` callback that duplicates validation logic is harmless but creates audit noise; prefer a DB default + nil-guard only.
+3. Even for single-phase milestones, an audit file as checklist before archive pays for itself by surfacing deferred items formally.
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -439,6 +520,8 @@
 | v1.17 | 3 (57–59) | Security-first email elevation (dummy-only + collision + race rescue); VERIFICATION-led close without SUMMARY files |
 | v1.18 | 4 (60–63) | Highest requirement count (31 REQ-IDs); v1.16 Mastodon pattern reused wholesale; all-soft-delete intentional deviation documented in commit + audit |
 | v1.19 | 3 (64–66) | Infrastructure-only milestone (no user-facing features); WebMock + Faraday `:test` replaces bespoke 133-line prepend stub file |
+| v1.20 | 2 (67–68) | Preference constant pattern (`PORTAL_COLUMN_COUNTS`) + two-phase data-first split; first portal layout parameterization |
+| v1.21 | 1 (69) | Single-phase autonomous execution; X API lower-bound clamping pattern established; per-account preference stored on resource row |
 
 ### Cumulative quality
 
@@ -454,6 +537,8 @@
 | v1.17 | Minitest + Cucumber green (one-rerun policy) | No new gems/migrations; E2E for email path explicitly deferred per REQUIREMENTS |
 | v1.18 | Minitest 364/364 + Cucumber 24 scenarios green | OAuth1 + new HTTP client + gadget pattern; XTEST-03 controller gap caught at audit, closed before archive |
 | v1.19 | Minitest 363/363 + Cucumber 24 scenarios green | Infrastructure cleanup only; WebMock `disable_net_connect!` now enforced globally; no regressions |
+| v1.20 | Minitest 377/377 + Cucumber 25 scenarios green | First portal layout preference; `portal--4col` SCSS modifier; Cucumber step selector deviation caught mid-phase |
+| v1.21 | Minitest 382/382 + Cucumber 25 scenarios green | Per-account tweet count preference; X API `max_results` clamp pattern; autonomous single-phase execution |
 
 ### Top lessons (carry forward)
 
@@ -467,3 +552,5 @@
 8. Verification-debt milestones need a shared rubric phase first; the rubric investment pays for itself across all downstream closure phases (v1.5).
 9. If you skip `.planning/phases/` artifacts for speed, publish a milestone audit early so archival/reviews cite one authoritative gap ledger instead of inferring from git history (v1.6).
 10. WebMock and Faraday `:test` are complementary: use Faraday `:test` when the production code accepts a `connection:` injection parameter, and WebMock `stub_request` when it doesn't (v1.19).
+11. When the new preference is a fixed small set, use a constant + inclusion validation (not a range) — matches the `FONT_SIZES` pattern and avoids boundary edge cases (v1.20).
+12. The X API `max_results` minimum is 5 — clamp at call site with `[pref, 5].max`, then slice after fetch; store and display the user's exact preference unchanged (v1.21).
