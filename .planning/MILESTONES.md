@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.22 — Landing at Root (shipped 2026-05-17)
+
+**Scope:** Phases 70–72 (3 phases, 3 plans) — inline landing for guests, `/landing` route removal, Twitter uid lookup fix.
+
+**Key accomplishments:**
+
+- Unauthenticated `/` now renders landing content inline via `WelcomeController#index` guest branch — no HTTP redirect to `/landing`.
+- `/landing` route, `LandingController`, and `redirect_guest_to_landing` before_action removed entirely from the app.
+- `User.from_omniauth` Twitter branch switched from `name` to `uid` lookup — fixes deferred XAUTH-FUT-01 bug from v1.18.
+- All test contracts updated: redirect assertions replaced with 200 + inline content assertions; regression coverage added for both auth states at `/`.
+- Tri-suite gate: `yarn run lint` ✓ · 384 Minitest ✓ · 25 Cucumber ✓
+
+**Archives:** [ROADMAP snapshot](milestones/v1.22-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.22-REQUIREMENTS.md)
+
+---
+
 ## v1.21 — X Gadget Tweet Count Preference (shipped 2026-05-16)
 
 **Scope:** Phase 69 — per-account tweet display count UI, persistence, and tests.

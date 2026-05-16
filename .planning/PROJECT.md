@@ -8,21 +8,11 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.22 Landing at Root
-
-**Goal:** Move the landing page inline to `/`, remove the separate `/landing` route, and fix the deferred Twitter uid lookup bug.
-
-**Target features:**
-- Unauthenticated `/` renders landing content inline (no redirect to `/landing`)
-- Authenticated `/` unchanged (dashboard)
-- `/landing` route removed entirely
-- `from_omniauth` Twitter lookup switched from `name` → `uid` (XAUTH-FUT-01)
-
 ## Current State
 
-**Status:** v1.21 complete (2026-05-16); v1.22 planning in progress
+**Status:** v1.22 complete (2026-05-17)
 
-v1.21 delivered per-account tweet display count: `display_count` integer column (DB-default 5) on `x_accounts`; number input on `/x_accounts` management card; `display_count` permitted in strong params; `XClient#fetch_recent_tweets` clamps API `max_results` to minimum 5 (X API constraint) then slices result to user preference; `test_display_countを変更できる` controller test + 3 model tests (default callback, numericality validation). Tri-suite green (382 Minitest, 25 Cucumber).
+v1.22 delivered inline landing for guests at `/` (no redirect): `WelcomeController#index` now branches on `user_signed_in?` to render landing content or dashboard; `LandingController`, `/landing` route, and `redirect_guest_to_landing` before_action removed; `User.from_omniauth` Twitter branch now looks up by `uid` (fixing XAUTH-FUT-01 deferred from v1.18); all test contracts updated. Tri-suite green (384 Minitest, 25 Cucumber).
 
 **Previously shipped:** v1.18 — X (Twitter) Account Following (2026-05-14)
 
@@ -106,12 +96,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ User can select portal column count (3 or 4) from the preferences screen (ja/en locale strings, `PORTAL_COLUMN_COUNTS` constant) — **v1.20 Phase 68**
 - ✓ Portal renders user-chosen column count on desktop; `Portal#portal_columns` parameterized via stored preference; mobile tab strip unchanged; downgrade 4→3 redistributes gracefully — **v1.20 Phases 67–68**
 - ✓ Per-account tweet display count configurable from `/x_accounts`; persisted on `x_accounts.display_count`; welcome gadget honours per-account value via `XClient#fetch_recent_tweets(limit:)` — **v1.21 Phase 69**
+- ✓ Unauthenticated `/` renders landing content inline; no redirect to `/landing`; `/landing` route removed; `LandingController` and `redirect_guest_to_landing` guard deleted — **v1.22 Phase 70**
+- ✓ Authenticated `/` unchanged (dashboard at 200); all test contracts updated for inline rendering; regression coverage for both auth states — **v1.22 Phase 71**
+- ✓ `from_omniauth` Twitter branch looks up by `uid` instead of `name`; Minitest covers found + not-found paths — **v1.22 Phase 72**
 
 ### Active
 
-- [ ] ROOT-01: Unauthenticated `/` renders landing content inline; no redirect to `/landing` — **v1.22**
-- [ ] ROOT-02: `/landing` route removed; authenticated `/` unchanged — **v1.22**
-- [ ] XAUTH-01: `from_omniauth` Twitter branch looks up by `uid` instead of `name` — **v1.22**
+*(No active requirements — next milestone to be defined)*
 
 ### Out of Scope (revisit when planning)
 
@@ -186,6 +177,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Cucumber step uses `form.preferences-form` not `form.edit_user` (v1.20) | `form_with` with explicit `html: { class: }` doesn't append the default `edit_user` class unlike `form_for` | ✓ Good — correct selector; documented deviation from initial 068-01 implementation |
 | `before_save` callback as nil-guard only for display_count (v1.21) | Validation fires before `before_save`; callback protects against nil only (DB default handles this in practice) | ✓ Good — redundancy harmless; documented in audit |
 | XClient requests `max(limit, 5)` for X API constraint (v1.21) | X API v2 requires `max_results >= 5`; slicing result after fetch honours exact user preference | ✓ Good — fixes `display_count < 5` API error without any UX change |
+| Inline guest branch in `WelcomeController#index`, not a separate presenter (v1.22) | `LandingController` deleted; guest path added directly to `index` with `user_signed_in?` branch — minimal surface area, no new controller | ✓ Good — routing simplified; 0 redirects for guests; `/landing` URL gone from the app |
+| No redirect fallback from `/landing` to `/` (v1.22) | Personal app with single known user; old `/landing` links would hit a routing error — acceptable; avoids permanent redirect complexity | ✓ Good — clean removal; documented in requirements archive |
+| `from_omniauth` Twitter uid lookup independent phase (v1.22 Phase 72) | Deferred bug fix (XAUTH-FUT-01) has no coupling to routing refactor — kept as parallel phase 72 with own test scope | ✓ Good — separation allows cherry-pick; no cross-phase risk |
 
 ## Evolution
 
@@ -204,6 +198,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.22 — Landing at Root (2026-05-17)
+
+**Delivered:** Inline landing for guests at `/` (no redirect); `LandingController`, `/landing` route, and `redirect_guest_to_landing` before_action removed entirely; `User.from_omniauth` Twitter branch now looks up by `uid` (fixes XAUTH-FUT-01 from v1.18); all test contracts updated for inline rendering with regression coverage for both auth states. Tri-suite green (384 Minitest, 25 Cucumber).
 
 ### v1.21 — X Gadget Tweet Count Preference (2026-05-16)
 
@@ -274,4 +272,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 — v1.22 Landing at Root planning started*
+*Last updated: 2026-05-17 after v1.22 milestone*

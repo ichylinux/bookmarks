@@ -2,6 +2,46 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.22 — Landing at Root
+
+**Shipped:** 2026-05-17
+**Phases:** 3 (70–72) | **Plans:** 3
+
+### What Was Built
+
+- Inline landing for guests at `/`: `WelcomeController#index` branches on `user_signed_in?`; no redirect; landing HTML rendered at 200.
+- Complete removal of `/landing` route, `LandingController`, and `redirect_guest_to_landing` before_action.
+- `User.from_omniauth` Twitter branch switched from `name` to `uid` lookup (fixes XAUTH-FUT-01 deferred from v1.18).
+- Test contracts updated across Minitest + Cucumber; both auth states at `/` covered with regression guards.
+- Tri-suite green: lint ✓ · 384 Minitest ✓ · 25 Cucumber ✓.
+
+### What Worked
+
+- **Parallel phase structure:** Phase 72 (Twitter uid fix) was independent of 70–71 and could have run concurrently; keeping it separate avoided cross-phase test noise.
+- **Surgical removal:** Deleting `LandingController` entirely rather than leaving a redirect stub kept the routing surface clean and tests unambiguous.
+- **Single `feat(v1.22)` commit:** The entire routing refactor, controller deletion, uid fix, and test updates landed atomically — easy to reason about and revert if needed.
+
+### What Was Inefficient
+
+- **No `.planning/phases/` artifacts for Phases 70–72:** Executed without standard GSD phase directories; traceability relies on git commit messages and ROADMAP success criteria rather than formal SUMMARY.md files. This is a recurring pattern for fast milestones.
+- **No milestone audit before close:** Proceeding without `v1.22-MILESTONE-AUDIT.md` — requirements were verified informally via git/ROADMAP rather than a formal traceability check.
+
+### Patterns Established
+
+- **`user_signed_in?` branch in `index` over separate controller:** When a root route needs auth-state-aware content, a single controller with a conditional branch is simpler than two controllers + a redirect; less routing surface to test.
+
+### Key Lessons
+
+1. A deferred bug fix (XAUTH-FUT-01) can be cleanly picked up in a related milestone if it has no coupling to the main changes — keeps the fix close to the feature context without bloating the milestone.
+2. Removing a route entirely (not redirecting) is the right call when the old URL had no external SEO/bookmark value — avoids permanent redirect complexity.
+3. Even fast milestones benefit from updating the REQUIREMENTS traceability table before the commit that marks phases complete (the "Pending" traceability gap at archive was purely a documentation miss, not a functional gap).
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Milestone: v1.1 — Modern JavaScript
 
 **Shipped:** 2026-04-27  
@@ -522,6 +562,7 @@
 | v1.19 | 3 (64–66) | Infrastructure-only milestone (no user-facing features); WebMock + Faraday `:test` replaces bespoke 133-line prepend stub file |
 | v1.20 | 2 (67–68) | Preference constant pattern (`PORTAL_COLUMN_COUNTS`) + two-phase data-first split; first portal layout parameterization |
 | v1.21 | 1 (69) | Single-phase autonomous execution; X API lower-bound clamping pattern established; per-account preference stored on resource row |
+| v1.22 | 3 (70–72) | Routing simplification milestone; `LandingController` deleted, guest path inlined into `WelcomeController#index`; deferred uid bug fixed in parallel phase |
 
 ### Cumulative quality
 
@@ -539,6 +580,7 @@
 | v1.19 | Minitest 363/363 + Cucumber 24 scenarios green | Infrastructure cleanup only; WebMock `disable_net_connect!` now enforced globally; no regressions |
 | v1.20 | Minitest 377/377 + Cucumber 25 scenarios green | First portal layout preference; `portal--4col` SCSS modifier; Cucumber step selector deviation caught mid-phase |
 | v1.21 | Minitest 382/382 + Cucumber 25 scenarios green | Per-account tweet count preference; X API `max_results` clamp pattern; autonomous single-phase execution |
+| v1.22 | Minitest 384/384 + Cucumber 25 scenarios green | Routing simplification; `LandingController` deleted; `from_omniauth` uid fix; no new test infrastructure needed |
 
 ### Top lessons (carry forward)
 
@@ -554,3 +596,5 @@
 10. WebMock and Faraday `:test` are complementary: use Faraday `:test` when the production code accepts a `connection:` injection parameter, and WebMock `stub_request` when it doesn't (v1.19).
 11. When the new preference is a fixed small set, use a constant + inclusion validation (not a range) — matches the `FONT_SIZES` pattern and avoids boundary edge cases (v1.20).
 12. The X API `max_results` minimum is 5 — clamp at call site with `[pref, 5].max`, then slice after fetch; store and display the user's exact preference unchanged (v1.21).
+13. For auth-state-aware root routes, a single controller with a `user_signed_in?` branch is simpler than two controllers + redirect — fewer routes, unambiguous test contracts (v1.22).
+14. Update the REQUIREMENTS traceability table in the same commit that marks phases complete — "Pending" rows at archive time are a documentation miss that creates confusion during milestone close (v1.22).

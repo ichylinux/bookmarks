@@ -23,58 +23,20 @@
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
 - ✅ **v1.20 — Column Count Preference** — Phases 67–68 (shipped 2026-05-15) — [archived](milestones/v1.20-ROADMAP.md)
 - ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16) — [archived](milestones/v1.21-ROADMAP.md)
-- ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17)
+- ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
 
 ## Phases
 
-### v1.22 — Landing at Root (Phases 70–72)
+<details>
+<summary>✅ v1.22 — Landing at Root (Phases 70–72) — SHIPPED 2026-05-17</summary>
 
-- [x] **Phase 70: Routing Refactor & Code Cleanup** — Inline landing for guests at `/`, remove `/landing` route and `LandingController`, remove `redirect_guest_to_landing` guard
-- [x] **Phase 71: Test Contracts** — Update existing redirect assertions, add regression coverage for both auth states at `/`
-- [x] **Phase 72: Twitter uid Lookup Fix** — Switch `from_omniauth` Twitter branch from name to uid lookup, Minitest coverage
+Full goals, success criteria, and notes: [milestones/v1.22-ROADMAP.md](milestones/v1.22-ROADMAP.md).
 
-## Phase Details
+- [x] Phase 70: Routing Refactor & Code Cleanup — 2026-05-17
+- [x] Phase 71: Test Contracts — 2026-05-17
+- [x] Phase 72: Twitter uid Lookup Fix — 2026-05-17
 
-### Phase 70: Routing Refactor & Code Cleanup
-**Goal**: Unauthenticated users see landing content inline at `/` with no redirect; `/landing` route and supporting code removed
-**Depends on**: Nothing (Phase 69 complete)
-**Requirements**: ROOT-01, ROOT-02, ROOT-03, ROOT-04
-**Success Criteria** (what must be TRUE):
-  1. An unauthenticated browser request to `/` receives a 200 response with landing page HTML — no 302 to `/landing`
-  2. An authenticated browser request to `/` still receives the dashboard with a 200 response (behavior unchanged)
-  3. Requesting `/landing` returns a routing error (no route match) — the URL is gone from the app
-  4. `WelcomeController` contains no `redirect_guest_to_landing` callback; `LandingController` file and its route entry are deleted
-**Plans**: TBD
-
-### Phase 71: Test Contracts
-**Goal**: All tests reflect inline rendering; regression contracts confirm both auth states at `/` in both locales
-**Depends on**: Phase 70
-**Requirements**: ROOT-05
-**Success Criteria** (what must be TRUE):
-  1. No existing test asserts a redirect from `/` to `/landing`; any such assertions are updated to assert 200 + inline content
-  2. Integration tests assert that an unauthenticated request to `/` renders landing content (not a redirect)
-  3. Integration tests assert that an authenticated request to `/` renders the dashboard (unchanged)
-  4. Tri-suite gate passes: `yarn run lint` green, `bin/rails test` green, `bundle exec rake dad:test` green (0 failed scenarios)
-**Plans**: TBD
-
-### Phase 72: Twitter uid Lookup Fix
-**Goal**: `User.from_omniauth` Twitter branch identifies existing users by `uid`, eliminating the deferred name-based lookup bug
-**Depends on**: Nothing (independent of Phases 70–71)
-**Requirements**: XAUTH-01, XAUTH-02
-**Success Criteria** (what must be TRUE):
-  1. `User.from_omniauth` for Twitter finds an existing user record by `uid` (not `name`)
-  2. Minitest covers the found-by-uid path: existing user is returned without creating a duplicate
-  3. Minitest covers the not-found path: a new user record is created when no uid match exists
-  4. `bin/rails test` remains green with the new coverage included
-**Plans**: TBD
-
-## Progress Table
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 70. Routing Refactor & Code Cleanup | 1/1 | Complete | 2026-05-17 |
-| 71. Test Contracts | 1/1 | Complete | 2026-05-17 |
-| 72. Twitter uid Lookup Fix | 1/1 | Complete | 2026-05-17 |
+</details>
 
 <details>
 <summary>✅ v1.21 — X Gadget Tweet Count Preference (Phase 69) — SHIPPED 2026-05-16</summary>
@@ -144,4 +106,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-17 — v1.22 shipped (Landing at Root, Phases 70–72)*
+*Last updated: 2026-05-17 — v1.22 archived (Landing at Root, Phases 70–72)*
