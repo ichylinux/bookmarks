@@ -1,30 +1,26 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.22
-milestone_name: Landing at Root
-status: complete
+milestone: v1.23
+milestone_name: Icon Display Preference
+status: planning
 last_updated: "2026-05-17T00:00:00.000Z"
-last_activity: 2026-05-17 — All phases complete (70–72)
+last_activity: 2026-05-17 — Milestone v1.23 started
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: — (all complete)
+Phase: Not started (defining requirements)
 Plan: —
-Status: Milestone complete — tri-suite green (384 runs, 0 failures; Cucumber 25/25)
-Last activity: 2026-05-17 — Phases 70–72 shipped
-
-```
-Progress: [░░░░░░░░░░] 0/3 phases complete
-```
+Status: Defining requirements
+Last activity: 2026-05-17 — Milestone v1.23 started
 
 ## Project Reference
 

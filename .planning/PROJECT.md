@@ -8,6 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.23 Icon Display Preference
+
+**Goal:** Let users opt out of icons across the UI for a cleaner, text-only experience.
+
+**Target features:**
+- Boolean `show_icons` preference on `preferences` table (default: true)
+- Toggle control in `/preferences` with ja/en locale strings
+- All authenticated-UI icons (gadget titles, drawer nav) suppressed when preference is off
+- Landing page icons unaffected (unauthenticated surface)
+- Minitest + Cucumber coverage; tri-suite green gate
+
 ## Current State
 
 **Status:** v1.22 complete (2026-05-17)
@@ -102,7 +113,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-*(No active requirements — next milestone to be defined)*
+- [ ] Boolean `show_icons` preference (default: true) on `preferences` table — **v1.23**
+- [ ] Preference toggle in `/preferences` with ja/en labels — **v1.23**
+- [ ] Gadget-title icons and drawer nav icons suppressed when `show_icons` is false — **v1.23**
+- [ ] Landing page icons unaffected (unauthenticated surface, no preference available) — **v1.23**
+- [ ] Minitest + Cucumber tri-suite gate — **v1.23**
 
 ### Out of Scope (revisit when planning)
 
@@ -273,4 +288,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 after v1.22 milestone*
+*Last updated: 2026-05-17 — v1.23 milestone started*
