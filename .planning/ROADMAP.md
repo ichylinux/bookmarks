@@ -23,15 +23,15 @@
 - ✅ **v1.19 — HTTP test stubs → WebMock** — Phases 64–66 (shipped 2026-05-14) — [archived](milestones/v1.19-ROADMAP.md)
 - ✅ **v1.20 — Column Count Preference** — Phases 67–68 (shipped 2026-05-15) — [archived](milestones/v1.20-ROADMAP.md)
 - ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16) — [archived](milestones/v1.21-ROADMAP.md)
-- 🔄 **v1.22 — Landing at Root** — Phases 70–72 (active)
+- ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17)
 
 ## Phases
 
 ### v1.22 — Landing at Root (Phases 70–72)
 
-- [ ] **Phase 70: Routing Refactor & Code Cleanup** — Inline landing for guests at `/`, remove `/landing` route and `LandingController`, remove `redirect_guest_to_landing` guard
-- [ ] **Phase 71: Test Contracts** — Update existing redirect assertions, add regression coverage for both auth states at `/`
-- [ ] **Phase 72: Twitter uid Lookup Fix** — Switch `from_omniauth` Twitter branch from name to uid lookup, Minitest coverage
+- [x] **Phase 70: Routing Refactor & Code Cleanup** — Inline landing for guests at `/`, remove `/landing` route and `LandingController`, remove `redirect_guest_to_landing` guard
+- [x] **Phase 71: Test Contracts** — Update existing redirect assertions, add regression coverage for both auth states at `/`
+- [x] **Phase 72: Twitter uid Lookup Fix** — Switch `from_omniauth` Twitter branch from name to uid lookup, Minitest coverage
 
 ## Phase Details
 
@@ -72,9 +72,9 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 70. Routing Refactor & Code Cleanup | 0/? | Not started | - |
-| 71. Test Contracts | 0/? | Not started | - |
-| 72. Twitter uid Lookup Fix | 0/? | Not started | - |
+| 70. Routing Refactor & Code Cleanup | 1/1 | Complete | 2026-05-17 |
+| 71. Test Contracts | 1/1 | Complete | 2026-05-17 |
+| 72. Twitter uid Lookup Fix | 1/1 | Complete | 2026-05-17 |
 
 <details>
 <summary>✅ v1.21 — X Gadget Tweet Count Preference (Phase 69) — SHIPPED 2026-05-16</summary>
@@ -144,4 +144,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-17 — v1.22 roadmap created (Landing at Root, Phases 70–72)*
+*Last updated: 2026-05-17 — v1.22 shipped (Landing at Root, Phases 70–72)*

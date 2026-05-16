@@ -2,25 +2,25 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Landing at Root
-status: in_progress
+status: complete
 last_updated: "2026-05-17T00:00:00.000Z"
-last_activity: 2026-05-17 — Roadmap created (Phases 70–72)
+last_activity: 2026-05-17 — All phases complete (70–72)
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 70 — Routing Refactor & Code Cleanup (next up)
+Phase: — (all complete)
 Plan: —
-Status: Roadmap complete; ready to plan Phase 70
-Last activity: 2026-05-17 — Roadmap created (Phases 70–72)
+Status: Milestone complete — tri-suite green (384 runs, 0 failures; Cucumber 25/25)
+Last activity: 2026-05-17 — Phases 70–72 shipped
 
 ```
 Progress: [░░░░░░░░░░] 0/3 phases complete
