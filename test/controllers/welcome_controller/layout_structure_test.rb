@@ -64,6 +64,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '.drawer > nav', count: 1
     assert_select '.drawer > nav > a', count: 7
+    assert_select '.drawer .drawer-nav-icon', count: 7
   end
 
   def test_クラシックテーマでハンバーガーとドロワーが表示される

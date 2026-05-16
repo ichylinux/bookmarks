@@ -1,0 +1,7 @@
+<% link_options = local_assigns.except(:label, :url, :icon) %>
+<%= link_to url, link_options do %>
+  <span class="drawer-nav-icon" aria-hidden="true">
+    <%= render 'icons/service', variant: icon %>
+  </span>
+  <span class="drawer-nav-label"><%= label %></span>
+<% end %>

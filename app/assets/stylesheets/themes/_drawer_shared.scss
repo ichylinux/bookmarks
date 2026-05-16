@@ -75,13 +75,32 @@
   }
 
   .drawer nav a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-size: 1rem;
     line-height: 1.4;
     color: $drawer-link-color;
     padding-top: 12px;
     padding-bottom: 12px;
     text-decoration: none;
+  }
+
+  .drawer nav a .drawer-nav-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 0;
+  }
+
+  .drawer nav a .drawer-nav-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .drawer nav a .drawer-nav-label {
+    min-width: 0;
   }
 
   @if $drawer-link-hover-underline {
