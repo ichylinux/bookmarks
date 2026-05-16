@@ -4,7 +4,7 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
   def setup
     @source = Rails.root.join('app/assets/javascripts/portal_mobile_tabs.js').read
     @welcome_stylesheet = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read
-    @welcome_view = Rails.root.join('app/views/welcome/index.html.erb').read
+    @welcome_view = Rails.root.join('app/views/welcome/_dashboard.html.erb').read
   end
 
   test 'mobile column state is persisted and restored from localStorage' do
