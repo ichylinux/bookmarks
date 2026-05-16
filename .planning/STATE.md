@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.22
 milestone_name: Landing at Root
-status: planning
+status: in_progress
 last_updated: "2026-05-17T00:00:00.000Z"
-last_activity: 2026-05-17 — Milestone v1.22 started
+last_activity: 2026-05-17 — Roadmap created (Phases 70–72)
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,10 +17,14 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 70 — Routing Refactor & Code Cleanup (next up)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-17 — Milestone v1.22 started
+Status: Roadmap complete; ready to plan Phase 70
+Last activity: 2026-05-17 — Roadmap created (Phases 70–72)
+
+```
+Progress: [░░░░░░░░░░] 0/3 phases complete
+```
 
 ## Project Reference
 
@@ -47,7 +51,7 @@ See: `.planning/PROJECT.md` (Current Milestone: v1.22)
 
 ### Pending Todos
 
-None carried forward (XAUTH-FUT-01 is now in scope for v1.22).
+None.
 
 ### Blockers/Concerns
 
@@ -67,4 +71,4 @@ None.
 ## Session Continuity
 
 Milestone v1.21 completed (2026-05-16) — 1 phase (69), 6 requirements (XCNT-01 through XCNT-06), tri-suite green.
-Milestone v1.22 started (2026-05-17) — planning Landing at Root + XAUTH-FUT-01 fix.
+Milestone v1.22 started (2026-05-17) — roadmap created: Phase 70 (routing refactor), Phase 71 (test contracts), Phase 72 (Twitter uid fix).

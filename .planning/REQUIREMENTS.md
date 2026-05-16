@@ -39,10 +39,10 @@ Move the landing page to `/` (no redirect), remove the `/landing` route, and fix
 
 | REQ-ID | Phase | Plan | Status |
 |--------|-------|------|--------|
-| ROOT-01 | — | — | — |
-| ROOT-02 | — | — | — |
-| ROOT-03 | — | — | — |
-| ROOT-04 | — | — | — |
-| ROOT-05 | — | — | — |
-| XAUTH-01 | — | — | — |
-| XAUTH-02 | — | — | — |
+| ROOT-01 | Phase 70 | — | Pending |
+| ROOT-02 | Phase 70 | — | Pending |
+| ROOT-03 | Phase 70 | — | Pending |
+| ROOT-04 | Phase 70 | — | Pending |
+| ROOT-05 | Phase 71 | — | Pending |
+| XAUTH-01 | Phase 72 | — | Pending |
+| XAUTH-02 | Phase 72 | — | Pending |
