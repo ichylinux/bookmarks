@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.21
-milestone_name: — X Gadget Tweet Count Preference
-status: complete
-last_updated: "2026-05-16T00:00:00.000Z"
-last_activity: 2026-05-16 — Phase 69 complete; tri-suite green
+milestone: v1.22
+milestone_name: Landing at Root
+status: planning
+last_updated: "2026-05-17T00:00:00.000Z"
+last_activity: 2026-05-17 — Milestone v1.22 started
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 69 — Tweet Count UI, Persistence & Tests (complete)
+Phase: Not started (defining requirements)
 Plan: —
-Status: All phases complete; milestone ready for audit + archive
-Last activity: 2026-05-16 — Phase 69 shipped; tri-suite green (lint, 381 minitest, 25 Cucumber)
+Status: Defining requirements
+Last activity: 2026-05-17 — Milestone v1.22 started
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (Current Milestone: v1.21)
+See: `.planning/PROJECT.md` (Current Milestone: v1.22)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.  
-**Current focus:** v1.21 — Per-account tweet count preference on the X gadget — COMPLETE
+**Current focus:** v1.22 — Landing at Root
 
 ## Performance Metrics
 
@@ -47,7 +47,7 @@ See: `.planning/PROJECT.md` (Current Milestone: v1.21)
 
 ### Pending Todos
 
-- (Carry-forward) PITFALL-02 / `XAUTH-FUT-01`: switch Twitter `from_omniauth` lookup from `name` to `uid` — deferred to v1.22+.
+None carried forward (XAUTH-FUT-01 is now in scope for v1.22).
 
 ### Blockers/Concerns
 
@@ -66,9 +66,5 @@ None.
 
 ## Session Continuity
 
-Milestone v1.20 completed (2026-05-15) — 2 phases (67–68), 8 requirements (COL-01 through COL-08), tri-suite green.
 Milestone v1.21 completed (2026-05-16) — 1 phase (69), 6 requirements (XCNT-01 through XCNT-06), tri-suite green.
-
-## Operator Next Steps
-
-- Run /gsd:new-milestone to plan v1.22
+Milestone v1.22 started (2026-05-17) — planning Landing at Root + XAUTH-FUT-01 fix.

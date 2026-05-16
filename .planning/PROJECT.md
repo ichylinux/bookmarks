@@ -8,13 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone
+## Current Milestone: v1.22 Landing at Root
 
-**Status:** v1.21 shipped (2026-05-16) — planning v1.22
+**Goal:** Move the landing page inline to `/`, remove the separate `/landing` route, and fix the deferred Twitter uid lookup bug.
+
+**Target features:**
+- Unauthenticated `/` renders landing content inline (no redirect to `/landing`)
+- Authenticated `/` unchanged (dashboard)
+- `/landing` route removed entirely
+- `from_omniauth` Twitter lookup switched from `name` → `uid` (XAUTH-FUT-01)
 
 ## Current State
 
-**Status:** v1.21 complete (2026-05-16)
+**Status:** v1.21 complete (2026-05-16); v1.22 planning in progress
 
 v1.21 delivered per-account tweet display count: `display_count` integer column (DB-default 5) on `x_accounts`; number input on `/x_accounts` management card; `display_count` permitted in strong params; `XClient#fetch_recent_tweets` clamps API `max_results` to minimum 5 (X API constraint) then slices result to user preference; `test_display_countを変更できる` controller test + 3 model tests (default callback, numericality validation). Tri-suite green (382 Minitest, 25 Cucumber).
 
@@ -103,8 +109,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-- [ ] Decide whether `/landing` replaces `/` after conversion evaluation
-- [ ] Fix XAUTH-FUT-01: `from_omniauth` Twitter branch still looks up by `name` — switch to `uid` (prerequisite `users.uid` persisted by v1.18 Phase 60; deferred to v1.19+ to avoid breaking pre-v1.18 users who haven't re-authed)
+- [ ] ROOT-01: Unauthenticated `/` renders landing content inline; no redirect to `/landing` — **v1.22**
+- [ ] ROOT-02: `/landing` route removed; authenticated `/` unchanged — **v1.22**
+- [ ] XAUTH-01: `from_omniauth` Twitter branch looks up by `uid` instead of `name` — **v1.22**
 
 ### Out of Scope (revisit when planning)
 
@@ -267,4 +274,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-16 after v1.21 milestone*
+*Last updated: 2026-05-17 — v1.22 Landing at Root planning started*
