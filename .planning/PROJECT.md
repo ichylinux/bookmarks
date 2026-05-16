@@ -135,6 +135,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Constraints
 
+- **Git push**: Never run `git push` — all pushes to remote must be done manually by the user
 - **Stack**: Sprockets + jQuery + existing gem pipeline — new JS must not break asset compilation or production minification
 - **Browsers**: Target environments implied by Babel `preset-env` and project policy
 - **Compatibility**: Preserve behaviour of `.js.erb` and controller-driven JS responses where used
