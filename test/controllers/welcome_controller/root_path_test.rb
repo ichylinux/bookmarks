@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RootPathTest < ActionDispatch::IntegrationTest
+class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
   def test_未ログインでrootはランディングページを表示する
     get root_path
     assert_response :success
