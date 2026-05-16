@@ -29,17 +29,17 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ICON-01 | TBD | Pending |
-| ICON-02 | TBD | Pending |
-| ICON-03 | TBD | Pending |
-| ICON-04 | TBD | Pending |
-| ICON-05 | TBD | Pending |
+| ICON-01 | Phase 73 | Pending |
+| ICON-02 | Phase 74 | Pending |
+| ICON-03 | Phase 74 | Pending |
+| ICON-04 | Phase 75 | Pending |
+| ICON-05 | Phase 75 | Pending |
 
 **Coverage:**
 - v1 requirements: 5 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 5 ⚠️
+- Mapped to phases: 5 (roadmap created 2026-05-17)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-17*
-*Last updated: 2026-05-17 after initial definition*
+*Last updated: 2026-05-17 — traceability table filled after roadmap creation*

@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- [ ] **v1.23 — Icon Display Preference** — Phases 73–75 (active)
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
@@ -26,6 +27,63 @@
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
 
 ## Phases
+
+### v1.23 — Icon Display Preference
+
+- [ ] **Phase 73: Data + Model Layer** - Migration, model constant, default_preference, validation
+- [ ] **Phase 74: CSS + View Layer** - Body class in layout, CSS hide rules in SCSS
+- [ ] **Phase 75: Preferences UI + Locale + Tests** - Toggle control, ja/en strings, Minitest, tri-suite gate
+
+## Phase Details
+
+### Phase 73: Data + Model Layer
+**Goal**: The application has a persisted, validated `show_icons` preference that defaults to true for all users
+**Depends on**: Nothing (data foundation)
+**Requirements**: ICON-01
+**Success Criteria** (what must be TRUE):
+  1. `preferences` table has a `show_icons` boolean column with NOT NULL constraint and DB-level default of true
+  2. New users (created via `default_preference`) get `show_icons: true` without explicit assignment
+  3. `Preference` model rejects `show_icons: nil` with a validation error
+  4. Existing users' preferences rows are migrated without error (migration is idempotent)
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 74: CSS + View Layer
+**Goal**: Users who have `show_icons: false` see no icons on gadget titles or the drawer navigation, with no change to the landing page
+**Depends on**: Phase 73
+**Requirements**: ICON-02, ICON-03
+**Success Criteria** (what must be TRUE):
+  1. When `show_icons` is false, the application layout emits `body.no-icons` (matching the `body.modern` pattern)
+  2. When `body.no-icons` is present, all `.gadget-title-icon` elements are hidden via CSS (welcome gadgets, mastodon/x/feeds/calendars detail pages)
+  3. When `body.no-icons` is present, all `.drawer-nav-icon` elements in the modern-theme drawer are hidden via CSS
+  4. When `show_icons` is true (default), icons display normally — no visual regression for existing users
+  5. Unauthenticated `/` (landing content) is unaffected: landing page icons render regardless of any preference
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 75: Preferences UI + Locale + Tests
+**Goal**: Users can toggle icon display from `/preferences` with correct ja/en labels, and the full test suite is green
+**Depends on**: Phase 74
+**Requirements**: ICON-04, ICON-05
+**Success Criteria** (what must be TRUE):
+  1. `/preferences` shows a checkbox or toggle for icon display with a Japanese label (e.g. 「アイコンを表示する」) and an English equivalent
+  2. Saving the preference with icons off persists `show_icons: false` and the page reloads without icons (body.no-icons present)
+  3. Saving the preference with icons on persists `show_icons: true` and icons are visible again
+  4. i18n parity test passes: every `show_icons`-related key present in `ja.yml` also exists in `en.yml` and vice versa
+  5. Minitest covers: `Preference` model default (show_icons true), validation (nil rejected), and `PreferencesController` save round-trip (on→off, off→on)
+  6. `yarn run lint`, `bin/rails test`, and `bundle exec rake dad:test` all pass (tri-suite green gate)
+**Plans**: TBD
+**UI hint**: yes
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 73. Data + Model Layer | 0/? | Not started | - |
+| 74. CSS + View Layer | 0/? | Not started | - |
+| 75. Preferences UI + Locale + Tests | 0/? | Not started | - |
+
+---
 
 <details>
 <summary>✅ v1.22 — Landing at Root (Phases 70–72) — SHIPPED 2026-05-17</summary>
@@ -106,4 +164,4 @@ Full goals, success criteria, and notes: [milestones/v1.16-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-17 — v1.22 archived (Landing at Root, Phases 70–72)*
+*Last updated: 2026-05-17 — v1.23 roadmap created (Icon Display Preference, Phases 73–75)*
