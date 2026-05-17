@@ -130,4 +130,91 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
   def test_routing_delete_notes_member_to_destroy
     assert_routing({ path: '/notes/1', method: :delete }, { controller: 'notes', action: 'destroy', id: '1' })
   end
+
+  # gadget action tests
+
+  def test_gadget_returns_note_gadget_html
+    sign_in @user
+    get gadget_notes_path
+    assert_response :success
+    assert_not_includes response.body, '<html'
+    assert_select '.note-gadget', minimum: 1
+  end
+
+  def test_gadget_assigns_new_note
+    sign_in @user
+    get gadget_notes_path
+    assert_response :success
+    # Fragment contains the new-note form (action=notes_path POST) confirming @note is a new record
+    assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
+  end
+
+  def test_gadget_assigns_active_notes
+    Note.where(user_id: @user.id).delete_all
+    own_note = @user.notes.create!(body: 'active note for assigns test')
+    sign_in @user
+    get gadget_notes_path
+    assert_response :success
+    assert_includes response.body, own_note.body
+  end
+
+  def test_gadget_unauthenticated_redirects
+    get gadget_notes_path
+    assert_redirected_to new_user_session_path
+  end
+
+  def test_gadget_empty_notes_state_ja
+    Note.where(user_id: @user.id).delete_all
+    sign_in @user
+    I18n.with_locale(:ja) do
+      get gadget_notes_path
+    end
+    assert_response :success
+    assert_select '.note-empty', text: 'メモはまだありません', count: 1
+  end
+
+  def test_gadget_empty_notes_state_en
+    Note.where(user_id: @user.id).delete_all
+    @user.preference.update!(locale: 'en')
+    sign_in @user
+    I18n.with_locale(:en) do
+      get gadget_notes_path
+    end
+    assert_response :success
+    assert_select '.note-empty', text: 'No notes yet', count: 1
+  end
+
+  def test_gadget_locale_ja_labels
+    sign_in @user
+    I18n.with_locale(:ja) do
+      get gadget_notes_path
+    end
+    assert_response :success
+    assert_select 'form.note-gadget-form textarea[aria-label=?]', 'メモ'
+  end
+
+  def test_gadget_locale_en_labels
+    @user.preference.update!(locale: 'en')
+    sign_in @user
+    I18n.with_locale(:en) do
+      get gadget_notes_path
+    end
+    assert_response :success
+    assert_select 'form.note-gadget-form textarea[aria-label=?]', 'Note'
+  end
+
+  def test_gadget_does_not_include_other_users_notes
+    Note.where(user_id: @user.id).delete_all
+    own_note = @user.notes.create!(body: '自分のメモ gadget-test')
+    other_note = @other_user.notes.create!(body: '他ユーザーの秘密メモ gadget-test')
+    sign_in @user
+    get gadget_notes_path
+    assert_response :success
+    assert_includes response.body, own_note.body
+    assert_not_includes response.body, other_note.body
+  end
+
+  def test_routing_get_gadget_notes_to_gadget
+    assert_routing({ path: '/notes/gadget', method: :get }, { controller: 'notes', action: 'gadget' })
+  end
 end

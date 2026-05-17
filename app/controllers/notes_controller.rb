@@ -1,6 +1,12 @@
 class NotesController < ApplicationController
   before_action :set_note, only: [:update, :destroy]
 
+  def gadget
+    @note  = Note.new
+    @notes = current_user.notes.active.recent
+    render layout: false
+  end
+
   def create
     @note = Note.new(note_params)
 

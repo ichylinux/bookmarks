@@ -43,7 +43,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :notes, only: [:create, :update, :destroy]
+  resources :notes, only: [:create, :update, :destroy] do
+    collection do
+      get :gadget
+    end
+  end
 
   resources :preferences, only: ['index', 'create', 'update']
 
