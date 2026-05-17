@@ -27,19 +27,19 @@
       </div>
     <% end %>
   </div>
+  <template data-portal-width-row-template>
+    <div class="portal-column-width-row">
+      <span class="portal-column-width-heading" data-portal-width-heading></span>
+      <input
+        type="range"
+        min="10"
+        max="80"
+        aria-valuemin="10"
+        aria-valuemax="80"
+        data-portal-width-slider
+      >
+      <span class="portal-column-width-value" data-portal-width-label></span>
+      <input type="hidden" name="user[preference_attributes][portal_column_widths][]" data-portal-width-hidden>
+    </div>
+  </template>
 </div>
-<template data-portal-width-row-template>
-  <div class="portal-column-width-row">
-    <span class="portal-column-width-heading" data-portal-width-heading></span>
-    <input
-      type="range"
-      min="10"
-      max="80"
-      aria-valuemin="10"
-      aria-valuemax="80"
-      data-portal-width-slider
-    >
-    <span class="portal-column-width-value" data-portal-width-label></span>
-    <input type="hidden" name="user[preference_attributes][portal_column_widths][]" data-portal-width-hidden>
-  </div>
-</template>
