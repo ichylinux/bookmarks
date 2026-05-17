@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — desktop per-column ratio sliders; mobile unchanged
+- ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — [archived](milestones/v1.25-ROADMAP.md)
 - ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
@@ -30,79 +30,17 @@
 
 ## Phases
 
-### v1.25 — Portal Column Width Ratios (shipped 2026-05-18)
+<details>
+<summary>✅ v1.25 — Portal Column Width Ratios (Phases 80–83) — SHIPPED 2026-05-18</summary>
 
-**Overview:** Replace equal fixed column widths on desktop with user-configured ratios (sum 100%) via sliders on the preferences page. Mobile portal behavior unchanged.
+Full goals, success criteria, and notes: [milestones/v1.25-ROADMAP.md](milestones/v1.25-ROADMAP.md).
 
-| Phase | Name | Goal | Requirements |
-|-------|------|------|----------------|
-| [x] 80 | Column Width Data Model | Persist and validate per-user column width ratios; equal-split defaults | COLW-01, COLW-02 |
-| [x] 81 | Preferences Ratio Sliders | Settings UI with linked sliders, save/reload, ja/en | COLW-03, COLW-04 |
-| [x] 82 | Desktop Portal Layout | Apply ratios on desktop welcome portal; preserve mobile + column-count safety | COLW-05, COLW-06, COLW-07 |
-| [x] 83 | Tests & Tri-suite Gate | Minitest, locale parity, Cucumber if needed, tri-suite green | COLW-08, COLW-09 |
+- [x] Phase 80: Column Width Data Model (1/1 plan) — 2026-05-18
+- [x] Phase 81: Preferences Ratio Sliders (1/1 plan) — 2026-05-18
+- [x] Phase 82: Desktop Portal Layout (1/1 plan) — 2026-05-18
+- [x] Phase 83: Tests & Tri-suite Gate (1/1 plan) — 2026-05-18
 
----
-
-#### Phase 80: Column Width Data Model
-
-**Goal:** `preferences` stores an array of column width percentages (length = `portal_column_count`, sum = 100); validation and defaults match today's equal split when unset.
-
-**Depends on:** Phase 79 (v1.24)
-
-**Requirements:** COLW-01, COLW-02
-
-**Success criteria:**
-1. Migration adds a nullable or default-backed column (e.g. JSON) for width ratios; existing users behave as equal split without manual migration steps.
-2. `Preference` rejects arrays of wrong length, non-positive entries, or sum ≠ 100.
-3. `default_preference` and column-count change paths assign equal split for the active column count.
-4. Strong params permit the new attribute; unit tests cover valid, invalid, and default cases.
-
----
-
-#### Phase 81: Preferences Ratio Sliders
-
-**Goal:** User adjusts one slider per column on the preferences page; values stay linked to 100% total and persist on save.
-
-**Depends on:** Phase 80
-
-**Requirements:** COLW-03, COLW-04
-
-**Success criteria:**
-1. Preferences form renders N sliders when `portal_column_count` is N (3 or 4).
-2. Client-side logic keeps the displayed total at 100% while dragging (e.g. redistribute delta across other columns).
-3. PATCH/POST round-trip saves and reloads the same ratios; ja/en labels present with parity test.
-4. No new npm dependencies; Sprockets-compatible JS only.
-
----
-
-#### Phase 82: Desktop Portal Layout
-
-**Goal:** Desktop welcome page columns use saved flex/width ratios; mobile tab layout and v1.20 column-count behavior unchanged.
-
-**Depends on:** Phase 81
-
-**Requirements:** COLW-05, COLW-06, COLW-07
-
-**Success criteria:**
-1. At `min-width: $portal-mobile-breakpoint`, each `.portal-column` width reflects saved ratios (CSS variables or inline flex-basis from server).
-2. Below breakpoint, columns remain full-width in the tab track; ratio CSS does not break swipe/tab UX.
-3. Unequal 4-column example visibly wider/narrower on desktop in browser smoke test.
-4. Switching 3↔4 columns does not break gadget placement; equal default applies when ratios invalid for new count.
-
----
-
-#### Phase 83: Tests & Tri-suite Gate
-
-**Goal:** Automated coverage and green tri-suite at milestone close.
-
-**Depends on:** Phase 82
-
-**Requirements:** COLW-08, COLW-09
-
-**Success criteria:**
-1. Minitest: model validation, preferences controller save, layout structure tests for unequal 3- and 4-column desktop output.
-2. Locale parity test for new `portal_column_width*` keys.
-3. `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` all green (Cucumber flake rerun policy per CLAUDE.md).
+</details>
 
 ---
 
@@ -120,4 +58,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-18 — milestone v1.25 roadmap*
+*Last updated: 2026-05-18 — v1.25 archived; ready for next milestone*

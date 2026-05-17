@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.25 — Portal Column Width Ratios (shipped 2026-05-18)
+
+**Scope:** Phases 80–83 (4 phases, 4 plans) — `portal_column_widths` JSON persistence, linked ratio sliders, desktop CSS variable layout.
+
+**Key accomplishments:**
+
+- Added `portal_column_widths` JSON column on `preferences`; model validates sum=100, length=`portal_column_count`, positive integers; `normalize_portal_column_widths_length` before_validation normalizes length mismatch to equal split; equal defaults: 3-col `[34,33,33]`, 4-col `[25,25,25,25]`.
+- Preferences page renders one linked range slider per column via `_portal_column_widths` partial + `<template>` row; `portal_column_width_sliders.js` IIFE handles redistribute-on-drag and rebuilds slider rows on column-count change.
+- Desktop portal columns render at saved ratios via `--portal-col-width-pct` inline CSS variable on each `.portal-column`; mobile tab strip layout unchanged.
+- Minitest: 9 model validation tests, controller save/reload round-trip, desktop markup structure tests for unequal 3- and 4-column cases; locale key parity test for new `portal_column_width*` strings.
+- Tri-suite gate at close: `yarn run lint` ✓ · 416 Minitest 0 failures · 25 Cucumber 0 failed (first run; documented order flake on rerun).
+- Post-ship fix (quick task 20260518): `<template>` element placed outside root div in ERB partial — moved inside root so `rebuildControls` finds it on column-count dropdown change.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.25-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.25-REQUIREMENTS.md)
+
+---
+
 ## v1.24 — Mobile Column Lazy Loading (shipped 2026-05-17)
 
 **Scope:** Phases 76–79 (4 phases, 4 plans) — `portal_lazy.js` coordinator, gadget partial wiring, contract tests, note gadget AJAX extraction.

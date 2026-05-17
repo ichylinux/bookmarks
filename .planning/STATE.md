@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.25
 milestone_name: Portal Column Width Ratios
-status: complete
-last_updated: "2026-05-18T18:00:00.000Z"
-last_activity: 2026-05-18 — Milestone v1.25 implemented (phases 80–83)
+status: archived
+last_updated: "2026-05-18T19:00:00.000Z"
+last_activity: 2026-05-18 — Milestone v1.25 archived; ready for next milestone
 progress:
   total_phases: 4
   completed_phases: 4
@@ -28,7 +28,7 @@ Progress: 4/4 phases complete
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.25 complete — ready for `/gsd-complete-milestone` archive or next milestone
+**Current focus:** v1.25 archived — start next milestone with `/gsd:new-milestone`
 
 ## Performance Metrics
 
@@ -58,6 +58,6 @@ Progress: 4/4 phases complete
 ## Session Continuity
 
 Last session: 2026-05-18
-Stopped at: v1.25 implementation complete — run `/gsd-complete-milestone` to archive
-Last activity: 2026-05-18 - Completed quick task 20260518: ポータル列数変更時のスライダー数連動修正
+Stopped at: v1.25 archived — run `/gsd:new-milestone` to start next milestone
+Last activity: 2026-05-18 — v1.25 milestone archived
 Resume file: None
