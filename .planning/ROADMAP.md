@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17)
+- ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
 - ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16) — [archived](milestones/v1.21-ROADMAP.md)
@@ -29,68 +29,18 @@
 
 ## Phases
 
-### 🚧 v1.24 — Mobile Column Lazy Loading (In Progress)
+<details>
+<summary>✅ v1.24 — Mobile Column Lazy Loading (Phases 76–79) — SHIPPED 2026-05-17</summary>
 
-**Milestone Goal:** On mobile, only load gadgets for the initially active column on page load; load each other column's gadgets exactly once when first switched to — never re-fetching within the same page session. Desktop behavior is completely unchanged.
+Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestones/v1.24-ROADMAP.md).
 
-- [x] **Phase 76: `portal_lazy.js` Coordinator** — New coordinator module establishing `window.portalLazy`; zero behavior change on desktop or mobile yet — 2026-05-17
-- [x] **Phase 77: Gadget Partial Wiring + Tab Hook** — All AJAX partials register with the coordinator; `activateColumn` triggers lazy loads; mobile deferral active — 2026-05-17
-- [x] **Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate** — Minitest JS contracts; `@mobile_portal` Cucumber scenarios pass; tri-suite green gate — 2026-05-17
-- [x] **Phase 79: Note Gadget AJAX Extraction** — `NotesController#gadget` action; `#notes-tab-panel` loaded via AJAX on first visit; `WelcomeController` stops querying notes on every page load — 2026-05-17
+- [x] Phase 76: `portal_lazy.js` Coordinator (1/1 plan) — 2026-05-17
+- [x] Phase 77: Gadget Partial Wiring + Tab Hook (1/1 plan) — 2026-05-17
+- [x] Phase 78: Contract Tests + Cucumber E2E (1/1 plan) — 2026-05-17
+- [x] Phase 79: Note Gadget AJAX Extraction (1/1 plan) — 2026-05-17
 
-## Phase Details
+</details>
 
-### Phase 76: `portal_lazy.js` Coordinator
-**Goal**: A new `portal_lazy.js` coordinator module exists and is available at `window.portalLazy` with the full public API, but causes zero visible behavior change — all gadgets still load immediately because no partial calls `register` yet
-**Depends on**: Phase 75 (previous milestone)
-**Requirements**: LAZY-01, LAZY-02, LAZY-03, LAZY-04, DESKTP-01, DESKTP-02, IMPL-01
-**Success Criteria** (what must be TRUE):
-  1. `window.portalLazy.register(columnIndex, loadFn)` and `window.portalLazy.loadColumn(index)` are callable from the browser console after page load
-  2. On desktop (viewport >= 768px), calling `register` causes `loadFn` to fire immediately (pass-through behavior)
-  3. On mobile, the coordinator reads the initial active column index synchronously at file parse time (before any `$(document).ready` fires)
-  4. All three suites pass (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`) — no behavior regression
-**Plans:** 1 plan
-Plans:
-- [ ] 76-01-PLAN.md — Create `portal_lazy.js` coordinator (window.portalLazy with register + loadColumn IIFE) and confirm tri-suite green-bar zero-regression
-
-### Phase 77: Gadget Partial Wiring + Tab Hook
-**Goal**: All AJAX gadget partials register their load functions with the coordinator instead of firing unconditionally on `$(document).ready`; `activateColumn` in `portal_mobile_tabs.js` drains each column's queue on first visit; mobile lazy loading is now live
-**Depends on**: Phase 76
-**Requirements**: IMPL-02, IMPL-03, IMPL-04
-**Success Criteria** (what must be TRUE):
-  1. On mobile page load, only AJAX requests for gadgets in the initially active column are fired — gadgets in other columns show "Loading..." until their column is visited
-  2. Switching to a new column tab triggers exactly one round of AJAX requests for that column's gadgets; the content appears and is retained
-  3. Switching back to an already-loaded column fires no new AJAX requests — the previously loaded content is displayed immediately
-  4. On desktop, all gadget AJAX requests fire on page load as before — no change to desktop behavior
-  5. Load state is marked synchronously before any `$.get` fires, so rapid tab switching never triggers duplicate in-flight requests for the same column
-**Plans**: TBD
-
-### Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate
-**Goal**: Automated contract tests lock in the public shape of `window.portalLazy` and the `activateColumn` integration hook; existing `@mobile_portal` Cucumber scenarios confirm E2E correctness; all three suites pass cleanly
-**Depends on**: Phase 77
-**Requirements**: TEST-01, TEST-02
-**Success Criteria** (what must be TRUE):
-  1. A new `test/assets/portal_lazy_js_contract_test.rb` asserts that `window.portalLazy`, `register`, `loadColumn`, the mobile guard, and `STORAGE_KEY` are present in the source
-  2. The extended `portal_mobile_tabs_js_contract_test.rb` asserts that `portalLazy.loadColumn` appears inside the `activateColumn` function body
-  3. Existing `@mobile_portal` Cucumber scenarios (tab switch, swipe, localStorage restore) pass without modification
-  4. `yarn run lint` green, `bin/rails test` green, `bundle exec rake dad:test` green (0 failed scenarios, confirmed stable across two runs per flake policy)
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 79: Note Gadget AJAX Extraction
-**Goal**: The note gadget content is no longer server-rendered into `_dashboard.html.erb`; it is fetched via AJAX on the first visit to the notes tab; `WelcomeController#index` no longer assigns `@note` or `@notes`
-**Depends on**: Phase 78
-**Requirements**: NOTE-01, NOTE-02, NOTE-03
-**Success Criteria** (what must be TRUE):
-  1. `NotesController` has a `gadget` action that sets `@note` / `@notes` and renders the note gadget partial as an HTML fragment
-  2. `WelcomeController#index` no longer assigns `@note` or `@notes` — removing those queries from every dashboard page load
-  3. On the simple theme, the first click on the notes tab triggers one AJAX request to `notes#gadget`; subsequent clicks use the already-loaded DOM (no re-fetch)
-  4. On the modern/classic theme with `?tab=notes`, the note gadget content is fetched immediately on page load (tab is initially active)
-  5. Notes CRUD actions (create, update, destroy) still work and redirect correctly
-  6. `yarn run lint` green, `bin/rails test` green, `bundle exec rake dad:test` green
-**Plans:** 1 plan
-Plans:
-- [x] 79-01-PLAN.md — Route, controller action, view, locale, dashboard placeholder, JS lazy guard, test migration
 
 <details>
 <summary>✅ v1.23 — Icon Display Preference (Phases 73–75) — SHIPPED 2026-05-17</summary>
@@ -156,15 +106,6 @@ Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestone
 
 </details>
 
-## Progress
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 76. `portal_lazy.js` Coordinator | 1/1 | Complete | 2026-05-17 |
-| 77. Gadget Partial Wiring + Tab Hook | 1/1 | Complete | 2026-05-17 |
-| 78. Contract Tests + Cucumber E2E | 1/1 | Complete | 2026-05-17 |
-| 79. Note Gadget AJAX Extraction | 1/1 | Complete | 2026-05-17 |
-
 ---
 
-*Last updated: 2026-05-17 — Phase 79 complete: all 4 phases of v1.24 shipped*
+*Last updated: 2026-05-17 — v1.24 milestone complete and archived*

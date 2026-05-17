@@ -8,20 +8,13 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.24 Mobile Column Lazy Loading
-
-**Goal:** On mobile, only load gadgets for the active column on page load; load each other column's gadgets exactly once when first switched to — never re-fetching within the same page session.
-
-**Target features:**
-- Page load: only AJAX-load gadgets in the initially active column
-- Tab switch to new column: load that column's gadgets (first visit only)
-- Tab switch to already-loaded column: no AJAX — show cached content
-- Desktop behavior unchanged (all columns load on page load as today)
-- Works across all themes (modern/classic/simple) and column counts (3/4)
-
 ## Current State
 
-**Status:** v1.23 complete (2026-05-17)
+**Status:** v1.24 complete (2026-05-17)
+
+v1.24 delivered mobile column lazy loading: `portal_lazy.js` IIFE coordinator (`window.portalLazy.register` + `loadColumn`); all 4 AJAX gadget partials wired to `register`; `activateColumn` drains each column on first visit; 9 contract tests; note gadget AJAX extraction (`NotesController#gadget` at `GET /notes/gadget`; `WelcomeController#index` no longer queries notes; `initNoteGadget()` + `noteGadgetLoaded` event for post-AJAX re-init). Tri-suite green: lint ✓ · 407 Minitest 0 failures · 25 Cucumber 0 failed.
+
+**Previously shipped:** v1.23 — Icon Display Preference (2026-05-17)
 
 v1.23 delivered icon display preference: `show_icons boolean NOT NULL DEFAULT true` on `preferences`; `Preference::SHOW_ICONS_DEFAULT` constant, inclusion validation, `default_preference` assignment; `WelcomeHelper#no_icons_class` emits `body.no-icons` when off (guards unauthenticated); `common.css.scss` suppresses `.gadget-title-icon` and `.drawer-nav-icon` under `body.no-icons` with `!important`; preferences checkbox with ja: 「アイコンを表示する」 / en: "Show Icons"; unit + integration tests; tri-suite green (389 Minitest, 25 Cucumber).
 
@@ -117,10 +110,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `show_icons boolean NOT NULL DEFAULT true` on `preferences`; `SHOW_ICONS_DEFAULT` constant; inclusion validation; `default_preference` assignment — **v1.23 Phase 73**
 - ✓ `body.no-icons` CSS class suppresses `.gadget-title-icon` and `.drawer-nav-icon` globally across all authenticated pages; landing page unaffected — **v1.23 Phase 74**
 - ✓ Preferences checkbox with ja: 「アイコンを表示する」 / en: "Show Icons"; i18n parity test; `no_icons_class` unit tests + `body.no-icons` integration assertions; tri-suite green (389 Minitest, 25 Cucumber) — **v1.23 Phase 75**
+- ✓ `window.portalLazy` IIFE coordinator (`register`/`loadColumn` API); all 4 AJAX gadget partials wired; `activateColumn` drains each column on first visit; mobile lazy loading live; desktop unchanged — **v1.24 Phases 76–77**
+- ✓ 9 Minitest contract tests for `portal_lazy.js` API; `activateColumn`→`loadColumn` integration assertion; existing `@mobile_portal` Cucumber scenarios pass — **v1.24 Phase 78**
+- ✓ `NotesController#gadget` at `GET /notes/gadget`; `WelcomeController#index` no longer queries notes; AJAX lazy-load for all themes; `initNoteGadget()` + `noteGadgetLoaded` event re-init — **v1.24 Phase 79**
 
 ### Active
 
-*(v1.24 requirements — see REQUIREMENTS.md)*
+*(none — planning next milestone)*
 
 ### Out of Scope (revisit when planning)
 
@@ -203,7 +199,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | `inclusion: { in: [true, false] }` validation for `show_icons` (v1.23) | Booleans can be nil in Rails; `inclusion` pattern matches existing `use_note`, `use_calendar` validations | ✓ Good — consistent with existing model conventions; nil reliably rejected |
 | IIFE at parse time (not `$(document).ready`) for `portal_lazy.js` (v1.24 Phase 76) | `window.portalLazy` must exist before any gadget partial ready-handler fires; parse-time IIFE guarantees this ordering under Sprockets | ✓ Good — coordinator ready before jQuery DOM-ready callbacks run |
 | `initialColumnIndex` kept internal, not exposed on `window.portalLazy` (v1.24 Phase 76) | CONTEXT.md locked decision: public API surface is register + loadColumn only; internal state closed over in IIFE | ✓ Good — minimal public API; prevents external mutation of load state |
-| `isMobileViewport` duplicated verbatim from `portal_mobile_tabs.js` (v1.24 Phase 76) | No module system in Sprockets/jQuery pipeline; duplication is the only safe pattern; must match 767px breakpoint exactly | ✓ Good — co-located, tested; Phase 78 contract test will lock the 767px value |
+| `isMobileViewport` duplicated verbatim from `portal_mobile_tabs.js` (v1.24 Phase 76) | No module system in Sprockets/jQuery pipeline; duplication is the only safe pattern; must match 767px breakpoint exactly | ✓ Good — co-located, tested; Phase 78 contract test locks the 767px value |
+| `register()` checks `loadedColumns[columnIndex]` before push (v1.24 Phase 77) | PTM fires before gadget partial ready handlers — without this check, all registers hit the already-loaded no-op path | ✓ Good — critical ordering fix; locked in Phase 78 contract test |
+| `notesLoaded = true` synchronously before `$.get` in `notes_tabs.js` (v1.24 Phase 79) | Prevents duplicate in-flight requests on rapid tab switching (IMPL-04 pattern extended to notes) | ✓ Good — consistent with portalLazy synchronous mark-before-fire |
+| `noteGadgetLoaded` custom event + `initNoteGadget()` factory (v1.24 Phase 79) | Decouples AJAX injection from handler re-init; removes old handlers before rebinding — safe for repeated calls | ✓ Good — clean event-driven re-init; no duplicate handler risk |
+| No preference guard in `NotesController#gadget` (v1.24 Phase 79) | `#notes-tab-panel` already omitted server-side when `use_note` is false; duplicating the guard adds complexity without benefit | ✓ Good — single `use_note` enforcement point in the view layer |
 
 ## Evolution
 
@@ -296,4 +296,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 — after Phase 76 (portal_lazy.js coordinator)*
+*Last updated: 2026-05-17 — after v1.24 milestone complete*

@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.24 — Mobile Column Lazy Loading (shipped 2026-05-17)
+
+**Scope:** Phases 76–79 (4 phases, 4 plans) — `portal_lazy.js` coordinator, gadget partial wiring, contract tests, note gadget AJAX extraction.
+
+**Key accomplishments:**
+
+- Created parse-time `window.portalLazy` IIFE coordinator with `register(columnIndex, loadFn)` + `loadColumn(index)` API — guarantees ordering before any gadget ready-handler fires; desktop pass-through; mobile queue-and-drain.
+- Wired all 4 AJAX gadget partials (`_feed`, `_mastodon_account`, `_x_account`, `_calendar_gadget`) to `portalLazy.register` with `column_index` propagated from `_portal_column_section.html.erb`; `activateColumn` extended to call `portalLazy.loadColumn(index)` in all three activation paths (tab click, swipe, localStorage restore).
+- Fixed critical PTM-fires-first race: `register()` now checks `loadedColumns[columnIndex]` before push — without this fix, all gadget registers hit the already-loaded no-op path.
+- Added 9 Minitest contract tests for `portal_lazy.js` API; `activateColumn`→`portalLazy.loadColumn` integration assertion; existing `@mobile_portal` Cucumber scenarios confirmed passing (25/25).
+- Extracted note gadget from SSR: `NotesController#gadget` at `GET /notes/gadget` (authenticated, `layout: false`); `WelcomeController#index` no longer assigns `@note`/`@notes`; loading placeholder + AJAX injection for all themes; `noteGadgetLoaded` event re-initializes handlers via `initNoteGadget()` factory.
+- Tri-suite gate at final close: `yarn run lint` ✓ · 407 Minitest 0 failures · 25 Cucumber 0 failed.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.24-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.24-REQUIREMENTS.md) · [Audit](milestones/v1.24-MILESTONE-AUDIT.md) (tech_debt: 14/15 requirements, TEST-02 behavioral Cucumber scenario deferred)
+
+---
+
 ## v1.23 — Icon Display Preference (shipped 2026-05-17)
 
 **Scope:** Phases 73–75 (3 phases, 5 plans) — boolean `show_icons` preference, CSS icon suppression, preferences UI toggle.
