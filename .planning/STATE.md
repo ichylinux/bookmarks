@@ -7,23 +7,23 @@ last_updated: "2026-05-17T00:00:00.000Z"
 last_activity: 2026-05-17 — Roadmap created; Phase 73 next
 progress:
   total_phases: 3
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 33
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
+  percent: 67
 ---
 
 # State
 
 ## Current Position
 
-Phase: 74 — CSS + View Layer
+Phase: 75 — Preferences UI + Locale + Tests
 Plan: —
-Status: Phase 73 complete; ready to begin Phase 74
+Status: Phase 74 complete; ready to begin Phase 75
 Last activity: 2026-05-17 — Phase 73 executed and verified (2/2 plans, 384 Minitest green)
 
 ```
-Progress: [██████░░░░░░░░░░░░░░] 33% (1/3 phases complete)
+Progress: [█████████████░░░░░░░] 67% (1/3 phases complete)
 ```
 
 ## Project Reference
