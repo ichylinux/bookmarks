@@ -8,7 +8,6 @@ class Users::SessionsController < Devise::SessionsController
         redirect_to users_two_factor_authentication_path
       else
         sign_in(user)
-        flash[:notice] = t('devise.sessions.signed_in')
         respond_with user, location: after_sign_in_path_for(user)
       end
     else
