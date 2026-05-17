@@ -40,6 +40,7 @@ $(function() {
     $portal[0].style.setProperty('--portal-active-index', index);
     if (isMobileViewport()) {
       window.localStorage.setItem(STORAGE_KEY, String(index));
+      window.portalLazy.loadColumn(index);
     }
   };
 

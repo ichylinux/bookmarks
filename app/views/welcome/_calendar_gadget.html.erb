@@ -6,8 +6,10 @@
     <div style="line-height: 30em;">
       <script>
         $(document).ready(function() {
-          $.get('<%= get_gadget_calendars_path(display_date: gadget.display_date) %>', {format: 'html'}, function(html) {
-            $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
+          window.portalLazy.register(<%= local_assigns.fetch(:column_index, 0) %>, function() {
+            $.get('<%= get_gadget_calendars_path(display_date: gadget.display_date) %>', {format: 'html'}, function(html) {
+              $('#<%= gadget.gadget_id %>').find('div').last().replaceWith(html);
+            });
           });
         });
       </script>

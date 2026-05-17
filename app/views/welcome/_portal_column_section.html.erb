@@ -28,7 +28,7 @@
         aria-labelledby="portal-column-tab-<%= i %>"
       >
         <% gadgets.each do |g| %>
-          <%= render g.class.name.underscore, gadget: g %>
+          <%= render g.class.name.underscore, gadget: g, column_index: i %>
         <% end %>
       </div>
     <% end %>

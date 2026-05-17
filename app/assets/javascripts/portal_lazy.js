@@ -23,6 +23,10 @@ const portalLazy = window.portalLazy;
       loadFn();
       return;
     }
+    if (loadedColumns[columnIndex]) {
+      loadFn();
+      return;
+    }
     queues[columnIndex] = queues[columnIndex] || [];
     queues[columnIndex].push(loadFn);
     if (columnIndex === initialColumnIndex) {

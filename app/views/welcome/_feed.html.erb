@@ -1,11 +1,13 @@
 <script>
   $(document).ready(function() {
-    $.get('<%= feed_path(gadget) %>', {format: 'html'}, function(html) {
-      $('#feed_<%= gadget.id %>').html(html);
-    })
-    .fail(function(xhr, status, error) {
-      const container = $('#feed_<%= gadget.id %>');
-      container.find('ol li span').first().text(container.data('fetchFailedMessage') + '(' + xhr.status + ')');
+    window.portalLazy.register(<%= local_assigns.fetch(:column_index, 0) %>, function() {
+      $.get('<%= feed_path(gadget) %>', {format: 'html'}, function(html) {
+        $('#feed_<%= gadget.id %>').html(html);
+      })
+      .fail(function(xhr, status, error) {
+        const container = $('#feed_<%= gadget.id %>');
+        container.find('ol li span').first().text(container.data('fetchFailedMessage') + '(' + xhr.status + ')');
+      });
     });
   });
 </script>
