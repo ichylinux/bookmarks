@@ -8,14 +8,15 @@ class NoteStylesContractTest < ActiveSupport::TestCase
   test 'note edit controls are hidden in reference mode' do
     assert_includes @source, '.note-item .note-item-edit-form,'
     assert_includes @source, '.note-item .note-item-edit-form textarea,'
-    assert_includes @source, '.note-item .note-item-edit-form input[type="submit"] {'
+    assert_includes @source, '.note-item .note-item-edit-form input[type="submit"],'
+    assert_includes @source, '.note-item .note-item-edit-form button.note-item-update-submit {'
     assert_includes @source, 'display: none;'
   end
 
   test 'note edit controls are shown in editing mode' do
     assert_includes @source, '.note-item.note-item--editing .note-item-edit-form {'
     assert_includes @source, '.note-item.note-item--editing .note-item-edit-form textarea,'
-    assert_includes @source, '.note-item.note-item--editing .note-item-edit-form input[type="submit"] {'
+    assert_includes @source, '.note-item.note-item--editing .note-item-edit-form button.note-item-update-submit {'
     assert_includes @source, 'display: inline-flex;'
   end
 end

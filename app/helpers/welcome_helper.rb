@@ -23,4 +23,24 @@ module WelcomeHelper
   def drawer_ui?
     user_signed_in? && favorite_theme != 'simple'
   end
+
+  def note_gadget_action_button(form, label:, css_class:, aria_label:)
+    contents = note_gadget_action_button_contents(label)
+    form.button(
+      type: 'submit',
+      class: css_class,
+      data: { disable_with: contents },
+      aria: { label: aria_label }
+    ) { contents }
+  end
+
+  private
+
+  def note_gadget_action_button_contents(label)
+    shortcut = t('welcome.note_gadget.submit_shortcut')
+    safe_join([
+      content_tag(:span, label, class: 'note-submit-label'),
+      content_tag(:kbd, shortcut, class: 'note-submit-shortcut', aria: { hidden: true }, data: { shortcut_mac: '⌘S' })
+    ])
+  end
 end

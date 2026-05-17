@@ -140,7 +140,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'メモを削除'
     assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
   end
 
   def test_シンプルテーマでメモがないとき空状態を表示する
@@ -161,7 +163,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
     assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
@@ -191,6 +195,14 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel .note-item .note-item-display', minimum: 2
     assert_select '#notes-tab-panel .note-item.note-item--editing', count: 0
     assert_select '#notes-tab-panel .note-item form.note-item-edit-form[hidden]', minimum: 2
+    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit[type=submit]',
+                  minimum: 2
+    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit .note-submit-label',
+                  text: 'メモを更新',
+                  minimum: 2
+    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit kbd.note-submit-shortcut',
+                  text: 'Ctrl+S',
+                  minimum: 2
     assert_select '#notes-tab-panel .note-item form.note-item-delete-form[hidden]', minimum: 2
     assert_select '#notes-tab-panel .note-item textarea[name=?]', 'note[body]', count: 2
     assert_operator response.body.index(newer.body), :<, response.body.index(older.body),
@@ -274,7 +286,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     get root_path(tab: 'notes')
     assert_response :success
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
     assert_select 'section.note-gadget[data-note-action-update-label=?]', 'メモを更新'
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'メモを削除'
     assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
@@ -288,7 +302,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
     assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
@@ -302,7 +318,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'input[type=submit][value=?]', 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
     assert_select 'section.note-gadget[data-note-action-update-label=?]', 'メモを更新'
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'メモを削除'
     assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
@@ -316,7 +334,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html[lang=?]', 'en'
     assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'input[type=submit][value=?]', 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
+    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
     assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
     assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
     assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1

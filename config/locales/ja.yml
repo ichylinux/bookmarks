@@ -208,7 +208,10 @@ ja:
     note_gadget:
       body_label: メモ
       submit: メモを保存
+      submit_shortcut: Ctrl+S
+      submit_aria_label: "%{submit}（%{shortcut}）"
       update: メモを更新
+      update_aria_label: "%{update}（%{shortcut}）"
       cancel: 編集をキャンセル
       delete: メモを削除
       empty: メモはまだありません

@@ -8,6 +8,13 @@ $(function() {
   const $gadget = $('.note-gadget');
   if (!$gadget.length) return;
 
+  $gadget.find('.note-submit-shortcut').each(function() {
+    const macLabel = $(this).data('shortcutMac');
+    if (macLabel && /Mac|iPhone|iPad|iPod/.test(navigator.platform)) {
+      $(this).text(macLabel);
+    }
+  });
+
   function showEditControls($item) {
     if (!$item.length) return;
     if ($item.hasClass('note-item--editing')) return;
@@ -34,6 +41,19 @@ $(function() {
     $item.removeClass('note-item--editing');
     $item.find('.note-item-display').focus();
   }
+
+  $gadget.on('keydown.noteGadgetSave', 'textarea', function(e) {
+    if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
+    e.preventDefault();
+    const form = $(this).closest('form')[0];
+    if (!form) return;
+    const submit = form.querySelector('input[type="submit"], button[type="submit"]');
+    if (submit) {
+      submit.click();
+    } else {
+      form.submit();
+    }
+  });
 
   $('.note-item .note-item-display').each(function() {
     const $display = $(this);

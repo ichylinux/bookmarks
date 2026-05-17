@@ -208,7 +208,10 @@ en:
     note_gadget:
       body_label: Note
       submit: Save Note
+      submit_shortcut: Ctrl+S
+      submit_aria_label: "%{submit} (%{shortcut})"
       update: Update Note
+      update_aria_label: "%{update} (%{shortcut})"
       cancel: Cancel Editing
       delete: Delete Note
       empty: No notes yet

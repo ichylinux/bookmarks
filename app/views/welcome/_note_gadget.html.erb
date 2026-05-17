@@ -5,7 +5,12 @@
   <div class="note-gadget-composer">
     <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
       <%= f.text_area :body, rows: 4, aria: { label: t('.body_label') } %>
-      <%= f.submit t('.submit') %>
+      <%= note_gadget_action_button(
+            f,
+            label: t('.submit'),
+            css_class: 'note-gadget-submit',
+            aria_label: t('.submit_aria_label', submit: t('.submit'), shortcut: t('.submit_shortcut'))
+          ) %>
     <% end %>
   </div>
   <% if @notes.empty? %>
@@ -30,7 +35,12 @@
           </div>
           <%= form_with model: note, local: true, html: { class: 'note-item-edit-form', hidden: true } do |f| %>
             <%= f.text_area :body, rows: 3 %>
-            <%= f.submit t('.update') %>
+            <%= note_gadget_action_button(
+                  f,
+                  label: t('.update'),
+                  css_class: 'note-item-update-submit',
+                  aria_label: t('.update_aria_label', update: t('.update'), shortcut: t('.submit_shortcut'))
+                ) %>
           <% end %>
           <button type="button" class="note-item-cancel-button" hidden><%= t('.cancel') %></button>
           <%= button_to t('.delete'),

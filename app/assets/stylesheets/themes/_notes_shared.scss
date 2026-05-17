@@ -28,7 +28,8 @@
   }
 
   .note-item .note-item-edit-form textarea,
-  .note-item .note-item-edit-form input[type="submit"] {
+  .note-item .note-item-edit-form input[type="submit"],
+  .note-item .note-item-edit-form button.note-item-update-submit {
     display: none;
   }
 
@@ -49,11 +50,13 @@
   }
 
   .note-item.note-item--editing .note-item-edit-form textarea,
-  .note-item.note-item--editing .note-item-edit-form input[type="submit"] {
+  .note-item.note-item--editing .note-item-edit-form input[type="submit"],
+  .note-item.note-item--editing .note-item-edit-form button.note-item-update-submit {
     display: block;
   }
 
-  .note-item.note-item--editing .note-item-edit-form input[type="submit"] {
+  .note-item.note-item--editing .note-item-edit-form input[type="submit"],
+  .note-item.note-item--editing .note-item-edit-form button.note-item-update-submit {
     grid-column: 1;
     grid-row: 3;
     display: inline-flex;
@@ -105,7 +108,8 @@
     justify-self: start;
   }
 
-  .note-item .note-item-edit-form input[type="submit"] {
+  .note-item .note-item-edit-form input[type="submit"],
+  .note-item .note-item-edit-form button.note-item-update-submit {
     justify-self: start;
     width: auto;
   }
@@ -150,7 +154,9 @@
   $focus-outline-color: null
 ) {
   .note-gadget-form input[type="submit"],
+  .note-gadget-form button.note-gadget-submit,
   .note-item-edit-form input[type="submit"],
+  .note-item-edit-form button.note-item-update-submit,
   .note-item-delete-form button,
   .note-item-cancel-button {
     display: inline-flex;
@@ -176,14 +182,35 @@
     }
   }
 
-  .note-gadget-form input[type="submit"] {
+  .note-gadget-form input[type="submit"],
+  .note-gadget-form button.note-gadget-submit {
     justify-self: start;
     width: auto;
   }
 
+  .note-gadget-form button.note-gadget-submit,
+  .note-item-edit-form button.note-item-update-submit {
+    gap: 0.4rem;
+
+    .note-submit-shortcut {
+      display: inline-block;
+      padding: 0.15em 0.45em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.72em;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.03em;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      opacity: 0.9;
+    }
+  }
+
   @if $hover-filter != null {
     .note-gadget-form input[type="submit"]:hover,
+    .note-gadget-form button.note-gadget-submit:hover,
     .note-item-edit-form input[type="submit"]:hover,
+    .note-item-edit-form button.note-item-update-submit:hover,
     .note-item-delete-form button:hover,
     .note-item-cancel-button:hover {
       filter: $hover-filter;
@@ -192,7 +219,9 @@
 
   @if $hover-background != null or $hover-border-color != null {
     .note-gadget-form input[type="submit"]:hover,
+    .note-gadget-form button.note-gadget-submit:hover,
     .note-item-edit-form input[type="submit"]:hover,
+    .note-item-edit-form button.note-item-update-submit:hover,
     .note-item-delete-form button:hover,
     .note-item-cancel-button:hover {
       @if $hover-background != null {
@@ -206,7 +235,9 @@
 
   @if $focus-outline-color != null {
     .note-gadget-form input[type="submit"]:focus-visible,
+    .note-gadget-form button.note-gadget-submit:focus-visible,
     .note-item-edit-form input[type="submit"]:focus-visible,
+    .note-item-edit-form button.note-item-update-submit:focus-visible,
     .note-item-delete-form button:focus-visible,
     .note-item-cancel-button:focus-visible {
       outline: 2px solid $focus-outline-color;
