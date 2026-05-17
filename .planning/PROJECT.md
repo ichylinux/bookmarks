@@ -8,6 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.24 Mobile Column Lazy Loading
+
+**Goal:** On mobile, only load gadgets for the active column on page load; load each other column's gadgets exactly once when first switched to — never re-fetching within the same page session.
+
+**Target features:**
+- Page load: only AJAX-load gadgets in the initially active column
+- Tab switch to new column: load that column's gadgets (first visit only)
+- Tab switch to already-loaded column: no AJAX — show cached content
+- Desktop behavior unchanged (all columns load on page load as today)
+- Works across all themes (modern/classic/simple) and column counts (3/4)
+
 ## Current State
 
 **Status:** v1.23 complete (2026-05-17)
@@ -109,7 +120,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-*(No active requirements — planning next milestone)*
+*(v1.24 requirements — see REQUIREMENTS.md)*
 
 ### Out of Scope (revisit when planning)
 
@@ -282,4 +293,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 after v1.23 milestone*
+*Last updated: 2026-05-17 — milestone v1.24 started (Mobile Column Lazy Loading)*

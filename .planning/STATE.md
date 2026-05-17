@@ -1,30 +1,26 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.23
-milestone_name: Icon Display Preference
-status: complete
-last_updated: "2026-05-17T11:00:00.000Z"
-last_activity: 2026-05-17 — v1.23 milestone archived (3 phases, 5 plans, tri-suite green)
+milestone: v1.24
+milestone_name: Mobile Column Lazy Loading
+status: planning
+last_updated: "2026-05-17T06:24:41.650Z"
+last_activity: 2026-05-17
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: — (milestone complete)
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.23 archived — planning next milestone
-Last activity: 2026-05-17 — v1.23 milestone archived (icon display preference, 3 phases, 5 plans)
-
-```
-Progress: [████████████████████] 100% (3/3 phases complete)
-```
+Status: Defining requirements
+Last activity: 2026-05-17 — Milestone v1.24 started
 
 ## Project Reference
 
