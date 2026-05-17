@@ -1,135 +1,179 @@
 # External Integrations
 
-**Analysis Date:** 2026-04-27
-
-## Overview
-
-The application integrates with Google and Twitter for OAuth login, AWS SES for transactional email in production, and fetches external RSS/Atom feeds as a core feature. All integration credentials are supplied via environment variables. No cloud storage service is active.
+**Analysis Date:** 2026-05-18
 
 ## APIs & External Services
 
 **Google OAuth2:**
-- Purpose: Social login ("Sign in with Google")
-- Gem: `omniauth-google-oauth2 1.2.2`
-- Callback route: handled by `users/omniauth_callbacks` controller (`config/routes.rb` line 4–7)
-- Auth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` env vars (`config/app_config.yml`)
-- Additional key: `GOOGLE_API_KEY` env var (present in config, exact usage TBD)
+- Purpose: Social sign-in ("Sign in with Google")
+- SDK/Client: `omniauth-google-oauth2` gem
+- Scope: `['email']` (email only)
+- Auth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` env vars (configured in `config/app_config.yml`)
+- API key also stored: `GOOGLE_API_KEY` (present in app_config but not actively wired to a feature in current code)
+- Flow: OmniAuth callback → `User.from_omniauth` in `app/models/user.rb`
 
-**Twitter OAuth:**
-- Purpose: Social login ("Sign in with Twitter")
-- Gem: `omniauth-twitter 1.4.0`
-- Callback route: same `users/omniauth_callbacks` controller
-- Auth: `TWITTER_CLIENT_ID`, `TWITTER_CLIENT_SECRET` env vars (`config/app_config.yml`)
+**X (Twitter) API v2:**
+- Purpose: OAuth 1.0a sign-in; fetch user's following list; fetch recent tweets for X gadget
+- SDK/Client: `omniauth-twitter` (sign-in), `faraday` + `faraday-oauth1` (API calls)
+- Auth: `TWITTER_CLIENT_ID`, `TWITTER_CLIENT_SECRET` env vars; per-user `token` + `token_secret` stored on `x_account` records
+- Implementation: `app/services/x_client.rb`
+  - `fetch_following` — `GET /2/users/:id/following` (OAuth 1.0a User Context)
+  - `fetch_recent_tweets` — `GET /2/users/:id/tweets` (excludes retweets and replies)
+- Rate limiting: returns `{ success: false, error: :rate_limited }` on HTTP 429
 
-**RSS / Atom Feeds (generic external):**
-- Purpose: Users subscribe to external RSS/Atom feeds; app fetches and parses them
-- Gem: `feedjira 4.0.2` + `nokogiri 1.19.2`
-- Implementation: `app/models/feed.rb` — `Feedjira.parse(xml)`, supports `Feedjira::Parser::RSS`, `::Atom`, `::RSSFeedBurner`
-- HTTP retrieval: `httparty 0.24.2` and/or `faraday 1.10.5` are available for outbound requests
+**Mastodon REST API:**
+- Purpose: Fetch recent status previews for Mastodon gadget (read-only, no OAuth)
+- SDK/Client: `faraday` (plain HTTP, no auth)
+- Endpoints used: `GET /api/v1/accounts/lookup`, `GET /api/v1/accounts/:id/statuses`
+- Implementation: `app/services/mastodon_client.rb`
+- Instance host: user-configurable per `MastodonAccount` record
+- Timeouts: 3s connect, 5s read
 
-## Authentication & Identity
-
-**Auth Provider:**
-- Devise 5.0.3 — local email/password authentication (`app/models/user.rb`)
-- OmniAuth 2.1.4 — OAuth2 broker; CSRF protection via `omniauth-rails_csrf_protection`
-  - Providers: Google OAuth2, Twitter
-  - User creation/lookup: `User.from_omniauth(access_token)` in `app/models/user.rb`
-
-**Two-Factor Authentication:**
-- TOTP (time-based OTP) via `devise-two-factor 6.4.0` + `rotp` (transitive dependency)
-- QR code provisioning via `rqrcode 2.2.0`
-- Routes: `users/two_factor_authentication` (verify), `users/two_factor_setup` (enable/disable) (`config/routes.rb`)
-- OTP secret stored encrypted on `User` record (ActiveRecord Encryption)
-
-**ActiveRecord Encryption:**
-- Used to encrypt OTP secrets at rest
-- Keys supplied via env vars: `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`, `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` (`config/application.rb`)
-
-## Email Services
-
-**Production:**
-- Provider: AWS SES (Simple Email Service) via SMTP
-- Delivery method: `:smtp` (`config/environments/production.rb`)
-- SMTP settings sourced from `config/app_config.yml`:
-  - Address: `AWS_ADDRESS` env var
-  - Port: 587
-  - Auth: `login` using `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`
-  - Domain: `AWS_DOMAIN` env var
-- Sender address: `SMTP_FROM` env var (fallback: `from@example.com`)
-- Devise mailer sender: same `SMTP_FROM` env var (`config/initializers/devise.rb`)
-
-**Development/Test:**
-- No SMTP configured — emails are not delivered (Rails default: `:test` or `:letter_opener` not set; verify environment config)
+**RSS/Atom Feeds:**
+- Purpose: Parse external RSS/Atom feeds for the Feed gadget
+- SDK/Client: `feedjira 4.0.2`
+- Implementation: `app/models/feed.rb`
+- Supported parsers: `Feedjira::Parser::RSS`, `Feedjira::Parser::Atom`, `Feedjira::Parser::RSSFeedBurner`
 
 ## Data Storage
 
-**Database:**
-- MySQL via `mysql2` gem
-- Connection: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD` env vars (`config/database.yml`)
+**Databases:**
+- Type: MySQL (utf8mb4 charset, `utf8mb4_general_ci` collation)
+- Databases: `bookmarks_dev` / `bookmarks_test` / `bookmarks_pro`
+- Connection env vars: `MYSQL_HOST` (default: `127.0.0.1`), `MYSQL_PORT` (default: 3306), `MYSQL_USERNAME` (default: `bookmarks`), `MYSQL_PASSWORD` (default: `bookmarks`)
+- Client: `mysql2` gem via ActiveRecord
+- Pool: `RAILS_MAX_THREADS` (default: 5)
 
-**File / Active Storage:**
-- Local disk service only (`config/environments/production.rb`: `config.active_storage.service = :local`)
-- `config/storage.yml` has commented-out templates for Amazon S3, Google GCS, and Microsoft Azure — none are active
+**File Storage:**
+- Service: ActiveStorage local disk in all environments
+- Development/test path: `storage/` and `tmp/storage/`
+- Production: local disk (`config.active_storage.service = :local`)
+- AWS S3, GCS, Azure Storage configs are commented out in `config/storage.yml` — not active
 
 **Caching:**
-- No external cache store active; production uses Rails default in-process cache
-- Redis is referenced only for Action Cable (`config/cable.yml`: `redis://localhost:6379/1`)
+- Development: `:memory_store`
+- Production: default in-process (no external cache store configured; `mem_cache_store` commented out)
 
-## Action Cable
+**Message Bus:**
+- ActionCable
+- Development/test adapter: `:async` (in-process)
+- Production adapter: Redis at `redis://localhost:6379/1`, channel prefix `bookmarks_pro`
 
-- Production WebSocket backend: Redis at `redis://localhost:6379/1` (`config/cable.yml`)
-- Channel prefix: `bookmarks_pro`
+## Authentication & Identity
 
-## Japanese Holiday Data
+**Primary Auth:**
+- Devise 5.0.4 with `database_authenticatable` (bcrypt, 11 stretches in production)
+- Password length: 8–128 characters
+- Email confirmation required (`confirmable`), reconfirmation on email change
+- Password reset token valid for 6 hours
+- Remember-me supported; all tokens invalidated on sign-out
 
-- Gem: `holiday_jp 0.8.1` — bundled dataset, no external API call
-- Usage: `Calendar#holiday?` and `Calendar#holiday` in `app/models/calendar.rb`
+**Two-Factor Auth (TOTP):**
+- `devise-two-factor ~> 6.0` with ROTP
+- `otp_secret` encrypted via ActiveRecord Encryption on `users` table
+- OTP length: 6 digits (configurable via `BOOKMARKS_OTP_LENGTH` env var)
+- QR code generation: `rqrcode 2.2.0`
+- Two-step sign-in flow: password → OTP page (`app/controllers/users/two_factor_authentication_controller.rb`)
+- Setup/disable: `app/controllers/users/two_factor_setup_controller.rb`
+- OmniAuth sign-in bypasses OTP
+
+**Social Sign-In:**
+- Google OAuth2: `omniauth-google-oauth2`
+- Twitter/X OAuth 1.0a: `omniauth-twitter`
+- CSRF protection: `omniauth-rails_csrf_protection`
+- User lookup/creation: `User.from_omniauth(access_token)` in `app/models/user.rb`
+
+**ActiveRecord Encryption:**
+- Used for: `otp_secret` on `User`
+- Keys (ENV with dev fallback in `config/application.rb`):
+  - `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`
+  - `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`
+  - `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`
+- `support_unencrypted_data: true` enabled in test environment (`config/environments/test.rb`) to allow fixture plain-text reads
+
+## Email
+
+**Delivery:**
+- Development: `raise_delivery_errors = false` (no actual sending)
+- Production: SMTP via AWS SES
+  - `config.action_mailer.delivery_method = :smtp`
+  - Settings from `config/app_config.yml` → env vars: `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+  - From address: `SMTP_FROM` env var (also used in Devise mailer sender)
+- Default URL options (production): `https://` + `APP_HOST` env var
+
+**Mailers:**
+- Devise mailer (password reset, email confirmation, etc.)
+- No custom application mailers detected
+
+## Monitoring & Observability
+
+**Error Tracking:**
+- None detected
+
+**Logging:**
+- Development: Rails default logger with verbose query logs and query log tags enabled
+- Production: `ActiveSupport::TaggedLogging` to STDOUT, tagged with request ID, log level controlled by `RAILS_LOG_LEVEL` env var (default: `info`)
+- Health check path `/up` silenced from logs in production
+
+**APM/Metrics:**
+- None detected
 
 ## CI/CD & Deployment
 
-**CI:**
-- Jenkins (`Jenkinsfile` at repo root)
+**Hosting:**
+- Docker-based on Kubernetes (Kustomize manifests in `config/kustomize/`)
+- Base image: `hybitz-almalinux:9.7`
+- App image built from `Dockerfile.app` (extends `Dockerfile.base`)
+- Test image: `Dockerfile.test`
 
-**Provisioning:**
-- Itamae (infrastructure-as-code) with `daddy` gem (`config/itamae/`)
-- Roles: `base`, `db`, `app`, `test`, `default` under `config/itamae/roles/`
+**Deployment process:**
+- `daddy` gem provides `dad:setup` rake task for app initialization
+- `Dockerfile.app` runs `rake dad:setup:app` then `assets:precompile` at build time
+- Kubernetes config: 1 replica, port 3000, ConfigMap + Secret via `bookmarks-secret`
 
-**Containerisation:**
-- Docker: `Dockerfile.app`, `Dockerfile.base`, `Dockerfile.test`
+**CI Pipeline:**
+- No hosted CI detected (no `.github/workflows/`, `.circleci/`, etc.)
+- `config/ci.rb` present (Rails CI config file)
+- `ci_reporter` gem available for CI-compatible test output
+
+**Infrastructure as Code:**
+- Itamae cookbooks in `config/itamae/` (server provisioning — roles: `app`, `db`, `base`, `test`)
 
 ## Webhooks & Callbacks
 
 **Incoming:**
-- OmniAuth OAuth2 callbacks: `GET /users/auth/:provider/callback` handled by `Users::OmniauthCallbacksController`
+- OmniAuth callbacks for Google and Twitter (mounted via Devise routes)
 
 **Outgoing:**
-- None detected beyond RSS feed fetching
+- None detected
 
-## Required Environment Variables
+## Environment Configuration Summary
+
+**Required env vars for production:**
 
 | Variable | Purpose |
 |----------|---------|
+| `MYSQL_HOST` | Database host |
+| `MYSQL_USERNAME` | Database username |
+| `MYSQL_PASSWORD` | Database password |
 | `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
-| `GOOGLE_API_KEY` | Google API key |
 | `TWITTER_CLIENT_ID` | Twitter OAuth client ID |
 | `TWITTER_CLIENT_SECRET` | Twitter OAuth client secret |
-| `AWS_ADDRESS` | AWS SES SMTP host |
-| `AWS_DOMAIN` | AWS SES SMTP domain |
-| `AWS_ACCESS_KEY_ID` | AWS SES SMTP username |
-| `AWS_SECRET_ACCESS_KEY` | AWS SES SMTP password |
-| `SMTP_FROM` | Sender email address |
-| `APP_HOST` | Production hostname for URL generation |
-| `MYSQL_HOST` | Database host |
-| `MYSQL_PORT` | Database port |
-| `MYSQL_USERNAME` | Database user |
-| `MYSQL_PASSWORD` | Database password |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | AR encryption primary key |
 | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | AR encryption deterministic key |
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | AR encryption salt |
-| `RAILS_MAX_THREADS` | Puma thread count / DB pool size |
-| `BOOKMARKS_OTP_LENGTH` | OTP code length (default: 6) |
+| `AWS_ADDRESS` | SES SMTP address |
+| `AWS_DOMAIN` | SES SMTP domain |
+| `AWS_ACCESS_KEY_ID` | SES SMTP username |
+| `AWS_SECRET_ACCESS_KEY` | SES SMTP password |
+| `SMTP_FROM` | Email from address |
+| `APP_HOST` | Production hostname for mailer URLs |
+| `SECRET_KEY_BASE` | Rails secret key base |
+| `RAILS_MAX_THREADS` | Puma thread count (default: 3) |
+| `PORT` | Puma listen port (default: 3000) |
+| `BOOKMARKS_OTP_LENGTH` | TOTP code length (default: 6) |
 
 ---
 
-*Integration audit: 2026-04-27*
+*Integration audit: 2026-05-18*

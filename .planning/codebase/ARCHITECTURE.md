@@ -1,111 +1,236 @@
+<!-- refreshed: 2026-05-18 -->
 # Architecture
 
-## Overview
+**Analysis Date:** 2026-05-18
 
-This is a Rails 8.1 MVC application following standard Rails conventions. It implements a personal portal/dashboard for bookmarks, todos, RSS feeds, and calendars, organized around a "gadget" abstraction that renders user-owned widgets on a drag-and-drop portal homepage. Authentication is handled by Devise with optional TOTP two-factor authentication and OmniAuth (Google, Twitter) social login.
+## System Overview
 
-## Application Architecture Pattern
-
-**Overall:** Rails MVC with a lightweight gadget abstraction layer in models.
-
-The application does not use service objects, form objects, or interactors. Business logic is placed directly in models. The portal system introduces a non-standard "gadget" pattern: plain Ruby objects (`BookmarkGadget`, `TodoGadget`) and AR models (`Calendar`, `Feed`) all expose a uniform `gadget_id` / `entries` interface consumed by `Portal#portal_columns` to compose the dashboard view.
-
-**Key characteristics:**
-- Standard RESTful controllers — thin, no service layer
-- Fat-ish models: `Portal`, `Feed`, `Calendar` contain display logic alongside persistence
-- Gadget protocol: any object responding to `gadget_id` and `entries` can appear in the portal
-- Logical deletes: all user-owned resources use a `deleted` boolean column; `destroy_logically!` is the standard delete path
-- Authorization is inline via `Crud::ByUser` — no dedicated authorization library (CanCanCan / Pundit are absent)
-
-## Key Domain Models and Relationships
-
+```text
+┌──────────────────────────────────────────────────────────────────┐
+│                        Browser / Client                          │
+│   jQuery + jQuery UI (drag/drop, AJAX), vanilla JS gadget layer  │
+└───────────────┬──────────────────────────────────────────────────┘
+                │ HTTP
+                ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                       Rails 8.1 MVC App                          │
+│                                                                  │
+│  Controllers (app/controllers/)                                  │
+│  ApplicationController — authenticate_user!, Localization        │
+│  ├── WelcomeController        (root — portal dashboard)          │
+│  ├── BookmarksController      (CRUD + folder tree)               │
+│  ├── TodosController          (CRUD + bulk delete)               │
+│  ├── NotesController          (CRUD + AJAX gadget endpoint)      │
+│  ├── FeedsController          (CRUD + RSS feeds)                 │
+│  ├── PreferencesController    (user settings via nested attrs)   │
+│  ├── CalendarsController      (gadget AJAX only)                 │
+│  ├── MastodonAccountsController (CRUD + XHR gadget preview)     │
+│  ├── XAccountsController      (cache refresh + XHR preview)     │
+│  └── users/ (Devise extensions)                                  │
+│       ├── SessionsController          (2FA intercept)            │
+│       ├── TwoFactorAuthenticationController                      │
+│       ├── TwoFactorSetupController    (TOTP QR setup)            │
+│       ├── OmniauthCallbacksController (Google, Twitter)          │
+│       └── EmailRegistrationsController (dummy->real email)       │
+└───────────┬──────────────────────────────────────────────────────┘
+            │ ActiveRecord
+            ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                         Models / Domain                          │
+│   User, Preference, Portal, PortalLayout                         │
+│   Bookmark (acts_as_tree), Todo, Note, Feed                      │
+│   MastodonAccount, XAccount                                      │
+│   Gadget concern: BookmarkGadget, TodoGadget, CalendarGadget     │
+└───────────┬──────────────────────────────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                External Services (via Service Objects)           │
+│   MastodonClient  (app/services/mastodon_client.rb) — Faraday   │
+│   XClient         (app/services/x_client.rb) — Faraday+OAuth1   │
+│   Feed retrieval  (inside Feed model, daddy HttpClient)          │
+└──────────────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                           MySQL Database                         │
+│   (charset: utf8mb4, timezone: Tokyo/local)                      │
+└──────────────────────────────────────────────────────────────────┘
 ```
-User
-├── has_one  :preference           (app/models/preference.rb)
-├── has_many :portals              (app/models/portal.rb)
-├── [implicit] has_many :bookmarks (app/models/bookmark.rb)
-├── [implicit] has_many :todos     (app/models/todo.rb)
-├── [implicit] has_many :feeds     (app/models/feed.rb)
-└── [implicit] has_many :calendars (app/models/calendar.rb)
 
-Portal
-└── uses PortalLayout rows to order gadgets into 3 columns
-    PortalLayout: user_id, gadget_id (string), column_no, display_order
+## Component Responsibilities
 
-Bookmark (acts_as_tree)
-├── belongs_to :user
-└── self-referential parent_id (folders at root, files under folders)
+| Component | Responsibility | File |
+|-----------|----------------|------|
+| `ApplicationController` | Auth gate (`authenticate_user!`), 2FA session, locale, font-size notice | `app/controllers/application_controller.rb` |
+| `Localization` concern | `around_action` resolving locale from preference or Accept-Language | `app/controllers/concerns/localization.rb` |
+| `TwitterLinkRequirement` concern | Guard requiring persisted Twitter OAuth on X-related routes | `app/controllers/concerns/twitter_link_requirement.rb` |
+| `WelcomeController` | Renders portal dashboard or landing page; saves drag-drop layout | `app/controllers/welcome_controller.rb` |
+| `Portal` model | Assembles gadget list, maps `PortalLayout` rows to columns | `app/models/portal.rb` |
+| `Preference` model | Per-user settings (theme, font size, column count/widths, feature flags) | `app/models/preference.rb` |
+| `Crud::ByUser` | Shared `readable_by?` / `updatable_by?` / `deletable_by?` guards | `app/models/crud/by_user.rb` |
+| `Gadget` concern | Interface contract (`gadget_id`, `entries`, `visible?`) for portal widgets | `app/models/concerns/gadget.rb` |
+| `MastodonClient` | Read-only Mastodon REST API calls via Faraday | `app/services/mastodon_client.rb` |
+| `XClient` | X/Twitter API v2 via Faraday + OAuth1 (following list, recent tweets) | `app/services/x_client.rb` |
 
-Gadget protocol objects (not AR):
-  BookmarkGadget  (app/models/bookmark_gadget.rb) — wraps Bookmark query
-  TodoGadget      (app/models/todo_gadget.rb)     — wraps Todo collection
-  Calendar        (app/models/calendar.rb)         — AR model + gadget interface
-  Feed            (app/models/feed.rb)             — AR model + gadget interface
-```
+## Pattern Overview
 
-The `tweets` table exists in the schema but has no corresponding model or controller — it appears to be legacy/unused.
+**Overall:** Standard Rails MVC with a Gadget plug-in system layered on top.
 
-## Request / Response Flow
+**Key Characteristics:**
+- Strict `authenticate_user!` on all controllers; `skip_before_action` only on public entry points (`WelcomeController#index`, `TwoFactorAuthenticationController`)
+- Soft deletion (`deleted` boolean column + `.not_deleted` scope + `destroy_logically!`) provided by the `daddy` gem, applied to Bookmark, Todo, Feed, Note, Portal, MastodonAccount, XAccount
+- Locale resolution order: saved preference → Accept-Language header → `I18n.default_locale` (`:ja`)
+- Preference is lazily initialized via `User#preference` fallback to `Preference.default_preference(user)` — it may be an unsaved in-memory object when the user has no DB row yet
+- Portal column layout is stored as `PortalLayout` join records (`user_id`, `column_no`, `display_order`, `gadget_id`) and recomputed each request
 
-### Standard resource request (e.g., bookmarks)
+## Layers
 
-1. Browser sends HTTP request.
-2. `config/routes.rb` — `resources :bookmarks` routes to `BookmarksController`.
-3. `ApplicationController#before_action :authenticate_user!` — Devise enforces login; redirects to sign-in if unauthenticated.
-4. `BookmarksController#before_action :preload_bookmark` (for member actions) — loads record and checks `readable_by?(current_user)` via `Crud::ByUser`; returns 404 on failure.
-5. Action executes — reads/writes AR model directly; no service layer.
-6. Renders ERB view or redirects.
+**Controllers:**
+- Purpose: Authenticate, authorize, delegate to models/services, redirect or render
+- Location: `app/controllers/`
+- Contains: Resource CRUD, Devise extensions, AJAX endpoints (`render layout: false` / `head :ok`)
+- Depends on: Models, Service objects
+- Used by: Router (`config/routes.rb`)
 
-### Portal homepage (root)
+**Models:**
+- Purpose: Business rules, validations, associations, soft-delete, AR scopes
+- Location: `app/models/`
+- Contains: ActiveRecord models, plain Ruby gadget classes, `Crud::ByUser` and `Gadget` concerns
+- Depends on: Database, external gems (`acts_as_tree`, `daddy`, `rotp`)
+- Used by: Controllers, Service objects
 
-1. `WelcomeController#index` loads `current_user.portals.first` → `@portal`.
-2. View (`app/views/welcome/index.html.erb`) iterates `@portal.portal_columns`.
-3. `Portal#portal_columns` calls `Portal#get_gadgets` which instantiates all gadget objects for the user, keyed by `gadget_id`.
-4. Layout ordering from `PortalLayout` rows is applied; gadgets distributed across three columns.
-5. View renders each gadget via `render g.class.name.underscore, gadget: g` — partials in `app/views/welcome/` (`_bookmark_gadget.html.erb`, `_todo_gadget.html.erb`, `_feed.html.erb`, `_calendar.html.erb`).
-6. jQuery UI Sortable sends AJAX `POST /welcome/save_state` when layout is changed; `WelcomeController#save_state` calls `Portal#update_layout`.
+**Service Objects:**
+- Purpose: Encapsulate external HTTP calls with structured result hashes
+- Location: `app/services/`
+- Contains: `MastodonClient`, `XClient`
+- Return value pattern: `{ success: true, items: [...] }` or `{ success: false, error: :symbol }`
+- Used by: `MastodonAccountsController`, `XAccountsController`
 
-### Feed gadget partial load
+**Views:**
+- Purpose: HTML rendering, ERB templates, JS inline for gadget coordination
+- Location: `app/views/`
+- Contains: Partials per resource, two layout files (application + mailer), `common/` shared partials
+- Theme-controlled body class (`modern` / `simple` / `classic`) applied in layout
 
-`FeedsController#show` detects XHR (`request.xhr?`) and renders without a layout, allowing the gadget to be loaded inline.
+**Assets:**
+- JS: Sprockets manifest `application.js` bundles jQuery, jQuery UI, and per-feature files via `require_tree .`
+- CSS: Sass/SCSS per-resource files plus `themes/` directory with `modern.css.scss`, `simple.css.scss`, `classic.css.scss`
 
-## Authentication / Authorization Approach
+## Data Flow
 
-**Authentication — Devise** (`app/models/user.rb`, `app/controllers/users/`)
+### Authenticated Request — Portal Dashboard
 
-- Modules enabled: `two_factor_authenticatable`, `registerable`, `recoverable`, `rememberable`, `trackable`, `validatable`, `omniauthable`
-- `ApplicationController` enforces `before_action :authenticate_user!` globally — every action requires login by default
-- Two-factor (TOTP) flow is custom: `Users::SessionsController#create` checks `two_factor_enabled?`; if true, stores `otp_user_id` in session and redirects to `Users::TwoFactorAuthenticationController#show` instead of completing sign-in (`app/controllers/users/sessions_controller.rb`, `app/controllers/users/two_factor_authentication_controller.rb`)
-- 2FA setup managed by `Users::TwoFactorSetupController` (`app/controllers/users/two_factor_setup_controller.rb`)
-- OmniAuth: `Users::OmniauthCallbacksController` handles Google and Twitter callbacks; `User.from_omniauth` creates or looks up the user (`app/controllers/users/omniauth_callbacks_controller.rb`)
+1. GET `/` → `WelcomeController#index` — skips auth only for unauthenticated; signed-in users get `@portal = current_user.portals.first` (`app/controllers/welcome_controller.rb`)
+2. `Portal#portal_columns` — queries `PortalLayout` rows, instantiates gadget objects, partitions into column arrays (`app/models/portal.rb`)
+3. `app/views/welcome/index.html.erb` — branches on `favorite_theme`; renders `_dashboard` partial
+4. `_dashboard` → `_portal_column_section` → per-gadget partials (e.g., `_bookmark_gadget`, `_feed`, `_mastodon_account`)
+5. Gadgets requiring remote data (Feed, Mastodon, X) are loaded lazily via AJAX on mobile via `portalLazy` JS coordinator (`app/assets/javascripts/portal_lazy.js`)
 
-**Authorization — inline / Crud::ByUser** (`app/models/crud/by_user.rb`)
+### Two-Factor Authentication Sign-In Flow
 
-- No Pundit/CanCanCan
-- `Crud::ByUser` concern provides `readable_by?`, `updatable_by?`, `deletable_by?` — all check `user_id == current_user.id`
-- Controllers call `readable_by?(current_user)` in `preload_*` before_actions and return 404 on failure
-- Admin check: `User#admin?` compares email to `User.first.email` — fragile, no separate role column
+1. POST `/users/sign_in` → `Users::SessionsController#create`
+2. If `user.two_factor_enabled?` → stores `session[:otp_user_id]`, redirects to `users_two_factor_authentication_path`
+3. POST `/users/two_factor_authentication` → `Users::TwoFactorAuthenticationController#verify` — validates TOTP, signs in, clears session key
+4. OmniAuth providers bypass 2FA (`sign_in_and_redirect` directly in `Users::OmniauthCallbacksController`)
 
-## Data Flow Patterns
+### Portal Layout Save (AJAX)
 
-**User-scoped queries:** All resource queries include `user_id: current_user.id` directly in controller WHERE clauses. No global scope enforces this — it is a manual convention.
+1. jQuery UI sortable `update` event fires `collect_portal_layout_params()` in dashboard inline script
+2. `$.post('/welcome/save_state', params)` → `WelcomeController#save_state`
+3. Calls `portal.update_layout(params[:portal])` which upserts/deletes `PortalLayout` rows in a transaction
+4. Responds with `head :ok`
 
-**Logical deletes:** Records are never hard-deleted. All user-facing models have a `deleted` boolean (default false). `destroy_logically!` sets `deleted: true`. Queries use `.not_deleted` scope (provided by the `daddy` gem).
+**State Management:**
+- No Rails cache store for user data — all portal and preference state lives in DB
+- Mobile active column index stored in `localStorage` (`portalMobileActiveColumn`) and pre-hydrated via inline `<script>` before page paint to avoid flash (`app/views/welcome/_dashboard.html.erb`)
 
-**Feed fetching:** `Feed#retrieve_feed` makes a synchronous HTTP request using `Daddy::HttpClient` (wrapping Faraday) at render time — there is no background job or caching for feed content. This is a potential performance concern.
+## Key Abstractions
 
-**Portal layout persistence:** Layout state is stored as `PortalLayout` rows (one per gadget slot). On drag-and-drop, the entire layout is serialized by JavaScript and POSTed to `WelcomeController#save_state`, which rewrites all `PortalLayout` rows for the user in a transaction.
+**Gadget Protocol:**
+- Purpose: Any object placed in a portal column must respond to `gadget_id` (String), `entries` (Array-like), and optionally `title` and `visible?`
+- Defined by: `app/models/concerns/gadget.rb` (ActiveSupport::Concern)
+- Note: `Feed`, `MastodonAccount`, and `XAccount` implement the same interface without including the concern
+- Examples: `app/models/bookmark_gadget.rb`, `app/models/todo_gadget.rb`, `app/models/calendar_gadget.rb`
 
-**Preferences:** `User has_one :preference`; if none exists, `User#preference` falls back to `Preference.default_preference(user)` (an unsaved object) rather than raising. `PreferencesController` manages preferences through nested attributes on `User`.
+**Crud::ByUser:**
+- Purpose: Ownership authorization mixin — checks `user_id` equality
+- File: `app/models/crud/by_user.rb`
+- Used by: `Bookmark`, `Feed`, `Note`, `Todo`, `MastodonAccount`, `XAccount`
+
+**Soft Delete (daddy gem):**
+- Purpose: `.not_deleted` scope and `destroy_logically!` (sets `deleted = true`) — provided by `daddy` gem
+- Referenced at: `app/models/note.rb`, `app/models/todo.rb`, `app/models/feed.rb`, `app/models/mastodon_account.rb`, `app/models/portal.rb`, `app/models/bookmark.rb`, `app/models/x_account.rb`
+- Source in companion gem: `/home/ichy/workspace/daddy/lib/daddy/models/query_extension.rb`, `crud_extension.rb`
+
+**Service Object Result Hash:**
+- Pattern: `{ success: Boolean, items: Array }` on success; `{ success: false, error: Symbol }` on failure
+- Error symbols: `:timeout`, `:network`, `:not_found`, `:api_error`, `:parse_error`, `:unauthorized`, `:rate_limited`
+- Files: `app/services/mastodon_client.rb`, `app/services/x_client.rb`
+
+## Entry Points
+
+**Root (`/`):**
+- Location: `app/controllers/welcome_controller.rb`
+- Triggers: Any HTTP request; unauthenticated users see landing page
+- Responsibilities: Assigns `@portal`, delegates to `_dashboard` or `_landing` partial
+
+**Devise Routes:**
+- Location: `app/controllers/users/sessions_controller.rb`, `app/controllers/users/omniauth_callbacks_controller.rb`
+- Triggers: `/users/sign_in`, `/users/auth/google_oauth2`, `/users/auth/twitter`
+- Responsibilities: 2FA routing, OmniAuth user provisioning
+
+**Health Check:**
+- Location: Rails built-in `rails/health#show`
+- Route: GET `/up`
 
 ## Architectural Constraints
 
-- **Threading:** Single-process Puma; no background job queue configured (ActiveJob exists but no adapter beyond the default inline/test adapters is configured)
-- **Global state:** None notable
+- **Threading:** Standard Puma multi-worker/multi-thread. No global mutable state shared across requests beyond `Rails.application.config.app_config` (frozen struct from `config/app_config.yml`)
+- **Global state:** `Rails.application.config.app_config` (read-only at boot) provides OmniAuth keys and similar config values
 - **Circular imports:** None detected
-- **Feed HTTP calls at render time:** Synchronous external HTTP in the request cycle; no caching layer
-- **Admin detection:** `User#admin?` uses `User.first` — breaks if users are ever reordered or the first user is deleted
+- **Soft delete everywhere:** Hard `DELETE` is not used for user-owned content. Always call `destroy_logically!` and filter with `.not_deleted`
+- **Preference fallback:** `User#preference` overrides ActiveRecord's reader to return an unsaved default object when no `preferences` row exists. Controllers must call `@user.build_preference` before forms that need a persisted record (see `PreferencesController#index`)
+- **dad:setup route guard:** Routes are conditionally defined — `devise_for` and custom user routes are skipped when `ARGV.first =~ /^dad:setup/`. This prevents `User` model loading during Docker image builds (`config/routes.rb`)
+
+## Anti-Patterns
+
+### Calling `user.preference` and assuming it is persisted
+
+**What happens:** `User#preference` returns `Preference.default_preference(user)` (new, unsaved) when no DB row exists. Code that calls `.update!` or `.id` on the result will raise or return `nil`.
+**Why it's wrong:** Silent nil `id` causes `PortalLayout` foreign key failures; `update!` on an unsaved record raises `ActiveRecord::RecordNotSaved`.
+**Do this instead:** Use `@user.build_preference unless @user.preference.present?` in controllers before rendering preference forms (`app/controllers/preferences_controller.rb#index`). For read-only access the fallback is safe.
+
+### Adding a new gadget type without implementing the Gadget protocol
+
+**What happens:** `Portal#get_gadgets` builds a hash of gadget objects keyed by `gadget_id`. Gadgets without a `gadget_id` method will raise `NoMethodError`.
+**Why it's wrong:** The portal column render loop and `PortalLayout` persistence both depend on stable string IDs.
+**Do this instead:** Include `Gadget` concern (`app/models/concerns/gadget.rb`) or manually define `gadget_id`, `entries`, and `title` methods. Register the new gadget in `Portal#get_gadgets` (`app/models/portal.rb`).
+
+### Bypassing `Crud::ByUser` authorization in controllers
+
+**What happens:** Some controllers call `find(params[:id])` directly then check ownership manually; others use a `preload_*` before_action that checks `readable_by?`.
+**Why it's wrong:** Inconsistent pattern risks exposing another user's records if a new action is added without the guard.
+**Do this instead:** Always use a `preload_*` before_action that calls `readable_by?(current_user)` and responds with `head :not_found` on failure, as seen in `app/controllers/mastodon_accounts_controller.rb`.
+
+## Error Handling
+
+**Strategy:** Controllers rescue `ActiveRecord::RecordInvalid` for explicit transactions and redirect with flash messages. Service objects return structured result hashes — never raise to the controller layer.
+
+**Patterns:**
+- `model.transaction { model.save! }` + rescue `RecordInvalid` in controllers
+- `head :not_found` for authorization failures in before_actions
+- Service objects: always return `{ success:, ... }` hash; callers branch on `result[:success]`
+- Flash messages use `flash[:notice]` / `flash[:alert]`; AJAX responses use `head :ok` or render partial with `layout: false`
+
+## Cross-Cutting Concerns
+
+**Logging:** `Rails.logger` (stdout in production via `ActiveSupport::TaggedLogging`). Feed errors logged at `error` level in `Feed#feed`. AJAX failures logged in browser console via `console.warn`.
+**Validation:** ActiveRecord validations on all models. `Crud::ByUser` for ownership. `TwitterLinkRequirement` controller concern for X-specific auth.
+**Authentication:** Devise with `authenticate_user!` in `ApplicationController`. Two-factor via TOTP (`devise-two-factor`). OmniAuth for Google and Twitter — Twitter users get dummy emails and must register a real email separately via `Users::EmailRegistrationsController`.
+**Locale:** `around_action :set_locale` in `Localization` concern resolves per-request from DB preference or HTTP header. Default locale is `:ja`.
+**ActiveRecord Encryption:** `User#token` and `User#token_secret` (Twitter OAuth) are encrypted via `ActiveRecord::Encryption`. Keys from ENV vars with hardcoded dev/test fallbacks in `config/application.rb`.
 
 ---
 
-*Architecture analysis: 2026-04-27*
+*Architecture analysis: 2026-05-18*
