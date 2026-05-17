@@ -88,7 +88,9 @@ Plans:
   4. On the modern/classic theme with `?tab=notes`, the note gadget content is fetched immediately on page load (tab is initially active)
   5. Notes CRUD actions (create, update, destroy) still work and redirect correctly
   6. `yarn run lint` green, `bin/rails test` green, `bundle exec rake dad:test` green
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 79-01-PLAN.md — Route, controller action, view, locale, dashboard placeholder, JS lazy guard, test migration
 
 <details>
 <summary>✅ v1.23 — Icon Display Preference (Phases 73–75) — SHIPPED 2026-05-17</summary>
@@ -161,8 +163,8 @@ Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestone
 | 76. `portal_lazy.js` Coordinator | 1/1 | Complete | 2026-05-17 |
 | 77. Gadget Partial Wiring + Tab Hook | 1/1 | Complete | 2026-05-17 |
 | 78. Contract Tests + Cucumber E2E | 1/1 | Complete | 2026-05-17 |
-| 79. Note Gadget AJAX Extraction | 0/TBD | Not started | - |
+| 79. Note Gadget AJAX Extraction | 0/1 | Not started | - |
 
 ---
 
-*Last updated: 2026-05-17 — Phase 79 added: note gadget AJAX extraction*
+*Last updated: 2026-05-17 — Phase 79 planned: 1 plan (79-01)*

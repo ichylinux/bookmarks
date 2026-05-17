@@ -29,6 +29,12 @@
 - [x] **TEST-01**: Minitest contract tests verify the `portal_lazy.js` coordinator's register/load-once behavior
 - [x] **TEST-02**: Existing `@mobile_portal` Cucumber scenarios pass; new scenario verifies that only the active column loads on page init and that switching to a new column triggers exactly one load
 
+### Note Gadget AJAX Extraction
+
+- [ ] **NOTE-01**: `NotesController` exposes a `gadget` collection action at `GET /notes/gadget` that authenticates the user, assigns `@note` (new Note) and `@notes` (user's active recent notes), and renders `notes/gadget` with `layout: false`
+- [ ] **NOTE-02**: `WelcomeController#index` no longer assigns `@note` or `@notes` — the note gadget queries execute only on `GET /notes/gadget`, not on every dashboard page load
+- [ ] **NOTE-03**: The `#notes-tab-panel` placeholder in `_dashboard.html.erb` is populated via a single AJAX request on first visit (simple theme: first tab click; modern/classic: on page load if `?tab=notes`); subsequent visits use the cached DOM
+
 ## Future Requirements
 
 *(None identified — this milestone is a self-contained optimization)*
@@ -60,12 +66,15 @@
 | IMPL-04 | Phase 77 | Complete |
 | TEST-01 | Phase 78 | Complete |
 | TEST-02 | Phase 78 | Complete |
+| NOTE-01 | Phase 79 | Not started |
+| NOTE-02 | Phase 79 | Not started |
+| NOTE-03 | Phase 79 | Not started |
 
 **Coverage:**
-- v1 requirements: 12 total
-- Mapped to phases: 12
+- v1 requirements: 15 total
+- Mapped to phases: 15
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-17*
-*Last updated: 2026-05-17 — traceability confirmed after roadmap creation (Phases 76–78)*
+*Last updated: 2026-05-17 — NOTE-01/02/03 added for Phase 79 (note gadget AJAX extraction)*
