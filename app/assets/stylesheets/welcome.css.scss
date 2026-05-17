@@ -250,3 +250,18 @@ $bookmark-gadget-row-gap: 0.25em;
   }
 }
 
+// v1.24 quick fix: Center the note gadget loading message
+.note-gadget-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  color: #666;
+  font-size: 1.15rem;
+  font-weight: 500;
+
+  @media (max-width: 767px) {
+    min-height: 40vh;
+  }
+}
+
