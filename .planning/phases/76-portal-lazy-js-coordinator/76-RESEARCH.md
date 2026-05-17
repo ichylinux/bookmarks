@@ -434,17 +434,15 @@ Confirmed present at `_dashboard.html.erb` line 31, inside `$(document).ready`, 
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED — Phase 77/78 Scope, Not Phase 76 Blockers)
 
-1. **Column index availability in gadget partials (Phase 77 concern)**
+1. **Column index availability in gadget partials** — RESOLVED: Phase 77 concern
    - What we know: Partials are rendered with `gadget:` local only; no `column_index:` local is passed.
-   - What's unclear: The cleanest approach for Phase 77 to derive column index (DOM traversal vs. adding `column_index:` local to render call in `_portal_column_section.html.erb`).
-   - Recommendation: This is a Phase 77 research/planning concern. Adding `column_index:` as an ERB local to the render call is the cleanest solution. Phase 76 research notes it so the Phase 77 planner is forewarned.
+   - Resolution: Adding `column_index:` as an ERB local to the render call in `_portal_column_section.html.erb` is the cleanest solution. Phase 77 planner is forewarned.
 
-2. **`$('.gadgets').sortable()` mobile guard (Phase 78 concern)**
+2. **`$('.gadgets').sortable()` mobile guard** — RESOLVED: Phase 78 concern
    - What we know: No guard exists; sortable is active on mobile.
-   - What's unclear: Whether jQuery UI sortable actually causes swipe conflicts in practice (may be masked by touch event propagation).
-   - Recommendation: Track in Phase 78; not a Phase 76 concern.
+   - Resolution: Track in Phase 78 per ROADMAP. Not a Phase 76 blocker.
 
 ---
 
