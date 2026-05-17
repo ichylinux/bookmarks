@@ -30,7 +30,7 @@
 
 ### v1.23 — Icon Display Preference
 
-- [ ] **Phase 73: Data + Model Layer** - Migration, model constant, default_preference, validation
+- [x] **Phase 73: Data + Model Layer** - Migration, model constant, default_preference, validation
 - [ ] **Phase 74: CSS + View Layer** - Body class in layout, CSS hide rules in SCSS
 - [ ] **Phase 75: Preferences UI + Locale + Tests** - Toggle control, ja/en strings, Minitest, tri-suite gate
 
@@ -79,7 +79,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 73. Data + Model Layer | 0/? | Not started | - |
+| 73. Data + Model Layer | 2/2 | Complete | 2026-05-17 |
 | 74. CSS + View Layer | 0/? | Not started | - |
 | 75. Preferences UI + Locale + Tests | 0/? | Not started | - |
 
