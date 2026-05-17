@@ -76,6 +76,7 @@
           $(document).ready(function() {
             $.get('<%= gadget_notes_path %>', function(html) {
               $('#notes-tab-panel').html(html);
+              $(document).trigger('noteGadgetLoaded');
             }).fail(function(xhr) {
               console.warn('note gadget load failed', xhr.status);
             });

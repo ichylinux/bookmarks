@@ -20,6 +20,7 @@ $(function() {
         notesLoaded = true;
         $.get('/notes/gadget', function(html) {
           $notesPanel.html(html);
+          $(document).trigger('noteGadgetLoaded');
         }).fail(function(xhr) {
           console.warn('note gadget load failed', xhr.status);
         });
