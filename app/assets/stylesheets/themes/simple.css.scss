@@ -16,6 +16,16 @@
     rgba(0, 0, 0, 0.45),
     null
   );
+  @include notes_delete_button_shared(
+    1px solid #b91c1c,
+    4px,
+    #fef2f2,
+    #991b1b,
+    #fee2e2,
+    #991b1b,
+    null,
+    #b91c1c
+  );
 
   #header {
     display: none;

@@ -50,7 +50,7 @@ end
   within '#notes-tab-panel .note-item:first-child' do
     find('.note-item-display').double_click
     assert has_no_selector?('.note-item-edit-form[hidden]', wait: 3)
-    assert has_button?('編集をキャンセル')
+    assert has_button?('キャンセル')
   end
 end
 
@@ -63,7 +63,7 @@ end
 
 もし /^先頭メモの編集表示をキャンセルします。$/ do
   within '#notes-tab-panel .note-item:first-child.note-item--editing' do
-    click_button '編集をキャンセル'
+    click_button 'キャンセル'
   end
   assert has_no_selector?('#notes-tab-panel .note-item:first-child.note-item--editing', wait: 3)
 end

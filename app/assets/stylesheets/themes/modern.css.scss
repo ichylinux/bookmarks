@@ -260,6 +260,16 @@
     null,
     var(--modern-color-primary)
   );
+  @include notes_delete_button_shared(
+    none,
+    6px,
+    var(--modern-danger),
+    #fff,
+    null,
+    null,
+    brightness(0.92),
+    var(--modern-danger)
+  );
 }
 
 .modern #notes-tab-panel .note-gadget {
