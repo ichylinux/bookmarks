@@ -9,6 +9,7 @@ class Preference < ApplicationRecord
   ].freeze
 
   PORTAL_COLUMN_COUNTS = [3, 4].freeze
+  SHOW_ICONS_DEFAULT = true
 
   SUPPORTED_LOCALES = %w[ja en].freeze
   LOCALE_OPTIONS = {
@@ -22,6 +23,7 @@ class Preference < ApplicationRecord
   validates :font_size, inclusion: { in: FONT_SIZES }, allow_nil: true
   validates :locale, inclusion: { in: SUPPORTED_LOCALES }, allow_nil: true
   validates :portal_column_count, inclusion: { in: PORTAL_COLUMN_COUNTS }
+  validates :show_icons, inclusion: { in: [true, false] }
 
   scope :font_size_notice_pending, -> { where(font_size_notice_pending: true) }
 
@@ -32,6 +34,7 @@ class Preference < ApplicationRecord
     ret.use_todo = true
     ret.use_calendar = true
     ret.portal_column_count = PORTAL_COLUMN_COUNTS.first
+    ret.show_icons = SHOW_ICONS_DEFAULT
     ret
   end
 
