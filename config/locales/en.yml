@@ -238,14 +238,14 @@ en:
       continue_to_app: Open the app
     values:
       capture:
-        title: Capture ideas instantly
-        body: Save useful links and notes the moment you find them.
+        title: Save anything, instantly
+        body: Clip bookmarks, jot notes, and capture ideas the moment they strike — no friction, no forgetting.
       organize:
-        title: See everything in one place
-        body: Review what matters in one view and spend less time searching.
+        title: Everything in one dashboard
+        body: Bookmarks, tasks, feeds, and notes side by side — stop hunting across tabs and apps.
       focus:
-        title: Easy to adopt
-        body: A familiar, intuitive flow helps you stay focused without a steep learning curve.
+        title: Your space, your way
+        body: Adjust layout, theme, column count, and widths to build the dashboard that fits how you actually work.
     auth:
       sign_in_intro: Welcome back. Jump straight into the information you saved.
       sign_up_intro: Get started in minutes and keep everything important in one place.
@@ -265,6 +265,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-18"
+          headline: Adjust portal column width ratios
+          tag: new
+          description: You can now set individual column widths from preferences. Drag the sliders to fine-tune how your dashboard space is distributed across columns.
         - date: "2026-05-16"
           headline: Set the number of tweets displayed in the X gadget
           tag: new

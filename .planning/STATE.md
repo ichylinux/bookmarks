@@ -54,6 +54,7 @@ Progress: 4/4 phases complete
 | 20260518 | center note gadget loading message | 2026-05-18 | 7c3d626 | [20260518-center-note-gadget-loading-message](./quick/20260518-center-note-gadget-loading-message/) |
 | 20260518 | archive completed milestone | 2026-05-18 | 2b78b34 | [20260518-archive-completed-milestone](./quick/20260518-archive-completed-milestone/) |
 | 20260518 | ポータル列数変更時のスライダー数連動修正 | 2026-05-18 | 35c7c75 | [20260518-portal-slider-count-sync](./quick/20260518-portal-slider-count-sync/) |
+| 20260518 | landing page refresh — value copy + v1.25 changelog entry | 2026-05-18 | — | [20260518-landing-page-refresh](./quick/20260518-landing-page-refresh/) |
 
 ## Session Continuity
 
