@@ -31,9 +31,9 @@
 
 ### Note Gadget AJAX Extraction
 
-- [ ] **NOTE-01**: `NotesController` exposes a `gadget` collection action at `GET /notes/gadget` that authenticates the user, assigns `@note` (new Note) and `@notes` (user's active recent notes), and renders `notes/gadget` with `layout: false`
-- [ ] **NOTE-02**: `WelcomeController#index` no longer assigns `@note` or `@notes` — the note gadget queries execute only on `GET /notes/gadget`, not on every dashboard page load
-- [ ] **NOTE-03**: The `#notes-tab-panel` placeholder in `_dashboard.html.erb` is populated via a single AJAX request on first visit (simple theme: first tab click; modern/classic: on page load if `?tab=notes`); subsequent visits use the cached DOM
+- [x] **NOTE-01**: `NotesController` exposes a `gadget` collection action at `GET /notes/gadget` that authenticates the user, assigns `@note` (new Note) and `@notes` (user's active recent notes), and renders `notes/gadget` with `layout: false`
+- [x] **NOTE-02**: `WelcomeController#index` no longer assigns `@note` or `@notes` — the note gadget queries execute only on `GET /notes/gadget`, not on every dashboard page load
+- [x] **NOTE-03**: The `#notes-tab-panel` placeholder in `_dashboard.html.erb` is populated via a single AJAX request on first visit (simple theme: first tab click; modern/classic: on page load if `?tab=notes`); subsequent visits use the cached DOM
 
 ## Future Requirements
 
@@ -66,9 +66,9 @@
 | IMPL-04 | Phase 77 | Complete |
 | TEST-01 | Phase 78 | Complete |
 | TEST-02 | Phase 78 | Complete |
-| NOTE-01 | Phase 79 | Not started |
-| NOTE-02 | Phase 79 | Not started |
-| NOTE-03 | Phase 79 | Not started |
+| NOTE-01 | Phase 79 | Complete |
+| NOTE-02 | Phase 79 | Complete |
+| NOTE-03 | Phase 79 | Complete |
 
 **Coverage:**
 - v1 requirements: 15 total

@@ -119,6 +119,7 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#simple-home-panel.simple-tab-panel--hidden', count: 1
     assert_select '#notes-tab-panel.simple-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
   end
 
   def test_シンプルテーマで不正なtabクエリはホームを表示する
@@ -130,90 +131,6 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_select '#notes-tab-panel.simple-tab-panel--hidden', count: 1
   end
 
-  def test_シンプルテーマのノートパネルにメモフォームが表示される
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select '#notes-tab-panel .note-gadget', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', '更新'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', '削除'
-    assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-  end
-
-  def test_シンプルテーマでメモがないとき空状態を表示する
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
-    assert_select '#notes-tab-panel .note-list', count: 0
-  end
-
-  def test_シンプルテーマのノートパネルが英語ロケールで英語表示される
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'en')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'html[lang=?]', 'en'
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
-    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
-  end
-
-  def test_シンプルテーマでメモは新しい順に表示されタイムスタンプと編集済みバッジが出る
-    Note.where(user_id: user.id).delete_all
-    older_time = Time.zone.local(2026, 4, 29, 9, 0)
-    newer_time = Time.zone.local(2026, 4, 30, 9, 0)
-    edited_time = Time.zone.local(2026, 4, 30, 10, 30)
-    older = user.notes.create!(
-      body: '古いメモ 13-02',
-      created_at: older_time,
-      updated_at: older_time
-    )
-    newer = user.notes.create!(
-      body: '新しいメモ 13-02',
-      created_at: newer_time,
-      updated_at: edited_time
-    )
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select '#notes-tab-panel .note-list', count: 1
-    assert_select '#notes-tab-panel .note-item', minimum: 2
-    assert_select '#notes-tab-panel .note-item .note-item-display', minimum: 2
-    assert_select '#notes-tab-panel .note-item.note-item--editing', count: 0
-    assert_select '#notes-tab-panel .note-item form.note-item-edit-form[hidden]', minimum: 2
-    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit[type=submit]',
-                  minimum: 2
-    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit .note-submit-label',
-                  text: '更新',
-                  minimum: 2
-    assert_select '#notes-tab-panel .note-item form.note-item-edit-form button.note-item-update-submit kbd.note-submit-shortcut',
-                  text: 'Ctrl+S',
-                  minimum: 2
-    assert_select '#notes-tab-panel .note-item form.note-item-delete-form[hidden]', minimum: 2
-    assert_select '#notes-tab-panel .note-item textarea[name=?]', 'note[body]', count: 2
-    assert_operator response.body.index(newer.body), :<, response.body.index(older.body),
-                    'newer note should render before older note'
-    assert_includes response.body, newer_time.strftime('%Y-%m-%d %H:%M')
-    assert_includes response.body, older_time.strftime('%Y-%m-%d %H:%M')
-    assert_select '#notes-tab-panel .note-item .note-edited-badge', text: '編集済み', count: 1
-    assert_select '#notes-tab-panel .note-item .note-edited-badge[title=?]',
-                  "編集: #{edited_time.strftime('%Y-%m-%d %H:%M')}",
-                  count: 1
-  end
 
   def test_モダンテーマでuse_noteがfalseのときノートパネルが表示されない
     user.preference.update!(theme: 'modern', use_note: false)
@@ -236,6 +153,7 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
     assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
   end
 
   def test_モダンテーマで不正なtabクエリはホームを表示する
@@ -268,6 +186,7 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
     assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
+    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
   end
 
   def test_クラシックテーマで不正なtabクエリはホームを表示する
@@ -277,91 +196,6 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
     assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
-  end
-
-  def test_モダンテーマのノートパネルが日本語ロケールで表示される
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', '更新'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', '削除'
-    assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
-  end
-
-  def test_モダンテーマのノートパネルが英語ロケールで表示される
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'modern', use_note: true, locale: 'en')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'html[lang=?]', 'en'
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
-    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
-  end
-
-  def test_クラシックテーマのノートパネルが日本語ロケールで表示される
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'classic', use_note: true, locale: 'ja')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'html[lang=?]', 'ja'
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'メモ', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'メモを保存', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', '更新'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', '削除'
-    assert_select '#notes-tab-panel .note-empty', text: 'メモはまだありません', count: 1
-  end
-
-  def test_クラシックテーマのノートパネルが英語ロケールで表示される
-    Note.where(user_id: user.id).delete_all
-    user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'html[lang=?]', 'en'
-    assert_select 'form.note-gadget-form textarea[name=?][aria-label=?]', 'note[body]', 'Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit[type=submit]', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit .note-submit-label', text: 'Save Note', count: 1
-    assert_select 'form.note-gadget-form button.note-gadget-submit kbd.note-submit-shortcut', text: 'Ctrl+S', count: 1
-    assert_select 'section.note-gadget[data-note-action-update-label=?]', 'Update Note'
-    assert_select 'section.note-gadget[data-note-action-delete-label=?]', 'Delete Note'
-    assert_select '#notes-tab-panel .note-empty', text: 'No notes yet', count: 1
-  end
-
-  def test_ノートパネルには他ユーザーのメモが表示されない
-    Note.where(user_id: user.id).delete_all
-    other_user = User.find(2)
-    other_user.notes.create!(
-      body: '他ユーザーの秘密メモ 13-02',
-      created_at: Time.zone.local(2026, 4, 30, 10, 0),
-      updated_at: Time.zone.local(2026, 4, 30, 10, 0)
-    )
-    own_note = user.notes.create!(
-      body: '自分のメモ 13-02',
-      created_at: Time.zone.local(2026, 4, 30, 11, 0),
-      updated_at: Time.zone.local(2026, 4, 30, 11, 0)
-    )
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'en')
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select 'html[lang=?]', 'en'
-    assert_includes response.body, own_note.body
-    assert_not_includes response.body, '他ユーザーの秘密メモ 13-02'
   end
 
   def test_show_iconsがfalseのときbodyにno_iconsクラスが付く
@@ -378,6 +212,17 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select 'body.no-icons', count: 0
+  end
+
+  def test_indexはnoteとnotesを割り当てない
+    user.preference.update!(use_note: true)
+    sign_in user
+    get root_path
+    assert_response :success
+    # @note and @notes are no longer assigned by WelcomeController#index.
+    # The notes panel should contain only the loading placeholder, not a note form.
+    assert_select '#notes-tab-panel form.note-gadget-form', count: 0
+    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
   end
 
 end
