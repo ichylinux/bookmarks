@@ -191,6 +191,21 @@ ja:
       unauthorized: Xとの連携が無効です。再認可が必要です。
       rate_limited: レート制限に達しました。しばらくしてから再度お試しください。
 
+  notes:
+    gadget:
+      loading: ノートを読み込み中・・・
+      body_label: メモ
+      submit: メモを保存
+      submit_shortcut: Ctrl+S
+      submit_aria_label: "%{submit}（%{shortcut}）"
+      update: 更新
+      update_aria_label: "%{update}（%{shortcut}）"
+      cancel: キャンセル
+      delete: 削除
+      empty: メモはまだありません
+      edited_badge: 編集済み
+      edited_tooltip: "編集: %{time}"
+
   welcome:
     calendar_gadget:
       loading: カレンダーを読み込み中・・・
@@ -205,19 +220,6 @@ ja:
       fetch_failed: Xのツイートを取得できませんでした。
       empty: 表示できるツイートがありません。
       reauthorize: Xで再認可する
-    note_gadget:
-      loading: ノートを読み込み中・・・
-      body_label: メモ
-      submit: メモを保存
-      submit_shortcut: Ctrl+S
-      submit_aria_label: "%{submit}（%{shortcut}）"
-      update: 更新
-      update_aria_label: "%{update}（%{shortcut}）"
-      cancel: キャンセル
-      delete: 削除
-      empty: メモはまだありません
-      edited_badge: 編集済み
-      edited_tooltip: "編集: %{time}"
     portal_column_tabs_aria_label: ポータル列の切り替え
 
   landing:

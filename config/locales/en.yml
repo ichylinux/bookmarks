@@ -191,6 +191,21 @@ en:
       unauthorized: Your X connection is invalid. Please re-authorize.
       rate_limited: Rate limit reached. Try again later.
 
+  notes:
+    gadget:
+      loading: Loading notes...
+      body_label: Note
+      submit: Save Note
+      submit_shortcut: Ctrl+S
+      submit_aria_label: "%{submit} (%{shortcut})"
+      update: Update Note
+      update_aria_label: "%{update} (%{shortcut})"
+      cancel: Cancel Editing
+      delete: Delete Note
+      empty: No notes yet
+      edited_badge: Edited
+      edited_tooltip: "Edited: %{time}"
+
   welcome:
     calendar_gadget:
       loading: Loading calendar...
@@ -205,19 +220,6 @@ en:
       fetch_failed: Could not load posts from X.
       empty: No posts to display.
       reauthorize: Re-authorize with X
-    note_gadget:
-      loading: Loading notes...
-      body_label: Note
-      submit: Save Note
-      submit_shortcut: Ctrl+S
-      submit_aria_label: "%{submit} (%{shortcut})"
-      update: Update Note
-      update_aria_label: "%{update} (%{shortcut})"
-      cancel: Cancel Editing
-      delete: Delete Note
-      empty: No notes yet
-      edited_badge: Edited
-      edited_tooltip: "Edited: %{time}"
     portal_column_tabs_aria_label: Switch portal columns
 
   landing:

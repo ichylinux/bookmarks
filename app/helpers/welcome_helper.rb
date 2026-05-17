@@ -37,7 +37,7 @@ module WelcomeHelper
   private
 
   def note_gadget_action_button_contents(label)
-    shortcut = t('welcome.note_gadget.submit_shortcut')
+    shortcut = t('notes.gadget.submit_shortcut')
     safe_join([
       content_tag(:span, label, class: 'note-submit-label'),
       content_tag(:kbd, shortcut, class: 'note-submit-shortcut', aria: { hidden: true }, data: { shortcut_mac: '⌘S' })
