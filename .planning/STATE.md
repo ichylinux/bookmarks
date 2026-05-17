@@ -2,34 +2,34 @@
 gsd_state_version: 1.0
 milestone: v1.24
 milestone_name: — Mobile Column Lazy Loading
-status: executing
-last_updated: "2026-05-17T07:09:34.225Z"
-last_activity: 2026-05-17 -- Phase 76 execution started
+status: ready_to_plan
+last_updated: "2026-05-17T07:35:00.000Z"
+last_activity: 2026-05-17 -- Phase 76 complete (UAT 4/4 passed), ready to plan Phase 77
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 1
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 33
 ---
 
 # State
 
 ## Current Position
 
-Phase: 76 (portal-lazy-js-coordinator) — EXECUTING
-Plan: 1 of 1
-Status: Executing Phase 76
-Last activity: 2026-05-17 -- Phase 76 execution started
+Phase: 77 (gadget-partial-wiring-tab-hook) — READY TO PLAN
+Plan: Not started
+Status: Ready to plan Phase 77
+Last activity: 2026-05-17 -- Phase 76 complete (UAT 4/4 passed), ready to plan Phase 77
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-17 after v1.23 milestone)
+See: `.planning/PROJECT.md` (updated 2026-05-17 after Phase 76)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Phase 76 — portal-lazy-js-coordinator
+**Current focus:** Phase 77 — Gadget Partial Wiring + Tab Hook
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-17 after v1.23 milestone)
 - (v1.23) Icon suppression via `body.no-icons` CSS class — same pattern as `body.modern`; `!important` required to beat theme-scoped `display: inline-flex` rules; `no_icons_class` guards `user_signed_in?` so landing page icons unaffected.
 - (v1.24 research) Sprockets alphabetical load order means `portal_lazy.js` loads before `portal_mobile_tabs.js` automatically — no `//= require` changes needed.
 - (v1.24 research) Load state must be marked synchronously before `$.get` fires (not inside success callback) to prevent duplicate in-flight requests on rapid swipe.
+- (v1.24 Phase 76) IIFE at parse time (not in `$(document).ready`) so `window.portalLazy` exists before any gadget partial ready-handler fires; `initialColumnIndex` kept internal (not exposed on `window.portalLazy`); `isMobileViewport` duplicated verbatim from `portal_mobile_tabs.js` (must match 767px exactly; no module system).
 
 ### Pending Todos
 
@@ -56,4 +57,6 @@ None.
 
 ## Session Continuity
 
-Roadmap created 2026-05-17. Next: `/gsd:plan-phase 76` to plan the `portal_lazy.js` coordinator.
+Last session: 2026-05-17
+Stopped at: Phase 76 complete, ready to plan Phase 77
+Resume file: None

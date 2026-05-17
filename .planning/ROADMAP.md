@@ -33,7 +33,7 @@
 
 **Milestone Goal:** On mobile, only load gadgets for the initially active column on page load; load each other column's gadgets exactly once when first switched to — never re-fetching within the same page session. Desktop behavior is completely unchanged.
 
-- [ ] **Phase 76: `portal_lazy.js` Coordinator** — New coordinator module establishing `window.portalLazy`; zero behavior change on desktop or mobile yet
+- [x] **Phase 76: `portal_lazy.js` Coordinator** — New coordinator module establishing `window.portalLazy`; zero behavior change on desktop or mobile yet — 2026-05-17
 - [ ] **Phase 77: Gadget Partial Wiring + Tab Hook** — All AJAX partials register with the coordinator; `activateColumn` triggers lazy loads; mobile deferral active
 - [ ] **Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate** — Minitest JS contracts; `@mobile_portal` Cucumber scenarios pass; tri-suite green gate
 

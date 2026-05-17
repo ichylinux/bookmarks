@@ -201,6 +201,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | `from_omniauth` Twitter uid lookup independent phase (v1.22 Phase 72) | Deferred bug fix (XAUTH-FUT-01) has no coupling to routing refactor — kept as parallel phase 72 with own test scope | ✓ Good — separation allows cherry-pick; no cross-phase risk |
 | `body.no-icons` CSS class pattern for icon suppression (v1.23) | Same pattern as `body.modern` for theme — no partial changes needed; single CSS rule in `common.css.scss` covers all pages; `!important` required to beat theme-scoped `display: inline-flex` | ✓ Good — minimal surface area; landing page icons naturally excluded by `user_signed_in?` guard on `no_icons_class` |
 | `inclusion: { in: [true, false] }` validation for `show_icons` (v1.23) | Booleans can be nil in Rails; `inclusion` pattern matches existing `use_note`, `use_calendar` validations | ✓ Good — consistent with existing model conventions; nil reliably rejected |
+| IIFE at parse time (not `$(document).ready`) for `portal_lazy.js` (v1.24 Phase 76) | `window.portalLazy` must exist before any gadget partial ready-handler fires; parse-time IIFE guarantees this ordering under Sprockets | ✓ Good — coordinator ready before jQuery DOM-ready callbacks run |
+| `initialColumnIndex` kept internal, not exposed on `window.portalLazy` (v1.24 Phase 76) | CONTEXT.md locked decision: public API surface is register + loadColumn only; internal state closed over in IIFE | ✓ Good — minimal public API; prevents external mutation of load state |
+| `isMobileViewport` duplicated verbatim from `portal_mobile_tabs.js` (v1.24 Phase 76) | No module system in Sprockets/jQuery pipeline; duplication is the only safe pattern; must match 767px breakpoint exactly | ✓ Good — co-located, tested; Phase 78 contract test will lock the 767px value |
 
 ## Evolution
 
@@ -293,4 +296,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 — milestone v1.24 started (Mobile Column Lazy Loading)*
+*Last updated: 2026-05-17 — after Phase 76 (portal_lazy.js coordinator)*
