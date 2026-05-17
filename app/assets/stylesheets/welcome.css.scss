@@ -227,7 +227,9 @@ $bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-na
   
   &.folder-bookmarks {
     margin-left: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
-    
+    // フォルダ名と先頭ブックマークの間（ブックマーク間・フォルダ間と同じ 4px）
+    margin-top: 4px;
+
     // フォルダ内のブックマーク間の縦の余白を設定（フォルダ間と同じ）
     li + li {
       margin-top: 4px;
