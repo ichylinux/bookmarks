@@ -1,33 +1,32 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.24
-milestone_name: — Mobile Column Lazy Loading
-status: milestone_complete
-last_updated: "2026-05-17T14:30:00.000Z"
-last_activity: 2026-05-17 -- Phase 79 complete; v1.24 milestone shipped
+milestone: between_milestones
+milestone_name: — Between Milestones
+status: between_milestones
+last_updated: "2026-05-18T00:00:00.000Z"
+last_activity: 2026-05-18 -- v1.24 milestone archived; phase dirs moved to milestones/; ready for next milestone
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 79 (note-gadget-ajax-extraction) — COMPLETE
-Plan: 79-01 complete
-Status: Milestone v1.24 complete — all 4 phases shipped
-Last activity: 2026-05-17 -- Phase 79 complete; tri-suite green
+Phase: — (between milestones)
+Status: v1.24 archived — ready to start next milestone
+Last activity: 2026-05-18 -- v1.24 and v1.23 phase dirs archived to milestones/
 
-Progress: [██████████] 100%
+Progress: — (no active milestone)
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Milestone v1.24 complete — ready for next milestone
+**Current focus:** Ready for next milestone — run `/gsd:new-milestone` to begin
 
 ## Performance Metrics
 
@@ -46,8 +45,14 @@ Progress: [██████████] 100%
 
 - Pre-existing: `$('.gadgets').sortable()` has no `isMobileViewport()` guard (tracked, not blocking).
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 20260518 | archive completed milestone | 2026-05-18 | 2b78b34 | [20260518-archive-completed-milestone](./quick/20260518-archive-completed-milestone/) |
+
 ## Session Continuity
 
-Last session: 2026-05-17
-Stopped at: v1.24 milestone complete — all phases shipped
+Last session: 2026-05-18
+Stopped at: v1.24 and v1.23 milestones archived; between milestones — ready for /gsd:new-milestone
 Resume file: None
