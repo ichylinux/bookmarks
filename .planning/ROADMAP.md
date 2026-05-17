@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (in progress)
+- ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
 - ✅ **v1.21 — X Gadget Tweet Count Preference** — Phase 69 (shipped 2026-05-16) — [archived](milestones/v1.21-ROADMAP.md)
@@ -36,7 +36,7 @@
 - [x] **Phase 76: `portal_lazy.js` Coordinator** — New coordinator module establishing `window.portalLazy`; zero behavior change on desktop or mobile yet — 2026-05-17
 - [x] **Phase 77: Gadget Partial Wiring + Tab Hook** — All AJAX partials register with the coordinator; `activateColumn` triggers lazy loads; mobile deferral active — 2026-05-17
 - [x] **Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate** — Minitest JS contracts; `@mobile_portal` Cucumber scenarios pass; tri-suite green gate — 2026-05-17
-- [ ] **Phase 79: Note Gadget AJAX Extraction** — `NotesController#gadget` action; `#notes-tab-panel` loaded via AJAX on first visit; `WelcomeController` stops querying notes on every page load
+- [x] **Phase 79: Note Gadget AJAX Extraction** — `NotesController#gadget` action; `#notes-tab-panel` loaded via AJAX on first visit; `WelcomeController` stops querying notes on every page load — 2026-05-17
 
 ## Phase Details
 
@@ -90,7 +90,7 @@ Plans:
   6. `yarn run lint` green, `bin/rails test` green, `bundle exec rake dad:test` green
 **Plans:** 1 plan
 Plans:
-- [ ] 79-01-PLAN.md — Route, controller action, view, locale, dashboard placeholder, JS lazy guard, test migration
+- [x] 79-01-PLAN.md — Route, controller action, view, locale, dashboard placeholder, JS lazy guard, test migration
 
 <details>
 <summary>✅ v1.23 — Icon Display Preference (Phases 73–75) — SHIPPED 2026-05-17</summary>
@@ -163,8 +163,8 @@ Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestone
 | 76. `portal_lazy.js` Coordinator | 1/1 | Complete | 2026-05-17 |
 | 77. Gadget Partial Wiring + Tab Hook | 1/1 | Complete | 2026-05-17 |
 | 78. Contract Tests + Cucumber E2E | 1/1 | Complete | 2026-05-17 |
-| 79. Note Gadget AJAX Extraction | 0/1 | Not started | - |
+| 79. Note Gadget AJAX Extraction | 1/1 | Complete | 2026-05-17 |
 
 ---
 
-*Last updated: 2026-05-17 — Phase 79 planned: 1 plan (79-01)*
+*Last updated: 2026-05-17 — Phase 79 complete: all 4 phases of v1.24 shipped*
