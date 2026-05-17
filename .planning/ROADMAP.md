@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- [ ] **v1.23 — Icon Display Preference** — Phases 73–75 (active)
+- [x] **v1.23 — Icon Display Preference** — Phases 73–75 (active)
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 - ✅ **v1.2 — Modern Theme** — Phases 5–9 (shipped 2026-04-29) — [archived](milestones/v1.2-ROADMAP.md)
 - ✅ **v1.3 — Quick Note Gadget** — Phases 10–13 (shipped 2026-04-30) — [archived](milestones/v1.3-ROADMAP.md)
@@ -32,7 +32,7 @@
 
 - [x] **Phase 73: Data + Model Layer** - Migration, model constant, default_preference, validation
 - [x] **Phase 74: CSS + View Layer** - Body class in layout, CSS hide rules in SCSS
-- [ ] **Phase 75: Preferences UI + Locale + Tests** - Toggle control, ja/en strings, Minitest, tri-suite gate
+- [x] **Phase 75: Preferences UI + Locale + Tests** - Toggle control, ja/en strings, Minitest, tri-suite gate
 
 ## Phase Details
 
@@ -81,7 +81,7 @@
 |-------|----------------|--------|-----------|
 | 73. Data + Model Layer | 2/2 | Complete | 2026-05-17 |
 | 74. CSS + View Layer | 2/2 | Complete | 2026-05-17 |
-| 75. Preferences UI + Locale + Tests | 0/? | Not started | - |
+| 75. Preferences UI + Locale + Tests | 1/1 | Complete | 2026-05-17 |
 
 ---
 

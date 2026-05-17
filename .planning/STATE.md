@@ -7,23 +7,23 @@ last_updated: "2026-05-17T00:00:00.000Z"
 last_activity: 2026-05-17 — Roadmap created; Phase 73 next
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 4
   completed_plans: 4
-  percent: 67
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 75 — Preferences UI + Locale + Tests
+Phase: — (all phases complete)
 Plan: —
-Status: Phase 74 complete; ready to begin Phase 75
+Status: Milestone v1.23 complete — all 3 phases executed and verified
 Last activity: 2026-05-17 — Phase 73 executed and verified (2/2 plans, 384 Minitest green)
 
 ```
-Progress: [█████████████░░░░░░░] 67% (1/3 phases complete)
+Progress: [████████████████████] 100% (1/3 phases complete)
 ```
 
 ## Project Reference
