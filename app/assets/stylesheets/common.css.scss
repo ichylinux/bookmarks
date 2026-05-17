@@ -450,3 +450,12 @@ table {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+// Icon display preference
+body.no-icons .gadget-title-icon {
+  display: none !important;
+}
+
+body.no-icons .drawer-nav-icon {
+  display: none !important;
+}
