@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.23
 milestone_name: Icon Display Preference
-status: in_progress
-last_updated: "2026-05-17T00:00:00.000Z"
-last_activity: 2026-05-17 — Roadmap created; Phase 73 next
+status: complete
+last_updated: "2026-05-17T11:00:00.000Z"
+last_activity: 2026-05-17 — v1.23 milestone archived (3 phases, 5 plans, tri-suite green)
 progress:
   total_phases: 3
   completed_phases: 3
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
   percent: 100
 ---
 
@@ -17,21 +17,21 @@ progress:
 
 ## Current Position
 
-Phase: — (all phases complete)
+Phase: — (milestone complete)
 Plan: —
-Status: Milestone v1.23 complete — all 3 phases executed and verified
-Last activity: 2026-05-17 — Phase 73 executed and verified (2/2 plans, 384 Minitest green)
+Status: v1.23 archived — planning next milestone
+Last activity: 2026-05-17 — v1.23 milestone archived (icon display preference, 3 phases, 5 plans)
 
 ```
-Progress: [████████████████████] 100% (1/3 phases complete)
+Progress: [████████████████████] 100% (3/3 phases complete)
 ```
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-17)
+See: `.planning/PROJECT.md` (updated 2026-05-17 after v1.23 milestone)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.23 Icon Display Preference — Phase 73: Data + Model Layer
+**Current focus:** Planning v1.24 (next milestone TBD)
 
 ## Performance Metrics
 
@@ -40,6 +40,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-17)
 - v1.20 close: tri-suite green (confirmed before milestone archive).
 - v1.21 close: `yarn run lint` — green; `bin/rails test` — 381 runs, 0 failures; `bundle exec rake dad:test` — 25 scenarios, 0 failed.
 - v1.22 close: `yarn run lint` — green; `bin/rails test` — 384 runs, 0 failures; `bundle exec rake dad:test` — 25 scenarios, 0 failed.
+- v1.23 close: `yarn run lint` — green; `bin/rails test` — 389 runs, 0 failures; `bundle exec rake dad:test` — 25 scenarios, 0 failed.
 
 ## Accumulated Context
 
@@ -49,7 +50,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-17)
 - (CSS) Replaced Sass `max(100%, min-content)` in `feeds.css.scss` with `width: 100%` to avoid Dart Sass interpreting CSS `max()` as Sass `max()` during `application` bundle compile in test.
 - (v1.19) `XClient#fetch_recent_tweets` builds its own Faraday connection (no `@forced_connection` check) — WebMock used for that method's tests rather than Faraday `:test`.
 - (v1.21) `set_display_count_default` is a `before_save` callback (fires after validation) — validation enforces >0 so the callback is a nil-guard only; DB default of 5 handles the practical case.
-- (v1.23 planning) Icon suppression via `body.no-icons` CSS class on `<body>` — same pattern as `body.modern` for theme. CSS rules target `.gadget-title-icon` and `.drawer-nav-icon`. No partial changes needed.
+- (v1.23) Icon suppression via `body.no-icons` CSS class — same pattern as `body.modern`; `!important` required to beat theme-scoped `display: inline-flex` rules; `no_icons_class` guards `user_signed_in?` so landing page icons unaffected.
 
 ### Pending Todos
 
@@ -63,6 +64,8 @@ None.
 
 | Date | Slug | Description |
 |------|------|-------------|
+| 2026-05-17 | no-icons-class-tests | WelcomeHelper#no_icons_class unit tests + body.no-icons dashboard integration tests (closes ICON-05 audit gap) |
+| 2026-05-17 | note-gadget-keyboard-shortcut | Note gadget Ctrl/Cmd+S keyboard shortcut + shortcut badge UI (note_gadget.js, _notes_shared.scss, welcome_helper.rb) |
 | 2026-05-16 | landing-page-icons-changelog | Added SVG icons to landing page value cards + changelog entry for gadget header icons |
 | 2026-05-16 | add-icon-bookmark-gadget-header | Added bookmark icon to bookmark gadget header (shared gadget_title_with_icon partial) |
 | 2026-05-16 | add-icon-task-gadget-header | Added todo icon to task gadget header (shared gadget_title_with_icon partial) |
@@ -72,6 +75,5 @@ None.
 
 ## Session Continuity
 
-Milestone v1.22 completed (2026-05-17) — 3 phases (70–72), tri-suite green (384 Minitest, 25 Cucumber).
-Milestone v1.23 started (2026-05-17) — roadmap created: Phase 73 (Data + Model Layer), Phase 74 (CSS + View Layer), Phase 75 (Preferences UI + Locale + Tests).
-Next action: begin Phase 73 — migration for `show_icons` boolean column, model constant, `default_preference` update, validation.
+Milestone v1.23 completed and archived (2026-05-17) — 3 phases (73–75), 5 plans, tri-suite green (389 Minitest, 25 Cucumber).
+Next action: `/gsd:new-milestone` to start v1.24 (questioning → research → requirements → roadmap).

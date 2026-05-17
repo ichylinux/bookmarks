@@ -8,20 +8,13 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.23 Icon Display Preference
-
-**Goal:** Let users opt out of icons across the UI for a cleaner, text-only experience.
-
-**Target features:**
-- Boolean `show_icons` preference on `preferences` table (default: true)
-- Toggle control in `/preferences` with ja/en locale strings
-- All authenticated-UI icons (gadget titles, drawer nav) suppressed when preference is off
-- Landing page icons unaffected (unauthenticated surface)
-- Minitest + Cucumber coverage; tri-suite green gate
-
 ## Current State
 
-**Status:** v1.22 complete (2026-05-17)
+**Status:** v1.23 complete (2026-05-17)
+
+v1.23 delivered icon display preference: `show_icons boolean NOT NULL DEFAULT true` on `preferences`; `Preference::SHOW_ICONS_DEFAULT` constant, inclusion validation, `default_preference` assignment; `WelcomeHelper#no_icons_class` emits `body.no-icons` when off (guards unauthenticated); `common.css.scss` suppresses `.gadget-title-icon` and `.drawer-nav-icon` under `body.no-icons` with `!important`; preferences checkbox with ja: 「アイコンを表示する」 / en: "Show Icons"; unit + integration tests; tri-suite green (389 Minitest, 25 Cucumber).
+
+**Previously shipped:** v1.22 — Landing at Root (2026-05-17)
 
 v1.22 delivered inline landing for guests at `/` (no redirect): `WelcomeController#index` now branches on `user_signed_in?` to render landing content or dashboard; `LandingController`, `/landing` route, and `redirect_guest_to_landing` before_action removed; `User.from_omniauth` Twitter branch now looks up by `uid` (fixing XAUTH-FUT-01 deferred from v1.18); all test contracts updated. Tri-suite green (384 Minitest, 25 Cucumber).
 
@@ -110,14 +103,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Unauthenticated `/` renders landing content inline; no redirect to `/landing`; `/landing` route removed; `LandingController` and `redirect_guest_to_landing` guard deleted — **v1.22 Phase 70**
 - ✓ Authenticated `/` unchanged (dashboard at 200); all test contracts updated for inline rendering; regression coverage for both auth states — **v1.22 Phase 71**
 - ✓ `from_omniauth` Twitter branch looks up by `uid` instead of `name`; Minitest covers found + not-found paths — **v1.22 Phase 72**
+- ✓ `show_icons boolean NOT NULL DEFAULT true` on `preferences`; `SHOW_ICONS_DEFAULT` constant; inclusion validation; `default_preference` assignment — **v1.23 Phase 73**
+- ✓ `body.no-icons` CSS class suppresses `.gadget-title-icon` and `.drawer-nav-icon` globally across all authenticated pages; landing page unaffected — **v1.23 Phase 74**
+- ✓ Preferences checkbox with ja: 「アイコンを表示する」 / en: "Show Icons"; i18n parity test; `no_icons_class` unit tests + `body.no-icons` integration assertions; tri-suite green (389 Minitest, 25 Cucumber) — **v1.23 Phase 75**
 
 ### Active
 
-- [ ] Boolean `show_icons` preference (default: true) on `preferences` table — **v1.23**
-- [ ] Preference toggle in `/preferences` with ja/en labels — **v1.23**
-- [ ] Gadget-title icons and drawer nav icons suppressed when `show_icons` is false — **v1.23**
-- [ ] Landing page icons unaffected (unauthenticated surface, no preference available) — **v1.23**
-- [ ] Minitest + Cucumber tri-suite gate — **v1.23**
+*(No active requirements — planning next milestone)*
 
 ### Out of Scope (revisit when planning)
 
@@ -196,6 +188,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Inline guest branch in `WelcomeController#index`, not a separate presenter (v1.22) | `LandingController` deleted; guest path added directly to `index` with `user_signed_in?` branch — minimal surface area, no new controller | ✓ Good — routing simplified; 0 redirects for guests; `/landing` URL gone from the app |
 | No redirect fallback from `/landing` to `/` (v1.22) | Personal app with single known user; old `/landing` links would hit a routing error — acceptable; avoids permanent redirect complexity | ✓ Good — clean removal; documented in requirements archive |
 | `from_omniauth` Twitter uid lookup independent phase (v1.22 Phase 72) | Deferred bug fix (XAUTH-FUT-01) has no coupling to routing refactor — kept as parallel phase 72 with own test scope | ✓ Good — separation allows cherry-pick; no cross-phase risk |
+| `body.no-icons` CSS class pattern for icon suppression (v1.23) | Same pattern as `body.modern` for theme — no partial changes needed; single CSS rule in `common.css.scss` covers all pages; `!important` required to beat theme-scoped `display: inline-flex` | ✓ Good — minimal surface area; landing page icons naturally excluded by `user_signed_in?` guard on `no_icons_class` |
+| `inclusion: { in: [true, false] }` validation for `show_icons` (v1.23) | Booleans can be nil in Rails; `inclusion` pattern matches existing `use_note`, `use_calendar` validations | ✓ Good — consistent with existing model conventions; nil reliably rejected |
 
 ## Evolution
 
@@ -288,4 +282,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 — v1.23 milestone started*
+*Last updated: 2026-05-17 after v1.23 milestone*

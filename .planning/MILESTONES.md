@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.23 — Icon Display Preference (shipped 2026-05-17)
+
+**Scope:** Phases 73–75 (3 phases, 5 plans) — boolean `show_icons` preference, CSS icon suppression, preferences UI toggle.
+
+**Key accomplishments:**
+
+- Added `show_icons boolean NOT NULL DEFAULT true` to `preferences` table; DB default backfills existing rows with no separate migration needed.
+- `Preference` model validates `show_icons` via `inclusion: { in: [true, false] }`; `SHOW_ICONS_DEFAULT` constant; `default_preference` sets it explicitly.
+- `WelcomeHelper#no_icons_class` emits `body.no-icons` when preference off; guards unauthenticated requests; wired into layout `<body>` class alongside theme and font-size.
+- CSS rules in `common.css.scss` suppress `.gadget-title-icon` and `.drawer-nav-icon` under `body.no-icons` with `!important` to override theme-scoped specificity; covers all authenticated pages via shared partial.
+- Preferences UI checkbox with ja: 「アイコンを表示する」 / en: "Show Icons"; i18n parity test; save round-trip Minitest; `body.no-icons` dashboard integration test.
+- Tri-suite gate: `yarn run lint` ✓ · 389 Minitest ✓ · 25 Cucumber ✓
+
+**Archives:** [ROADMAP snapshot](milestones/v1.23-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.23-REQUIREMENTS.md) · [Audit](milestones/v1.23-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.22 — Landing at Root (shipped 2026-05-17)
 
 **Scope:** Phases 70–72 (3 phases, 3 plans) — inline landing for guests, `/landing` route removal, Twitter uid lookup fix.
