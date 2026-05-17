@@ -54,4 +54,11 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_includes @welcome_view, "window.matchMedia('(max-width: 767px)').matches"
     assert_includes @welcome_view, "document.documentElement.style.setProperty('--portal-initial-active-index', String(restored));"
   end
+
+  test 'activateColumn calls portalLazy loadColumn on mobile' do
+    assert_match(
+      /const activateColumn = function.*?window\.portalLazy\.loadColumn\(index\)/m,
+      @source
+    )
+  end
 end
