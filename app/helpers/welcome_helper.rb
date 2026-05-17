@@ -13,6 +13,13 @@ module WelcomeHelper
     "font-size-#{current_user.preference.normalized_font_size}"
   end
 
+  def no_icons_class
+    return '' unless user_signed_in?
+    return '' unless current_user.preference.present?
+
+    current_user.preference.show_icons == false ? 'no-icons' : ''
+  end
+
   def drawer_ui?
     user_signed_in? && favorite_theme != 'simple'
   end
