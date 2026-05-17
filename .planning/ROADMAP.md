@@ -48,7 +48,9 @@
   2. On desktop (viewport >= 768px), calling `register` causes `loadFn` to fire immediately (pass-through behavior)
   3. On mobile, the coordinator reads the initial active column index synchronously at file parse time (before any `$(document).ready` fires)
   4. All three suites pass (`yarn run lint`, `bin/rails test`, `bundle exec rake dad:test`) — no behavior regression
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 76-01-PLAN.md — Create `portal_lazy.js` coordinator (window.portalLazy with register + loadColumn IIFE) and confirm tri-suite green-bar zero-regression
 
 ### Phase 77: Gadget Partial Wiring + Tab Hook
 **Goal**: All AJAX gadget partials register their load functions with the coordinator instead of firing unconditionally on `$(document).ready`; `activateColumn` in `portal_mobile_tabs.js` drains each column's queue on first visit; mobile lazy loading is now live
@@ -142,10 +144,10 @@ Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestone
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 76. `portal_lazy.js` Coordinator | 0/TBD | Not started | - |
+| 76. `portal_lazy.js` Coordinator | 0/1 | Planned | - |
 | 77. Gadget Partial Wiring + Tab Hook | 0/TBD | Not started | - |
 | 78. Contract Tests + Cucumber E2E | 0/TBD | Not started | - |
 
 ---
 
-*Last updated: 2026-05-17 — v1.24 roadmap created (Mobile Column Lazy Loading, Phases 76–78)*
+*Last updated: 2026-05-17 — Phase 76 planned (1 plan: portal_lazy.js coordinator module + tri-suite verification)*
