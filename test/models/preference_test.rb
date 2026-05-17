@@ -82,6 +82,18 @@ class PreferenceTest < ActiveSupport::TestCase
     assert_equal 3, p.portal_column_count
   end
 
+  def test_show_iconsのデフォルトはtrue
+    p = Preference.default_preference(user)
+    assert_equal true, p.show_icons
+  end
+
+  def test_show_iconsにnilは無効
+    p = Preference.default_preference(user)
+    p.show_icons = nil
+    assert_not p.valid?, 'nil should be invalid'
+    assert_includes p.errors[:show_icons], 'は一覧にありません'
+  end
+
   def test_localeはsupported_localesのみ有効
     p = Preference.default_preference(user)
 

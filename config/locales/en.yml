@@ -28,6 +28,7 @@ en:
         open_links_in_new_tab: Open links in new tab
         portal_column_count: Portal columns
         show_column_nav_buttons: (mobile) Show column navigation buttons
+        show_icons: Show icons
         theme: Theme
         use_note: Show notes
         use_todo: Show tasks

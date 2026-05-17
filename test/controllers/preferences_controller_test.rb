@@ -388,5 +388,36 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
       assert_select 'option[value="4"][selected=?]', 'selected', text: '4列'
     end
   end
+  def test_show_iconsをfalseに保存する
+    user.preference.update!(show_icons: true)
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(show_icons: false).merge(id: user.preference.id)
+      }
+    }
+    assert_response :redirect
+    assert_equal false, user.preference.reload.show_icons
+  end
+
+  def test_show_iconsをtrueに保存する
+    user.preference.update!(show_icons: false)
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(show_icons: true).merge(id: user.preference.id)
+      }
+    }
+    assert_response :redirect
+    assert_equal true, user.preference.reload.show_icons
+  end
+
+  def test_設定画面にshow_iconsチェックボックスを表示する
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][show_icons]'
+  end
+
 
 end

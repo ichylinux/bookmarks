@@ -53,6 +53,10 @@
         <td><%= f.check_box :show_column_nav_buttons %></td>
       </tr>
       <tr>
+        <th><%= f.label :show_icons %></th>
+        <td><%= f.check_box :show_icons %></td>
+      </tr>
+      <tr>
         <th><%= f.label :portal_column_count %></th>
         <td><%= f.select :portal_column_count,
               Preference::PORTAL_COLUMN_COUNTS.map { |n|

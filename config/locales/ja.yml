@@ -28,6 +28,7 @@ ja:
         open_links_in_new_tab: リンクを新しいタブで開く
         portal_column_count: ポータル列数
         show_column_nav_buttons: （モバイル）列切り替えボタンを表示する
+        show_icons: アイコンを表示する
         theme: テーマ
         use_note: ノートを表示する
         use_todo: タスクを表示する
