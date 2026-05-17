@@ -5,8 +5,6 @@ class WelcomeController < ApplicationController
     return unless user_signed_in?
 
     @portal = current_user.portals.first
-    @note = Note.new
-    @notes = current_user.notes.active.recent
   end
 
   def save_state

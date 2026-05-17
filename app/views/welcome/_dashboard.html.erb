@@ -54,7 +54,9 @@
 
   <% if use_note %>
     <div id="notes-tab-panel" class="simple-tab-panel<%= ' simple-tab-panel--hidden' unless notes_active %>" role="tabpanel">
-      <%= render 'note_gadget' %>
+      <div class="note-gadget-loading">
+        <span><%= t('welcome.note_gadget.loading') %></span>
+      </div>
     </div>
   <% end %>
 <% else %>
@@ -66,7 +68,20 @@
 
   <% if use_note %>
     <div id="notes-tab-panel" class="welcome-tab-panel<%= ' welcome-tab-panel--hidden' unless notes_active %>" role="tabpanel">
-      <%= render 'note_gadget' %>
+      <div class="note-gadget-loading">
+        <span><%= t('welcome.note_gadget.loading') %></span>
+      </div>
+      <% if notes_active %>
+        <script>
+          $(document).ready(function() {
+            $.get('<%= gadget_notes_path %>', function(html) {
+              $('#notes-tab-panel').html(html);
+            }).fail(function(xhr) {
+              console.warn('note gadget load failed', xhr.status);
+            });
+          });
+        </script>
+      <% end %>
     </div>
   <% end %>
 <% end %>

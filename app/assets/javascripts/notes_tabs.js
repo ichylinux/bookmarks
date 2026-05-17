@@ -1,6 +1,8 @@
 $(function() {
   if (!$('body').hasClass('simple')) return;
 
+  var notesLoaded = false;
+
   const $homePanel = $('#simple-home-panel');
   const $notesPanel = $('#notes-tab-panel');
   const $tabs = $('button.simple-tab[data-simple-tab]');
@@ -13,6 +15,15 @@ $(function() {
     if (isNotes) {
       $homePanel.addClass('simple-tab-panel--hidden');
       $notesPanel.removeClass('simple-tab-panel--hidden');
+
+      if (!notesLoaded) {
+        notesLoaded = true;
+        $.get('/notes/gadget', function(html) {
+          $notesPanel.html(html);
+        }).fail(function(xhr) {
+          console.warn('note gadget load failed', xhr.status);
+        });
+      }
     } else {
       $homePanel.removeClass('simple-tab-panel--hidden');
       $notesPanel.addClass('simple-tab-panel--hidden');
