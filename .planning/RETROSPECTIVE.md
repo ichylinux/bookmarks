@@ -2,6 +2,38 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.25 — Portal Column Width Ratios
+
+**Shipped:** 2026-05-18
+**Phases:** 4 (80–83) | **Plans:** 4
+
+### What Was Built
+
+- `portal_column_widths` JSON column on `preferences` with sum-100 validation, length normalization, equal-split defaults
+- Linked range sliders on preferences page (`portal_column_width_sliders.js`); redistributes delta on drag; rebuilds on column-count change
+- Desktop portal renders saved ratios via `--portal-col-width-pct` inline CSS variable per `.portal-column`; mobile unchanged
+- Minitest: model validation, save/reload round-trip, desktop markup structure, locale parity
+
+### What Worked
+
+- Tight 4-phase sequence with a single implementation commit avoided inter-phase integration gaps.
+- CSS variable applied server-side via inline `style` kept JS complexity minimal — no hydration step.
+
+### What Was Inefficient
+
+- Post-ship bug: `<template>` outside root div caused `rebuildControls` to silently no-op. Cucumber passed because it uses `dispatchEvent` manually — real browser smoke test would have caught this immediately.
+
+### Key Lessons
+
+- `root.querySelector(...)` early-return guards need DOM structure verification. Don't assume selectors work without checking the actual rendered HTML.
+- `execute_script + dispatchEvent` in Cucumber tests is an infrastructure workaround, not behavioral proof. Smoke-test dynamic JS in a real browser before ship.
+
+### Patterns Established
+
+- `<template>` elements for JS-cloned rows must be inside their `[data-*-root]` container if JS queries via `root.querySelector`.
+
+---
+
 ## Milestone: v1.22 — Landing at Root
 
 **Shipped:** 2026-05-17
