@@ -20,7 +20,8 @@ progress:
 Phase: 83 complete — milestone v1.25 shipped
 Plan: —
 Status: Complete
-Last activity: 2026-05-18 — Column width ratio sliders + desktop portal layout
+last_activity: 2026-05-18 — Milestone v1.25 secured; column width ratio sliders + desktop portal layout
+
 
 Progress: 4/4 phases complete
 
@@ -52,9 +53,11 @@ Progress: 4/4 phases complete
 |---|-------------|------|--------|-----------|
 | 20260518 | center note gadget loading message | 2026-05-18 | 7c3d626 | [20260518-center-note-gadget-loading-message](./quick/20260518-center-note-gadget-loading-message/) |
 | 20260518 | archive completed milestone | 2026-05-18 | 2b78b34 | [20260518-archive-completed-milestone](./quick/20260518-archive-completed-milestone/) |
+| 20260518 | ポータル列数変更時のスライダー数連動修正 | 2026-05-18 | 35c7c75 | [20260518-portal-slider-count-sync](./quick/20260518-portal-slider-count-sync/) |
 
 ## Session Continuity
 
 Last session: 2026-05-18
 Stopped at: v1.25 implementation complete — run `/gsd-complete-milestone` to archive
+Last activity: 2026-05-18 - Completed quick task 20260518: ポータル列数変更時のスライダー数連動修正
 Resume file: None
