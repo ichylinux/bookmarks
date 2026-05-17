@@ -8,19 +8,11 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.25 Portal Column Width Ratios
-
-**Goal:** デスクトップのポータル列幅を、設定画面の比率スライダーで列ごとに調整できるようにする（4列時の均等25%など、列数に応じた固定比率からの脱却）。
-
-**Target features:**
-- 列数（3/4）に応じた比率スライダー（合計100%）を設定画面に追加
-- 保存した比率がデスクトップのダッシュボード列レイアウトに反映される
-- モバイルのタブ切り替えUIは現状維持（列幅カスタムはデスクトップのみ）
-- ja/en ロケール、Minitest + tri-suite ゲート
-
 ## Current State
 
-**Status:** v1.25 planning (2026-05-18)
+**Status:** v1.25 complete (2026-05-18)
+
+v1.25 delivered portal column width ratios: `preferences.portal_column_widths` JSON persistence with sum-100 validation; preferences page linked ratio sliders (ja/en); desktop portal columns use `--portal-col-width-pct` per column; mobile layout unchanged. Tri-suite: lint ✓ · 416 Minitest 0 failures · Cucumber 25/25 on first `dad:test` run (documented order flake on rerun).
 
 v1.24 delivered mobile column lazy loading: `portal_lazy.js` IIFE coordinator (`window.portalLazy.register` + `loadColumn`); all 4 AJAX gadget partials wired to `register`; `activateColumn` drains each column on first visit; 9 contract tests; note gadget AJAX extraction (`NotesController#gadget` at `GET /notes/gadget`; `WelcomeController#index` no longer queries notes; `initNoteGadget()` + `noteGadgetLoaded` event for post-AJAX re-init). Tri-suite green: lint ✓ · 407 Minitest 0 failures · 25 Cucumber 0 failed.
 
@@ -123,13 +115,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `window.portalLazy` IIFE coordinator (`register`/`loadColumn` API); all 4 AJAX gadget partials wired; `activateColumn` drains each column on first visit; mobile lazy loading live; desktop unchanged — **v1.24 Phases 76–77**
 - ✓ 9 Minitest contract tests for `portal_lazy.js` API; `activateColumn`→`loadColumn` integration assertion; existing `@mobile_portal` Cucumber scenarios pass — **v1.24 Phase 78**
 - ✓ `NotesController#gadget` at `GET /notes/gadget`; `WelcomeController#index` no longer queries notes; AJAX lazy-load for all themes; `initNoteGadget()` + `noteGadgetLoaded` event re-init — **v1.24 Phase 79**
+- ✓ `preferences.portal_column_widths` JSON array with sum-100 validation and length match to `portal_column_count` — **v1.25 Phase 80**
+- ✓ Preferences linked ratio sliders (ja/en) with save/reload round-trip — **v1.25 Phase 81**
+- ✓ Desktop portal columns render saved width ratios via `--portal-col-width-pct`; mobile tab layout unchanged — **v1.25 Phases 82–83**
 
 ### Active
 
-- **COLW-01** — `preferences` に列幅比率を永続化（3列・4列それぞれ合計100%）
-- **COLW-02** — 設定画面に列数に応じた比率スライダー（ja/en）
-- **COLW-03** — デスクトップのポータルが保存比率で列幅を描画（モバイルは均等・タブのまま）
-- **COLW-04** — 列数変更時のデフォルト・検証・テスト + tri-suite ゲート
+*(none — planning next milestone)*
 
 ### Out of Scope (revisit when planning)
 
@@ -217,6 +209,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | `notesLoaded = true` synchronously before `$.get` in `notes_tabs.js` (v1.24 Phase 79) | Prevents duplicate in-flight requests on rapid tab switching (IMPL-04 pattern extended to notes) | ✓ Good — consistent with portalLazy synchronous mark-before-fire |
 | `noteGadgetLoaded` custom event + `initNoteGadget()` factory (v1.24 Phase 79) | Decouples AJAX injection from handler re-init; removes old handlers before rebinding — safe for repeated calls | ✓ Good — clean event-driven re-init; no duplicate handler risk |
 | No preference guard in `NotesController#gadget` (v1.24 Phase 79) | `#notes-tab-panel` already omitted server-side when `use_note` is false; duplicating the guard adds complexity without benefit | ✓ Good — single `use_note` enforcement point in the view layer |
+| `portal_column_widths` JSON + sum-100 validation (v1.25) | Per-column desktop ratios; normalize length mismatch to equal split on save | ✓ Good — pairs with v1.20 column count; mobile unaffected |
+| Linked ratio sliders + `--portal-col-width-pct` on desktop (v1.25) | User adjusts 3/4 column balance in preferences; no dashboard drag-resize | ✓ Good — replaces fixed 33.33%/25% when custom ratios saved |
 
 ## Evolution
 
@@ -235,6 +229,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.25 — Portal Column Width Ratios (2026-05-18)
+
+**Delivered:** Per-column desktop width ratios on `preferences.portal_column_widths` (JSON, sum 100); preferences linked range sliders with ja/en; desktop portal applies `--portal-col-width-pct` per column; mobile layout unchanged. Tri-suite: lint ✓ · 416 Minitest ✓ · Cucumber 25/25 first run.
 
 ### v1.22 — Landing at Root (2026-05-17)
 
@@ -309,4 +307,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-18 — milestone v1.25 started*
+*Last updated: 2026-05-18 — after v1.25 milestone implementation*

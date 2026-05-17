@@ -1,0 +1,45 @@
+<%# locals: f — preference fields builder, widths — Array<Integer> %>
+<% widths = local_assigns.fetch(:widths) %>
+<div
+  class="portal-column-widths"
+  data-portal-column-widths-root
+  data-column-label="<%= t('preferences.index.portal_column_width_column_label') %>"
+>
+  <p class="portal-column-widths-help"><%= t('preferences.index.portal_column_widths_help') %></p>
+  <div data-portal-width-list>
+    <% widths.each_with_index do |width, index| %>
+      <div class="portal-column-width-row">
+        <span class="portal-column-width-heading">
+          <%= t('preferences.index.portal_column_width_column_label') %> <%= index + 1 %>
+        </span>
+        <input
+          type="range"
+          min="10"
+          max="80"
+          value="<%= width %>"
+          aria-valuemin="10"
+          aria-valuemax="80"
+          aria-valuenow="<%= width %>"
+          data-portal-width-slider
+        >
+        <span class="portal-column-width-value" data-portal-width-label><%= width %>%</span>
+        <%= hidden_field_tag 'user[preference_attributes][portal_column_widths][]', width, data: { portal_width_hidden: true } %>
+      </div>
+    <% end %>
+  </div>
+</div>
+<template data-portal-width-row-template>
+  <div class="portal-column-width-row">
+    <span class="portal-column-width-heading" data-portal-width-heading></span>
+    <input
+      type="range"
+      min="10"
+      max="80"
+      aria-valuemin="10"
+      aria-valuemax="80"
+      data-portal-width-slider
+    >
+    <span class="portal-column-width-value" data-portal-width-label></span>
+    <input type="hidden" name="user[preference_attributes][portal_column_widths][]" data-portal-width-hidden>
+  </div>
+</template>

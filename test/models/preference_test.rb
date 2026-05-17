@@ -94,6 +94,41 @@ class PreferenceTest < ActiveSupport::TestCase
     assert_includes p.errors[:show_icons], 'は一覧にありません'
   end
 
+  def test_equal_portal_column_widthsは列数に応じた均等分割を返す
+    assert_equal [34, 33, 33], Preference.equal_portal_column_widths(3)
+    assert_equal [25, 25, 25, 25], Preference.equal_portal_column_widths(4)
+  end
+
+  def test_effective_portal_column_widthsは未設定時に均等分割を返す
+    p = user.preference
+    p.update_column(:portal_column_widths, nil)
+    assert_equal [34, 33, 33], p.effective_portal_column_widths
+  end
+
+  def test_portal_column_widthsは合計100で列数と一致する必要がある
+    p = user.preference
+    p.assign_attributes(portal_column_count: 3, portal_column_widths: nil)
+    p.portal_column_widths = [50, 30, 20]
+    assert p.valid?
+
+    p.portal_column_widths = [50, 30, 10]
+    assert_not p.valid?
+    assert p.errors[:portal_column_widths].any?
+
+    p.update!(portal_column_count: 4, portal_column_widths: [25, 25, 25, 25])
+
+    p.portal_column_widths = [50, 30, 15, 4]
+    assert_equal 99, p.portal_column_widths.sum
+    assert_not p.valid?
+  end
+
+  def test_列数と幅配列の長さが不一致のとき均等分割に正規化される
+    p = user.preference
+    p.assign_attributes(portal_column_count: 4, portal_column_widths: [50, 30, 20])
+    assert p.valid?
+    assert_equal [25, 25, 25, 25], p.portal_column_widths
+  end
+
   def test_localeはsupported_localesのみ有効
     p = Preference.default_preference(user)
 

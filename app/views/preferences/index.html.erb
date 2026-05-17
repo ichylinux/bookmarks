@@ -63,6 +63,14 @@
                 [t(".portal_column_count_options.#{n == 3 ? 'three' : 'four'}"), n]
               } %></td>
       </tr>
+      <tr>
+        <th><%= f.label :portal_column_widths %></th>
+        <td>
+          <%= render 'portal_column_widths',
+                f: f,
+                widths: @user.preference.effective_portal_column_widths %>
+        </td>
+      </tr>
     <% end %>
     <tr>
       <th><%= t('two_factor.section_title') %></th>

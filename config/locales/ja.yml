@@ -27,6 +27,7 @@ ja:
         locale: 言語
         open_links_in_new_tab: リンクを新しいタブで開く
         portal_column_count: ポータル列数
+        portal_column_widths: ポータル列幅（比率）
         show_column_nav_buttons: （モバイル）列切り替えボタンを表示する
         show_icons: アイコンを表示する
         theme: テーマ
@@ -157,6 +158,8 @@ ja:
       portal_column_count_options:
         three: '3列'
         four: '4列'
+      portal_column_width_column_label: 列
+      portal_column_widths_help: デスクトップ表示時の列幅比率です。合計は常に100%です。モバイル表示には影響しません。
       submit: 保存
       email_registration_section_title: メールアドレス
       email_registration_link: 実メールアドレスを登録する

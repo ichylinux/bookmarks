@@ -139,6 +139,14 @@ div.gadgets {
   .portal--4col .gadgets {
     width: 25%;
   }
+
+  .portal--custom-widths .portal-column {
+    width: var(--portal-col-width-pct, 33.33%);
+  }
+
+  .portal--custom-widths.portal--4col .portal-column {
+    width: var(--portal-col-width-pct, 25%);
+  }
 }
 
 #bookmark_gadget > div {

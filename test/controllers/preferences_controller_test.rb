@@ -378,6 +378,31 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 4, user.preference.reload.portal_column_count
   end
 
+  def test_portal_column_widthsを保存する
+    sign_in user
+    user.preference.update!(portal_column_count: 3, portal_column_widths: [34, 33, 33])
+
+    patch preference_path(user), params: {
+      user: {
+        preference_attributes: preference_params(
+          portal_column_widths: %w[50 30 20]
+        ).merge(id: user.preference.id)
+      }
+    }
+
+    assert_redirected_to preferences_path
+    assert_equal [50, 30, 20], user.preference.reload.portal_column_widths.map(&:to_i)
+  end
+
+  def test_設定画面にportal_column_widthスライダーを表示する
+    user.preference.update!(portal_column_count: 3, portal_column_widths: [40, 35, 25])
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select '[data-portal-width-list] [data-portal-width-slider]', count: 3
+    assert_select 'input[name="user[preference_attributes][portal_column_widths][]"][value="40"]'
+  end
+
   def test_設定画面にportal_column_count選択肢を表示する
     user.preference.update!(portal_column_count: 4, locale: 'ja')
     sign_in user

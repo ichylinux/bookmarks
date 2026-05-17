@@ -11,6 +11,12 @@ end
 
 もし /^ポータル列数を4列に変更して保存します。$/ do
   select '4列', from: 'ポータル列数'
+  page.execute_script(<<~JS)
+    document
+      .querySelector('select[name="user[preference_attributes][portal_column_count]"]')
+      .dispatchEvent(new Event('change', { bubbles: true }));
+  JS
+  assert_selector '[data-portal-width-list] [data-portal-width-slider]', count: 4
   click_on '保存'
 end
 

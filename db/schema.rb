@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_18_120000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -77,6 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_000000) do
     t.string "locale"
     t.boolean "open_links_in_new_tab", default: false, null: false
     t.integer "portal_column_count", default: 3, null: false
+    t.json "portal_column_widths"
     t.boolean "show_column_nav_buttons", default: false, null: false
     t.boolean "show_icons", default: true, null: false
     t.string "theme"

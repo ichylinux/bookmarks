@@ -238,4 +238,17 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.portal.portal--4col', count: 0
   end
 
+  def test_カスタム列幅比率がportal_columnのstyleに出力される
+    user.preference.update!(portal_column_count: 4)
+    user.preference.update!(portal_column_widths: [40, 20, 20, 20])
+    assert_equal [40, 20, 20, 20], user.preference.reload.portal_column_widths
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '.portal.portal--custom-widths', count: 1
+    assert_select '.portal-column[style*="--portal-col-width-pct"]', count: 4
+    assert_match(/--portal-col-width-pct: 40%/, response.body)
+    assert_match(/--portal-col-width-pct: 20%/, response.body)
+  end
+
 end

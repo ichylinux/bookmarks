@@ -1,5 +1,6 @@
-<%# locals: portal_columns — Array<Array<Gadget>> from Portal#portal_columns, show_column_nav_buttons — boolean (default true) %>
+<%# locals: portal_columns — Array<Array<Gadget>> from Portal#portal_columns, show_column_nav_buttons — boolean (default true), portal_column_widths — Array<Integer> desktop flex percentages (optional) %>
 <% show_column_nav_buttons = local_assigns.fetch(:show_column_nav_buttons, true) %>
+<% portal_column_widths = local_assigns.fetch(:portal_column_widths, nil) %>
 <% if show_column_nav_buttons %>
 <div class="portal-column-tabs" role="tablist" aria-label="<%= t('welcome.portal_column_tabs_aria_label') %>">
   <% portal_columns.each_with_index do |_, i| %>
@@ -18,14 +19,17 @@
 </div>
 <% end %>
 <% col_class = portal_columns.size == 4 ? 'portal--4col' : '' %>
-<div class="portal portal--column-active-0<%= col_class.present? ? " #{col_class}" : '' %>">
+<% width_class = portal_column_widths.present? ? ' portal--custom-widths' : '' %>
+<div class="portal portal--column-active-0<%= col_class.present? ? " #{col_class}" : '' %><%= width_class %>">
   <div class="portal-track">
     <% portal_columns.each_with_index do |gadgets, i| %>
+      <% col_width_style = portal_column_widths&.at(i) ? "--portal-col-width-pct: #{portal_column_widths[i]}%;" : nil %>
       <div
         id="column_<%= i %>"
         class="gadgets portal-column"
         role="tabpanel"
         aria-labelledby="portal-column-tab-<%= i %>"
+        <%= tag.attributes(style: col_width_style) if col_width_style %>
       >
         <% gadgets.each do |g| %>
           <%= render g.class.name.underscore, gadget: g, column_index: i %>

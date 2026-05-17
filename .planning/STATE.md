@@ -2,51 +2,49 @@
 gsd_state_version: 1.0
 milestone: v1.25
 milestone_name: Portal Column Width Ratios
-status: planning
-last_updated: "2026-05-18T12:00:00.000Z"
-last_activity: 2026-05-18 — Milestone v1.25 started (column width ratio sliders, desktop only)
+status: complete
+last_updated: "2026-05-18T18:00:00.000Z"
+last_activity: 2026-05-18 — Milestone v1.25 implemented (phases 80–83)
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 4
   total_plans: 0
   completed_plans: 0
-  percent: 0
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 83 complete — milestone v1.25 shipped
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-18 — Milestone v1.25 started
+Status: Complete
+Last activity: 2026-05-18 — Column width ratio sliders + desktop portal layout
 
-Progress: 0/4 phases complete
+Progress: 4/4 phases complete
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.25 — per-column width ratios on desktop via preferences sliders (mobile unchanged)
+**Current focus:** v1.25 complete — ready for `/gsd-complete-milestone` archive or next milestone
 
 ## Performance Metrics
 
-- v1.24 Phase 79 close: `yarn run lint` — green; `bin/rails test` — 407 runs, 0 failures; `bundle exec rake dad:test` — 25 scenarios, 0 failed.
+- v1.25 close: `yarn run lint` — green; `bin/rails test` — 416 runs, 0 failures; `bundle exec rake dad:test` — 25/25 on first run; second run 1 scenario-order flake (settings form visit / note gadget)
 
 ## Accumulated Context
 
 ### Decisions
 
-- (v1.25 planning) Column width customization is **desktop only**; mobile portal tab strip and single-column viewport behavior unchanged.
-- (v1.25 planning) UX is **ratio sliders** on preferences (one per visible column, sum constrained to 100%), not drag-resize on the dashboard.
-- (v1.24 Phase 77) `portalLazy.register` must check `loadedColumns[columnIndex]` before pushing to queue — PTM fires before gadget partial ready handlers.
-- (v1.24 Phase 79) `notes_tabs.js` is simple-theme only (`if (!$('body').hasClass('simple')) return`). Modern/classic theme uses `?tab=notes` URL parameter — tab is server-determined. Simple theme lazy-fetches on first tab click; modern/classic theme fetches immediately if `?tab=notes`.
-- (v1.24 Phase 79) `noteGadgetLoaded` custom event fires after $.get success; `initNoteGadget()` re-binds handlers safely (removes old handlers first).
-- (v1.24 Phase 79) CRUD actions redirect to `root_path(tab: 'notes')` — unchanged.
+- (v1.25) `preferences.portal_column_widths` JSON array; integers summing to 100; length must match `portal_column_count`
+- (v1.25) Equal defaults: 3列 `[34,33,33]`, 4列 `[25,25,25,25]`; nil/mismatch length normalizes to equal split before validate
+- (v1.25) Desktop: `--portal-col-width-pct` CSS variable per `.portal-column`; mobile unchanged
+- (v1.25) Preferences: linked range sliders (`portal_column_width_sliders.js`); column-count change rebuilds slider row via template
 
 ### Blockers/Concerns
 
-- Pre-existing: `$('.gadgets').sortable()` has no `isMobileViewport()` guard (tracked, not blocking).
+- Pre-existing: Cucumber scenario-order flakes (note gadget AJAX timing, occasional preferences visit without session)
 
 ### Quick Tasks Completed
 
@@ -58,5 +56,5 @@ Progress: 0/4 phases complete
 ## Session Continuity
 
 Last session: 2026-05-18
-Stopped at: Milestone v1.25 initialized — requirements and roadmap defined; ready for Phase 80
+Stopped at: v1.25 implementation complete — run `/gsd-complete-milestone` to archive
 Resume file: None

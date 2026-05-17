@@ -27,6 +27,7 @@ en:
         locale: Language
         open_links_in_new_tab: Open links in new tab
         portal_column_count: Portal columns
+        portal_column_widths: Portal column width ratios
         show_column_nav_buttons: (mobile) Show column navigation buttons
         show_icons: Show icons
         theme: Theme
@@ -157,6 +158,8 @@ en:
       portal_column_count_options:
         three: '3 columns'
         four: '4 columns'
+      portal_column_width_column_label: Column
+      portal_column_widths_help: Width ratio for each column on desktop (always totals 100%). Does not affect mobile layout.
       submit: Save
       email_registration_section_title: Email address
       email_registration_link: Register a real email address

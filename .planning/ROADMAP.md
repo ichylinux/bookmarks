@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- **v1.25 — Portal Column Width Ratios** — Phases 80–83 (planning) — desktop per-column ratio sliders; mobile unchanged
+- ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — desktop per-column ratio sliders; mobile unchanged
 - ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
@@ -30,16 +30,16 @@
 
 ## Phases
 
-### v1.25 — Portal Column Width Ratios
+### v1.25 — Portal Column Width Ratios (shipped 2026-05-18)
 
 **Overview:** Replace equal fixed column widths on desktop with user-configured ratios (sum 100%) via sliders on the preferences page. Mobile portal behavior unchanged.
 
 | Phase | Name | Goal | Requirements |
 |-------|------|------|----------------|
-| 80 | Column Width Data Model | Persist and validate per-user column width ratios; equal-split defaults | COLW-01, COLW-02 |
-| 81 | Preferences Ratio Sliders | Settings UI with linked sliders, save/reload, ja/en | COLW-03, COLW-04 |
-| 82 | Desktop Portal Layout | Apply ratios on desktop welcome portal; preserve mobile + column-count safety | COLW-05, COLW-06, COLW-07 |
-| 83 | Tests & Tri-suite Gate | Minitest, locale parity, Cucumber if needed, tri-suite green | COLW-08, COLW-09 |
+| [x] 80 | Column Width Data Model | Persist and validate per-user column width ratios; equal-split defaults | COLW-01, COLW-02 |
+| [x] 81 | Preferences Ratio Sliders | Settings UI with linked sliders, save/reload, ja/en | COLW-03, COLW-04 |
+| [x] 82 | Desktop Portal Layout | Apply ratios on desktop welcome portal; preserve mobile + column-count safety | COLW-05, COLW-06, COLW-07 |
+| [x] 83 | Tests & Tri-suite Gate | Minitest, locale parity, Cucumber if needed, tri-suite green | COLW-08, COLW-09 |
 
 ---
 
