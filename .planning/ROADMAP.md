@@ -34,8 +34,8 @@
 **Milestone Goal:** On mobile, only load gadgets for the initially active column on page load; load each other column's gadgets exactly once when first switched to — never re-fetching within the same page session. Desktop behavior is completely unchanged.
 
 - [x] **Phase 76: `portal_lazy.js` Coordinator** — New coordinator module establishing `window.portalLazy`; zero behavior change on desktop or mobile yet — 2026-05-17
-- [ ] **Phase 77: Gadget Partial Wiring + Tab Hook** — All AJAX partials register with the coordinator; `activateColumn` triggers lazy loads; mobile deferral active
-- [ ] **Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate** — Minitest JS contracts; `@mobile_portal` Cucumber scenarios pass; tri-suite green gate
+- [x] **Phase 77: Gadget Partial Wiring + Tab Hook** — All AJAX partials register with the coordinator; `activateColumn` triggers lazy loads; mobile deferral active — 2026-05-17
+- [x] **Phase 78: Contract Tests + Cucumber E2E + Tri-suite Gate** — Minitest JS contracts; `@mobile_portal` Cucumber scenarios pass; tri-suite green gate — 2026-05-17
 
 ## Phase Details
 
@@ -144,10 +144,10 @@ Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestone
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 76. `portal_lazy.js` Coordinator | 0/1 | Planned | - |
-| 77. Gadget Partial Wiring + Tab Hook | 0/TBD | Not started | - |
-| 78. Contract Tests + Cucumber E2E | 0/TBD | Not started | - |
+| 76. `portal_lazy.js` Coordinator | 1/1 | Complete | 2026-05-17 |
+| 77. Gadget Partial Wiring + Tab Hook | 1/1 | Complete | 2026-05-17 |
+| 78. Contract Tests + Cucumber E2E | 1/1 | Complete | 2026-05-17 |
 
 ---
 
-*Last updated: 2026-05-17 — Phase 76 planned (1 plan: portal_lazy.js coordinator module + tri-suite verification)*
+*Last updated: 2026-05-17 — Phase 78 complete — v1.24 milestone all phases done*
