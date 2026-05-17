@@ -1,12 +1,12 @@
 ---
 gsd_state_version: 1.0
-milestone: between_milestones
-milestone_name: — Between Milestones
-status: between_milestones
-last_updated: "2026-05-18T00:00:00.000Z"
-last_activity: 2026-05-18 -- v1.24 milestone archived; phase dirs moved to milestones/; ready for next milestone
+milestone: v1.25
+milestone_name: Portal Column Width Ratios
+status: planning
+last_updated: "2026-05-18T12:00:00.000Z"
+last_activity: 2026-05-18 — Milestone v1.25 started (column width ratio sliders, desktop only)
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,16 +17,17 @@ progress:
 
 ## Current Position
 
-Phase: — (between milestones)
-Status: v1.24 archived — ready to start next milestone
-Last activity: 2026-05-18 -- v1.24 and v1.23 phase dirs archived to milestones/
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-18 — Milestone v1.25 started
 
-Progress: — (no active milestone)
+Progress: 0/4 phases complete
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Ready for next milestone — run `/gsd:new-milestone` to begin
+**Current focus:** v1.25 — per-column width ratios on desktop via preferences sliders (mobile unchanged)
 
 ## Performance Metrics
 
@@ -36,6 +37,8 @@ Progress: — (no active milestone)
 
 ### Decisions
 
+- (v1.25 planning) Column width customization is **desktop only**; mobile portal tab strip and single-column viewport behavior unchanged.
+- (v1.25 planning) UX is **ratio sliders** on preferences (one per visible column, sum constrained to 100%), not drag-resize on the dashboard.
 - (v1.24 Phase 77) `portalLazy.register` must check `loadedColumns[columnIndex]` before pushing to queue — PTM fires before gadget partial ready handlers.
 - (v1.24 Phase 79) `notes_tabs.js` is simple-theme only (`if (!$('body').hasClass('simple')) return`). Modern/classic theme uses `?tab=notes` URL parameter — tab is server-determined. Simple theme lazy-fetches on first tab click; modern/classic theme fetches immediately if `?tab=notes`.
 - (v1.24 Phase 79) `noteGadgetLoaded` custom event fires after $.get success; `initNoteGadget()` re-binds handlers safely (removes old handlers first).
@@ -55,5 +58,5 @@ Progress: — (no active milestone)
 ## Session Continuity
 
 Last session: 2026-05-18
-Stopped at: v1.24 and v1.23 milestones archived; between milestones — ready for /gsd:new-milestone
+Stopped at: Milestone v1.25 initialized — requirements and roadmap defined; ready for Phase 80
 Resume file: None

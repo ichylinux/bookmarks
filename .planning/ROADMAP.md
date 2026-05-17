@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- **v1.25 — Portal Column Width Ratios** — Phases 80–83 (planning) — desktop per-column ratio sliders; mobile unchanged
 - ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
 - ✅ **v1.22 — Landing at Root** — Phases 70–72 (shipped 2026-05-17) — [archived](milestones/v1.22-ROADMAP.md)
@@ -29,6 +30,82 @@
 
 ## Phases
 
+### v1.25 — Portal Column Width Ratios
+
+**Overview:** Replace equal fixed column widths on desktop with user-configured ratios (sum 100%) via sliders on the preferences page. Mobile portal behavior unchanged.
+
+| Phase | Name | Goal | Requirements |
+|-------|------|------|----------------|
+| 80 | Column Width Data Model | Persist and validate per-user column width ratios; equal-split defaults | COLW-01, COLW-02 |
+| 81 | Preferences Ratio Sliders | Settings UI with linked sliders, save/reload, ja/en | COLW-03, COLW-04 |
+| 82 | Desktop Portal Layout | Apply ratios on desktop welcome portal; preserve mobile + column-count safety | COLW-05, COLW-06, COLW-07 |
+| 83 | Tests & Tri-suite Gate | Minitest, locale parity, Cucumber if needed, tri-suite green | COLW-08, COLW-09 |
+
+---
+
+#### Phase 80: Column Width Data Model
+
+**Goal:** `preferences` stores an array of column width percentages (length = `portal_column_count`, sum = 100); validation and defaults match today's equal split when unset.
+
+**Depends on:** Phase 79 (v1.24)
+
+**Requirements:** COLW-01, COLW-02
+
+**Success criteria:**
+1. Migration adds a nullable or default-backed column (e.g. JSON) for width ratios; existing users behave as equal split without manual migration steps.
+2. `Preference` rejects arrays of wrong length, non-positive entries, or sum ≠ 100.
+3. `default_preference` and column-count change paths assign equal split for the active column count.
+4. Strong params permit the new attribute; unit tests cover valid, invalid, and default cases.
+
+---
+
+#### Phase 81: Preferences Ratio Sliders
+
+**Goal:** User adjusts one slider per column on the preferences page; values stay linked to 100% total and persist on save.
+
+**Depends on:** Phase 80
+
+**Requirements:** COLW-03, COLW-04
+
+**Success criteria:**
+1. Preferences form renders N sliders when `portal_column_count` is N (3 or 4).
+2. Client-side logic keeps the displayed total at 100% while dragging (e.g. redistribute delta across other columns).
+3. PATCH/POST round-trip saves and reloads the same ratios; ja/en labels present with parity test.
+4. No new npm dependencies; Sprockets-compatible JS only.
+
+---
+
+#### Phase 82: Desktop Portal Layout
+
+**Goal:** Desktop welcome page columns use saved flex/width ratios; mobile tab layout and v1.20 column-count behavior unchanged.
+
+**Depends on:** Phase 81
+
+**Requirements:** COLW-05, COLW-06, COLW-07
+
+**Success criteria:**
+1. At `min-width: $portal-mobile-breakpoint`, each `.portal-column` width reflects saved ratios (CSS variables or inline flex-basis from server).
+2. Below breakpoint, columns remain full-width in the tab track; ratio CSS does not break swipe/tab UX.
+3. Unequal 4-column example visibly wider/narrower on desktop in browser smoke test.
+4. Switching 3↔4 columns does not break gadget placement; equal default applies when ratios invalid for new count.
+
+---
+
+#### Phase 83: Tests & Tri-suite Gate
+
+**Goal:** Automated coverage and green tri-suite at milestone close.
+
+**Depends on:** Phase 82
+
+**Requirements:** COLW-08, COLW-09
+
+**Success criteria:**
+1. Minitest: model validation, preferences controller save, layout structure tests for unequal 3- and 4-column desktop output.
+2. Locale parity test for new `portal_column_width*` keys.
+3. `yarn run lint`, `bin/rails test`, `bundle exec rake dad:test` all green (Cucumber flake rerun policy per CLAUDE.md).
+
+---
+
 <details>
 <summary>✅ v1.24 — Mobile Column Lazy Loading (Phases 76–79) — SHIPPED 2026-05-17</summary>
 
@@ -41,71 +118,6 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-
-<details>
-<summary>✅ v1.23 — Icon Display Preference (Phases 73–75) — SHIPPED 2026-05-17</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.23-ROADMAP.md](milestones/v1.23-ROADMAP.md).
-
-- [x] Phase 73: Data + Model Layer (2/2 plans) — 2026-05-17
-- [x] Phase 74: CSS + View Layer (2/2 plans) — 2026-05-17
-- [x] Phase 75: Preferences UI + Locale + Tests (1/1 plan) — 2026-05-17
-
-</details>
-
-<details>
-<summary>✅ v1.22 — Landing at Root (Phases 70–72) — SHIPPED 2026-05-17</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.22-ROADMAP.md](milestones/v1.22-ROADMAP.md).
-
-- [x] Phase 70: Routing Refactor & Code Cleanup — 2026-05-17
-- [x] Phase 71: Test Contracts — 2026-05-17
-- [x] Phase 72: Twitter uid Lookup Fix — 2026-05-17
-
-</details>
-
-<details>
-<summary>✅ v1.21 — X Gadget Tweet Count Preference (Phase 69) — SHIPPED 2026-05-16</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.21-ROADMAP.md](milestones/v1.21-ROADMAP.md).
-
-- [x] Phase 69: Tweet Count UI, Persistence & Tests — 2026-05-16
-
-</details>
-
-<details>
-<summary>✅ v1.20 — Column Count Preference (Phases 67–68) — SHIPPED 2026-05-15</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.20-ROADMAP.md](milestones/v1.20-ROADMAP.md).
-
-- [x] Phase 67: Data + Model Layer — Migration, Preference validation, Portal model column distribution — 2026-05-15
-- [x] Phase 68: Preferences UI + View + SCSS + Tri-suite Gate — 2026-05-15
-
-</details>
-
-<details>
-<summary>✅ v1.19 — HTTP test stubs → WebMock (Phases 64–66) — SHIPPED 2026-05-14</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.19-ROADMAP.md](milestones/v1.19-ROADMAP.md).
-
-- [x] Phase 64: WebMock gem + global test configuration — 2026-05-14
-- [x] Phase 65: Minitest — replace stub accessors with WebMock and/or Faraday `:test` — 2026-05-14
-- [x] Phase 66: Cucumber hooks + delete stub file + cleanup + docs — 2026-05-14
-
-</details>
-
-<details>
-<summary>✅ v1.18 — X (Twitter) Account Following (Phases 60–63) — SHIPPED 2026-05-14</summary>
-
-Full goals, success criteria, and notes: [milestones/v1.18-ROADMAP.md](milestones/v1.18-ROADMAP.md).
-
-- [x] Phase 60: User OAuth Token Persistence
-- [x] Phase 61: XClient Service + Stub Contract
-- [x] Phase 62: x_accounts Model + Management UI + Refresh Diff
-- [x] Phase 63: Welcome Gadget + Show Action + Tri-Suite Gate
-
-</details>
-
 ---
 
-*Last updated: 2026-05-17 — v1.24 milestone complete and archived*
+*Last updated: 2026-05-18 — milestone v1.25 roadmap*

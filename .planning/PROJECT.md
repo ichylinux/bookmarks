@@ -8,9 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.25 Portal Column Width Ratios
+
+**Goal:** デスクトップのポータル列幅を、設定画面の比率スライダーで列ごとに調整できるようにする（4列時の均等25%など、列数に応じた固定比率からの脱却）。
+
+**Target features:**
+- 列数（3/4）に応じた比率スライダー（合計100%）を設定画面に追加
+- 保存した比率がデスクトップのダッシュボード列レイアウトに反映される
+- モバイルのタブ切り替えUIは現状維持（列幅カスタムはデスクトップのみ）
+- ja/en ロケール、Minitest + tri-suite ゲート
+
 ## Current State
 
-**Status:** v1.24 complete (2026-05-17)
+**Status:** v1.25 planning (2026-05-18)
 
 v1.24 delivered mobile column lazy loading: `portal_lazy.js` IIFE coordinator (`window.portalLazy.register` + `loadColumn`); all 4 AJAX gadget partials wired to `register`; `activateColumn` drains each column on first visit; 9 contract tests; note gadget AJAX extraction (`NotesController#gadget` at `GET /notes/gadget`; `WelcomeController#index` no longer queries notes; `initNoteGadget()` + `noteGadgetLoaded` event for post-AJAX re-init). Tri-suite green: lint ✓ · 407 Minitest 0 failures · 25 Cucumber 0 failed.
 
@@ -116,7 +126,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-*(none — planning next milestone)*
+- **COLW-01** — `preferences` に列幅比率を永続化（3列・4列それぞれ合計100%）
+- **COLW-02** — 設定画面に列数に応じた比率スライダー（ja/en）
+- **COLW-03** — デスクトップのポータルが保存比率で列幅を描画（モバイルは均等・タブのまま）
+- **COLW-04** — 列数変更時のデフォルト・検証・テスト + tri-suite ゲート
 
 ### Out of Scope (revisit when planning)
 
@@ -296,4 +309,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-17 — after v1.24 milestone complete*
+*Last updated: 2026-05-18 — milestone v1.25 started*
