@@ -6,7 +6,7 @@ pipeline {
   environment {
     APP_NAME = 'bookmarks'
     KANIKO_OPTIONS = "--cache=${CACHE} --compressed-caching=false --build-arg registry=${ECR}"
-    MILESTONE = "v1.24.0"
+    MILESTONE = "v1.25.0"
   }
   stages {
     stage('build') {
