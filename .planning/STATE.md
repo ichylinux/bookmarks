@@ -21,7 +21,7 @@ progress:
 Phase: Milestone v1.26 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-05-18 — Milestone v1.26 completed and archived
+Last activity: 2026-05-19 — Added new-bookmark dialog on dashboard (hover "new" link in bookmark gadget header)
 
 ## Project Reference
 
@@ -79,6 +79,7 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 | 20260518 | simplify CSS styles — remove redundant declarations | 2026-05-18 | 737db5a | [20260518-simplify-css-styles](./quick/20260518-simplify-css-styles/) |
 | 20260518 | auto-resize note edit textarea height on mobile | 2026-05-18 | 296fe5c | [20260518-mobile-note-edit-textarea-height](./quick/20260518-mobile-note-edit-textarea-height/) |
 | 20260519 | landing page language switcher for guest users | 2026-05-19 | d5128ea | [20260519-landing-language-switcher](./quick/20260519-landing-language-switcher/) |
+| 20260519 | new bookmark can be added in a dialog on dashboard page | 2026-05-19 | 7dfe7ec | [20260519-bookmark-gadget-new-dialog](./quick/20260519-bookmark-gadget-new-dialog/) |
 
 ## Session Continuity
 
