@@ -8,9 +8,19 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
+## Current Milestone: v1.26 Visited Link Tracking
+
+**Goal:** Record when a user clicks a content URL in any gadget (feeds, Mastodon toots, X tweets) so that visited links render with a "visited" style on all their devices.
+
+**Target features:**
+- Server-side visited URL store (`user_id` + `url`, deduped)
+- JS click hook on gadget content links → POST visit event to server
+- Visited links render with visual distinction (CSS class)
+- Cross-device sync: visit recorded on any device appears everywhere
+
 ## Current State
 
-**Status:** v1.25 complete (2026-05-18)
+**Status:** v1.26 planning (2026-05-18)
 
 v1.25 delivered portal column width ratios: `preferences.portal_column_widths` JSON persistence with sum-100 validation; preferences page linked ratio sliders (ja/en); desktop portal columns use `--portal-col-width-pct` per column; mobile layout unchanged. Tri-suite: lint ✓ · 416 Minitest 0 failures · Cucumber 25/25 on first `dad:test` run (documented order flake on rerun).
 
@@ -121,7 +131,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-*(none — planning next milestone)*
+- User can have visited URLs recorded server-side when clicking content links in feed, Mastodon, and X gadgets — **v1.26**
+- Visited links render with a distinct visual style (CSS class-based) on the welcome page gadgets — **v1.26**
+- Visited state persists across devices (recorded once, visible everywhere on sign-in) — **v1.26**
 
 ### Out of Scope (revisit when planning)
 
@@ -307,4 +319,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-18 — after v1.25 milestone implementation*
+*Last updated: 2026-05-18 — v1.26 milestone started (Visited Link Tracking)*

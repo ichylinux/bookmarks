@@ -1,29 +1,26 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.25
-milestone_name: Portal Column Width Ratios
-status: archived
-last_updated: "2026-05-18T19:00:00.000Z"
-last_activity: 2026-05-18 — Quick fix: scroll to top on mobile column swipe
+milestone: v1.26
+milestone_name: Visited Link Tracking
+status: planning
+last_updated: "2026-05-18T09:54:10.879Z"
+last_activity: 2026-05-18
 progress:
-  total_phases: 4
-  completed_phases: 4
+  total_phases: 0
+  completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 100
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 83 complete — milestone v1.25 shipped
+Phase: Not started (defining requirements)
 Plan: —
-Status: Complete
-last_activity: 2026-05-18 — Milestone v1.25 secured; column width ratio sliders + desktop portal layout
-
-
-Progress: 4/4 phases complete
+Status: Defining requirements
+Last activity: 2026-05-18 — Milestone v1.26 started
 
 ## Project Reference
 
