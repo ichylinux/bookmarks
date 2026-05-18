@@ -16,6 +16,11 @@ $(function() {
       }
     });
 
+    function autoResizeTextarea(el) {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+
     function showEditControls($item) {
       if (!$item.length) return;
       if ($item.hasClass('note-item--editing')) return;
@@ -31,11 +36,18 @@ $(function() {
       textarea.focus();
       textarea.selectionStart = textarea.value.length;
       textarea.selectionEnd = textarea.value.length;
+      if (MOBILE_MQ.matches) {
+        autoResizeTextarea(textarea);
+        $(textarea).on('input.noteGadgetResize', function() { autoResizeTextarea(this); });
+      }
     }
 
     function hideEditControls($item) {
       if (!$item.length) return;
       if (!$item.hasClass('note-item--editing')) return;
+      const $ta = $item.find('.note-item-edit-form textarea');
+      $ta.off('input.noteGadgetResize');
+      $ta.each(function() { this.style.height = ''; });
       $item.find('.note-item-edit-form').prop('hidden', true);
       $item.find('.note-item-delete-form').prop('hidden', true);
       $item.find('.note-item-cancel-button').prop('hidden', true);

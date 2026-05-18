@@ -136,6 +136,10 @@
     .note-item .note-item-cancel-button {
       justify-self: start;
     }
+
+    .note-item.note-item--editing .note-item-edit-form textarea {
+      overflow: hidden;
+    }
   }
 }
 
