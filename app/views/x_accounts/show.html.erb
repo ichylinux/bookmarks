@@ -19,7 +19,7 @@
   <% else %>
     <ol>
       <% @x_items.each do |item| %>
-        <li><%= link_to item[:text], item[:url], link_opts %></li>
+        <li><%= link_to item[:text], item[:url], **link_opts, class: visited_link_class(@visited_urls, item[:url]) %></li>
       <% end %>
     </ol>
   <% end %>

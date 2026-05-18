@@ -7,7 +7,7 @@
   <% end %>
   <ol>
     <% @feed.entries.each do |e| %>
-      <li><%= link_to e.title, e.url, link_opts %></li>
+      <li><%= link_to e.title, e.url, **link_opts, class: visited_link_class(@visited_urls, e.url) %></li>
     <% end %>
   </ol>
 </div>
