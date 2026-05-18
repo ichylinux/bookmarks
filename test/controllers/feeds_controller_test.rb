@@ -178,7 +178,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     VisitedLink.where(user_id: user.id).delete_all
     VisitedLink.record!(user, 'https://example.com/article-one')
     sign_in user
-    get feed_path(feed_of(user), format: :html)
+    get feed_path(feed_of(user), format: :html), xhr: true
     assert_response :success
     assert_select 'a.link--visited[href=?]', 'https://example.com/article-one', count: 1
   end
@@ -187,7 +187,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
     VisitedLink.where(user_id: user.id).delete_all
     sign_in user
-    get feed_path(feed_of(user), format: :html)
+    get feed_path(feed_of(user), format: :html), xhr: true
     assert_response :success
     assert_select 'a.link--visited', count: 0
   end
@@ -200,7 +200,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     ])
     VisitedLink.where(user_id: user.id).delete_all
     sign_in user
-    n = count_visited_link_queries { get feed_path(feed_of(user), format: :html) }
+    n = count_visited_link_queries { get feed_path(feed_of(user), format: :html), xhr: true }
     assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
   end
 

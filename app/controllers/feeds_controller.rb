@@ -8,7 +8,7 @@ class FeedsController < ApplicationController
 
   def show
     if @feed.feed?
-      render layout: !request.xhr?
+      render layout: false
     else
       render plain: @feed.status, status: @feed.status
     end
