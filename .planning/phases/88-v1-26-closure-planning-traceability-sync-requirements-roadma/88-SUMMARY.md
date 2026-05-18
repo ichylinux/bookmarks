@@ -5,13 +5,14 @@ subsystem: planning-traceability
 tags: [visited-links-v1.26, requirements-sync, summaries, roadmap]
 dependency_graph:
   requires: []
-  provides: [requirements-aligned, roadmap-closure, summary-requirements-completed-keys]
+  provides: [requirements-aligned, roadmap-closure, summary-requirements-completed-keys, cucumber-stable-viewport]
 key_files:
   created:
     - .planning/phases/88-v1-26-closure-planning-traceability-sync-requirements-roadma/88-VERIFICATION.md
   modified:
     - .planning/REQUIREMENTS.md
     - .planning/ROADMAP.md
+    - features/support/hooks.rb
     - .planning/phases/84-data-layer-controller/84-01-SUMMARY.md
     - .planning/phases/84-data-layer-controller/84-02-SUMMARY.md
     - .planning/phases/85-css-view-helper/85-01-SUMMARY.md
@@ -21,6 +22,7 @@ key_files:
     - .planning/phases/87-js-click-handler/87-02-SUMMARY.md
 decisions:
   - "`gsd-sdk query summary-extract` reads YAML key `requirements-completed` (hyphen); underscore form is invisible to the extractor"
+  - "Cucumber `Before` sets equal `portal_column_widths` for 3 columns and `resize_browser_window(1280, 800)` unless scenario is `@mobile_portal`, preventing tab/todo flakes from leaked mobile viewport"
 metrics:
   duration: "~20 minutes"
   completed: "2026-05-18"
@@ -39,7 +41,7 @@ requirements-completed: []
 |------|--------|
 | `REQUIREMENTS.md` | All v1.26 bullets checked; DAT-04 describes Devise **302** / HTML flow; DAT-01 **767**-byte prefix; traceability Plans link to `84-*` … `87-*` PLAN paths; Out-of-scope index note aligned |
 | `ROADMAP.md` | Milestone v1.26 marked shipped; Phase 88 plan + progress row complete |
-| SUMMARY YAML | `requirements-completed` populated per `88-01-PLAN.md` matrix (see individual SUMMARY frontmatter) |
+| `features/support/hooks.rb` | Preference reset: `portal_column_widths` + desktop viewport restore (non–`@mobile_portal`) for stable `dad:test` |
 
 ## Self-Check: PASSED
 
