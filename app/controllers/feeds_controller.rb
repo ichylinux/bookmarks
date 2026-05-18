@@ -74,7 +74,8 @@ class FeedsController < ApplicationController
   end
 
   def assign_visited_urls
-    @visited_urls = VisitedLink.urls_for(current_user)
+    entry_urls = @feed.entries.map { |e| VisitedLink.normalize_url(e.url) }.reject(&:blank?)
+    @visited_urls = VisitedLink.where(user_id: current_user.id, url: entry_urls).pluck(:url).to_set
   end
 
   def feed_params

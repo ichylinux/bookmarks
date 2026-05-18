@@ -3,7 +3,6 @@ class XAccountsController < ApplicationController
 
   before_action :require_twitter_linked
   before_action :preload_account, only: %w[show update]
-  before_action :assign_visited_urls, only: [:show]
 
   def index
     @x_accounts = XAccount.where(user_id: current_user.id).not_deleted.order(:username)
@@ -38,6 +37,7 @@ class XAccountsController < ApplicationController
       @x_error = result[:error]
     end
 
+    assign_visited_urls
     render layout: !request.xhr?
   end
 
@@ -69,7 +69,8 @@ class XAccountsController < ApplicationController
   end
 
   def assign_visited_urls
-    @visited_urls = VisitedLink.urls_for(current_user)
+    entry_urls = @x_items.map { |item| VisitedLink.normalize_url(item[:url]) }.reject(&:blank?)
+    @visited_urls = VisitedLink.where(user_id: current_user.id, url: entry_urls).pluck(:url).to_set
   end
 
   def x_account_params
