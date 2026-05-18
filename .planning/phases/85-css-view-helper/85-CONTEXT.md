@@ -69,3 +69,6 @@ Define the visual vocabulary for visited links: a `.link--visited` CSS class in 
 None — discussion stayed within phase scope.
 
 </deferred>
+
+---
+*Note: visited_link_class nil-guard added post-discuss for Phase 86 compatibility — helper treats nil visited_set as empty (returns "").*
