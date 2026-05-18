@@ -1,171 +1,306 @@
-# Pitfalls Research — v1.24 Mobile Column Lazy Loading
+# Pitfalls Research — v1.26 Visited Link Tracking
 
-**Project:** Bookmarks v1.24
-**Researched:** 2026-05-17
-**Confidence:** HIGH (all findings derived from direct codebase inspection; patterns cross-checked against jQuery AJAX docs and Sprockets behaviour)
+**Project:** Bookmarks v1.26
+**Researched:** 2026-05-18
+**Confidence:** HIGH (all findings derived from direct codebase inspection; patterns validated against existing jQuery AJAX, WebMock, and MySQL upsert conventions already used in this codebase)
 
 ---
 
 ## Context
 
-v1.24 adds "load once" deferred AJAX loading to mobile column tabs. The existing system already loads all gadget content on page load via inline `<script>` blocks (one `$(document).ready(function() { $.get(…) })` per AJAX gadget). The mobile tab strip (`portal_mobile_tabs.js`) switches visible columns via CSS `translateX` and class assignment with no knowledge of loading state. The goal is: on mobile, defer loading of non-active columns until first switch to them, then cache forever within the session.
+v1.26 adds server-side visited URL tracking to the existing AJAX-heavy gadget dashboard. When the user clicks a content link in a feed, Mastodon, or X gadget, JS fires a POST to a new endpoint (`VisitedLinksController#create` or similar) that upserts a `(user_id, url)` row. On next gadget render, the server queries the user's visited set and adds a CSS class to matching links. The gadget content is loaded via AJAX (`$.get`) into a container that replaces the full `innerHTML` on each page load.
+
+Key existing constraints that shape all pitfalls below:
+
+- All gadget content is replaced wholesale via `$('#container').html(html)` — there is no incremental DOM update; every page load the AJAX fires again and renders fresh HTML from the server.
+- Links in X gadgets point to `https://x.com/i/status/{tweet_id}` (server-constructed), never raw t.co URLs. t.co expansion already happens in `XClient#expand_tco_entities` before the item is stored in memory.
+- Links in Mastodon gadgets point to the status URL (e.g. `https://ruby.social/@FastRuby/999`), extracted from `status['url']` by `MastodonClient#build_preview_item`. HTML content is fully stripped before display.
+- Links in feed gadgets are RSS entry URLs, passed through unchanged.
+- `rails-ujs` is loaded globally; jQuery `$.post` without a manually set `X-CSRF-Token` header works when the form authenticity token is embedded in POST params or when `rails-ujs` sets the AJAX header automatically.
+- `protect_from_forgery with: :exception` is active in `ApplicationController`.
 
 ---
 
 ## Critical Pitfalls
 
-### PITFALL-1: `$(document).ready` fires unconditionally for all gadgets
+### PITFALL-1: Double-firing click handler after AJAX gadget reload
 
 **What goes wrong:**
-Every AJAX gadget partial (`_feed.html.erb`, `_mastodon_account.html.erb`, `_x_account.html.erb`) contains an inline `<script>` block that calls `$(document).ready(function() { $.get(…) })`. This fires immediately on page load regardless of which column the gadget is in, and regardless of whether the viewport is mobile. Adding a "load only when column is active" guard requires intercepting or deferring these scripts — you cannot simply skip them via a CSS-only approach.
+Each gadget partial ships an inline `$(document).ready(function() { … })` that calls `$.get` and replaces the gadget container's `innerHTML`. A click handler bound with `$('#gadget-container').on('click', 'a', handler)` — delegated to the container — survives across AJAX reloads because the container element itself is never replaced, only its content. But if the handler is instead bound directly to each `<a>` element (e.g., `$('#gadget-container a').on('click', handler)`), every AJAX reload creates a fresh set of `<a>` nodes and the old bindings evaporate. Handlers bound this way fire zero times after a reload, and if you add them in both `document.ready` and after `$.get` success, you get double-fire on first load (both bindings active on the original nodes) and zero-fire after reload (old nodes replaced).
 
 **Why it happens:**
-The existing pattern was designed for a "load all on page load" desktop model. The partials are rendered by Rails ERB into the full column HTML — the JavaScript is baked into the partial, not wired centrally. There is no separation between "render placeholder HTML" and "fire AJAX request."
+Developers often write `$('a.gadget-link').on('click', handler)` in a ready block, then also call the same binding inside the AJAX success callback to cover the re-render case. On first load the handler runs twice for every click; on subsequent page-session navigations it may not run at all if the success callback binding is missing or the ready block runs before the AJAX completes.
+
+The existing codebase already solved this for the note gadget via delegated handlers on a stable ancestor and a named namespace (`.noteGadgetSave`). The same pattern is required here.
 
 **How to avoid:**
-Two viable approaches — pick one and commit:
+Bind the visit-recording click handler using event delegation on a stable ancestor that is never replaced by AJAX. The `document` itself is always available. Use a namespaced event and a specific selector that matches only gadget content links:
 
-Option A (data-driven deferral): Keep the existing partials but add a `data-lazy-src` attribute to each gadget container. A new central JS function reads that attribute and fires the `$.get` when triggered. The inline `<script>` block is either removed from the partial or guarded by `if (window.__mobilePortalLazy !== true)` (set by `portal_mobile_tabs.js` on mobile).
-
-Option B (server-side branching): Pass an ERB local `lazy: true` to the partial. When `lazy: true`, the inline `<script>` is suppressed and only the placeholder HTML is rendered. On mobile, the column activation handler calls a central `loadColumnGadgets(index)` function that issues the AJAX calls. This keeps JS logic centralised in `portal_mobile_tabs.js` but requires changing every AJAX gadget partial signature.
-
-Option A is lower-risk because it touches fewer files. Option B is cleaner long-term. In either case, the pattern must be applied consistently to all three AJAX gadget types.
-
-**Warning signs:**
-- Running `grep -r "document.ready" app/views/welcome/` after the change still shows AJAX calls firing for non-active column gadgets on mobile.
-- Network tab in DevTools shows requests for feed, mastodon, and x_account gadgets in columns 2 and 3 on initial mobile page load.
-
-**Phase to address:** The phase that modifies gadget partials for lazy loading (Phase 1 of the roadmap).
-
----
-
-### PITFALL-2: "Load once" state stored in the wrong scope — per-gadget vs per-column
-
-**What goes wrong:**
-Tracking loaded state per gadget ID (e.g., `const loadedGadgets = new Set()`) requires knowing each gadget's ID at column-activation time. The tab click handler in `portal_mobile_tabs.js` currently only knows the column index — it has no reference to individual gadgets inside that column. If the state is tracked per-column instead (e.g., `const loadedColumns = new Set()`), the semantics match exactly: "has column N been loaded?" A gadget-level tracker requires scanning DOM children of the column, which works but adds fragility if gadget IDs change or are absent.
-
-**Why it happens:**
-Naive implementations follow the pattern from other "load once" systems (tabs that fetch a single resource per tab) and track by gadget URL or gadget ID. The portal has N gadgets per column, not one. The correct unit is the column, not the gadget.
-
-**How to avoid:**
-Track `loadedColumns` as a `Set` (or plain object) keyed by column index. In `activateColumn`, after confirming it is a mobile viewport and a new column: call `loadColumn(index)` only if `loadedColumns.has(index)` is false, then `loadedColumns.add(index)`. The initial active column is pre-loaded server-side (full render) or loaded immediately — mark column 0 (or the restored localStorage column) as already in `loadedColumns` during init.
-
-**Warning signs:**
-- Switching to column 2 fires AJAX requests; switching back to column 2 fires them again.
-- Gadgets in a column fire some-but-not-all requests on second visit (gadget-level partial tracking rather than column-level tracking).
-
-**Phase to address:** Phase 1 (state tracking design).
-
----
-
-### PITFALL-3: Race condition between localStorage column restoration and deferred load
-
-**What goes wrong:**
-`portal_mobile_tabs.js` already restores the last-visited column from `localStorage` on page load (lines 121–136). If column 2 was active last visit and is restored, the lazy-load logic must also trigger loading for column 2 immediately — not wait for a tab click that never comes. If the init path only marks column 0 as "loaded" and then switches to column 2 visually without loading it, column 2 displays blank gadgets.
-
-**Why it happens:**
-The init code and the tab-click handler are two separate paths that both call `activateColumn`. The lazy load trigger is easy to wire into the click path but missed in the init/restore path.
-
-**How to avoid:**
-The `activateColumn` function is the single convergence point for both tab click and swipe and init. Add the lazy-load trigger inside `activateColumn` itself, not inside the click handler. The condition: `if (isMobileViewport() && !loadedColumns.has(index)) { loadColumn(index); loadedColumns.add(index); }`. This fires correctly on init/restore and on every tab switch, without duplicating the condition.
-
-**Warning signs:**
-- Page restored to column 2 on mobile; gadgets show "Loading…" indefinitely because no AJAX was fired.
-- Column 2 gadgets load correctly on tab click but not on page reload with localStorage set to column 2.
-
-**Phase to address:** Phase 1 (init path wiring, same commit as `activateColumn` changes).
-
----
-
-### PITFALL-4: Desktop behavior broken by mobile-only guard that fires on all viewports
-
-**What goes wrong:**
-The `isMobileViewport()` check at line 6 of `portal_mobile_tabs.js` reads `window.matchMedia('(max-width: 767px)')` at call time. On desktop, this returns false, so the localStorage restore block (lines 121–136) is correctly skipped. But if the lazy-load logic is added without the same guard, it can suppress desktop AJAX loading — all gadgets would appear as "Loading…" on desktop permanently if the "skip inline script" path fires unconditionally.
-
-**Why it happens:**
-The new lazy-load branch touches gadget partials that render on both desktop and mobile. A guard added in the ERB partial that suppresses `$(document).ready` globally (without checking viewport) breaks desktop. A guard added in JS that checks `isMobileViewport()` only in the click path misses the fact that on desktop there is no tab click — gadgets must still fire on `document.ready`.
-
-**How to avoid:**
-The desktop path must remain unchanged. The server-side branch (`lazy: true` local) must only be rendered when the page is served to a mobile client — which is not detectable at SSR time reliably (no `matchMedia` on the server). Therefore: always render the placeholder HTML (no inline `$.get` in partials for AJAX gadgets), but emit a `data-ajax-url` attribute on the container. On desktop, a separate initializer fires `$.get` for every `[data-ajax-url]` element immediately on `document.ready`. On mobile, the column activation handler fires `$.get` for elements within the activated column only. Both paths use the same attribute; only the trigger differs.
-
-Alternatively: keep the existing inline `<script>` partials for desktop (default behaviour unchanged) and have `portal_mobile_tabs.js` cancel or suppress the ready-queue requests — this is complex and fragile. Prefer the data-attribute approach.
-
-**Warning signs:**
-- Feed gadgets show "Loading…" on desktop after the change.
-- Toggling browser to desktop viewport triggers gadget loads; refreshing desktop page does not.
-
-**Phase to address:** Phase 1 (desktop vs mobile branching design decision — must be locked before any partial is modified).
-
----
-
-### PITFALL-5: `collect_portal_layout_params` queries `#column_<i> > div` — fails if column has no rendered children yet
-
-**What goes wrong:**
-`_dashboard.html.erb` contains a `collect_portal_layout_params()` function that iterates `$('#column_<%= i %> > div').each(…)` to collect gadget IDs for drag-drop layout save. If lazy loading defers rendering the gadget `<div>` elements into a column until first visit, `#column_1 > div` returns an empty set. When the user saves layout (by dragging on desktop) before visiting column 1 on mobile, those gadgets are silently omitted from the layout save POST — effectively deleted from the user's layout.
-
-**Why it happens:**
-Layout save was designed assuming all column `<div>` children are present in the DOM at page load. Lazy loading breaks this assumption by deferring injection of gadget HTML into non-active columns.
-
-**How to avoid:**
-Two constraints that shape the solution:
-
-1. On desktop, lazy loading is not active — all columns render as today. `collect_portal_layout_params` continues to work unchanged on desktop. This is acceptable because layout drag-drop (`$.sortable`) is desktop-only UX (touch drag is not enabled on mobile).
-
-2. On mobile, lazy loading defers columns but `$.sortable` is not initialised for mobile (the CSS `portal-track` / translateX layout does not support drag-drop). Therefore the `collect_portal_layout_params` code path is never triggered on mobile.
-
-Verify this assumption explicitly: confirm in the sortable initializer (`$('.gadgets').sortable(…)`) that it runs on all viewports. If it does, add a `if (!isMobileViewport())` guard to the sortable init. This protects against the layout-save ghost-deletion edge case and is a defensive, low-risk change.
-
-**Warning signs:**
-- After dragging gadgets on desktop and saving layout, some gadgets from non-visited columns disappear from the portal.
-- `PortalLayout` records for columns 1 and 2 are deleted after a save triggered before those columns were visited on mobile.
-
-**Phase to address:** Phase 1 (verify sortable/layout-save interaction; add guard if sortable is unconditionally initialised).
-
----
-
-### PITFALL-6: `$(document).ready` callbacks accumulate multiple times per gadget if `loadColumn` is called without the "loaded" guard on swipe
-
-**What goes wrong:**
-The swipe handler (touchend, lines 96–118 of `portal_mobile_tabs.js`) calls `activateColumn`. If `activateColumn` triggers gadget loading and the loaded-state check is not atomic with the call, rapid left-right swiping can call `loadColumn(index)` twice before the first AJAX completes. Each call issues a `$.get`. If the success callback does `$('#container').html(html)`, the second response overwrites the first (harmless but wasteful) or arrives out of order (shows stale data briefly).
-
-**Why it happens:**
-JavaScript callbacks from `$.get` are async. `loadedColumns.add(index)` must happen synchronously before the AJAX completes, not inside the success callback. A common mistake is: `loadColumn(index).then(() => loadedColumns.add(index))` — this leaves a window where a second swipe triggers a duplicate request.
-
-**How to avoid:**
-Mark the column as loaded immediately (synchronously) before issuing any `$.get` calls. The sequence inside `loadColumn`:
 ```js
-loadedColumns.add(index); // mark FIRST, before any async
-$('#column_' + index).find('[data-ajax-url]').each(function() {
-  const url = $(this).data('ajax-url');
-  $.get(url, function(html) { /* … */ });
+$(document).on('click.visitedLinks', '.gadget ol li a[href]', function(e) {
+  // POST the href
 });
 ```
-This is idempotent: even if `activateColumn` fires twice rapidly, the second call sees `loadedColumns.has(index)` as true and does nothing.
+
+Do NOT bind to the gadget container element (`$('#x_account_5').on('click', …)`) because portal drag-drop can move gadgets between columns and the container id is stable but the entire gadget div can be re-parented. `document` delegation is safe. Call `.off('.visitedLinks')` before rebinding if the module is ever re-initialised (see PITFALL-2).
 
 **Warning signs:**
-- DevTools Network shows duplicate requests for the same gadget URL when swiping back and forth quickly.
-- Gadget briefly shows wrong content when swiping rapidly between column 1 and column 2.
+- DevTools Network shows two POST requests to the visit endpoint for a single click during the first page session.
+- After switching away from a mobile column and back (triggering a re-render), clicks on gadget links fire zero POST requests.
+- `bin/rails test` passes but Cucumber shows no visit-class on re-render.
 
-**Phase to address:** Phase 1 (state tracking must be synchronous, confirmed by Minitest or Cucumber swipe-test).
+**Phase to address:** The JS phase that introduces the click handler (Phase 1 of the v1.26 roadmap).
 
 ---
 
-### PITFALL-7: `isMobileViewport()` snapshot at page load — resize does not re-trigger loading
+### PITFALL-2: Handler accumulation on AJAX re-init paths
 
 **What goes wrong:**
-`isMobileViewport()` reads `window.matchMedia('(max-width: 767px)').matches` at call time. If a user loads the page in a narrow desktop window (mobile breakpoint), lazy loading activates. They then resize to full width — gadgets in non-visited columns never load, because there is no `resize` listener that detects the viewport change and triggers desktop-style loading for previously-skipped columns.
+`note_gadget.js` already established the pattern of calling `initNoteGadget()` both on `document.ready` and in response to the `noteGadgetLoaded` custom event (Phase 79). If a `initVisitedLinks()` function is introduced and follows a similar pattern — called on `document.ready` and also in any future "gadget reload" event — and the function does NOT call `.off(namespace)` before rebinding, each re-init call accumulates an additional click listener. With three re-inits and one click, three POST requests fire.
+
+The existing note gadget avoids this by calling `$gadget.off('.noteGadgetSave')` on line 59 before rebinding. The visited-link handler, if delegated to `document`, must call `$(document).off('.visitedLinks')` before rebinding, or use `.on` with a guard that prevents re-registration.
 
 **Why it happens:**
-`matchMedia` is a snapshot, not a subscription. This is fine for the existing column-restore logic (it only runs once on init) but creates a gap when lazy loading is involved.
+jQuery `.on()` stacks handlers — calling it twice on the same element/event/selector registers two independent handlers. There is no auto-deduplication. This is a well-known jQuery gotcha that becomes invisible when the DOM element itself is replaced (masking the problem) but surfaces on document-level delegation where the element is never replaced.
 
 **How to avoid:**
-Document the known limitation explicitly: "viewport resize during a page session may leave non-visited columns unloaded." This is acceptable for a personal mobile-first app where resize scenarios are rare. Do NOT attempt to wire a `resize` or `matchMedia.addListener` handler for v1.24 — it introduces complexity disproportionate to the risk. Instead, ensure that a desktop page load (via the data-attribute pattern from PITFALL-4) always fires all `$.get` calls unconditionally on `document.ready`, so the resize-to-desktop case is automatically covered.
+In the module initialization function, always call `$(document).off('.visitedLinks')` before calling `$(document).on('click.visitedLinks', …)`. This is a one-liner guard that makes the function idempotent:
+
+```js
+function initVisitedLinks() {
+  $(document).off('.visitedLinks');
+  $(document).on('click.visitedLinks', '.gadget ol li a[href]', function(e) {
+    // …
+  });
+}
+```
+
+If the function is called once at parse time via IIFE (like `portal_lazy.js`) and never called again, the `.off` guard is still cheap insurance.
 
 **Warning signs:**
-- Loading on narrow desktop → widening → non-visited columns are blank.
-- If this scenario appears in Cucumber (unlikely), it will be flagged by the viewport-resize helper already in `features/support/window_resize.rb`.
+- N POST requests per click where N equals the number of times the page or gadget was re-loaded in the session.
+- Minitest for the POST endpoint passes but Cucumber shows 3 records in `visited_links` after one click.
 
-**Phase to address:** Phase 1 (document the limitation; ensure desktop path fires all gadgets unconditionally).
+**Phase to address:** Phase 1 (JS module design), before any gadget reload event wiring.
+
+---
+
+### PITFALL-3: URL mismatch between recorded URL and comparison URL at render time
+
+**What goes wrong:**
+The URL stored in the `visited_links` table must exactly match the URL checked at render time, or the CSS class is never applied. Multiple normalization discrepancies can cause silent mismatches:
+
+1. **Fragment stripping:** The user clicks `https://example.com/article#section2`. The `href` attribute in the `<a>` tag includes the fragment. If the visit POST records the full URL including fragment, but the server compares against the base URL without fragment (or vice versa), no match.
+
+2. **Trailing slash:** `https://example.com/article` vs `https://example.com/article/`. RSS feeds and Mastodon status URLs vary; some include trailing slashes, some don't.
+
+3. **Scheme normalization:** `http://` recorded from an older feed entry vs `https://` used in the rendered link after a feed refreshes.
+
+4. **Query string ordering:** `https://example.com/?b=2&a=1` vs `https://example.com/?a=1&b=2`. Unlikely for RSS/Mastodon/X but possible.
+
+5. **X gadget specificity:** The URL rendered in `x_accounts/show.html.erb` is `https://x.com/i/status/{tweet_id}` (server-constructed in `XClient#build_tweet_preview`). The `href` in the rendered `<a>` tag is exactly this string. The JS click handler reads `this.href` (the fully resolved DOM URL) or `$(this).attr('href')`. On a page at `https://yourapp.com`, `this.href` (DOM property) returns the fully resolved absolute URL; `$(this).attr('href')` returns the raw attribute value. If the attribute value is already absolute (it is, for X and Mastodon), both are identical. For feed entry URLs that are relative — check whether `Feed#entries` yields absolute URLs.
+
+**Why it happens:**
+Each gadget type has a different URL origin:
+- Feeds: RSS entry `<link>` value — can be relative or absolute depending on the feed.
+- Mastodon: `status['url']` — always absolute (`https://instance.social/@user/id`).
+- X: `https://x.com/i/status/{id}` — always absolute, server-constructed.
+
+Developers recording `this.href` (DOM property, always absolute) then comparing with the stored attribute value (possibly relative) will get mismatches for relative feed links.
+
+**How to avoid:**
+Establish one normalization rule and apply it identically on write (JS click handler) and on read (server-side comparison):
+
+- **Always use the DOM-resolved absolute URL:** read `this.href` (not `$(this).attr('href')`) in the click handler. This is always absolute even for relative `href` attributes.
+- **Strip fragments on write and on read:** `url.split('#')[0]` in JS before POSTing; `URI.parse(url).omit(:fragment).to_s` or a simple `.gsub(/#.*$/, '')` in Ruby before inserting and before comparing.
+- **Do not normalize trailing slashes** unless you find a concrete mismatch — normalization introduces its own ambiguity. Record exactly what the DOM resolves.
+- **Do not normalize schemes** — record the URL as-is; if a feed switches from http to https, old visit records simply stop matching. Acceptable for a personal app.
+
+Store the normalizer in one Ruby method (e.g. `VisitedLink.normalize_url(url)`) called on both write and read, and one JS helper (`normalizeVisitUrl(href)`) called before every POST. Tests must verify both.
+
+**Warning signs:**
+- Visit is recorded in DB but the CSS visited class never appears on re-render.
+- `visited_links` table accumulates duplicate rows for the same URL with different fragment suffixes (e.g., `https://example.com/article` and `https://example.com/article#intro` as separate rows).
+
+**Phase to address:** Phase 1 (normalization spec must be decided before the migration and before the JS handler — changing it later requires a data migration).
+
+---
+
+### PITFALL-4: CSRF token missing from the visit POST — `ActionController::InvalidAuthenticityToken` in production
+
+**What goes wrong:**
+`ApplicationController` uses `protect_from_forgery with: :exception`. Any POST without a valid CSRF token raises `ActionController::InvalidAuthenticityToken` and returns 422. jQuery `$.post` does NOT automatically include the Rails CSRF token unless `rails-ujs` has wired `$.ajaxSetup` — which it does, but only if `rails-ujs` is loaded and its initialization ran before the `$.post` call.
+
+The existing `$.post` in `_dashboard.html.erb` (save_state) works because it manually includes `authenticity_token` in the params object. The todo `delete_todos` function also reads the token from a `data-authenticity_token` attribute. The only reason all other `$.post` calls work is that `rails-ujs` injects `X-CSRF-Token` as an AJAX header globally via `$.ajaxSetup`.
+
+The risk: if the visit POST is fired very early (before `rails-ujs` has run its `$( document ).ready`), the header may not be set yet. Given Sprockets `require_tree`, `rails-ujs` is loaded first (it is listed before `require_tree` in `application.js`), so in practice `$.ajaxSetup` will be in place. But this ordering is invisible and fragile.
+
+**Why it happens:**
+Developers new to the project assume `$.post` "just works" because they see `_dashboard.html.erb` succeed. They don't notice that `save_state` succeeds because the CSRF header is injected globally by rails-ujs, not because params include the token.
+
+**How to avoid:**
+Read `rails-ujs` behaviour: it calls `$.ajaxSetup({ headers: { 'X-CSRF-Token': csrfToken } })` on DOMContentLoaded. This covers all subsequent `$.post` calls made after DOM ready. The visit POST fires inside a click handler which always fires after DOM ready. Therefore the global header injection is reliable in this specific flow.
+
+For defensive clarity, document this in a comment in the new JS file:
+```js
+// CSRF token is set globally by rails-ujs on DOMContentLoaded.
+// $.post calls made in click handlers (post-DOM-ready) inherit the header automatically.
+// See: app/assets/javascripts/application.js (//= require rails-ujs)
+```
+
+Do NOT use `protect_from_forgery with: :null_session` on the visit endpoint — it silently ignores CSRF failures instead of raising them, making security regressions invisible.
+
+**Warning signs:**
+- 422 responses in browser Network tab when clicking gadget links.
+- Rails log shows `ActionController::InvalidAuthenticityToken` for POST to visit endpoint.
+- Works in development but fails in production if assets are served differently (unlikely with Sprockets but possible with CDN misconfiguration).
+
+**Phase to address:** Phase 1 (add a comment and a controller integration test that POSTs without a CSRF token and asserts 422, to lock the expectation).
+
+---
+
+### PITFALL-5: MySQL upsert race condition from multiple browser tabs
+
+**What goes wrong:**
+The user has two browser tabs open on the dashboard. They click the same link in both tabs within milliseconds. Both tabs fire POST to the visit endpoint simultaneously. Both backend requests attempt to insert `(user_id, url)`. Without a unique index + upsert strategy, this produces either:
+
+- **Two rows:** No unique constraint → duplicate rows for the same URL, polluting the visited set and wasting space.
+- **Two raised exceptions:** Unique constraint exists but the Ruby code uses `find_or_create_by` → ActiveRecord race: both `find` phases return nil, both `create` phases attempt insert, second one raises `ActiveRecord::RecordNotUnique` and returns 500.
+
+Rails 8.1 provides `Model.upsert(attrs, unique_by: :index_name)` which maps to `INSERT … ON DUPLICATE KEY UPDATE` in MySQL. This is the correct primitive — it is atomic at the DB level and handles concurrent inserts without application-level locking.
+
+**Why it happens:**
+Developers reach for `find_or_create_by` because it reads naturally. For visited links the semantics are "record that this URL was visited" — the row either exists (already visited, no-op) or doesn't (insert). `find_or_create_by` has a TOCTOU race; `upsert` does not.
+
+**How to avoid:**
+- Add a unique index on `(user_id, url)` in the migration (following the existing pattern from `x_accounts`: `t.index ["user_id", "x_user_id"], unique: true`).
+- Use `VisitedLink.upsert({ user_id: user.id, url: normalized_url }, unique_by: :index_visited_links_on_user_id_and_url)` in the controller or model class method.
+- The `upsert` call with `update_only: []` (no-op on conflict) or a `updated_at` touch is sufficient; visited links are facts, not updated records.
+- Alternatively, rescue `ActiveRecord::RecordNotUnique` and return 200/204 — the duplicate insert means the URL is already recorded, which is the desired outcome. Both patterns are acceptable; `upsert` is cleaner.
+- Controller should return `head :no_content` (204) on success, matching the `save_state` pattern. Fire-and-forget from JS — no response body needed.
+
+**Warning signs:**
+- `visited_links` table grows with duplicate `(user_id, url)` rows.
+- 500 errors appearing in logs when visiting the same link rapidly from two tabs.
+- `count` queries on `visited_links` return unexpected numbers.
+
+**Phase to address:** Phase 1 (migration must include the unique index; model must use upsert; controller must return 204 or rescue on duplicate).
+
+---
+
+### PITFALL-6: N+1 query — checking visited set inside the gadget partial per-link
+
+**What goes wrong:**
+The gadget show views (`x_accounts/show.html.erb`, `mastodon_accounts/show.html.erb`, `feeds/show.html.erb`) iterate over `@x_items`, `@mastodon_items`, `@feed_entries` and render a link per item. If visited-class logic is implemented as:
+
+```erb
+<% visited = VisitedLink.exists?(user_id: current_user.id, url: item[:url]) %>
+<li class="<%= visited ? 'visited' : '' %>">…</li>
+```
+
+This fires one SQL query per item. With 5–20 items per gadget and 3–10 gadgets loading concurrently, a single page load triggers 15–200 extra queries. At single-user scale this is tolerable in terms of absolute time but wasteful and harder to reason about.
+
+**Why it happens:**
+ERB partials tempt inline query logic because it "just works." There is no ORM N+1 warning for inline `exists?` calls in views.
+
+**How to avoid:**
+Load the full visited set for the user once per controller action, pass it as a local or instance variable, and check membership in-memory:
+
+```ruby
+# In XAccountsController#show (and equivalent for Mastodon, Feeds):
+@visited_urls = VisitedLink.where(user_id: current_user.id).pluck(:url).to_set
+```
+
+In the view:
+```erb
+<li class="<%= @visited_urls.include?(item[:url]) ? 'link--visited' : '' %>">…</li>
+```
+
+One query per gadget render (not per link). The `visited_urls` set is per-request so cross-device sync is automatic — every gadget re-render issues a fresh query.
+
+This also means the `visited_links` table only needs a simple index on `user_id` (not composite with `url`) for the `pluck` query, though the unique composite index on `(user_id, url)` for upsert already covers this with the leading column.
+
+**Warning signs:**
+- `bin/rails test` shows no failures but the development log shows 10+ `SELECT 1 FROM visited_links WHERE …` lines per gadget render.
+- `bullet` gem (if added later) would flag this immediately.
+
+**Phase to address:** Phase 2 (server-side rendering of visited class) — load the visited set once in the controller, never query per-item.
+
+---
+
+### PITFALL-7: CSS visited class conflicts with existing `a:visited` rules
+
+**What goes wrong:**
+The existing stylesheet already defines `a:visited { text-decoration: none; }` globally in `common.css.scss` (line 33) and the modern theme overrides link colors for visited links in `.modern div.gadgets div.gadget div div.title a:visited` and `.modern .actions a:visited`. Browser-native `:visited` applies a purple/default color to links that are in the browser's history, regardless of server knowledge.
+
+If the server-side visited class (e.g., `.link--visited`) is added to an `<a>` element that the browser also considers `:visited` (the user physically navigated to that URL in this browser), the styling may be controlled by whichever rule wins the CSS specificity battle. Worse: `.link--visited` and `:visited` can diverge — the server knows the URL was visited on any device; the browser only knows about this browser's history.
+
+The main risk is visual confusion: a link shows as `.link--visited` (server-visited, faded/grey) but also has browser `:visited` applied, potentially overriding the class style with the browser default purple. Since `common.css.scss` line 33 sets `a:visited { text-decoration: none }` (low specificity), this only affects text-decoration. But if a theme file applies `a:visited { color: … }` and the `.link--visited` rule has lower specificity, the theme color wins and `.link--visited` appears invisible.
+
+**Why it happens:**
+The project already has `a, a:visited { text-decoration: none }` as a baseline reset and per-theme `:visited` overrides for specific link contexts. Adding a new `.link--visited` class without auditing specificity competition leads to silent visual failures.
+
+**How to avoid:**
+- Use a class selector with sufficient specificity to win in all theme contexts: `.gadget ol li a.link--visited` (specificity 0,2,2) beats theme-scoped `a:visited` rules which are at most 0,1,2 in the existing files.
+- Define the `.link--visited` style in `common.css.scss` (not in a theme file) so it applies across all three themes without duplication.
+- Explicitly include `:visited` in the new rule to handle the browser-history overlap: `.gadget ol li a.link--visited, .gadget ol li a.link--visited:visited { color: #888; }` ensures the server-driven style wins even when the browser also considers the link visited.
+- Add a contract test in `test/assets/` asserting the selector exists in `common.css.scss`, following the existing pattern in `visual_qa_consistency_contract_test.rb`.
+
+**Warning signs:**
+- `.link--visited` class is present in the DOM (verified in DevTools Elements) but the link color is unchanged visually.
+- The visited style appears in simple/classic theme but not modern theme (specificity difference between theme files).
+- `bin/rails test` passes but the Cucumber visited-link scenario shows the wrong color.
+
+**Phase to address:** Phase 2 (CSS) — define the selector and add the contract test in the same commit as the first gadget view change.
+
+---
+
+### PITFALL-8: WebMock blocks the visit POST in Minitest integration tests
+
+**What goes wrong:**
+`test/support/webmock.rb` calls `WebMock.disable_net_connect!(allow_localhost: true)`. This allows Capybara/Puma on localhost (Cucumber) but has no effect on `ActionDispatch::IntegrationTest` requests — those go through the Rails test stack directly and are never subject to WebMock. However, if a developer adds a WebMock stub for the visit endpoint expecting it to intercept the internal POST (confusing internal Rails test dispatch with external HTTP), the stub is silently ignored and the test makes real DB writes.
+
+The actual risk in the other direction: the visit endpoint POSTs to `current_user`-scoped URLs. If a Minitest integration test navigates to the welcome page and Capybara (or a simulated link click) triggers a real POST to the Puma dev server port rather than the in-process Rails stack, WebMock allows it (localhost is whitelisted) but the test DB may not have the right seed state.
+
+**Why it happens:**
+WebMock intercepts Faraday/Net::HTTP connections, not `ActionDispatch::IntegrationTest` rack dispatch. Developers confuse "stub the endpoint" (wrong) with "the integration test hits the endpoint via rack dispatch" (correct — no stub needed). This confusion is more likely because the codebase already uses `WebMock.stub_request` heavily for external API calls.
+
+**How to avoid:**
+- Minitest integration tests for `VisitedLinksController#create` should use `post visited_links_path, params: { url: '…' }, headers: { 'X-CSRF-Token': … }` — plain rack dispatch, no WebMock needed.
+- Do NOT add a `WebMock.stub_request(:post, /visited_links/)` stub anywhere — it will be silently ignored by the in-process test stack and mislead future readers.
+- In Cucumber scenarios that click gadget links and expect a visit to be recorded, the POST happens via the real Puma server (localhost, WebMock-allowed). No stub is needed; verify the DB row directly.
+- The existing `STUB_RSS_BODY` stub in `webmock.rb` is for external RSS feeds (outbound HTTP from Rails). The visit POST is an inbound request to the app — a completely different flow.
+
+**Warning signs:**
+- A `WebMock::NetConnectNotAllowedError` for `localhost` when the test fires the visit POST (only happens if `allow_localhost: true` was accidentally removed or if the test runs the POST against the wrong host).
+- Developer adds `WebMock.stub_request(:post, /localhost.*visited_links/)` and wonders why the DB row is not created.
+
+**Phase to address:** Phase 1 (controller) — add the integration test alongside the controller; include a comment explaining rack dispatch vs WebMock scope.
+
+---
+
+### PITFALL-9: Test state isolation — visited rows leaking across Minitest tests and Cucumber scenarios
+
+**What goes wrong:**
+`visited_links` rows created in one test leak into the next if they are not cleaned up. Rails fixtures use transactional rollback by default for Minitest (each test runs inside a transaction that is rolled back at the end). This handles `visited_links` rows created via ActiveRecord in Minitest automatically — no manual cleanup needed.
+
+For Cucumber: the `Before` hook in `features/support/hooks.rb` resets `MastodonAccount.delete_all` and `XAccount.delete_all` but does not delete `visited_links` rows (the table does not exist yet). When v1.26 adds the table, any `visited_links` rows written during a Cucumber scenario persist across scenarios. If scenario B expects "no visited links", but scenario A created one, scenario B will fail unexpectedly.
+
+Additionally: the `Before` hook currently resets `preferences` but not `visited_links`. If a visited-link scenario sets a row and the next scenario tests "unvisited appearance", the test fails due to leaked state.
+
+**Why it happens:**
+Cucumber scenarios share a single DB transaction that is never rolled back between scenarios (as documented in `CLAUDE.md`: "Scenarios share DB state — no truncation between scenarios"). The `Before` hook manually deletes rows for tables that have cross-scenario leakage risk. When a new table is added, the hook must be updated.
+
+**How to avoid:**
+When adding the `visited_links` migration, simultaneously add `VisitedLink.delete_all` (or `VisitedLink.where(user_id: user.id).delete_all`) to the `Before` hook in `features/support/hooks.rb`. This follows the existing `MastodonAccount.delete_all` / `XAccount.delete_all` pattern exactly. This is the single most important test-isolation step for v1.26.
+
+For Minitest: rely on the default transactional rollback — no change needed. Verify by adding one test that asserts `VisitedLink.count == 0` at the start and one that creates a row; run in order and confirm the second test's teardown rolls back.
+
+**Warning signs:**
+- Cucumber scenario "link renders as unvisited on first load" starts passing on first run but fails on re-run (state leaks from a prior scenario that created a visited row).
+- `CLAUDE.md` flakiness note mentions "order-dependent failures" — visited link state leakage would produce exactly this symptom pattern.
+
+**Phase to address:** Phase 1 (migration + `Before` hook update must be in the same commit; failing to do this will manifest as flaky Cucumber on the very first `dad:test` run).
 
 ---
 
@@ -173,11 +308,12 @@ Document the known limitation explicitly: "viewport resize during a page session
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Inline `<script>` per gadget partial with `document.ready` | Simple, self-contained per gadget | Cannot defer or conditionally suppress without touching every partial | Acceptable pre-v1.24; must be refactored for lazy loading |
-| Tracking load state in a JS module-scope `Set` (not persisted) | Simple, no storage overhead | Column appears blank if page is hard-refreshed mid-session (expected; not a bug) | Always acceptable — "load once per page session" is the spec |
-| Using `isMobileViewport()` snapshot rather than `matchMedia.addListener` | Simple, no resize handler | Resize mid-session can leave non-visited columns unloaded | Acceptable — personal app, low resize scenario risk |
-| Suppressing `$.sortable` on mobile with an `isMobileViewport()` guard | Prevents layout-save data loss (PITFALL-5) | Drag-drop unavailable on mobile (already the case UX-wise) | Always acceptable |
-| Keeping existing inline `<script>` for non-AJAX gadgets (bookmark, todo, calendar) | No changes to gadgets that don't use AJAX | Lazy loading only helps AJAX gadgets; static gadgets always render instantly anyway | Always acceptable — static gadgets have no load-deferral benefit |
+| `find_or_create_by` instead of `upsert` for visit insert | Readable, familiar | Race condition from multiple tabs → 500 on RecordNotUnique | Never — use upsert from day one |
+| Per-link `VisitedLink.exists?` in view | Simple inline logic | N+1 queries (15–200 per page load) | Never — pluck the full set once per controller action |
+| Binding click handler with `$('a').on('click', …)` instead of delegated `$(document).on` | Simple, direct | Handler lost after AJAX re-render | Never — delegation on stable ancestor is the correct pattern for AJAX-injected content |
+| Using `$(this).attr('href')` instead of `this.href` for recording URL | Reads attr directly | Relative URLs stored as-is; mismatch with server-constructed absolute comparisons | Only safe if all gadget URLs are guaranteed absolute (they are for X and Mastodon; RSS entries can be relative) |
+| Fragment stripping skipped | Simpler code | Two rows for `url` and `url#section`; visited class never appears if recorded with fragment and compared without | Never — always strip fragments at both write and read |
+| Skipping `VisitedLink.delete_all` in Cucumber `Before` hook | Saves one line | Order-dependent Cucumber failures on visited-link scenarios | Never — always update the hook when a new table is added |
 
 ---
 
@@ -185,11 +321,13 @@ Document the known limitation explicitly: "viewport resize during a page session
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| `portal_mobile_tabs.js` + gadget partials | Adding lazy-load logic inside the tab click handler only — misses swipe and init/restore paths | Add trigger inside `activateColumn()` which is the single convergence point for all activation paths |
-| Inline `<script>` in ERB partials + column deferral | Removing inline `<script>` breaks desktop because there is no other trigger for those gadgets | Use `data-ajax-url` attribute pattern: desktop fires all on `document.ready`, mobile fires per column |
-| `collect_portal_layout_params` + lazy-loaded columns | Layout save silently loses gadgets from unvisited columns | Verify that `$.sortable` is not initialised on mobile; add guard if it is |
-| `localStorage` column restore + lazy load | Restoring to column 2 on mobile but not triggering load for column 2 | Drive lazy load from `activateColumn()`, not from the tab click event — init calls `activateColumn` too |
-| `$(document).ready` + async loaded state | Marking column as loaded inside `$.get` success callback leaves race window | `loadedColumns.add(index)` must be synchronous, before any `$.get` is issued |
+| jQuery click + AJAX-reloaded gadgets | Binding directly to `<a>` elements; handler lost on re-render | Delegated handler on `document` with gadget link selector; namespaced event for safe `.off` |
+| `rails-ujs` CSRF injection | Assuming manual CSRF token param is required | `$.post` in click handlers inherits the header set globally by `rails-ujs`; document this assumption |
+| WebMock + visit POST in Minitest | Adding `stub_request(:post, /visited_links/)` which is silently ignored | Plain `post visited_links_path, params:` rack dispatch; no stub needed or useful |
+| X gadget URLs | Recording `this.href` which might include t.co | X gadget renders `https://x.com/i/status/{id}` only; t.co expansion happens server-side in `XClient`; no t.co ever reaches the `<a>` tag |
+| Mastodon gadget HTML | Recording link from HTML content of status | `MastodonClient#build_preview_item` strips all HTML and only exposes `status['url']`; inline links in status body never appear in rendered `<a>` tags |
+| CSS `:visited` pseudo-class | Relying on browser `:visited` for the visited style | `:visited` is browser-local; server-side class (`.link--visited`) provides cross-device sync; both can coexist if specificity is managed |
+| MySQL `ON DUPLICATE KEY UPDATE` | Omitting `update_only:` on `upsert` causing unexpected column updates | Use `VisitedLink.upsert(attrs, unique_by:, update_only: [])` to make the conflict a no-op |
 
 ---
 
@@ -197,9 +335,19 @@ Document the known limitation explicitly: "viewport resize during a page session
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| AJAX gadgets in all 3 columns fire on mobile page load | Mobile LCP delayed; Puma handles 3× more concurrent AJAX requests per page view | Lazy loading is the fix; don't add more AJAX gadgets to non-column-0 positions without implementing lazy loading first | Any mobile page load with AJAX gadgets in columns 1 and 2 |
-| Loading entire column's gadgets simultaneously on first switch | Column switch triggers 3–5 parallel AJAX requests at once (existing pattern, not new) | Acceptable for personal single-user app; would need throttling at scale | Irrelevant at single-user scale |
-| `window.localStorage` read on every `isMobileViewport` call | Not a perf issue; localStorage read is synchronous and fast | N/A | N/A |
+| N+1 per-link visited query in gadget show | 15–200 extra queries per page load depending on gadget count | Pluck the full visited set once per controller action | At any non-trivial gadget count; immediate at 5+ items per gadget |
+| `visited_links` table unbounded growth | Table scan for `WHERE user_id = ?` slows as rows accumulate | Index on `user_id`; the unique composite index on `(user_id, url)` already covers leading-column scans | Personal app: years of daily use; not an immediate concern but index from day one |
+| POST fired on every link click including gadget title links | Double-firing for the same URL (title link + content link click both hit the same URL) | Scope the click selector to content links only: `.gadget ol li a[href]` not `.gadget a[href]` — gadget title links are in `div.title`, not `ol li` | Harmless (upsert is idempotent) but wastes a round-trip per title click |
+
+---
+
+## Security Mistakes
+
+| Mistake | Risk | Prevention |
+|---------|------|------------|
+| Trusting client-submitted URL without server-side ownership validation | Attacker POSTs arbitrary URLs to mark them as visited; pollutes visited set with injected data | Acceptable for personal app — `current_user` scoping means only the logged-in user's set is affected; no XSS vector from stored URL because it is compared server-side and a CSS class is added, not the URL rendered as markup |
+| Rendering the stored URL back into HTML without escaping | XSS if a crafted URL containing `</a><script>` is stored and reflected | Never render the stored URL as raw HTML; the visited class is applied as a CSS class on a server-rendered `<a>` tag whose `href` comes from the service layer, not from `visited_links.url` |
+| Skipping `authenticate_user!` on the visit endpoint | Unauthenticated POST stores rows without `user_id`; NOT NULL constraint prevents this but the error path is ugly | Visit endpoint must be under the default `authenticate_user!` before_action; do not add `skip_before_action` |
 
 ---
 
@@ -207,22 +355,22 @@ Document the known limitation explicitly: "viewport resize during a page session
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Column 2 switches immediately but gadgets show "Loading…" for 1–2 seconds | User sees tab activate but content appears blank briefly — expected and acceptable | Preserve existing placeholder HTML ("Loading…" span) so users know content is incoming; do not show an empty column |
-| Swipe to column 2 fires load; swipe back before load completes; second swipe to 2 shows stale content | Gadget shows partially-loaded or loading state on re-entry | `loadedColumns.add()` is idempotent; second `$.get` is suppressed; whatever state the gadget is in is preserved — acceptable |
-| Desktop user navigates at mobile viewport width (DevTools responsive mode) — columns 1/2 never load | Developer confusion only; not a real user scenario for this personal app | Document the limitation; ensure full desktop path fires all gadgets unconditionally (PITFALL-4) |
+| Visited state only updates on next full AJAX reload, not immediately on click | After clicking, the link still looks unvisited until the gadget reloads (next page load) | Optimistic CSS: on click success callback, add `.link--visited` class directly to the clicked element immediately. The server round-trip confirms persistence; the UI updates immediately |
+| Visited class applied to gadget title links (profile links) as well as content links | Every visit to the X gadget marks the `@username` profile link as visited — not useful | Scope the CSS rule and click handler to `ol li a` (content items), not the title area `div.title a` |
+| No visual distinction between "never loaded" and "visited" in error state | If the gadget fails to load, no links render, so visited state is invisible | This is fine — error state shows a localized error message, not links; visited class is irrelevant |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Column 0 lazy guard:** Verify that column 0 gadgets load on page load (not deferred). Column 0 is always active on first load; it must not be subject to the "wait for tab click" guard.
-- [ ] **localStorage restore path:** Verify that when localStorage restores column 2, gadgets in column 2 load immediately (not waiting for a tab click).
-- [ ] **Desktop unchanged:** Verify that on desktop viewport, all AJAX gadgets fire on page load with no behavior change from today.
-- [ ] **Re-visit does not re-fetch:** Verify that switching away from column 2 and back to column 2 does NOT fire AJAX requests a second time.
-- [ ] **Swipe + tab parity:** Verify that lazy loading is triggered by swipe navigation (touchend path) exactly the same as by tab click (click path) — both converge through `activateColumn()`.
-- [ ] **All three AJAX gadget types covered:** Feed, MastodonAccount, and XAccount partials all deferred. Static gadgets (BookmarkGadget, TodoGadget, CalendarGadget) are not AJAX and require no changes.
-- [ ] **Sortable guard on mobile:** Confirm that `$.sortable` is either not initialised on mobile, or that layout save is guarded from issuing requests with empty column sets.
-- [ ] **Theme coverage:** Simple, classic, and modern themes all render `_portal_column_section` via the same partial — changes to the partial or JS affect all three. Cucumber `@mobile_portal` scenarios cover modern and classic; verify simple-theme column restoration still works.
+- [ ] **Fragment normalization on both ends:** Verify that `visited_links.url` stores the fragment-stripped URL AND that the server-side comparison uses the same normalization. A test that POSTs `https://example.com/article#section` and then checks membership of `https://example.com/article` must pass.
+- [ ] **Cross-device sync:** Verify that a visited row created via a direct `VisitedLink.create!` (simulating another device) causes the gadget to render the link with the visited class on the next request — the AJAX re-render must re-query the DB, not use a cached result.
+- [ ] **Cucumber `Before` hook updated:** Confirm `VisitedLink.delete_all` (or user-scoped variant) is in `features/support/hooks.rb` before any Cucumber scenario touches visited links.
+- [ ] **Delegated click handler, not direct:** Grep for `$('.gadget … a').on('click'` — if found, replace with `$(document).on('click.visitedLinks', '.gadget ol li a[href]', …)`.
+- [ ] **No t.co in stored URLs:** Verify that clicking an X gadget link stores `https://x.com/i/status/{id}`, not a t.co URL. The t.co expansion in `XClient#expand_tco_entities` replaces t.co in the display text but the link `href` in `show.html.erb` is `item[:url]` which is always `https://x.com/i/status/{id}` from `build_tweet_preview`. Confirm with a test on `XClient`.
+- [ ] **CSS specificity verified across all three themes:** The `.link--visited` style must be visually distinct in simple, classic, and modern themes. Add a contract test asserting the selector in `common.css.scss`.
+- [ ] **Upsert, not find_or_create_by:** Grep for `find_or_create_by` in the new model/controller — replace with `upsert`. Confirm the unique index exists in `schema.rb`.
+- [ ] **204 response on success:** The visit POST should return `head :no_content`. The JS click handler should fire-and-forget — no UI update from the response other than the optimistic class addition.
 
 ---
 
@@ -230,41 +378,52 @@ Document the known limitation explicitly: "viewport resize during a page session
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Desktop gadgets not loading (PITFALL-4) | LOW | Revert the partial change that removed inline `<script>`; reintroduce data-attribute approach with desktop guard |
-| Column 0 gadgets permanently blank (PITFALL-1 over-applied) | LOW | Remove the mobile guard from column 0 init; ensure column 0 is pre-loaded or immediately triggered |
-| Layout save deletes gadgets (PITFALL-5) | MEDIUM | Add `isMobileViewport()` guard to sortable init; run `bin/rails test` to confirm no layout persistence regressions |
-| Duplicate AJAX on rapid swipe (PITFALL-6) | LOW | Move `loadedColumns.add(index)` before `$.get` calls; verify with Minitest or manual swipe test |
-| localStorage restore does not trigger load (PITFALL-3) | LOW | Move lazy-load trigger into `activateColumn()` body rather than the click handler; init path already calls `activateColumn` |
+| Double-firing click handler (PITFALL-1 / PITFALL-2) | LOW | Add `.off('.visitedLinks')` before rebinding; clear any duplicate rows with `DELETE FROM visited_links WHERE …` group by `(user_id, url)` keeping one |
+| URL mismatch — visits recorded but class never shown (PITFALL-3) | MEDIUM | Add Ruby normalizer, re-run normalization against existing `visited_links` rows via a migration `update` |
+| N+1 query (PITFALL-6) | LOW | Move `VisitedLink.pluck` to controller action; one-line refactor |
+| Cucumber state leakage (PITFALL-9) | LOW | Add `VisitedLink.delete_all` to `Before` hook; re-run `dad:test` |
+| CSS visited class invisible (PITFALL-7) | LOW | Increase specificity in selector; add `:visited` variant to the rule |
+| `find_or_create_by` race causing 500 (PITFALL-5) | LOW | Replace with `upsert` + `rescue ActiveRecord::RecordNotUnique`; no migration needed if unique index already exists |
 
 ---
 
-## Phase-Specific Warnings
+## Pitfall-to-Phase Mapping
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|-------------|---------------|------------|
-| Modifying AJAX gadget partials to support deferral | PITFALL-1: `document.ready` fires unconditionally | Lock the data-attribute approach before modifying any partial; change all three AJAX partials in one commit |
-| Adding load-state tracking to `portal_mobile_tabs.js` | PITFALL-6: async state race | `loadedColumns.add(index)` synchronous, before all `$.get` calls; test rapid swipe |
-| Wiring lazy load into `activateColumn()` | PITFALL-3: init/restore path misses trigger | Single trigger inside `activateColumn()` body; init already calls `activateColumn()` |
-| Mobile vs desktop branching | PITFALL-4: desktop gadgets broken | Unconditional desktop `document.ready` path separate from mobile column-trigger path |
-| Cucumber `@mobile_portal` scenarios for lazy loading | PITFALL-3 / PITFALL-6: flaky order-dependent scenarios | Use the existing `@mobile_portal` tag; add `Before('@mobile_portal')` state reset for `loadedColumns` if tracked in module scope (JS scope is reset per-page-load — not a concern) |
-| Verifying sortable interaction | PITFALL-5: layout save data loss | Add an explicit Minitest for `collect_portal_layout_params` returning all columns even without lazy-loaded content; verify sortable is not enabled on mobile |
+| Pitfall | Prevention Phase | Verification |
+|---------|------------------|--------------|
+| PITFALL-1: Double-firing click handler | Phase 1 — JS module design | Minitest JS contract or Cucumber: click once, assert one DB row and one POST in Network |
+| PITFALL-2: Handler accumulation on re-init | Phase 1 — JS module design | `$(document).off('.visitedLinks')` present before `.on` in source; Minitest: reload gadget then click, assert one row |
+| PITFALL-3: URL normalization mismatch | Phase 1 — migration + normalizer | Unit test: `VisitedLink.normalize_url('https://example.com/p#section') == 'https://example.com/p'`; integration: fragment in POST → class rendered |
+| PITFALL-4: CSRF token missing | Phase 1 — controller | Integration test: POST without CSRF token asserts 422; POST with valid session asserts 204 |
+| PITFALL-5: MySQL upsert race | Phase 1 — migration + model | Unique index in `schema.rb`; model test: two concurrent `upsert` calls produce exactly one row |
+| PITFALL-6: N+1 queries | Phase 2 — gadget show view | Controller test: assert `VisitedLink` is queried once per render regardless of item count |
+| PITFALL-7: CSS specificity conflict | Phase 2 — CSS | Contract test asserting `.gadget ol li a.link--visited` in `common.css.scss`; Cucumber: visited link is visually distinct |
+| PITFALL-8: WebMock confusion in Minitest | Phase 1 — controller | Integration test uses plain rack dispatch; no `stub_request` for visit endpoint anywhere in codebase |
+| PITFALL-9: Cucumber state leakage | Phase 1 — `Before` hook | `VisitedLink.delete_all` in `hooks.rb`; `dad:test` passes on second run without flake |
 
 ---
 
 ## Sources
 
-- Codebase: `app/assets/javascripts/portal_mobile_tabs.js` (column activation, localStorage restore, swipe handler, isMobileViewport)
-- Codebase: `app/views/welcome/_feed.html.erb`, `_mastodon_account.html.erb`, `_x_account.html.erb` (inline `$(document).ready` / `$.get` pattern)
-- Codebase: `app/views/welcome/_portal_column_section.html.erb` (portal-column DOM structure, `data-portal-column-index`)
-- Codebase: `app/views/welcome/_dashboard.html.erb` (collect_portal_layout_params, sortable init)
-- Codebase: `app/models/portal.rb` (portal_columns, get_gadgets — all columns rendered server-side today)
-- Codebase: `features/support/window_resize.rb` (390×844 mobile viewport for @mobile_portal tag)
-- Codebase: `features/support/hooks.rb` (Before hook resets; @mobile_portal tag)
-- Codebase: `features/03.モダンテーマ.feature` (existing @mobile_portal Cucumber scenarios — tab switch, swipe, localStorage restore)
-- Project policy: `.planning/PROJECT.md` (desktop behaviour unchanged requirement, Sprockets/jQuery constraint)
-- Project policy: `CLAUDE.md` (Cucumber flakiness and rerun policy)
+- Codebase: `app/assets/javascripts/note_gadget.js` (delegated handler pattern, `.off(namespace)` before rebinding, re-init on custom event)
+- Codebase: `app/assets/javascripts/todos.js` (manual `authenticity_token` param in `$.post`)
+- Codebase: `app/assets/javascripts/application.js` (`//= require rails-ujs` — global CSRF header injection)
+- Codebase: `app/views/welcome/_x_account.html.erb`, `_mastodon_account.html.erb`, `_feed.html.erb` (AJAX replace pattern: `$('#container').html(html)`)
+- Codebase: `app/views/x_accounts/show.html.erb`, `mastodon_accounts/show.html.erb`, `feeds/show.html.erb` (link rendering in gadget content)
+- Codebase: `app/services/x_client.rb` (`expand_tco_entities`, `build_tweet_preview` — t.co expansion server-side; item URL is always `https://x.com/i/status/{id}`)
+- Codebase: `app/services/mastodon_client.rb` (`build_preview_item` — HTML stripped, `status['url']` only)
+- Codebase: `app/controllers/application_controller.rb` (`protect_from_forgery with: :exception`)
+- Codebase: `app/controllers/welcome_controller.rb` (`save_state` — fire-and-forget POST returning `head :ok`)
+- Codebase: `app/models/x_account.rb` (`refresh_cache_from_items!` upsert pattern using `first_or_initialize`)
+- Codebase: `test/support/webmock.rb` (`disable_net_connect!(allow_localhost: true)`, RSS fixture stubs)
+- Codebase: `features/support/hooks.rb` (`Before` hook with `MastodonAccount.delete_all`, `XAccount.delete_all` — isolation pattern)
+- Codebase: `app/assets/stylesheets/common.css.scss` (existing `a:visited` rules, specificity baseline)
+- Codebase: `app/assets/stylesheets/themes/modern.css.scss` (theme-scoped `:visited` overrides)
+- Codebase: `db/schema.rb` (unique index pattern on `x_accounts.user_id + x_user_id`)
+- Project policy: `CLAUDE.md` (Cucumber flakiness policy, between-scenario DB state sharing, rerun policy)
+- Project policy: `.planning/PROJECT.md` (v1.26 goal, existing stack constraints, no new JS deps)
 
 ---
 
-*Pitfalls research for: jQuery/Rails AJAX lazy column loading (v1.24 Mobile Column Lazy Loading)*
-*Researched: 2026-05-17*
+*Pitfalls research for: visited URL tracking on AJAX-heavy Rails 8.1 + jQuery gadget dashboard (v1.26)*
+*Researched: 2026-05-18*
