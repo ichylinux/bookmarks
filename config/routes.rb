@@ -43,6 +43,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :visited_links, only: [:create]
+
   resources :notes, only: [:create, :update, :destroy] do
     collection do
       get :gadget
