@@ -56,6 +56,7 @@ Progress: 4/4 phases complete
 | 20260518 | ポータル列数変更時のスライダー数連動修正 | 2026-05-18 | 35c7c75 | [20260518-portal-slider-count-sync](./quick/20260518-portal-slider-count-sync/) |
 | 20260518 | landing page refresh — value copy + v1.25 changelog entry | 2026-05-18 | fdfea61 | [20260518-landing-page-refresh](./quick/20260518-landing-page-refresh/) |
 | 20260518 | scroll to top when switching mobile portal columns via swipe | 2026-05-18 | 6587d2d | [20260518-mobile-swipe-scroll-top](./quick/20260518-mobile-swipe-scroll-top/) |
+| 20260518 | simplify CSS styles — remove redundant declarations | 2026-05-18 | TBD | [20260518-simplify-css-styles](./quick/20260518-simplify-css-styles/) |
 
 ## Session Continuity
 

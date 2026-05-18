@@ -133,9 +133,7 @@ div.gadgets {
   .portal-column-tabs {
     display: none;
   }
-}
 
-@media (min-width: $portal-mobile-breakpoint) {
   .portal--4col .gadgets {
     width: 25%;
   }

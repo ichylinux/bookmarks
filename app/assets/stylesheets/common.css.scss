@@ -173,10 +173,7 @@ table {
   margin: 20px;
   
   tr {
-    th {
-      padding: 5px;
-    }
-    td {
+    th, td {
       padding: 5px;
     }
   }
@@ -452,10 +449,7 @@ table {
 }
 
 // Icon display preference
-body.no-icons .gadget-title-icon {
-  display: none !important;
-}
-
+body.no-icons .gadget-title-icon,
 body.no-icons .drawer-nav-icon {
   display: none !important;
 }
