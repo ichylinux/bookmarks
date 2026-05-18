@@ -20,11 +20,13 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
 
   test 'persistence and restore are guarded by mobile viewport check' do
     assert_includes @source, "window.matchMedia('(max-width: 767px)').matches"
-    assert_match(/if \(isMobileViewport\(\)\) \{\s*window\.scrollTo\(0, 0\);\s*window\.localStorage\.setItem/m, @source)
+    assert_match(/const mobile = isMobileViewport\(\).*window\.localStorage\.setItem/m, @source)
   end
 
-  test 'activateColumn scrolls to top on mobile when switching columns' do
-    assert_match(/if \(isMobileViewport\(\)\) \{\s*window\.scrollTo\(0, 0\);/m, @source)
+  test 'activateColumn restores per-column scroll position on mobile' do
+    assert_includes @source, 'const columnScrollPositions = {};'
+    assert_match(/if \(mobile\) \{\s*window\.scrollTo\(0, columnScrollPositions\[index\]/m, @source)
+    assert_match(/columnScrollPositions\[parseActiveColumnIndexFromPortal\(\$portal\)\] = window\.scrollY/m, @source)
   end
 
   test 'tab click and swipe both use shared activateColumn flow' do

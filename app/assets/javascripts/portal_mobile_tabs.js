@@ -25,6 +25,8 @@ $(function() {
     return $portal.find('.portal-column').length;
   };
 
+  const columnScrollPositions = {};
+
   const activateColumn = function($portal, $tabs, index) {
     if ($tabs.length) {
       $tabs.find('.portal-column-tab').each(function() {
@@ -36,10 +38,15 @@ $(function() {
       });
     }
 
+    const mobile = isMobileViewport();
+    if (mobile) {
+      columnScrollPositions[parseActiveColumnIndexFromPortal($portal)] = window.scrollY;
+    }
+
     syncPortalClasses($portal, index);
     $portal[0].style.setProperty('--portal-active-index', index);
-    if (isMobileViewport()) {
-      window.scrollTo(0, 0);
+    if (mobile) {
+      window.scrollTo(0, columnScrollPositions[index] || 0);
       window.localStorage.setItem(STORAGE_KEY, String(index));
       window.portalLazy.loadColumn(index);
     }

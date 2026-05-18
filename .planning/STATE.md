@@ -4,7 +4,7 @@ milestone: v1.25
 milestone_name: Portal Column Width Ratios
 status: archived
 last_updated: "2026-05-18T19:00:00.000Z"
-last_activity: 2026-05-18 — Milestone v1.25 archived; ready for next milestone
+last_activity: 2026-05-18 — Quick fix: scroll to top on mobile column swipe
 progress:
   total_phases: 4
   completed_phases: 4
@@ -55,6 +55,7 @@ Progress: 4/4 phases complete
 | 20260518 | archive completed milestone | 2026-05-18 | 2b78b34 | [20260518-archive-completed-milestone](./quick/20260518-archive-completed-milestone/) |
 | 20260518 | ポータル列数変更時のスライダー数連動修正 | 2026-05-18 | 35c7c75 | [20260518-portal-slider-count-sync](./quick/20260518-portal-slider-count-sync/) |
 | 20260518 | landing page refresh — value copy + v1.25 changelog entry | 2026-05-18 | fdfea61 | [20260518-landing-page-refresh](./quick/20260518-landing-page-refresh/) |
+| 20260518 | scroll to top when switching mobile portal columns via swipe | 2026-05-18 | 6587d2d | [20260518-mobile-swipe-scroll-top](./quick/20260518-mobile-swipe-scroll-top/) |
 
 ## Session Continuity
 
