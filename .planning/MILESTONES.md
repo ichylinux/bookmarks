@@ -1,5 +1,26 @@
 # Milestones
 
+## v1.26 — Visited Link Tracking (shipped 2026-05-18)
+
+**Scope:** Phases 84–88 (5 phases, 8 plans, 6 tasks) — server-side visited URLs, gadget wiring, delegated JS handler, planning traceability closure.
+
+Known deferred items at close: 3 (see STATE.md under **Deferred Items** — quick-task scanner false positives).
+
+**Key accomplishments:**
+
+- MySQL `visited_links` migration (utf8mb4 prefix index url(767)) and `VisitedLink` model with atomic upsert idempotency, fragment-stripping normalization, and Set-returning `urls_for`.
+- Minimal `VisitedLinksController#create` returning 204, routed via `resources :visited_links, only: [:create]`; Cucumber `VisitedLink.delete_all` isolation; integration tests for auth, idempotency, normalization.
+- `.gadget a.link--visited` in `common.css.scss` and `ApplicationHelper#visited_link_class` with contract + unit tests.
+- Nil-guarded helper + `assign_visited_urls` on three gadget controllers + partial wiring; controller tests for visited class and N+1 absence.
+- `visited_links.js` delegated click handler (fragment strip, optimistic class, fire-and-forget POST); `VisitedLinksJsContractTest`; Cucumber `@feed_visited_links` E2E.
+- Phase 88: REQUIREMENTS / ROADMAP / SUMMARY `requirements_completed` alignment + planning contract test for closure traceability.
+
+**Tri-suite gate at close:** `yarn run lint` ✓ · 458 Minitest 0 failures · Cucumber 27/27 (`dad:test`, per milestone audit).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.26-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.26-REQUIREMENTS.md) · [Audit](milestones/v1.26-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.25 — Portal Column Width Ratios (shipped 2026-05-18)
 
 **Scope:** Phases 80–83 (4 phases, 4 plans) — `portal_column_widths` JSON persistence, linked ratio sliders, desktop CSS variable layout.

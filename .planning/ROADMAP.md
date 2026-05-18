@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18)
+- ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
 - ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — [archived](milestones/v1.25-ROADMAP.md)
 - ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
 - ✅ **v1.23 — Icon Display Preference** — Phases 73–75 (shipped 2026-05-17) — [archived](milestones/v1.23-ROADMAP.md)
@@ -31,98 +31,20 @@
 
 ## Phases
 
-### v1.26 — Visited Link Tracking (Phases 84–88)
+_No active phases — start the next milestone with `/gsd-new-milestone`._
 
-- [x] **Phase 84: Data Layer + Controller** — `visited_links` migration, `VisitedLink` model with `record!`/`urls_for`/`normalize_url`, `POST /visited_links` endpoint, Cucumber `Before` hook update
-- [x] **Phase 85: CSS + View Helper** — `.link--visited` in `common.css.scss`, `ApplicationHelper#visited_link_class`, unit + contract tests
-- [x] **Phase 86: Gadget Controller + View Wiring** — `@visited_urls` Set in 3 show actions, `class:` in 3 show partials, controller tests for class presence/absence
-- [x] **Phase 87: JS Click Handler** — `visited_links.js` IIFE with namespaced delegated click handler, optimistic `addClass`, fire-and-forget `$.post`, E2E verification *(2 plans)*
-- [x] **Phase 88: v1.26 closure — planning traceability sync** — `REQUIREMENTS.md` / `ROADMAP.md` / SUMMARY `requirements_completed` alignment after milestone audit *(1 plan)* — 2026-05-18
+<details>
+<summary>✅ v1.26 — Visited Link Tracking (Phases 84–88) — SHIPPED 2026-05-18</summary>
 
-## Phase Details
+Full goals, success criteria, and notes: [milestones/v1.26-ROADMAP.md](milestones/v1.26-ROADMAP.md).
 
-### Phase 84: Data Layer + Controller
-**Goal**: The server can persist and retrieve visited URLs for a user with no race conditions or duplicates
-**Depends on**: Nothing (first phase of milestone)
-**Requirements**: DAT-01, DAT-02, DAT-03, DAT-04
-**Success Criteria** (what must be TRUE):
-  1. A migration creates `visited_links` with `(user_id, url varchar(2083), visited_at)` and a unique prefix index on `(user_id, url)` (767-byte prefix under utf8mb4 — InnoDB key-length limit)
-  2. `VisitedLink.record!(user, url)` stores a visit idempotently — calling it twice for the same user+URL results in exactly one row
-  3. `VisitedLink.normalize_url(url)` strips the fragment portion and is called identically in `record!` and `urls_for`
-  4. `POST /visited_links` with a valid `url` param returns 204 and records a visit; unauthenticated browser POSTs follow Devise (redirect to sign-in, typically 302 — not 401)
-  5. The Cucumber `Before` hook calls `VisitedLink.delete_all` so visited-state does not leak between scenarios
-**Plans**: 2 plans
-Plans:
-- [x] 84-01-PLAN.md — Migration + VisitedLink model + model unit tests (DAT-01, DAT-02, DAT-03)
-- [x] 84-02-PLAN.md — Controller + route + Cucumber hook + controller integration tests (DAT-04)
-**UI hint**: no
+- [x] Phase 84: Data Layer + Controller (2/2 plans) — 2026-05-18
+- [x] Phase 85: CSS + View Helper (1/1 plan) — 2026-05-18
+- [x] Phase 86: Gadget Controller + View Wiring (2/2 plans) — 2026-05-18
+- [x] Phase 87: JS Click Handler (2/2 plans) — 2026-05-18
+- [x] Phase 88: v1.26 closure — planning traceability sync (1/1 plan) — 2026-05-18
 
-### Phase 85: CSS + View Helper
-**Goal**: The visual vocabulary for visited links exists and is verifiable before any gadget wires it in
-**Depends on**: Phase 84
-**Requirements**: VIS-01, VIS-02
-**Success Criteria** (what must be TRUE):
-  1. `.link--visited` is defined in `common.css.scss` with a specificity high enough to override existing theme `:visited` rules across all three themes (classic, modern, simple)
-  2. `ApplicationHelper#visited_link_class(visited_set, url)` returns `"link--visited"` when the normalized URL is a member of the set and returns an empty string otherwise
-  3. A contract test asserts the CSS selector exists in `common.css.scss`; a unit test covers both truthy and falsy branches of the helper
-**Plans**: 1 plan
-Plans:
-- [x] 85-01-PLAN.md — CSS `.link--visited` rule + `visited_link_class` helper + unit tests + contract test (VIS-01, VIS-02)
-**UI hint**: yes
-
-### Phase 86: Gadget Controller + View Wiring
-**Goal**: Gadget AJAX responses render visited links with the CSS class based on server-side state, without N+1 queries
-**Depends on**: Phase 85
-**Requirements**: GAD-01, GAD-02, GAD-03, GAD-04
-**Success Criteria** (what must be TRUE):
-  1. After recording a visit, reloading the feed gadget renders the visited link's `<a>` tag with `class="link--visited"`
-  2. After recording a visit, reloading the Mastodon gadget renders the toot link's `<a>` tag with `class="link--visited"`
-  3. After recording a visit, reloading the X gadget renders the tweet link's `<a>` tag with `class="link--visited"`
-  4. Each of the three show actions issues exactly one `VisitedLink.urls_for` query per request — not one per link — and unvisited links carry no visited class
-**Plans**: 2 plans
-Plans:
-- [x] 86-01-PLAN.md — Helper nil-guard + before_action in 3 controllers + class: in 3 views (GAD-01, GAD-02, GAD-03, GAD-04)
-- [x] 86-02-PLAN.md — Controller integration tests: visited class present/absent + N+1 query guard for all 3 gadgets (GAD-01, GAD-02, GAD-03, GAD-04)
-**UI hint**: yes
-
-### Phase 87: JS Click Handler
-**Goal**: Clicking a content link in any gadget immediately applies the visited style and records the visit server-side, completing the end-to-end feature
-**Depends on**: Phase 86
-**Requirements**: JS-01, JS-02
-**Success Criteria** (what must be TRUE):
-  1. Clicking a gadget `ol li a` link triggers a fire-and-forget `$.post` to `POST /visited_links` — the click is not blocked and the link navigates normally
-  2. The clicked link element gains the `.link--visited` CSS class optimistically at click time (before the POST completes)
-  3. JS URL normalization strips the fragment from `this.href` before posting, matching `VisitedLink.normalize_url` behavior
-  4. The handler uses `$(document).on('click.visitedLinks', ...)` delegation so it fires correctly on AJAX-injected gadget content without rebinding
-**Plans**: 2 plans
-Plans:
-- [x] 87-01-PLAN.md — `visited_links.js` IIFE + `VisitedLinksJsContractTest` (JS-01, JS-02)
-- [x] 87-02-PLAN.md — Cucumber E2E: @feed_visited_links hook + scenario + step definitions (JS-01, JS-02)
-**UI hint**: yes
-
-### Phase 88: v1.26 closure — planning traceability sync
-
-**Goal:** Planning artifacts match shipped v1.26 behavior so `/gsd-audit-milestone` and future traces need no manual interpretation.
-**Depends on:** Phase 87
-**Requirements:** (planning only — aligns DAT-01..JS-02 checkboxes and metadata; no new product REQ-ID)
-**Success Criteria** (what must be TRUE):
-  1. `.planning/REQUIREMENTS.md`: all v1.26 bullets `[x]`; `DAT-04` describes unauthenticated behavior consistently with Devise HTML flow (302 redirect to sign-in, not 401); traceability table lists concrete `NN-PLAN.md` refs instead of `TBD`.
-  2. `.planning/ROADMAP.md`: v1.26 progress table matches completed work; Phase 84 success criterion #4 matches DAT-04 wording.
-  3. Each v1.26 `*-SUMMARY.md` includes `requirements_completed` in YAML listing the REQ-IDs that plan delivered (for gsd-sdk / 3-source audit).
-**Plans**: 1 plan
-Plans:
-- [x] 88-01-PLAN.md — REQUIREMENTS + ROADMAP + SUMMARY frontmatter sync
-**UI hint**: no
-
-## Progress Table
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 84. Data Layer + Controller | 2/2 | Complete | 2026-05-18 |
-| 85. CSS + View Helper | 1/1 | Complete | 2026-05-18 |
-| 86. Gadget Controller + View Wiring | 2/2 | Complete | 2026-05-18 |
-| 87. JS Click Handler | 2/2 | Complete | 2026-05-18 |
-| 88. v1.26 closure — planning traceability sync | 1/1 | Complete    | 2026-05-18 |
+</details>
 
 ---
 
@@ -152,4 +74,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-18 — Phase 88 complete: REQUIREMENTS traceability + SUMMARY requirements-completed; v1.26 milestone shipped in ROADMAP*
+*Last updated: 2026-05-18 — v1.26 archived to milestones/; living ROADMAP collapsed; awaiting next milestone*

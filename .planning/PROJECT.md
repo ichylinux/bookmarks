@@ -8,7 +8,12 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.26 Visited Link Tracking (shipped 2026-05-18)
+## Next Milestone
+
+Goals are not set yet. Run `/gsd-new-milestone` to capture requirements and phases; then update this section and `.planning/ROADMAP.md`.
+
+<details>
+<summary>Shipped: v1.26 Visited Link Tracking (2026-05-18)</summary>
 
 **Goal:** Record when a user clicks a content URL in any gadget (feeds, Mastodon toots, X tweets) so that visited links render with a "visited" style on all their devices.
 
@@ -18,7 +23,7 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 - Visited links render with `.link--visited` across themes; gadget partials wired
 - Planning traceability closure: `REQUIREMENTS.md`, `ROADMAP.md`, SUMMARY `requirements-completed` aligned
 
-## Current State
+</details>
 
 **Status:** v1.26 shipped (2026-05-18)
 
@@ -225,6 +230,7 @@ _(none — pick next milestone in `ROADMAP.md`)_
 | No preference guard in `NotesController#gadget` (v1.24 Phase 79) | `#notes-tab-panel` already omitted server-side when `use_note` is false; duplicating the guard adds complexity without benefit | ✓ Good — single `use_note` enforcement point in the view layer |
 | `portal_column_widths` JSON + sum-100 validation (v1.25) | Per-column desktop ratios; normalize length mismatch to equal split on save | ✓ Good — pairs with v1.20 column count; mobile unaffected |
 | Linked ratio sliders + `--portal-col-width-pct` on desktop (v1.25) | User adjusts 3/4 column balance in preferences; no dashboard drag-resize | ✓ Good — replaces fixed 33.33%/25% when custom ratios saved |
+| Visited URLs: upsert + single-query gadget preload + delegated click POST (v1.26) | Server truth across devices; avoid N+1; survive AJAX re-render without rebinding | ✓ Good — thin vertical slice; Cucumber isolation via `VisitedLink.delete_all` |
 
 ## Evolution
 
@@ -243,6 +249,10 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ## Shipped
+
+### v1.26 — Visited Link Tracking (2026-05-18)
+
+**Delivered:** Server-side `visited_links` store with fragment normalization; `POST /visited_links`; `.link--visited` + helper; feed/Mastodon/X gadget wiring without N+1; delegated `visited_links.js` click handler with optimistic styling; Cucumber feed scenario + planning closure (Phase 88). Tri-suite: lint ✓ · 458 Minitest ✓ · Cucumber 27/27.
 
 ### v1.25 — Portal Column Width Ratios (2026-05-18)
 
@@ -321,4 +331,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-18 — v1.26 milestone shipped (Visited Link Tracking); Phase 88 planning closure*
+*Last updated: 2026-05-18 after v1.26 milestone archive (`/gsd-complete-milestone`)*

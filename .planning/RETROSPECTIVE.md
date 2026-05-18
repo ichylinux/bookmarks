@@ -2,6 +2,43 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.26 — Visited Link Tracking
+
+**Shipped:** 2026-05-18
+**Phases:** 5 (84–88) | **Plans:** 8
+
+### What Was Built
+
+- `visited_links` persistence with utf8mb4-safe prefix unique index; `VisitedLink.record!` upsert + `urls_for` Set + fragment-only normalization
+- `POST /visited_links` + Devise HTML semantics for guests (302); Cucumber isolation via `VisitedLink.delete_all`
+- `.link--visited` styling + `visited_link_class`; three gadget controllers/views wired with single-query `@visited_urls`
+- Delegated jQuery click handler + optimistic styling + contract tests + Cucumber feed scenario
+- Phase 88 planning closure: traceability tables, SUMMARY metadata, `v1_26_closure_planning_contract_test.rb`
+
+### What Worked
+
+- End-to-end chain stayed thin: data layer → helper/CSS → controller wiring → JS → audit harness matched integration checker macros
+- Delegated namespaced handler avoided rebinding on AJAX gadget refreshes
+
+### What Was Inefficient
+
+- `gsd-sdk milestone.complete` emitted placeholder "One-liner:" bullets in `MILESTONES.md` — repaired manually from SUMMARY files at archive time
+
+### Key Lessons
+
+- Keep Cucumber visit isolation (`VisitedLink.delete_all`) in the same change-set as the feature to prevent order-dependent state leaks
+- Pre-close `audit-open` quick-task rows can disagree with merged git reality — document acknowledged drift rather than blocking ship
+
+### Patterns Established
+
+- Gadget content links use a single delegated `.gadget ol li a[href]` contract across themes and AJAX injection
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Milestone: v1.25 — Portal Column Width Ratios
 
 **Shipped:** 2026-05-18
@@ -595,6 +632,7 @@
 | v1.20 | 2 (67–68) | Preference constant pattern (`PORTAL_COLUMN_COUNTS`) + two-phase data-first split; first portal layout parameterization |
 | v1.21 | 1 (69) | Single-phase autonomous execution; X API lower-bound clamping pattern established; per-account preference stored on resource row |
 | v1.22 | 3 (70–72) | Routing simplification milestone; `LandingController` deleted, guest path inlined into `WelcomeController#index`; deferred uid bug fixed in parallel phase |
+| v1.26 | 5 (84–88) | Visited link persistence + gadget wiring + delegated JS; Phase 88 planning/trace harness (`v1_26_closure_planning_contract_test.rb`); milestone audit passed before archive |
 
 ### Cumulative quality
 
@@ -613,6 +651,7 @@
 | v1.20 | Minitest 377/377 + Cucumber 25 scenarios green | First portal layout preference; `portal--4col` SCSS modifier; Cucumber step selector deviation caught mid-phase |
 | v1.21 | Minitest 382/382 + Cucumber 25 scenarios green | Per-account tweet count preference; X API `max_results` clamp pattern; autonomous single-phase execution |
 | v1.22 | Minitest 384/384 + Cucumber 25 scenarios green | Routing simplification; `LandingController` deleted; `from_omniauth` uid fix; no new test infrastructure needed |
+| v1.26 | Minitest 458 + Cucumber 27 scenarios green | Feed-path Cucumber E2E; planning closure locked traceability; pre-close `audit-open` quick-task scanner drift acknowledged in STATE |
 
 ### Top lessons (carry forward)
 
@@ -630,3 +669,4 @@
 12. The X API `max_results` minimum is 5 — clamp at call site with `[pref, 5].max`, then slice after fetch; store and display the user's exact preference unchanged (v1.21).
 13. For auth-state-aware root routes, a single controller with a `user_signed_in?` branch is simpler than two controllers + redirect — fewer routes, unambiguous test contracts (v1.22).
 14. Update the REQUIREMENTS traceability table in the same commit that marks phases complete — "Pending" rows at archive time are a documentation miss that creates confusion during milestone close (v1.22).
+15. After `gsd-sdk query milestone.complete`, scan `MILESTONES.md` for placeholder accomplishment bullets — repair from SUMMARY one-liners before tagging (v1.26).

@@ -2,35 +2,46 @@
 gsd_state_version: 1.0
 milestone: v1.26
 milestone_name: Visited Link Tracking
-status: milestone_complete
-stopped_at: Milestone complete (Phase 88 was final phase)
-last_updated: 2026-05-18T12:49:34.485Z
-last_activity: 2026-05-18 -- Phase 88 execution started
+status: Awaiting next milestone
+stopped_at: Milestone v1.26 archived — awaiting `/gsd-new-milestone`
+last_updated: "2026-05-18T12:58:22.627Z"
+last_activity: 2026-05-18 — Milestone v1.26 completed and archived
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 8
   completed_plans: 8
-  percent: 80
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 88
-Plan: Not started
-Status: Milestone complete
-Last activity: 2026-05-18
+Phase: Milestone v1.26 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-05-18 — Milestone v1.26 completed and archived
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Milestone complete
+**Current focus:** Plan next milestone (`/gsd-new-milestone`)
 
 ## Performance Metrics
 
+- v1.26 close: `yarn run lint` — green; `bin/rails test` — 458 runs, 0 failures; `bundle exec rake dad:test` — 27/27 (`88-VERIFICATION.md` / audit)
 - v1.25 close: `yarn run lint` — green; `bin/rails test` — 416 runs, 0 failures; `bundle exec rake dad:test` — 25/25 on first run; second run 1 scenario-order flake (settings form visit / note gadget)
+
+## Deferred Items
+
+Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` showed quick-task rows as `missing` while work is already merged — scanner / directory drift only):
+
+| Category | Item | Status |
+|----------|------|--------|
+| quick_task | archive-completed-milestone | acknowledged |
+| quick_task | mobile-note-edit-textarea-height | acknowledged |
+| quick_task | portal-slider-count-sync | acknowledged |
 
 ## Accumulated Context
 
@@ -71,6 +82,10 @@ Last activity: 2026-05-18
 ## Session Continuity
 
 Last session: 2026-05-18
-Stopped at: Phase 88 planned — run `/gsd-execute-phase 88` (or execute `88-01-PLAN.md` tasks)
-Last activity: 2026-05-18 — Milestone audit option B: Phase 88 + `88-CONTEXT.md` / `88-01-PLAN.md`
+Stopped at: Milestone v1.26 complete — `/gsd-complete-milestone`
+Last activity: 2026-05-18 — Archived v1.26 planning artifacts; removed living REQUIREMENTS.md per workflow
 Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
