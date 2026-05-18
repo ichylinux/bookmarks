@@ -5,6 +5,7 @@ Before do
 
   MastodonAccount.delete_all
   XAccount.delete_all
+  VisitedLink.delete_all
 
   pref = user.preference
   pref.update!(
