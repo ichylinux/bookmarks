@@ -36,7 +36,7 @@
 - [x] **Phase 84: Data Layer + Controller** — `visited_links` migration, `VisitedLink` model with `record!`/`urls_for`/`normalize_url`, `POST /visited_links` endpoint, Cucumber `Before` hook update
 - [x] **Phase 85: CSS + View Helper** — `.link--visited` in `common.css.scss`, `ApplicationHelper#visited_link_class`, unit + contract tests
 - [x] **Phase 86: Gadget Controller + View Wiring** — `@visited_urls` Set in 3 show actions, `class:` in 3 show partials, controller tests for class presence/absence
-- [ ] **Phase 87: JS Click Handler** — `visited_links.js` IIFE with namespaced delegated click handler, optimistic `addClass`, fire-and-forget `$.post`, E2E verification
+- [ ] **Phase 87: JS Click Handler** — `visited_links.js` IIFE with namespaced delegated click handler, optimistic `addClass`, fire-and-forget `$.post`, E2E verification *(2 plans)*
 
 ## Phase Details
 
@@ -93,7 +93,10 @@ Plans:
   2. The clicked link element gains the `.link--visited` CSS class optimistically at click time (before the POST completes)
   3. JS URL normalization strips the fragment from `this.href` before posting, matching `VisitedLink.normalize_url` behavior
   4. The handler uses `$(document).on('click.visitedLinks', ...)` delegation so it fires correctly on AJAX-injected gadget content without rebinding
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 87-01-PLAN.md — `visited_links.js` IIFE + `VisitedLinksJsContractTest` (JS-01, JS-02)
+- [ ] 87-02-PLAN.md — Cucumber E2E: @feed_visited_links hook + scenario + step definitions (JS-01, JS-02)
 **UI hint**: yes
 
 ## Progress Table
