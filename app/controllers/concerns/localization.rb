@@ -12,7 +12,7 @@ module Localization
   end
 
   def resolved_locale
-    [saved_locale, accept_language_match].each do |candidate|
+    [saved_locale, guest_session_locale, accept_language_match].each do |candidate|
       return candidate.to_sym if candidate && Preference::SUPPORTED_LOCALES.include?(candidate.to_s)
     end
     I18n.default_locale
@@ -27,6 +27,15 @@ module Localization
     return nil if session[:otp_user_id].blank?
 
     User.find_by(id: session[:otp_user_id])
+  end
+
+  def guest_session_locale
+    return nil if user_signed_in?
+    requested = params[:locale].to_s.presence
+    if requested && Preference::SUPPORTED_LOCALES.include?(requested)
+      session[:guest_locale] = requested
+    end
+    session[:guest_locale]
   end
 
   def accept_language_match

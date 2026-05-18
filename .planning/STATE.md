@@ -78,6 +78,7 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 | 20260518 | scroll to top when switching mobile portal columns via swipe | 2026-05-18 | 6587d2d | [20260518-mobile-swipe-scroll-top](./quick/20260518-mobile-swipe-scroll-top/) |
 | 20260518 | simplify CSS styles — remove redundant declarations | 2026-05-18 | 737db5a | [20260518-simplify-css-styles](./quick/20260518-simplify-css-styles/) |
 | 20260518 | auto-resize note edit textarea height on mobile | 2026-05-18 | 296fe5c | [20260518-mobile-note-edit-textarea-height](./quick/20260518-mobile-note-edit-textarea-height/) |
+| 20260519 | landing page language switcher for guest users | 2026-05-19 | — | [20260519-landing-language-switcher](./quick/20260519-landing-language-switcher/) |
 
 ## Session Continuity
 

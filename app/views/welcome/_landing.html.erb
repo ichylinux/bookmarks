@@ -1,4 +1,8 @@
 <main class="landing-page">
+  <div class="landing-lang-switcher">
+    <%= link_to "日本語", root_path(locale: 'ja'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :ja}" %>
+    <%= link_to "English", root_path(locale: 'en'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :en}" %>
+  </div>
   <section class="landing-hero">
     <p class="landing-eyebrow"><%= t('landing.hero.eyebrow') %></p>
     <h1><%= t('landing.hero.title') %></h1>
