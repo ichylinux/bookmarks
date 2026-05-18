@@ -9,4 +9,12 @@ module ApplicationHelper
         .reverse
         .first(10)
   end
+
+  # VIS-02: Returns "link--visited" when the normalized URL is in visited_set,
+  # "" otherwise. Delegates normalization to VisitedLink.normalize_url so
+  # fragment-stripped URLs match stored values consistently.
+  def visited_link_class(visited_set, url)
+    normalized = VisitedLink.normalize_url(url)
+    visited_set.include?(normalized) ? "link--visited" : ""
+  end
 end

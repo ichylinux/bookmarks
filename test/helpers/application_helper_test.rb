@@ -30,4 +30,33 @@ class ApplicationHelperTest < ActionView::TestCase
       assert entry[:description].present?, "Missing :description in #{entry.inspect}"
     end
   end
+
+  # visited_link_class unit tests (VIS-02)
+
+  test "visited_link_class returns link--visited when url is in the set" do
+    visited_set = Set["https://example.com/page"]
+    assert_equal "link--visited", visited_link_class(visited_set, "https://example.com/page")
+  end
+
+  test "visited_link_class returns empty string when url is not in the set" do
+    visited_set = Set["https://other.com"]
+    assert_equal "", visited_link_class(visited_set, "https://example.com/page")
+  end
+
+  test "visited_link_class normalizes url before lookup (strips fragment)" do
+    visited_set = Set["https://example.com/page"]
+    assert_equal "link--visited", visited_link_class(visited_set, "https://example.com/page#section")
+  end
+
+  test "visited_link_class returns empty string for empty set" do
+    assert_equal "", visited_link_class(Set.new, "https://example.com/page")
+  end
+
+  # CSS contract test (VIS-01 + VIS-02 success criterion 3)
+
+  test "common.css.scss defines .link--visited selector" do
+    css_path = Rails.root.join("app/assets/stylesheets/common.css.scss")
+    assert File.read(css_path).include?(".link--visited"),
+      "Expected common.css.scss to contain '.link--visited' but it did not"
+  end
 end
