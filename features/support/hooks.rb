@@ -79,3 +79,29 @@ After('@x_gadget') do
   XAccount.where(user_id: user.id).delete_all
   user.update_columns(provider: nil, uid: nil, token: nil, token_secret: nil)
 end
+
+Before('@feed_visited_links') do
+  @_feed_article_url = 'https://example.com/stub-article'
+
+  feed_xml = <<~XML
+    <?xml version="1.0" encoding="UTF-8"?>
+    <rss version="2.0">
+      <channel>
+        <title>Stub Feed</title>
+        <link>http://slashdot.jp</link>
+        <description>Stub feed for visited links test</description>
+        <item>
+          <title>Stub Article</title>
+          <link>https://example.com/stub-article</link>
+        </item>
+      </channel>
+    </rss>
+  XML
+
+  @_feed_visited_stub = WebMock.stub_request(:get, 'http://slashdot.jp/slashdotjp.rss')
+    .to_return(status: 200, body: feed_xml, headers: { 'Content-Type' => 'application/rss+xml' })
+end
+
+After('@feed_visited_links') do
+  WebMock.remove_request_stub(@_feed_visited_stub) if @_feed_visited_stub
+end
