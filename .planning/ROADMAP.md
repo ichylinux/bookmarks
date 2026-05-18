@@ -152,4 +152,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-18 — Phase 88 added (planning closure); Phases 84–87 marked complete in progress table*
+*Last updated: 2026-05-18 — Phase 88 complete: REQUIREMENTS traceability + SUMMARY requirements-completed; v1.26 milestone shipped in ROADMAP*

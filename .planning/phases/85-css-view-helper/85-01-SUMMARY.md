@@ -26,6 +26,9 @@ metrics:
   tasks_total: 2
   files_created: 0
   files_modified: 3
+requirements-completed:
+  - VIS-01
+  - VIS-02
 ---
 
 # Phase 85 Plan 01: CSS + View Helper Summary

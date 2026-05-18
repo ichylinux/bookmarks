@@ -28,6 +28,8 @@ metrics:
   tasks_total: 2
   files_created: 2
   files_modified: 2
+requirements-completed:
+  - DAT-04
 ---
 
 # Phase 84 Plan 02: Controller — POST /visited_links endpoint

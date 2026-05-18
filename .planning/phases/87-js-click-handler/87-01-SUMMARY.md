@@ -25,6 +25,9 @@ metrics:
   completed: "2026-05-18"
   tasks_completed: 2
   tasks_total: 2
+requirements-completed:
+  - JS-01
+  - JS-02
 ---
 
 # Phase 87 Plan 01: visited_links.js IIFE Click Handler Summary

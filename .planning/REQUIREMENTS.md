@@ -1,7 +1,7 @@
 # Requirements: v1.26 Visited Link Tracking
 
 **Milestone:** v1.26
-**Status:** Active
+**Status:** Complete (requirements satisfied)
 **Created:** 2026-05-18
 
 ## Milestone Goal

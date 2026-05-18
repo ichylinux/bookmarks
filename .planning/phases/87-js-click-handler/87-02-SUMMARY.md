@@ -26,6 +26,9 @@ metrics:
   completed: "2026-05-18"
   tasks_completed: 2
   tasks_total: 2
+requirements-completed:
+  - JS-01
+  - JS-02
 ---
 
 # Phase 87 Plan 02: Cucumber E2E Scenario for Visited Link Click Flow Summary

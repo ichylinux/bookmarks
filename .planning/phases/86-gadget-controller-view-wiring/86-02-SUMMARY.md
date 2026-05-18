@@ -28,6 +28,11 @@ metrics:
   tasks_completed: 2
   tasks_total: 2
   files_changed: 4
+requirements-completed:
+  - GAD-01
+  - GAD-02
+  - GAD-03
+  - GAD-04
 ---
 
 # Phase 86 Plan 02: Query Counter + Visited-Class Controller Integration Tests Summary
