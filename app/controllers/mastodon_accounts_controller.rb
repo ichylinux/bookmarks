@@ -1,5 +1,6 @@
 class MastodonAccountsController < ApplicationController
   before_action :preload_account, only: %w[show edit update destroy]
+  before_action :assign_visited_urls, only: [:show]
 
   def index
     @mastodon_accounts = MastodonAccount.where(user_id: current_user.id).not_deleted.order(:instance, :username)
@@ -68,6 +69,10 @@ class MastodonAccountsController < ApplicationController
     end
 
     head :not_found and return if @mastodon_account.deleted?
+  end
+
+  def assign_visited_urls
+    @visited_urls = VisitedLink.urls_for(current_user)
   end
 
   def mastodon_account_params

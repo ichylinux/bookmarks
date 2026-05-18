@@ -15,6 +15,6 @@ module ApplicationHelper
   # fragment-stripped URLs match stored values consistently.
   def visited_link_class(visited_set, url)
     normalized = VisitedLink.normalize_url(url)
-    visited_set.include?(normalized) ? "link--visited" : ""
+    visited_set&.include?(normalized) ? "link--visited" : ""
   end
 end

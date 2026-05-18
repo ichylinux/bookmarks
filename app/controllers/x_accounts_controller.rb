@@ -3,6 +3,7 @@ class XAccountsController < ApplicationController
 
   before_action :require_twitter_linked
   before_action :preload_account, only: %w[show update]
+  before_action :assign_visited_urls, only: [:show]
 
   def index
     @x_accounts = XAccount.where(user_id: current_user.id).not_deleted.order(:username)
@@ -65,6 +66,10 @@ class XAccountsController < ApplicationController
     end
 
     head :not_found and return if @x_account.deleted?
+  end
+
+  def assign_visited_urls
+    @visited_urls = VisitedLink.urls_for(current_user)
   end
 
   def x_account_params

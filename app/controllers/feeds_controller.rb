@@ -1,5 +1,6 @@
 class FeedsController < ApplicationController
   before_action :preload_feed, only: ['show', 'edit', 'update', 'destroy']
+  before_action :assign_visited_urls, only: [:show]
 
   def index
     @feeds = Feed.where(user_id: current_user.id).not_deleted
@@ -70,6 +71,10 @@ class FeedsController < ApplicationController
     unless @feed.readable_by?(current_user)
       head :not_found and return
     end
+  end
+
+  def assign_visited_urls
+    @visited_urls = VisitedLink.urls_for(current_user)
   end
 
   def feed_params
