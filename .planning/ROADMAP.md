@@ -64,7 +64,9 @@ Plans:
   1. `.link--visited` is defined in `common.css.scss` with a specificity high enough to override existing theme `:visited` rules across all three themes (classic, modern, simple)
   2. `ApplicationHelper#visited_link_class(visited_set, url)` returns `"link--visited"` when the normalized URL is a member of the set and returns an empty string otherwise
   3. A contract test asserts the CSS selector exists in `common.css.scss`; a unit test covers both truthy and falsy branches of the helper
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 85-01-PLAN.md — CSS `.link--visited` rule + `visited_link_class` helper + unit tests + contract test (VIS-01, VIS-02)
 **UI hint**: yes
 
 ### Phase 86: Gadget Controller + View Wiring
