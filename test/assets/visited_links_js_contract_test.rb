@@ -22,6 +22,11 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
            "addClass('link--visited') must appear before $.post('/visited_links') in source"
   end
 
+  test 'includes authenticity_token in post params' do
+    assert_includes @source, 'authenticity_token'
+    assert_includes @source, "document.querySelector('meta[name=\"csrf-token\"]').content"
+  end
+
   test 'strips fragment from href before posting' do
     assert_includes @source, "this.href.replace(/#.*$/, '')"
   end
