@@ -4,29 +4,30 @@
     <%= render 'common/gadget_title_with_icon', variant: :bookmark do %>
       <%= gadget.title %>
     <% end %>
-    
+
     <% # フォルダを先頭に、その後ブックマークをタイトル順で表示（フォルダは開閉可能） %>
+    <% root_bookmarks = gadget.entries.select(&:file?) %>
     <div class="bookmark-folders">
       <% gadget.entries.each do |item| %>
-        <% if item.folder? %>
-          <div class="bookmark-folder">
-            <div class="folder-header" data-folder-id="<%= item.id %>">
-              <span class="folder-toggle" aria-hidden="true"></span>
-              <span class="folder-name"><%= item.title %></span>
-            </div>
-            <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
-              <% item.children.where(deleted: false).order(:title).each do |bookmark| %>
-                <li><%= link_to bookmark.title, bookmark.url, bookmark_link_html_options %></li>
-              <% end %>
-            </ol>
+        <% next unless item.folder? %>
+        <div class="bookmark-folder">
+          <div class="folder-header" data-folder-id="<%= item.id %>">
+            <span class="folder-toggle" aria-hidden="true"></span>
+            <span class="folder-name"><%= item.title %></span>
           </div>
-        <% else %>
-          <div class="bookmark-folder">
-            <ol class="bookmark-list root-bookmarks">
-              <li><%= link_to item.title, item.url, bookmark_link_html_options %></li>
-            </ol>
-          </div>
-        <% end %>
+          <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
+            <% item.children.where(deleted: false).order(:title).each do |bookmark| %>
+              <li><%= link_to bookmark.title, bookmark.url, bookmark_link_html_options %></li>
+            <% end %>
+          </ol>
+        </div>
+      <% end %>
+      <% if root_bookmarks.any? %>
+        <ol class="bookmark-list root-bookmarks">
+          <% root_bookmarks.each do |bookmark| %>
+            <li><%= link_to bookmark.title, bookmark.url, bookmark_link_html_options %></li>
+          <% end %>
+        </ol>
       <% end %>
     </div>
   </div>

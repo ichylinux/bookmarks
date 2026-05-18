@@ -236,20 +236,18 @@ $bookmark-gadget-row-gap: 0.25em;
 #bookmark_gadget .bookmark-list {
   padding: 0;
   margin: 0;
-  
+
   &.folder-bookmarks {
     margin-left: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
+  }
 
+  &.folder-bookmarks,
+  &.root-bookmarks {
     li + li {
       margin-top: $bookmark-gadget-row-gap;
     }
   }
-  
-  &.root-bookmarks {
-    padding-left: 0;
-    margin: 0;
-  }
-  
+
   li {
     margin: 0;
     padding: 0;
