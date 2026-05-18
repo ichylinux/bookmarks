@@ -346,6 +346,25 @@ div.title:hover .bookmark-gadget-new-link {
     font-size: 0.9em;
   }
 
+  &__title-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+    .bookmark-new-dialog__input {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__fetch-btn {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
   &__actions {
     margin-top: 4px;
   }

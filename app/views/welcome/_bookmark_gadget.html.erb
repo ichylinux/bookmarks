@@ -1,5 +1,6 @@
 <% bookmark_link_html_options = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 <% available_folders = Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title) %>
+
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title title--gadget-with-icon" data-gadget-icon="bookmark">
@@ -46,14 +47,6 @@
     </div>
     <%= form_tag bookmarks_path, method: :post, class: 'bookmark-new-dialog__form' do %>
       <%= hidden_field_tag :return_to, 'dashboard' %>
-      <div class="bookmark-new-dialog__field">
-        <%= label_tag 'dialog_bookmark_url', t('bookmarks.form.url_placeholder') %>
-        <%= text_field_tag 'bookmark[url]', nil, id: 'dialog_bookmark_url', placeholder: t('bookmarks.form.url_placeholder'), class: 'bookmark-new-dialog__input' %>
-      </div>
-      <div class="bookmark-new-dialog__field">
-        <%= label_tag 'dialog_bookmark_title', Bookmark.human_attribute_name(:title) %>
-        <%= text_field_tag 'bookmark[title]', nil, id: 'dialog_bookmark_title', class: 'bookmark-new-dialog__input' %>
-      </div>
       <% if available_folders.any? %>
         <div class="bookmark-new-dialog__field">
           <%= label_tag 'dialog_bookmark_parent_id', t('bookmarks.form.parent_folder') %>
@@ -62,6 +55,22 @@
               id: 'dialog_bookmark_parent_id', class: 'bookmark-new-dialog__select' %>
         </div>
       <% end %>
+      <div class="bookmark-new-dialog__field">
+        <%= label_tag 'bookmark_url', t('bookmarks.form.url_placeholder') %>
+        <%= text_field_tag 'bookmark[url]', nil, id: 'bookmark_url', placeholder: t('bookmarks.form.url_placeholder'), class: 'bookmark-new-dialog__input' %>
+      </div>
+      <div class="bookmark-new-dialog__field">
+        <%= label_tag 'bookmark_title', Bookmark.human_attribute_name(:title) %>
+        <div class="bookmark-new-dialog__title-row">
+          <%= text_field_tag 'bookmark[title]', nil, id: 'bookmark_title', class: 'bookmark-new-dialog__input' %>
+          <button type="button"
+                  onclick="bookmarks.fetch_title_from_url(this); return false;"
+                  data-url="<%= fetch_title_bookmarks_path %>"
+                  data-bookmark-url-required-message="<%= t('bookmarks.form.url_required_for_title_fetch') %>"
+                  data-bookmark-title-fetch-failed-message="<%= t('bookmarks.form.title_fetch_failed') %>"
+                  class="bookmark-new-dialog__fetch-btn"><%= t('bookmarks.form.fetch_from_url') %></button>
+        </div>
+      </div>
       <div class="bookmark-new-dialog__actions">
         <%= submit_tag t('bookmarks.form.submit_create_bookmark'), class: 'bookmark-new-dialog__submit' %>
       </div>
