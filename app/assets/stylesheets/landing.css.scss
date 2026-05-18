@@ -93,19 +93,26 @@
 }
 
 .landing-value-card-header {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
 }
 
 .landing-value-card-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 20px;
   margin: 0;
 }
 
 .landing-value-icon {
+  align-items: center;
   color: #2f6feb;
+  display: flex;
   flex-shrink: 0;
+  height: 20px;
+  width: 20px;
 
   svg {
     display: block;
