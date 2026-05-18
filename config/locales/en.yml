@@ -270,6 +270,18 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-19"
+          headline: Add bookmarks directly from your dashboard
+          tag: new
+          description: A new button in the bookmark gadget header lets you save a bookmark without leaving the dashboard. The dialog auto-fetches the page title when you paste a URL.
+        - date: "2026-05-19"
+          headline: Fixed visited-link tracking on the dashboard
+          tag: fix
+          description: We fixed an issue where clicking links in dashboard gadgets could fail to record them as visited.
+        - date: "2026-05-18"
+          headline: See which links you've already opened
+          tag: new
+          description: Clicked links in the bookmark, feed, and X gadgets are now shown in grey so you can tell at a glance what you've already read.
         - date: "2026-05-18"
           headline: Adjust portal column width ratios
           tag: new
