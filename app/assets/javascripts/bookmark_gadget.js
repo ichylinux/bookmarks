@@ -1,5 +1,29 @@
-// ブックマークガジェットのフォルダ開閉機能
+// ブックマークガジェットのフォルダ開閉機能 + 新規追加ダイアログ
 $(document).ready(() => {
+  // 新規ブックマークダイアログ
+  $(document).on('mousedown', '.bookmark-gadget-new-link', function(e) {
+    e.stopPropagation(); // ガジェットのドラッグ開始を防ぐ
+  });
+
+  $(document).on('click', '.bookmark-gadget-new-link', function(e) {
+    e.preventDefault();
+    const dialogId = $(this).data('dialog');
+    const dialog = document.getElementById(dialogId);
+    if (dialog) dialog.showModal();
+  });
+
+  $(document).on('click', '[data-dialog-close]', function() {
+    const dialogId = $(this).data('dialogClose');
+    const dialog = document.getElementById(dialogId);
+    if (dialog) dialog.close();
+  });
+
+  // ダイアログ外クリックで閉じる
+  $(document).on('click', '.bookmark-new-dialog', function(e) {
+    if (e.target === this) this.close();
+  });
+
+
   const STORAGE_KEY = 'bookmark_expanded_folders';
   
   // localStorageから展開状態を取得

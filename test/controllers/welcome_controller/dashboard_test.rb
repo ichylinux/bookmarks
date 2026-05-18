@@ -43,7 +43,7 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
-    assert_select '#bookmark_gadget .title', text: 'ブックマーク', count: 1
+    assert_select '#bookmark_gadget .gadget-title-text', text: 'ブックマーク', count: 1
     assert_select '#bookmark_gadget a', text: 'ブックマーク1'
     assert_select "#feed_#{feed.id} .title", text: feed.title, count: 1
     assert_select '#calendar .title', text: 'カレンダー', count: 1
@@ -58,7 +58,7 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'html[lang=?]', 'en'
-    assert_select '#bookmark_gadget .title', text: 'Bookmarks', count: 1
+    assert_select '#bookmark_gadget .gadget-title-text', text: 'Bookmarks', count: 1
     assert_select '#bookmark_gadget a', text: 'ブックマーク1'
     assert_select "#feed_#{feed.id} .title", text: feed.title, count: 1
     assert_select '#calendar .title', text: 'Calendar', count: 1

@@ -210,6 +210,11 @@ en:
       edited_tooltip: "Edited: %{time}"
 
   welcome:
+    bookmark_gadget:
+      new_link: new
+      new_link_aria_label: Add bookmark
+      dialog_title: Add Bookmark
+      dialog_close_aria_label: Close
     calendar_gadget:
       loading: Loading calendar...
     feed:

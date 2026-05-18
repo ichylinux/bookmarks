@@ -30,7 +30,11 @@ class BookmarksController < ApplicationController
       @bookmark.save!
     end
     
-    redirect_to action: 'index', parent_id: @bookmark.parent_id
+    if params[:return_to] == 'dashboard'
+      redirect_to root_path
+    else
+      redirect_to action: 'index', parent_id: @bookmark.parent_id
+    end
   end
 
   def edit

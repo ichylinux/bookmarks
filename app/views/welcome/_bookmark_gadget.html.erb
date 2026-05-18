@@ -1,9 +1,14 @@
 <% bookmark_link_html_options = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<% available_folders = Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title) %>
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
-    <%= render 'common/gadget_title_with_icon', variant: :bookmark do %>
-      <%= gadget.title %>
-    <% end %>
+    <div class="title title--gadget-with-icon" data-gadget-icon="bookmark">
+      <span class="gadget-title-icon gadget-title-icon--bookmark" aria-hidden="true">
+        <%= render 'icons/service', variant: :bookmark %>
+      </span>
+      <span class="gadget-title-text"><%= gadget.title %></span>
+      <a href="#" class="bookmark-gadget-new-link" aria-label="<%= t('welcome.bookmark_gadget.new_link_aria_label') %>" data-dialog="bookmark-new-dialog"><%= t('welcome.bookmark_gadget.new_link') %></a>
+    </div>
 
     <% # フォルダを先頭に、その後ブックマークをタイトル順で表示（フォルダは開閉可能） %>
     <% root_bookmarks = gadget.entries.select(&:file?) %>
@@ -32,3 +37,34 @@
     </div>
   </div>
 </div>
+
+<dialog id="bookmark-new-dialog" class="bookmark-new-dialog">
+  <div class="bookmark-new-dialog__inner">
+    <div class="bookmark-new-dialog__header">
+      <span class="bookmark-new-dialog__title"><%= t('welcome.bookmark_gadget.dialog_title') %></span>
+      <button type="button" class="bookmark-new-dialog__close" aria-label="<%= t('welcome.bookmark_gadget.dialog_close_aria_label') %>" data-dialog-close="bookmark-new-dialog">&#x2715;</button>
+    </div>
+    <%= form_tag bookmarks_path, method: :post, class: 'bookmark-new-dialog__form' do %>
+      <%= hidden_field_tag :return_to, 'dashboard' %>
+      <div class="bookmark-new-dialog__field">
+        <%= label_tag 'dialog_bookmark_url', t('bookmarks.form.url_placeholder') %>
+        <%= text_field_tag 'bookmark[url]', nil, id: 'dialog_bookmark_url', placeholder: t('bookmarks.form.url_placeholder'), class: 'bookmark-new-dialog__input' %>
+      </div>
+      <div class="bookmark-new-dialog__field">
+        <%= label_tag 'dialog_bookmark_title', Bookmark.human_attribute_name(:title) %>
+        <%= text_field_tag 'bookmark[title]', nil, id: 'dialog_bookmark_title', class: 'bookmark-new-dialog__input' %>
+      </div>
+      <% if available_folders.any? %>
+        <div class="bookmark-new-dialog__field">
+          <%= label_tag 'dialog_bookmark_parent_id', t('bookmarks.form.parent_folder') %>
+          <%= select_tag 'bookmark[parent_id]',
+              options_for_select([[t('bookmarks.form.no_parent'), '']] + available_folders.map { |f| [f.title, f.id] }),
+              id: 'dialog_bookmark_parent_id', class: 'bookmark-new-dialog__select' %>
+        </div>
+      <% end %>
+      <div class="bookmark-new-dialog__actions">
+        <%= submit_tag t('bookmarks.form.submit_create_bookmark'), class: 'bookmark-new-dialog__submit' %>
+      </div>
+    <% end %>
+  </div>
+</dialog>

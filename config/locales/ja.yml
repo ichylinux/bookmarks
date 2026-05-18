@@ -210,6 +210,11 @@ ja:
       edited_tooltip: "編集: %{time}"
 
   welcome:
+    bookmark_gadget:
+      new_link: 追加
+      new_link_aria_label: ブックマークを追加
+      dialog_title: ブックマークを追加
+      dialog_close_aria_label: 閉じる
     calendar_gadget:
       loading: カレンダーを読み込み中・・・
     feed:
