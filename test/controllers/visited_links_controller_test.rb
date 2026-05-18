@@ -51,4 +51,10 @@ class VisitedLinksControllerTest < ActionDispatch::IntegrationTest
   def test_routing_post_visited_links
     assert_routing({ path: '/visited_links', method: :post }, { controller: 'visited_links', action: 'create' })
   end
+
+  def test_cucumber_hooks_include_visited_link_reset
+    hooks_path = Rails.root.join('features/support/hooks.rb')
+    assert File.read(hooks_path).include?('VisitedLink.delete_all'),
+           'Expected features/support/hooks.rb to call VisitedLink.delete_all for scenario isolation (DAT-04)'
+  end
 end

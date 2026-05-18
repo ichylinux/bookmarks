@@ -52,6 +52,10 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal "", visited_link_class(Set.new, "https://example.com/page")
   end
 
+  test "visited_link_class returns empty string when visited_set is nil (GAD-04 nil-guard)" do
+    assert_equal "", visited_link_class(nil, "https://example.com/page")
+  end
+
   # CSS contract test (VIS-01 + VIS-02 success criterion 3)
 
   test "common.css.scss defines .link--visited selector" do
