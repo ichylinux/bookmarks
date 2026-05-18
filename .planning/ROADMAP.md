@@ -33,7 +33,7 @@
 
 ### v1.26 — Visited Link Tracking (Phases 84–87)
 
-- [ ] **Phase 84: Data Layer + Controller** — `visited_links` migration, `VisitedLink` model with `record!`/`urls_for`/`normalize_url`, `POST /visited_links` endpoint, Cucumber `Before` hook update
+- [x] **Phase 84: Data Layer + Controller** — `visited_links` migration, `VisitedLink` model with `record!`/`urls_for`/`normalize_url`, `POST /visited_links` endpoint, Cucumber `Before` hook update
 - [ ] **Phase 85: CSS + View Helper** — `.link--visited` in `common.css.scss`, `ApplicationHelper#visited_link_class`, unit + contract tests
 - [ ] **Phase 86: Gadget Controller + View Wiring** — `@visited_urls` Set in 3 show actions, `class:` in 3 show partials, controller tests for class presence/absence
 - [ ] **Phase 87: JS Click Handler** — `visited_links.js` IIFE with namespaced delegated click handler, optimistic `addClass`, fire-and-forget `$.post`, E2E verification
@@ -52,8 +52,8 @@
   5. The Cucumber `Before` hook calls `VisitedLink.delete_all` so visited-state does not leak between scenarios
 **Plans**: 2 plans
 Plans:
-- [ ] 84-01-PLAN.md — Migration + VisitedLink model + model unit tests (DAT-01, DAT-02, DAT-03)
-- [ ] 84-02-PLAN.md — Controller + route + Cucumber hook + controller integration tests (DAT-04)
+- [x] 84-01-PLAN.md — Migration + VisitedLink model + model unit tests (DAT-01, DAT-02, DAT-03)
+- [x] 84-02-PLAN.md — Controller + route + Cucumber hook + controller integration tests (DAT-04)
 **UI hint**: no
 
 ### Phase 85: CSS + View Helper

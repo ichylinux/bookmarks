@@ -3,30 +3,29 @@ gsd_state_version: 1.0
 milestone: v1.26
 milestone_name: Visited Link Tracking
 status: executing
-stopped_at: "v1.26 roadmap created — run `/gsd:plan-phase 84` to start Phase 84"
-last_updated: "2026-05-18T10:31:43.147Z"
-last_activity: 2026-05-18 -- Phase 84 planning complete
+stopped_at: "Phase 84 complete — advancing to Phase 85"
+last_updated: "2026-05-18T10:40:00.000Z"
+last_activity: 2026-05-18 -- Phase 84 complete
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 2
+  percent: 25
 ---
 
 # State
 
 ## Current Position
 
-Phase: 84 next — planning data layer
-Plan: —
-Status: Ready to execute
-Last activity: 2026-05-18 -- Phase 84 planning complete
+Phase: 85 (CSS + View Helper) — NEXT
+Status: Phase 84 complete — starting Phase 85
+Last activity: 2026-05-18 — Phase 84 complete (Data Layer + Controller)
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.26 — Visited Link Tracking (Phase 84: Data Layer + Controller)
+**Current focus:** Phase 84 — Data Layer + Controller
 
 ## Performance Metrics
 
