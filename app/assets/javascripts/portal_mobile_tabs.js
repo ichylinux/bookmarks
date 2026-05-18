@@ -39,6 +39,7 @@ $(function() {
     syncPortalClasses($portal, index);
     $portal[0].style.setProperty('--portal-active-index', index);
     if (isMobileViewport()) {
+      window.scrollTo(0, 0);
       window.localStorage.setItem(STORAGE_KEY, String(index));
       window.portalLazy.loadColumn(index);
     }
