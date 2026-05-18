@@ -3,24 +3,24 @@ gsd_state_version: 1.0
 milestone: v1.26
 milestone_name: Visited Link Tracking
 status: executing
-stopped_at: "Phase 84 complete — advancing to Phase 85"
-last_updated: "2026-05-18T10:40:00.000Z"
-last_activity: 2026-05-18 -- Phase 84 complete
+stopped_at: "Phase 85 complete — advancing to Phase 86"
+last_updated: "2026-05-18T11:00:00.000Z"
+last_activity: 2026-05-18 -- Phase 85 complete
 progress:
   total_phases: 4
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 25
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
+  percent: 50
 ---
 
 # State
 
 ## Current Position
 
-Phase: 85 (CSS + View Helper) — NEXT
-Status: Phase 84 complete — starting Phase 85
-Last activity: 2026-05-18 — Phase 84 complete (Data Layer + Controller)
+Phase: 86 (Gadget Controller + View Wiring) — NEXT
+Status: Phase 85 complete — starting Phase 86
+Last activity: 2026-05-18 — Phase 85 complete (CSS + View Helper)
 
 ## Project Reference
 
