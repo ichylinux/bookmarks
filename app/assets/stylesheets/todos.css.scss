@@ -62,3 +62,14 @@
     }
   }
 }
+
+html:lang(en) .todo {
+  .priority_1,
+  .priority_2,
+  .priority_3 {
+    width: 4.5em;
+    min-width: 4.5em;
+    max-width: 4.5em;
+    box-sizing: border-box;
+  }
+}
