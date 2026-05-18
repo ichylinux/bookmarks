@@ -8,19 +8,21 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.26 Visited Link Tracking
+## Current Milestone: v1.26 Visited Link Tracking (shipped 2026-05-18)
 
 **Goal:** Record when a user clicks a content URL in any gadget (feeds, Mastodon toots, X tweets) so that visited links render with a "visited" style on all their devices.
 
-**Target features:**
-- Server-side visited URL store (`user_id` + `url`, deduped)
-- JS click hook on gadget content links → POST visit event to server
-- Visited links render with visual distinction (CSS class)
-- Cross-device sync: visit recorded on any device appears everywhere
+**Delivered (phases 84–88):**
+- Server-side visited URL store (`user_id` + `url`, deduped), `VisitedLink.record!`, fragment-safe normalization
+- JS delegated click hook on gadget content links → POST visit; CSRF via UJS prefilter
+- Visited links render with `.link--visited` across themes; gadget partials wired
+- Planning traceability closure: `REQUIREMENTS.md`, `ROADMAP.md`, SUMMARY `requirements-completed` aligned
 
 ## Current State
 
-**Status:** v1.26 planning (2026-05-18)
+**Status:** v1.26 shipped (2026-05-18)
+
+v1.26 delivered visited link tracking: `visited_links` table (utf8mb4 `url(767)` unique index), `VisitedLink` upsert + `urls_for`, `POST /visited_links` (Devise HTML 302 when unauthenticated, 204 when authed), `.link--visited` + `visited_link_class`, three gadget controllers/views, `visited_links.js` delegated handler + Cucumber `@feed_visited_links`. Phase 88 closed planning traceability + `summary-extract` metadata. Cucumber harness: `Before` resets `portal_column_widths` with column count and restores 1280×800 viewport unless `@mobile_portal`. Tri-suite at close: lint ✓ · 458 Minitest 0 failures · `dad:test` 27/27.
 
 v1.25 delivered portal column width ratios: `preferences.portal_column_widths` JSON persistence with sum-100 validation; preferences page linked ratio sliders (ja/en); desktop portal columns use `--portal-col-width-pct` per column; mobile layout unchanged. Tri-suite: lint ✓ · 416 Minitest 0 failures · Cucumber 25/25 on first `dad:test` run (documented order flake on rerun).
 
@@ -128,12 +130,12 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `preferences.portal_column_widths` JSON array with sum-100 validation and length match to `portal_column_count` — **v1.25 Phase 80**
 - ✓ Preferences linked ratio sliders (ja/en) with save/reload round-trip — **v1.25 Phase 81**
 - ✓ Desktop portal columns render saved width ratios via `--portal-col-width-pct`; mobile tab layout unchanged — **v1.25 Phases 82–83**
+- ✓ Visited URLs persist server-side (`visited_links`, `VisitedLink.record!`, POST endpoint, gadget wiring, delegated JS click handler, E2E) — **v1.26 Phases 84–87**
+- ✓ Planning artifacts (`REQUIREMENTS.md`, `ROADMAP.md`, SUMMARY `requirements-completed`) aligned for v1.26 audit/traceability — **v1.26 Phase 88**
 
 ### Active
 
-- User can have visited URLs recorded server-side when clicking content links in feed, Mastodon, and X gadgets — **v1.26**
-- Visited links render with a distinct visual style (CSS class-based) on the welcome page gadgets — **v1.26**
-- Visited state persists across devices (recorded once, visible everywhere on sign-in) — **v1.26**
+_(none — pick next milestone in `ROADMAP.md`)_
 
 ### Out of Scope (revisit when planning)
 
@@ -319,4 +321,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-18 — v1.26 milestone started (Visited Link Tracking)*
+*Last updated: 2026-05-18 — v1.26 milestone shipped (Visited Link Tracking); Phase 88 planning closure*
