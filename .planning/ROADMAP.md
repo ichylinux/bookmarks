@@ -50,7 +50,10 @@
   3. `VisitedLink.normalize_url(url)` strips the fragment portion and is called identically in `record!` and `urls_for`
   4. `POST /visited_links` with a valid `url` param returns 204 and records a visit; unauthenticated requests return 401
   5. The Cucumber `Before` hook calls `VisitedLink.delete_all` so visited-state does not leak between scenarios
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 84-01-PLAN.md — Migration + VisitedLink model + model unit tests (DAT-01, DAT-02, DAT-03)
+- [ ] 84-02-PLAN.md — Controller + route + Cucumber hook + controller integration tests (DAT-04)
 **UI hint**: no
 
 ### Phase 85: CSS + View Helper
@@ -92,7 +95,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 84. Data Layer + Controller | 0/1 | Not started | - |
+| 84. Data Layer + Controller | 0/2 | Planned | - |
 | 85. CSS + View Helper | 0/1 | Not started | - |
 | 86. Gadget Controller + View Wiring | 0/1 | Not started | - |
 | 87. JS Click Handler | 0/1 | Not started | - |
@@ -127,4 +130,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ---
 
-*Last updated: 2026-05-18 — v1.26 Visited Link Tracking roadmap created (Phases 84–87)*
+*Last updated: 2026-05-18 — Phase 84 planned (2 plans: migration+model, controller+tests)*
