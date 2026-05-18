@@ -6,9 +6,9 @@ status: planning
 last_updated: "2026-05-18T09:54:10.879Z"
 last_activity: 2026-05-18
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
-  total_plans: 0
+  total_plans: 4
   completed_plans: 0
   percent: 0
 ---
@@ -17,15 +17,15 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 84 next — planning data layer
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-18 — Milestone v1.26 started
+Status: Roadmap created; ready for Phase 84 planning
+Last activity: 2026-05-18 — v1.26 roadmap created (Phases 84–87)
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.25 archived — start next milestone with `/gsd:new-milestone`
+**Current focus:** v1.26 — Visited Link Tracking (Phase 84: Data Layer + Controller)
 
 ## Performance Metrics
 
@@ -35,6 +35,12 @@ Last activity: 2026-05-18 — Milestone v1.26 started
 
 ### Decisions
 
+- (v1.26) `visited_links` table: `(user_id, url varchar(2083), visited_at)`; unique index on `(user_id, url(768))` (utf8mb4 prefix required)
+- (v1.26) `VisitedLink.record!(user, url)` uses `upsert` (atomic insert-or-ignore, no TOCTOU race); `urls_for(user)` returns a `Set` of normalized URLs
+- (v1.26) `normalize_url` strips fragment (`#...`) only — no query-string normalization by design
+- (v1.26) `@visited_urls` assigned once per gadget show action (`FeedsController`, `MastodonAccountsController`, `XAccountsController`) — not in `WelcomeController#index`; AJAX-only query
+- (v1.26) JS click handler uses `$(document).on('click.visitedLinks', '.gadget ol li a[href]', fn)` delegation — survives AJAX re-render; optimistic `addClass` before `$.post`
+- (v1.26) `jquery_ujs.js` `$.ajaxPrefilter` provides CSRF token automatically — no manual CSRF plumbing in `visited_links.js`
 - (v1.25) `preferences.portal_column_widths` JSON array; integers summing to 100; length must match `portal_column_count`
 - (v1.25) Equal defaults: 3列 `[34,33,33]`, 4列 `[25,25,25,25]`; nil/mismatch length normalizes to equal split before validate
 - (v1.25) Desktop: `--portal-col-width-pct` CSS variable per `.portal-column`; mobile unchanged
@@ -43,6 +49,7 @@ Last activity: 2026-05-18 — Milestone v1.26 started
 ### Blockers/Concerns
 
 - Pre-existing: Cucumber scenario-order flakes (note gadget AJAX timing, occasional preferences visit without session)
+- (v1.26) Cucumber `Before` hook must include `VisitedLink.delete_all` in same commit as migration to prevent visited-state leakage between scenarios
 
 ### Quick Tasks Completed
 
@@ -59,6 +66,6 @@ Last activity: 2026-05-18 — Milestone v1.26 started
 ## Session Continuity
 
 Last session: 2026-05-18
-Stopped at: v1.25 archived — run `/gsd:new-milestone` to start next milestone
-Last activity: 2026-05-18 — v1.25 milestone archived
+Stopped at: v1.26 roadmap created — run `/gsd:plan-phase 84` to start Phase 84
+Last activity: 2026-05-18 — v1.26 roadmap created (Phases 84–87)
 Resume file: None
