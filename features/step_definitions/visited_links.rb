@@ -21,3 +21,9 @@ end
   assert has_css?(".gadget ol li a.#{css_class}")
   capture
 end
+
+もし /^訪問済みリンクがサーバーに保存されるまで待ちます。$/ do
+  assert wait_until { VisitedLink.exists?(user_id: user.id) },
+         '訪問済みリンクがサーバーに保存されませんでした'
+  capture
+end
