@@ -78,7 +78,10 @@ Plans:
   2. After recording a visit, reloading the Mastodon gadget renders the toot link's `<a>` tag with `class="link--visited"`
   3. After recording a visit, reloading the X gadget renders the tweet link's `<a>` tag with `class="link--visited"`
   4. Each of the three show actions issues exactly one `VisitedLink.urls_for` query per request — not one per link — and unvisited links carry no visited class
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 86-01-PLAN.md — Helper nil-guard + before_action in 3 controllers + class: in 3 views (GAD-01, GAD-02, GAD-03, GAD-04)
+- [ ] 86-02-PLAN.md — Controller integration tests: visited class present/absent + N+1 query guard for all 3 gadgets (GAD-01, GAD-02, GAD-03, GAD-04)
 **UI hint**: yes
 
 ### Phase 87: JS Click Handler
