@@ -173,7 +173,44 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_equal '', response.body
   end
 
+  def test_show_renders_visited_class_on_visited_feed_item
+    stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
+    VisitedLink.where(user_id: user.id).delete_all
+    VisitedLink.record!(user, 'https://example.com/article-one')
+    sign_in user
+    get feed_path(feed_of(user), format: :html)
+    assert_response :success
+    assert_select 'a.link--visited[href=?]', 'https://example.com/article-one', count: 1
+  end
+
+  def test_show_does_not_render_visited_class_on_unvisited_feed_item
+    stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
+    VisitedLink.where(user_id: user.id).delete_all
+    sign_in user
+    get feed_path(feed_of(user), format: :html)
+    assert_response :success
+    assert_select 'a.link--visited', count: 0
+  end
+
+  def test_show_issues_single_visited_links_query_regardless_of_item_count
+    stub_feed_with_items([
+      { title: 'A', url: 'https://example.com/a' },
+      { title: 'B', url: 'https://example.com/b' },
+      { title: 'C', url: 'https://example.com/c' }
+    ])
+    VisitedLink.where(user_id: user.id).delete_all
+    sign_in user
+    n = count_visited_link_queries { get feed_path(feed_of(user), format: :html) }
+    assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
+  end
+
   private
+
+  def stub_feed_with_items(items)
+    xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><rss version=\"2.0\"><channel><title>T</title><link>http://example.com</link><description>D</description>#{items.map { |i| "<item><title>#{i[:title]}</title><link>#{i[:url]}</link></item>" }.join}</channel></rss>"
+    WebMock.stub_request(:get, 'http://slashdot.jp/slashdotjp.rss')
+      .to_return(status: 200, body: xml, headers: { 'Content-Type' => 'application/rss+xml' })
+  end
 
   def with_feed_new(fake_feed)
     singleton = Feed.singleton_class

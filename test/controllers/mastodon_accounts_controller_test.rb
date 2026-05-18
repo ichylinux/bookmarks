@@ -132,6 +132,40 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  def test_show_renders_visited_class_on_visited_toot
+    account = mastodon_account_of(user.id)
+    stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>Toot one</p>', url: 'https://ruby.social/@x/100' }])
+    VisitedLink.where(user_id: user.id).delete_all
+    VisitedLink.record!(user, 'https://ruby.social/@x/100')
+    sign_in user
+    get mastodon_account_path(account, format: :html)
+    assert_response :success
+    assert_select 'a.link--visited[href=?]', 'https://ruby.social/@x/100', count: 1
+  end
+
+  def test_show_does_not_render_visited_class_on_unvisited_toot
+    account = mastodon_account_of(user.id)
+    stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>Toot one</p>', url: 'https://ruby.social/@x/100' }])
+    VisitedLink.where(user_id: user.id).delete_all
+    sign_in user
+    get mastodon_account_path(account, format: :html)
+    assert_response :success
+    assert_select 'a.link--visited', count: 0
+  end
+
+  def test_show_issues_single_visited_links_query_for_multiple_toots
+    account = mastodon_account_of(user.id)
+    stub_mastodon_success('ruby.social', 'FastRuby', [
+      { content: '<p>T1</p>', url: 'https://ruby.social/@x/1' },
+      { content: '<p>T2</p>', url: 'https://ruby.social/@x/2' },
+      { content: '<p>T3</p>', url: 'https://ruby.social/@x/3' }
+    ])
+    VisitedLink.where(user_id: user.id).delete_all
+    sign_in user
+    n = count_visited_link_queries { get mastodon_account_path(account, format: :html) }
+    assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
+  end
+
   private
 
   def stub_mastodon_success(instance, username, statuses)

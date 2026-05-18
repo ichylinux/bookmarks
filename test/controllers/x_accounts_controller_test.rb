@@ -182,6 +182,47 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
     other_acc&.delete
   end
 
+  def test_show_renders_visited_class_on_visited_tweet
+    acc = create_account(username: 'vltest', selected: true)
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/vltest\/tweets/)
+      .to_return(status: 200, body: { data: [{ id: '777', text: 'Hello' }] }.to_json, headers: { 'Content-Type' => 'application/json' })
+    VisitedLink.where(user_id: twitter_user.id).delete_all
+    VisitedLink.record!(twitter_user, 'https://x.com/i/status/777')
+    sign_in twitter_user
+    get x_account_path(acc, format: :html)
+    assert_response :success
+    assert_select 'a.link--visited[href=?]', 'https://x.com/i/status/777', count: 1
+  ensure
+    acc&.destroy
+  end
+
+  def test_show_does_not_render_visited_class_on_unvisited_tweet
+    acc = create_account(username: 'vltest2', selected: true)
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/vltest2\/tweets/)
+      .to_return(status: 200, body: { data: [{ id: '888', text: 'World' }] }.to_json, headers: { 'Content-Type' => 'application/json' })
+    VisitedLink.where(user_id: twitter_user.id).delete_all
+    sign_in twitter_user
+    get x_account_path(acc, format: :html)
+    assert_response :success
+    assert_select 'a.link--visited', count: 0
+  ensure
+    acc&.destroy
+  end
+
+  def test_show_issues_single_visited_links_query_for_multiple_tweets
+    acc = create_account(username: 'vltest3', selected: true)
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/vltest3\/tweets/)
+      .to_return(status: 200,
+        body: { data: [{ id: '1', text: 'T1' }, { id: '2', text: 'T2' }, { id: '3', text: 'T3' }] }.to_json,
+        headers: { 'Content-Type' => 'application/json' })
+    VisitedLink.where(user_id: twitter_user.id).delete_all
+    sign_in twitter_user
+    n = count_visited_link_queries { get x_account_path(acc, format: :html) }
+    assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
+  ensure
+    acc&.destroy
+  end
+
   private
 
   def twitter_user
