@@ -122,7 +122,7 @@ Plans:
 | 85. CSS + View Helper | 1/1 | Complete | 2026-05-18 |
 | 86. Gadget Controller + View Wiring | 2/2 | Complete | 2026-05-18 |
 | 87. JS Click Handler | 2/2 | Complete | 2026-05-18 |
-| 88. v1.26 closure — planning traceability sync | 1/1 | Complete | 2026-05-18 |
+| 88. v1.26 closure — planning traceability sync | 1/1 | Complete    | 2026-05-18 |
 
 ---
 
