@@ -453,3 +453,9 @@ body.no-icons .gadget-title-icon,
 body.no-icons .drawer-nav-icon {
   display: none !important;
 }
+
+// VIS-01: Visited link visual indicator — scoped to gadget content links only.
+// Specificity (0,2,1): beats common a:visited baseline without !important.
+.gadget a.link--visited {
+  opacity: 0.55;
+}
