@@ -15,8 +15,6 @@ development:
 test:
   <<: *default
   database: bookmarks_test
-  variables:
-    transaction_isolation: READ-COMMITTED
 
 production:
   <<: *default

@@ -4,6 +4,7 @@
   check 'タスクを表示する'
   capture
   click_on '保存'
+  assert has_text?('設定を保存しました。')
 end
 
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do
@@ -13,6 +14,7 @@ end
   select Todo::PRIORITIES[Todo::PRIORITY_HIGH], from: 'タスク追加時の初期優先度'
   capture
   click_on '保存'
+  assert has_text?('設定を保存しました。')
 end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|

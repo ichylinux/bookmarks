@@ -1,15 +1,22 @@
 require 'uri'
 
 もし /^シンプルテーマでサインインします。$/ do
-  user.preference.update!(theme: 'simple', use_note: true)
   Note.where(user_id: user.id).delete_all
   sign_in user
+  visit '/preferences'
+  select 'シンプル', from: 'テーマ'
+  check 'ノートを表示する'
+  click_on '保存'
+  assert has_text?('設定を保存しました。')
 end
 
 もし /^モダンテーマでノートを有効にしてサインインします。$/ do
-  user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
   Note.where(user_id: user.id).delete_all
   sign_in user
+  visit '/preferences'
+  check 'ノートを表示する'
+  click_on '保存'
+  assert has_text?('設定を保存しました。')
 end
 
 もし /^ヘッダーのノートアイコンからノート画面を開きます。$/ do
