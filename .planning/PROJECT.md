@@ -8,15 +8,23 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.27 Privacy Policy for X OAuth2 Email
+## Current Milestone
+
+**Status:** v1.27 shipped (2026-05-19) — planning next milestone
+
+<details>
+<summary>Shipped: v1.27 Privacy Policy for X OAuth2 Email (2026-05-19)</summary>
 
 **Goal:** Create a publicly accessible privacy policy page so the X (Twitter) Developer Portal can approve email scope access in the OAuth2 app.
 
-**Target features:**
-- Privacy policy static page (public, unauthenticated access)
-- Content covering data collected, X login, and email handling
-- Linked from footer and landing page
-- Terms of Service page if X Developer Portal requires it
+**Delivered (phases 89–90):**
+- `/privacy` and `/terms` publicly accessible without authentication; bilingual ja/en with lang switcher, back link, full substantive content
+- Privacy policy: 5 sections (data collected, X login, email handling, data retention, contact)
+- Terms of service: 3 sections (acceptable use, availability, termination)
+- `from_omniauth` `:twitter2` re-auth overwrites dummy emails with real X-provided email
+- `users.email` scope confirmed wired; new-user create branch stores real email
+
+</details>
 
 <details>
 <summary>Shipped: v1.26 Visited Link Tracking (2026-05-18)</summary>
@@ -30,8 +38,6 @@ Users can quickly capture, find, and manage their own bookmarks and related gadg
 - Planning traceability closure: `REQUIREMENTS.md`, `ROADMAP.md`, SUMMARY `requirements-completed` aligned
 
 </details>
-
-**Status:** v1.26 shipped (2026-05-18)
 
 v1.26 delivered visited link tracking: `visited_links` table (utf8mb4 `url(767)` unique index), `VisitedLink` upsert + `urls_for`, `POST /visited_links` (Devise HTML 302 when unauthenticated, 204 when authed), `.link--visited` + `visited_link_class`, three gadget controllers/views, `visited_links.js` delegated handler + Cucumber `@feed_visited_links`. Phase 88 closed planning traceability + `summary-extract` metadata. Cucumber harness: `Before` resets `portal_column_widths` with column count and restores 1280×800 viewport unless `@mobile_portal`. Tri-suite at close: lint ✓ · 458 Minitest 0 failures · `dad:test` 27/27.
 
@@ -143,6 +149,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Desktop portal columns render saved width ratios via `--portal-col-width-pct`; mobile tab layout unchanged — **v1.25 Phases 82–83**
 - ✓ Visited URLs persist server-side (`visited_links`, `VisitedLink.record!`, POST endpoint, gadget wiring, delegated JS click handler, E2E) — **v1.26 Phases 84–87**
 - ✓ Planning artifacts (`REQUIREMENTS.md`, `ROADMAP.md`, SUMMARY `requirements-completed`) aligned for v1.26 audit/traceability — **v1.26 Phase 88**
+- ✓ Public privacy policy at `/privacy` and terms at `/terms` without authentication; bilingual ja/en with lang switcher — **v1.27 Phase 89**
+- ✓ Privacy policy covers data collected, X login purpose, email handling, retention, and contact — **v1.27 Phase 89**
+- ✓ Terms of service covers acceptable use, availability, and account termination — **v1.27 Phase 89**
+- ✓ X OAuth2 requests `users.email` scope; new-user create stores real X email; re-auth overwrites dummy-pattern email — **v1.27 Phase 90**
 
 ### Active
 
@@ -161,6 +171,7 @@ _(none — pick next milestone in `ROADMAP.md`)_
 
 ## Context
 
+- **Shipped v1.27 (2026-05-19):** Privacy policy + terms of service at `/privacy` and `/terms` (bilingual, public); X OAuth2 email scope wiring (OAUTH-01–03). Tri-suite: lint ✓ · 485 Minitest 0 failures · 27/27 Cucumber. Details: `.planning/milestones/v1.27-ROADMAP.md`. Audit: `.planning/milestones/v1.27-MILESTONE-AUDIT.md` (`tech_debt`; 9/9 requirements; Phase 90 process artifacts deferred).
 - **Shipped v1.19 (2026-05-14):** HTTP test stubs → WebMock — `webmock 3.26.2` in `:test` group; `test/support/webmock.rb` global config; Minitest service/controller tests migrated to Faraday `:test` + WebMock; Cucumber hooks migrated to per-scenario `WebMock.stub_request`; 133-line prepend stub file deleted. Tri-suite green (363 Minitest, 24 Cucumber). Details: `.planning/milestones/v1.19-ROADMAP.md`. Audit: `.planning/milestones/v1.19-MILESTONE-AUDIT.md` (`tech_debt`; 5/5 requirements; accepted: no per-phase artifacts for Phases 65–66).
 - **Shipped v1.17 (2026-05-13):** Email registration for dummy-email (X/Twitter) users — model update validation, `Users::EmailRegistrationsController`, preferences link, ja/en, Minitest. Details: `.planning/milestones/v1.17-ROADMAP.md`. Audit: `.planning/milestones/v1.17-MILESTONE-AUDIT.md`.
 - **Shipped v1.16 (2026-05-12):** Mastodon account following — data model, CRUD, `MastodonClient`, welcome gadgets, locales, tests. Details: `.planning/milestones/v1.16-ROADMAP.md`. Audit: `.planning/milestones/v1.16-MILESTONE-AUDIT.md`.
@@ -237,6 +248,8 @@ _(none — pick next milestone in `ROADMAP.md`)_
 | `portal_column_widths` JSON + sum-100 validation (v1.25) | Per-column desktop ratios; normalize length mismatch to equal split on save | ✓ Good — pairs with v1.20 column count; mobile unaffected |
 | Linked ratio sliders + `--portal-col-width-pct` on desktop (v1.25) | User adjusts 3/4 column balance in preferences; no dashboard drag-resize | ✓ Good — replaces fixed 33.33%/25% when custom ratios saved |
 | Visited URLs: upsert + single-query gadget preload + delegated click POST (v1.26) | Server truth across devices; avoid N+1; survive AJAX re-render without rebinding | ✓ Good — thin vertical slice; Cucumber isolation via `VisitedLink.delete_all` |
+| Fully public `PagesController` (no `only:` on skip_before_action) (v1.27) | Both policy pages are 100% public; simpler than per-action skip | ✓ Good — matches landing-page pattern |
+| Conditional attrs hash before `assign_attributes` on twitter2 re-auth (v1.27) | OAUTH-03 needs selective email merge without touching other fields | ✓ Good — `has_valid_email?` + `data['email'].present?` guards |
 
 ## Evolution
 

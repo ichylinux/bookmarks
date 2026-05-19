@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.27 — Privacy Policy for X OAuth2 Email (shipped 2026-05-19)
+
+**Scope:** Phases 89–90 (2 phases, 3 plans) — public bilingual policy pages and X OAuth2 email scope wiring for Developer Portal approval.
+
+**Key accomplishments:**
+
+- `PagesController` with `skip_before_action :authenticate_user!`; `GET /privacy` and `GET /terms` routes; `pages.css.scss` policy layout classes.
+- Bilingual privacy policy (5 sections) and terms of service (3 sections) via locale YAML + ERB views with lang switcher and back link; UAT 7/7 on Phase 89.
+- OAUTH-03: `:twitter2` re-auth overwrites dummy-pattern email with real X-provided email via `has_valid_email?` guard and conditional attrs hash.
+- OAUTH-01/02 verified: `users.email` scope in `devise.rb`; new-user create branch stores real email; three Minitest scenarios for re-auth email paths.
+- Tri-suite gate at close: `yarn run lint` ✓ · 485 Minitest 0 failures · Cucumber 27/27.
+
+**Tech debt at close (non-blocking):** Phase 90 missing VERIFICATION.md, UAT, SECURITY.md; Phase 89 missing VERIFICATION.md; policy pages not linked from in-app surfaces (direct URL only). See audit.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.27-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.27-REQUIREMENTS.md) · [Audit](milestones/v1.27-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.26 — Visited Link Tracking (shipped 2026-05-18)
 
 **Scope:** Phases 84–88 (5 phases, 8 plans, 6 tasks) — server-side visited URLs, gadget wiring, delegated JS handler, planning traceability closure.

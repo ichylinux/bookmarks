@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.27
-milestone_name: Privacy Policy for X OAuth2 Email
-status: complete
+milestone: ""
+milestone_name: ""
+status: ready_for_planning
 stopped_at: ""
-last_updated: "2026-05-19T00:00:00.000Z"
-last_activity: 2026-05-19 — Phase 90 complete (Plan 90-01 executed; tri-suite green: 485 runs 0 failures, lint clean, 27/27 Cucumber)
+last_updated: "2026-05-19T12:00:00.000Z"
+last_activity: 2026-05-19 — v1.27 milestone archived and tagged
 progress:
   total_phases: 2
   completed_phases: 2
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: 90 — OAuth2 Email Scope Wiring (complete)
-Plan: 90-01 (complete)
-Status: All phases complete — v1.27 milestone ready for audit
-Last activity: 2026-05-19 — Phase 90 complete — OAUTH-03 re-auth email update shipped
+Phase: —
+Plan: —
+Status: v1.27 shipped — planning next milestone
+Last activity: 2026-05-19 — v1.27 milestone complete (archived, tagged)
 
 ```
 Progress: [████████████████████] 100% (2/2 phases)
@@ -30,7 +30,7 @@ Progress: [████████████████████] 100% (2
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90)
+**Current focus:** Planning next milestone (`/gsd-new-milestone`)
 
 ## Performance Metrics
 
@@ -100,5 +100,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Audit milestone: `/gsd:audit-milestone`
-- Or complete milestone: `/gsd:complete-milestone`
+- Start next milestone: `/gsd-new-milestone`

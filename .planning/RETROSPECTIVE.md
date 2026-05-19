@@ -2,6 +2,44 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.27 — Privacy Policy for X OAuth2 Email
+
+**Shipped:** 2026-05-19
+**Phases:** 2 (89–90) | **Plans:** 3
+
+### What Was Built
+
+- Public `/privacy` and `/terms` pages (ja/en, lang switcher, `PagesController` without auth)
+- Privacy policy 5 sections + terms 3 sections in locale YAML; `pages.css.scss` layout
+- OAUTH-03 re-auth email overwrite for dummy-pattern addresses; OAUTH-01/02 scope and create-path verification
+- Phase 89 UAT 7/7; tri-suite green at Phase 90 close (485 Minitest, 27 Cucumber)
+
+### What Worked
+
+- Two-phase split (static pages → OAuth wiring) matched X Developer Portal dependency order
+- Stub views in 89-01 let controller tests pass before 89-02 content landed
+
+### What Was Inefficient
+
+- Phase 90 closed without VERIFICATION/UAT/SECURITY artifacts — audit flagged as tech debt only
+- Policy pages discoverable by direct URL only (no footer/nav links — intentional out of scope)
+
+### Key Lessons
+
+- `has_valid_email?` reuse avoided duplicating dummy-email regex for OAUTH-03
+- `data['email'].present?` handles absent OmniAuth keys more safely than `!= nil`
+
+### Patterns Established
+
+- Fully public controller: `skip_before_action :authenticate_user!` without `only:` qualifier
+- Conditional attrs hash before `assign_attributes` when re-auth updates subset of fields
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Milestone: v1.26 — Visited Link Tracking
 
 **Shipped:** 2026-05-18
