@@ -7,21 +7,21 @@
 
 ### Privacy Policy Page
 
-- [ ] **PRIV-01**: User can view a privacy policy page at `/privacy` without authentication
-- [ ] **PRIV-02**: Privacy policy content is available in both Japanese and English (locale YAML pattern matching the existing i18n infrastructure)
-- [ ] **PRIV-03**: Privacy policy covers data collected, purpose of X login, email address handling, and data retention
+- [x] **PRIV-01**: User can view a privacy policy page at `/privacy` without authentication
+- [x] **PRIV-02**: Privacy policy content is available in both Japanese and English (locale YAML pattern matching the existing i18n infrastructure)
+- [x] **PRIV-03**: Privacy policy covers data collected, purpose of X login, email address handling, and data retention
 
 ### Terms of Service Page
 
-- [ ] **TOS-01**: User can view a terms of service page at `/terms` without authentication
-- [ ] **TOS-02**: Terms of service content is available in both Japanese and English
-- [ ] **TOS-03**: Terms of service covers acceptable use, service availability, and account termination
+- [x] **TOS-01**: User can view a terms of service page at `/terms` without authentication
+- [x] **TOS-02**: Terms of service content is available in both Japanese and English
+- [x] **TOS-03**: Terms of service covers acceptable use, service availability, and account termination
 
 ### OAuth2 Email Scope
 
-- [ ] **OAUTH-01**: X OAuth2 sign-in requests the `email` scope
-- [ ] **OAUTH-02**: `User.from_omniauth` stores the real X email on new user creation instead of generating a dummy email
-- [ ] **OAUTH-03**: On re-authentication, `from_omniauth` overwrites an existing dummy-pattern email with the real X email
+- [x] **OAUTH-01**: X OAuth2 sign-in requests the `email` scope
+- [x] **OAUTH-02**: `User.from_omniauth` stores the real X email on new user creation instead of generating a dummy email
+- [x] **OAUTH-03**: On re-authentication, `from_omniauth` overwrites an existing dummy-pattern email with the real X email
 
 ## Future Requirements
 
@@ -40,15 +40,15 @@ _(none identified for this milestone)_
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIV-01 | Phase 89 | Pending |
-| PRIV-02 | Phase 89 | Pending |
-| PRIV-03 | Phase 89 | Pending |
-| TOS-01 | Phase 89 | Pending |
-| TOS-02 | Phase 89 | Pending |
-| TOS-03 | Phase 89 | Pending |
-| OAUTH-01 | Phase 90 | Pending |
-| OAUTH-02 | Phase 90 | Pending |
-| OAUTH-03 | Phase 90 | Pending |
+| PRIV-01 | Phase 89 | Satisfied |
+| PRIV-02 | Phase 89 | Satisfied |
+| PRIV-03 | Phase 89 | Satisfied |
+| TOS-01 | Phase 89 | Satisfied |
+| TOS-02 | Phase 89 | Satisfied |
+| TOS-03 | Phase 89 | Satisfied |
+| OAUTH-01 | Phase 90 | Satisfied |
+| OAUTH-02 | Phase 90 | Satisfied |
+| OAUTH-03 | Phase 90 | Satisfied |
 
 **Coverage:**
 - v1.27 requirements: 9 total
@@ -57,4 +57,4 @@ _(none identified for this milestone)_
 
 ---
 *Requirements defined: 2026-05-19*
-*Last updated: 2026-05-19 — traceability mapped after roadmap creation*
+*Last updated: 2026-05-19 — all 9 requirements marked Satisfied after milestone audit (evidence: SUMMARY requirements-completed, passing tri-suites, UAT 7/7 Phase 89)*
