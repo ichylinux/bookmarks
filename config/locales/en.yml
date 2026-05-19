@@ -385,6 +385,10 @@ en:
       failure: Could not save.
 
   devise:
+    shared:
+      omniauth:
+        google: Sign in with Google
+        twitter: Sign in with Twitter
     sessions:
       invalid: "Invalid %{authentication_keys} or password."
       signed_in: Welcome back. You can pick up right where you left off.

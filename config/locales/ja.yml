@@ -385,6 +385,10 @@ ja:
       failure: 保存できませんでした。
 
   devise:
+    shared:
+      omniauth:
+        google: Googleでサインイン
+        twitter: Twitterでサインイン
     sessions:
       invalid: "%{authentication_keys}またはパスワードが違います。"
       signed_in: おかえりなさい。すぐに続きから始められます。

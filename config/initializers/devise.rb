@@ -257,10 +257,6 @@ Devise.setup do |config|
       Rails.application.config.app_config.omniauth_google_oauth2_client_secret,
       scope: ['email']
 
-  config.omniauth :twitter,
-      Rails.application.config.app_config.omniauth_twitter_client_id,
-      Rails.application.config.app_config.omniauth_twitter_client_secret
-
   config.omniauth :twitter2,
       Rails.application.config.app_config.omniauth_twitter2_client_id,
       Rails.application.config.app_config.omniauth_twitter2_client_secret,

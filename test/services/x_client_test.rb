@@ -167,16 +167,16 @@ class XClientTest < ActiveSupport::TestCase
       .to_return(status: 200, body: { data: [], meta: {} }.to_json, headers: { 'Content-Type' => 'application/json' })
 
     # Mock Rails config for client id/secret
-    old_id = Rails.application.config.app_config.omniauth_twitter_client_id
-    old_secret = Rails.application.config.app_config.omniauth_twitter_client_secret
-    Rails.application.config.app_config.omniauth_twitter_client_id = 'dummy_client_id'
-    Rails.application.config.app_config.omniauth_twitter_client_secret = 'dummy_secret'
+    old_id = Rails.application.config.app_config.omniauth_twitter2_client_id
+    old_secret = Rails.application.config.app_config.omniauth_twitter2_client_secret
+    Rails.application.config.app_config.omniauth_twitter2_client_id = 'dummy_client_id'
+    Rails.application.config.app_config.omniauth_twitter2_client_secret = 'dummy_secret'
 
     begin
       XClient.new.fetch_following(user: u)
     ensure
-      Rails.application.config.app_config.omniauth_twitter_client_id = old_id
-      Rails.application.config.app_config.omniauth_twitter_client_secret = old_secret
+      Rails.application.config.app_config.omniauth_twitter2_client_id = old_id
+      Rails.application.config.app_config.omniauth_twitter2_client_secret = old_secret
     end
 
     u.reload

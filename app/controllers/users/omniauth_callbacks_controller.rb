@@ -4,10 +4,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_callback('Google')
   end
 
-  def twitter
-    handle_callback('Twitter')
-  end
-
   def twitter2
     handle_callback('Twitter')
   end

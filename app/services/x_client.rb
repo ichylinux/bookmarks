@@ -112,8 +112,8 @@ class XClient
   def refresh_oauth2_token!(user)
     return unless user.oauth2_refresh_token.present?
 
-    ck = Rails.application.config.app_config.omniauth_twitter_client_id.to_s
-    cs = Rails.application.config.app_config.omniauth_twitter_client_secret.to_s
+    ck = Rails.application.config.app_config.omniauth_twitter2_client_id.to_s
+    cs = Rails.application.config.app_config.omniauth_twitter2_client_secret.to_s
     return if ck.blank? || cs.blank?
 
     conn = Faraday.new(url: 'https://api.x.com') do |f|

@@ -3,7 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
-         omniauth_providers: [:google_oauth2, :twitter, :twitter2]
+         omniauth_providers: [:google_oauth2, :twitter2]
 
   encrypts :token, :token_secret
   encrypts :oauth2_token, :oauth2_refresh_token
@@ -29,34 +29,6 @@ class User < ApplicationRecord
     data = access_token.info
 
     case access_token['provider'].to_sym
-    when :twitter
-      creds = access_token.credentials || {}
-      oauth_token = creds['token'].presence || creds[:token].presence
-      oauth_secret = creds['secret'].presence || creds[:token_secret].presence
-      uid = access_token.uid.to_s
-      provider = access_token.provider.to_s
-
-      attrs = {
-        provider: provider,
-        uid: uid,
-        token: oauth_token,
-        token_secret: oauth_secret
-      }
-
-      user = User.where(uid: uid, provider: provider).first
-      if user
-        user.assign_attributes(attrs)
-        user.save(validate: false)
-        user
-      else
-        User.create!(
-          attrs.merge(
-            name: data['name'],
-            email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
-            password: Devise.friendly_token[0, 20]
-          )
-        )
-      end
     when :twitter2
       creds = access_token.credentials || {}
       uid = access_token.uid.to_s

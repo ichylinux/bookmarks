@@ -8,7 +8,7 @@
       <li>
         <span><%= t("errors.x_client.#{@x_error}") %></span>
         <% if @x_error == :unauthorized %>
-          <div><%= button_to t('welcome.x_account.reauthorize'), user_twitter_omniauth_authorize_path, method: :post %></div>
+          <div><%= button_to t('welcome.x_account.reauthorize'), user_twitter2_omniauth_authorize_path, method: :post %></div>
         <% end %>
       </li>
     </ol>
