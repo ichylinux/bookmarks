@@ -1,0 +1,5 @@
+<%# locals: path_helper (:root_path, :privacy_path, :terms_path) %>
+<div class="landing-lang-switcher">
+  <%= link_to "日本語", send(path_helper, locale: 'ja'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :ja}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
+  <%= link_to "English", send(path_helper, locale: 'en'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :en}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
+</div>

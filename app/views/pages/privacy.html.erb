@@ -1,8 +1,5 @@
 <main class="landing-page">
-  <div class="landing-lang-switcher">
-    <%= link_to "日本語", privacy_path(locale: 'ja'), class: "landing-lang-link #{I18n.locale == :ja ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
-    <%= link_to "English", privacy_path(locale: 'en'), class: "landing-lang-link #{I18n.locale == :en ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
-  </div>
+  <%= render 'welcome/landing_lang_switcher', path_helper: :privacy_path %>
 
   <div class="policy-back-link">
     <%= link_to t('pages.privacy.back_home'), root_path %>

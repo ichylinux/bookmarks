@@ -12,10 +12,18 @@ module Localization
   end
 
   def resolved_locale
-    [saved_locale, guest_session_locale, accept_language_match].each do |candidate|
+    [requested_locale, saved_locale, guest_session_locale, accept_language_match].each do |candidate|
       return candidate.to_sym if candidate && Preference::SUPPORTED_LOCALES.include?(candidate.to_s)
     end
     I18n.default_locale
+  end
+
+  def requested_locale
+    requested = params[:locale].to_s.presence
+    return nil unless requested && Preference::SUPPORTED_LOCALES.include?(requested)
+
+    session[:guest_locale] = requested unless user_signed_in?
+    requested
   end
 
   def saved_locale
@@ -31,10 +39,7 @@ module Localization
 
   def guest_session_locale
     return nil if user_signed_in?
-    requested = params[:locale].to_s.presence
-    if requested && Preference::SUPPORTED_LOCALES.include?(requested)
-      session[:guest_locale] = requested
-    end
+
     session[:guest_locale]
   end
 

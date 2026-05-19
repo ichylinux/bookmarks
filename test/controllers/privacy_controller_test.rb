@@ -24,6 +24,14 @@ class PrivacyControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h1', text: 'Privacy Policy'
   end
 
+  def test_privacyはログイン中でもlocaleパラメータで表示言語を切り替えられる
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get privacy_path, params: { locale: 'ja' }
+    assert_response :success
+    assert_select 'h1', text: 'プライバシーポリシー'
+  end
+
   def test_privacyは認証リダイレクトしない
     get privacy_path
     assert_response :success

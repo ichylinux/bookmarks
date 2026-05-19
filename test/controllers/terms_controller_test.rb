@@ -24,6 +24,14 @@ class TermsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h1', text: 'Terms of Service'
   end
 
+  def test_termsはログイン中でもlocaleパラメータで表示言語を切り替えられる
+    user.preference.update!(locale: 'en')
+    sign_in user
+    get terms_path, params: { locale: 'ja' }
+    assert_response :success
+    assert_select 'h1', text: '利用規約'
+  end
+
   def test_termsは認証リダイレクトしない
     get terms_path
     assert_response :success
