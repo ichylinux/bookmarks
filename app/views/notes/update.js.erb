@@ -1,0 +1,24 @@
+<% if @updated %>
+(function() {
+  var $item = $('.note-item[data-note-id="<%= @note.id %>"]');
+  $item.find('.note-body').text('<%= j @note.body %>');
+  <% updated_time = @note.updated_at.strftime('%Y-%m-%d %H:%M') %>
+  <% if @note.updated_at.to_i != @note.created_at.to_i %>
+  var $ts    = $item.find('.note-timestamp');
+  var $badge = $ts.find('.note-edited-badge');
+  var tip    = '<%= j t('notes.gadget.edited_tooltip', time: updated_time) %>';
+  var label  = '<%= j t('notes.gadget.edited_badge') %>';
+  if ($badge.length) {
+    $badge.attr('title', tip).attr('aria-label', tip).attr('data-time', '<%= updated_time %>').text(label);
+  } else {
+    $ts.append($('<span class="note-edited-badge"></span>').attr('title', tip).attr('aria-label', tip).attr('data-time', '<%= updated_time %>').text(label));
+  }
+  <% end %>
+  $item.find('.note-item-edit-form textarea').off('input.noteGadgetResize').each(function() { this.style.height = ''; });
+  $item.find('.note-item-edit-form, .note-item-delete-form, .note-item-cancel-button').prop('hidden', true);
+  $item.removeClass('note-item--editing');
+  $item.find('.note-item-display').focus();
+})();
+<% else %>
+alert('<%= j @error %>');
+<% end %>

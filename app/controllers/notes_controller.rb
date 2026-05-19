@@ -19,28 +19,13 @@ class NotesController < ApplicationController
   end
 
   def update
-    if @note.update(note_params)
-      respond_to do |format|
-        format.html { redirect_to root_path(tab: 'notes') }
-        format.json do
-          updated_time = @note.updated_at.strftime('%Y-%m-%d %H:%M')
-          render json: {
-            id: @note.id,
-            body: @note.body,
-            created_time: @note.created_at.strftime('%Y-%m-%d %H:%M'),
-            updated_time: updated_time,
-            edited: @note.updated_at.to_i != @note.created_at.to_i,
-            edited_tooltip: t('notes.gadget.edited_tooltip', time: updated_time),
-            edited_badge: t('notes.gadget.edited_badge')
-          }
-        end
+    @updated = @note.update(note_params)
+    @error   = @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic') unless @updated
+    respond_to do |format|
+      format.html do
+        @updated ? redirect_to(root_path(tab: 'notes')) : redirect_to(root_path(tab: 'notes'), alert: @error)
       end
-    else
-      error_msg = @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic')
-      respond_to do |format|
-        format.html { redirect_to root_path(tab: 'notes'), alert: error_msg }
-        format.json { render json: { error: error_msg }, status: :unprocessable_entity }
-      end
+      format.js
     end
   end
 

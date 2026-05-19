@@ -55,51 +55,6 @@ $(function() {
       $item.find('.note-item-display').focus();
     }
 
-    // Intercept note edit form submit — PATCH via AJAX, update note in-place
-    $gadget.off('.noteGadgetUpdate').on('submit.noteGadgetUpdate', '.note-item-edit-form', function(e) {
-      e.preventDefault();
-      var $form = $(this);
-      var $item = $form.closest('.note-item');
-      var url = $form.attr('action') + '.json';
-      var body = $form.find('textarea').val();
-      var csrf = $('meta[name="csrf-token"]').attr('content');
-
-      $.ajax({
-        url: url,
-        type: 'PATCH',
-        contentType: 'application/json',
-        data: JSON.stringify({ note: { body: body } }),
-        headers: { 'X-CSRF-Token': csrf },
-        dataType: 'json',
-        success: function(data) {
-          $item.find('.note-body').text(data.body);
-          var $timestamp = $item.find('.note-timestamp');
-          var $badge = $timestamp.find('.note-edited-badge');
-          if (data.edited) {
-            if ($badge.length) {
-              $badge.attr('title', data.edited_tooltip)
-                    .attr('aria-label', data.edited_tooltip)
-                    .attr('data-time', data.updated_time)
-                    .text(data.edited_badge);
-            } else {
-              $timestamp.append(
-                $('<span class="note-edited-badge"></span>')
-                  .attr('title', data.edited_tooltip)
-                  .attr('aria-label', data.edited_tooltip)
-                  .attr('data-time', data.updated_time)
-                  .text(data.edited_badge)
-              );
-            }
-          }
-          hideEditControls($item);
-        },
-        error: function(xhr) {
-          var msg = (xhr.responseJSON && xhr.responseJSON.error) || 'エラーが発生しました';
-          alert(msg);
-        }
-      });
-    });
-
     // Remove any previously attached delegated handlers to avoid duplicates on re-init
     $gadget.off('.noteGadgetSave').on('keydown.noteGadgetSave', 'textarea', function(e) {
       if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;

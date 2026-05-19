@@ -102,36 +102,25 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_equal old_body, note.reload.body
   end
 
-  def test_successful_update_json_returns_note_data
+  def test_successful_update_js_renders_update_template
     sign_in @user
     note = notes(:one)
 
-    patch note_path(note, format: :json),
-          params: { note: { body: 'AJAX更新' } },
-          as: :json
+    patch note_path(note), params: { note: { body: 'AJAX更新' } }, xhr: true
 
     assert_response :success
-    json = response.parsed_body
-    assert_equal note.id, json['id']
-    assert_equal 'AJAX更新', json['body']
-    assert json.key?('created_time')
-    assert json.key?('updated_time')
-    assert json.key?('edited')
-    assert json.key?('edited_badge')
-    assert json.key?('edited_tooltip')
+    assert_equal 'AJAX更新', note.reload.body
+    assert_match(/AJAX更新/, response.body)
   end
 
-  def test_blank_body_update_json_returns_error
+  def test_blank_body_update_js_renders_alert
     sign_in @user
     note = notes(:one)
 
-    patch note_path(note, format: :json),
-          params: { note: { body: '   ' } },
-          as: :json
+    patch note_path(note), params: { note: { body: '   ' } }, xhr: true
 
-    assert_response :unprocessable_entity
-    json = response.parsed_body
-    assert json.key?('error')
+    assert_response :success
+    assert_match(/alert\(/, response.body)
   end
 
   def test_destroy_is_logical_delete
