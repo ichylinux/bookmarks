@@ -1,14 +1,50 @@
 $(function() {
   'use strict';
 
-  function initNoteGadget() {
-    const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
-    const LONGPRESS_MS = 500;
-    const MOVE_THRESHOLD_PX = 10;
+  function autoResizeTextarea(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
 
+  function showEditControls($item) {
+    if (!$item.length) return;
+    if ($item.hasClass('note-item--editing')) return;
+    const $editForm = $item.find('.note-item-edit-form');
+    const $deleteForm = $item.find('.note-item-delete-form');
+    const $cancelButton = $item.find('.note-item-cancel-button');
+    $editForm.prop('hidden', false);
+    $deleteForm.prop('hidden', false);
+    $cancelButton.prop('hidden', false);
+    $item.addClass('note-item--editing');
+    const textarea = $editForm.find('textarea')[0];
+    if (!textarea) return;
+    textarea.focus();
+    textarea.selectionStart = textarea.value.length;
+    textarea.selectionEnd = textarea.value.length;
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      autoResizeTextarea(textarea);
+      $(textarea).off('input.noteGadgetResize').on('input.noteGadgetResize', function() { autoResizeTextarea(this); });
+    }
+  }
+
+  function hideEditControls($item) {
+    if (!$item.length) return;
+    if (!$item.hasClass('note-item--editing')) return;
+    const $ta = $item.find('.note-item-edit-form textarea');
+    $ta.off('input.noteGadgetResize');
+    $ta.each(function() { this.style.height = ''; });
+    $item.find('.note-item-edit-form').prop('hidden', true);
+    $item.find('.note-item-delete-form').prop('hidden', true);
+    $item.find('.note-item-cancel-button').prop('hidden', true);
+    $item.removeClass('note-item--editing');
+    $item.find('.note-item-display').focus();
+  }
+
+  function initNoteGadget() {
     const $gadget = $('.note-gadget');
     if (!$gadget.length) return;
 
+    // One-time setup for static elements
     $gadget.find('.note-submit-shortcut').each(function() {
       const macLabel = $(this).data('shortcutMac');
       if (macLabel && /Mac|iPhone|iPad|iPod/.test(navigator.platform)) {
@@ -16,145 +52,91 @@ $(function() {
       }
     });
 
-    function autoResizeTextarea(el) {
-      el.style.height = 'auto';
-      el.style.height = el.scrollHeight + 'px';
-    }
+    const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
+    const LONGPRESS_MS = 500;
+    const MOVE_THRESHOLD_PX = 10;
 
-    function showEditControls($item) {
-      if (!$item.length) return;
-      if ($item.hasClass('note-item--editing')) return;
-      const $editForm = $item.find('.note-item-edit-form');
-      const $deleteForm = $item.find('.note-item-delete-form');
-      const $cancelButton = $item.find('.note-item-cancel-button');
-      $editForm.prop('hidden', false);
-      $deleteForm.prop('hidden', false);
-      $cancelButton.prop('hidden', false);
-      $item.addClass('note-item--editing');
-      const textarea = $editForm.find('textarea')[0];
-      if (!textarea) return;
-      textarea.focus();
-      textarea.selectionStart = textarea.value.length;
-      textarea.selectionEnd = textarea.value.length;
-      if (MOBILE_MQ.matches) {
-        autoResizeTextarea(textarea);
-        $(textarea).on('input.noteGadgetResize', function() { autoResizeTextarea(this); });
-      }
-    }
-
-    function hideEditControls($item) {
-      if (!$item.length) return;
-      if (!$item.hasClass('note-item--editing')) return;
-      const $ta = $item.find('.note-item-edit-form textarea');
-      $ta.off('input.noteGadgetResize');
-      $ta.each(function() { this.style.height = ''; });
-      $item.find('.note-item-edit-form').prop('hidden', true);
-      $item.find('.note-item-delete-form').prop('hidden', true);
-      $item.find('.note-item-cancel-button').prop('hidden', true);
-      $item.removeClass('note-item--editing');
-      $item.find('.note-item-display').focus();
-    }
-
-    $gadget.off('.noteGadgetUpdate')
-      .on('ajax:success.noteGadgetUpdate', '.note-item-edit-form', function(e) {
+    // Use event delegation on the gadget container for all dynamic interactions
+    $gadget.off('.noteGadget')
+      .on('ajax:success.noteGadget', '.note-item-edit-form', function(e) {
         const xhr = (e.originalEvent || e).detail[2];
         $(this).closest('.note-item').replaceWith(xhr.responseText);
-        initNoteGadget();
+        // NO recursive initNoteGadget() call here!
       })
-      .on('ajax:error.noteGadgetUpdate', '.note-item-edit-form', function(e) {
+      .on('ajax:error.noteGadget', '.note-item-edit-form', function(e) {
         const xhr = (e.originalEvent || e).detail[2];
         alert((xhr && xhr.responseText) || 'エラーが発生しました');
+      })
+      .on('keydown.noteGadget', 'textarea', function(e) {
+        if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
+        e.preventDefault();
+        const form = $(this).closest('form')[0];
+        if (!form) return;
+        const submit = form.querySelector('input[type="submit"], button[type="submit"]');
+        if (submit) {
+          submit.click();
+        } else {
+          form.submit();
+        }
+      })
+      .on('dblclick.noteGadget', '.note-item-display', function() {
+        if (MOBILE_MQ.matches) return;
+        showEditControls($(this).closest('.note-item'));
+      })
+      .on('click.noteGadget', '.note-item-cancel-button', function() {
+        hideEditControls($(this).closest('.note-item'));
       });
 
-    // Remove any previously attached delegated handlers to avoid duplicates on re-init
-    $gadget.off('.noteGadgetSave').on('keydown.noteGadgetSave', 'textarea', function(e) {
-      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
-      e.preventDefault();
-      const form = $(this).closest('form')[0];
-      if (!form) return;
-      const submit = form.querySelector('input[type="submit"], button[type="submit"]');
-      if (submit) {
-        submit.click();
-      } else {
-        form.submit();
-      }
-    });
-
-    $('.note-item .note-item-display').each(function() {
-      const $display = $(this);
-      const $item = $display.closest('.note-item');
-      let timer = null;
-      let startX = 0;
-      let startY = 0;
-      let longPressTriggered = false;
-
-      function clearTimer() {
+    // Longpress handling using delegation
+    $gadget
+      .on('touchstart.noteGadget', '.note-item-display', function(e) {
+        if (!MOBILE_MQ.matches) return;
+        const $display = $(this);
+        const t = e.originalEvent.touches[0];
+        const timer = setTimeout(function() {
+          $display.data('longPressTimer', null);
+          $display.data('longPressTriggered', true);
+          showEditControls($display.closest('.note-item'));
+        }, LONGPRESS_MS);
+        $display.data('longPressTimer', timer);
+        $display.data('longPressStartX', t.clientX);
+        $display.data('longPressStartY', t.clientY);
+        $display.data('longPressTriggered', false);
+      })
+      .on('touchmove.noteGadget', '.note-item-display', function(e) {
+        if (!MOBILE_MQ.matches) return;
+        const $display = $(this);
+        const timer = $display.data('longPressTimer');
+        if (!timer) return;
+        const t = e.originalEvent.touches[0];
+        const startX = $display.data('longPressStartX');
+        const startY = $display.data('longPressStartY');
+        if (Math.abs(t.clientX - startX) > MOVE_THRESHOLD_PX || Math.abs(t.clientY - startY) > MOVE_THRESHOLD_PX) {
+          clearTimeout(timer);
+          $display.data('longPressTimer', null);
+        }
+      })
+      .on('touchend.noteGadget touchcancel.noteGadget', '.note-item-display', function(e) {
+        const $display = $(this);
+        const timer = $display.data('longPressTimer');
         if (timer) {
           clearTimeout(timer);
-          timer = null;
+          $display.data('longPressTimer', null);
         }
-      }
-
-      function armTimer(clientX, clientY) {
-        longPressTriggered = false;
-        startX = clientX;
-        startY = clientY;
-        clearTimer();
-        timer = setTimeout(function() {
-          timer = null;
-          longPressTriggered = true;
-          showEditControls($item);
-        }, LONGPRESS_MS);
-      }
-
-      function onMove(clientX, clientY) {
-        if (!timer) return;
-        if (Math.abs(clientX - startX) > MOVE_THRESHOLD_PX || Math.abs(clientY - startY) > MOVE_THRESHOLD_PX) {
-          clearTimer();
-        }
-      }
-
-      // Remove previous handlers before re-binding (re-init safety)
-      $display.off('.noteGadgetEdit .noteGadgetLongpress');
-      $item.off('.noteGadgetEditCancel');
-
-      $display.on('dblclick.noteGadgetEdit', function() {
-        if (MOBILE_MQ.matches) return;
-        showEditControls($item);
-      });
-
-      $item.on('click.noteGadgetEditCancel', '.note-item-cancel-button', function() {
-        hideEditControls($item);
-      });
-
-      $display.on('touchstart.noteGadgetLongpress', function(e) {
-        if (!MOBILE_MQ.matches) return;
-        const t = e.originalEvent.touches[0];
-        armTimer(t.clientX, t.clientY);
-      });
-      $display.on('touchmove.noteGadgetLongpress', function(e) {
-        if (!MOBILE_MQ.matches) return;
-        const t = e.originalEvent.touches[0];
-        onMove(t.clientX, t.clientY);
-      });
-      $display.on('touchend.noteGadgetLongpress touchcancel.noteGadgetLongpress', function(e) {
-        clearTimer();
-        if (longPressTriggered) {
+        if ($display.data('longPressTriggered')) {
           e.preventDefault();
-          longPressTriggered = false;
+          $display.data('longPressTriggered', false);
         }
-      });
-
-      $display.on('contextmenu.noteGadgetLongpress', function(e) {
+      })
+      .on('contextmenu.noteGadget', '.note-item-display', function(e) {
         if (MOBILE_MQ.matches) {
           e.preventDefault();
         }
       });
-    });
 
     // Tap-to-show edit time tooltip on touch devices
     if (window.matchMedia('(hover: none)').matches) {
-      $gadget.off('.noteEditedBadge').on('click.noteEditedBadge', '.note-edited-badge', function(e) {
+      $gadget.on('click.noteGadget', '.note-edited-badge', function(e) {
         e.stopPropagation();
         var $badge = $(this);
         var wasActive = $badge.hasClass('tooltip-active');
@@ -167,10 +149,10 @@ $(function() {
     }
   }
 
-  // Initialize on DOM ready (SSR path — modern/classic without AJAX, or future use)
+  // Initialize on DOM ready
   initNoteGadget();
 
-  // Re-initialize after AJAX injection of note gadget (AJAX path — Phase 79)
+  // Re-initialize after AJAX injection of note gadget
   $(document).on('noteGadgetLoaded', function() {
     initNoteGadget();
   });
