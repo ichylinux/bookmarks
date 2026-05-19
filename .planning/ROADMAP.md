@@ -34,7 +34,7 @@
 
 ### v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90)
 
-- [ ] **Phase 89: Static Policy Pages** — `/privacy` and `/terms` publicly accessible, bilingual, full content
+- [x] **Phase 89: Static Policy Pages** — `/privacy` and `/terms` publicly accessible, bilingual, full content
 - [ ] **Phase 90: OAuth2 Email Scope Wiring** — verify email scope in X OAuth2, store/overwrite real email in `from_omniauth`
 
 ## Phase Details
@@ -52,8 +52,8 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 89-01-PLAN.md — Routes, PagesController, pages.css.scss, test scaffolds
-- [ ] 89-02-PLAN.md — ERB views, locale YAML content (ja + en), tri-suite gate
+- [x] 89-01-PLAN.md — Routes, PagesController, pages.css.scss, test scaffolds
+- [x] 89-02-PLAN.md — ERB views, locale YAML content (ja + en), tri-suite gate
 
 ### Phase 90: OAuth2 Email Scope Wiring
 **Goal**: X OAuth2 sign-in captures and persists the user's real email address at sign-in and re-authentication
@@ -70,7 +70,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 89. Static Policy Pages | 0/2 | Not started | - |
+| 89. Static Policy Pages | 2/2 | Complete | 2026-05-19 |
 | 90. OAuth2 Email Scope Wiring | 0/? | Not started | - |
 
 ---
@@ -116,4 +116,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-19 — Phase 89 planned (2 plans: 89-01, 89-02)*
+*Last updated: 2026-05-19 — Phase 89 complete (2/2 plans; tri-suite green; human checkpoint approved)*
