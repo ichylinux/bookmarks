@@ -35,7 +35,7 @@
 ### v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90)
 
 - [x] **Phase 89: Static Policy Pages** — `/privacy` and `/terms` publicly accessible, bilingual, full content
-- [ ] **Phase 90: OAuth2 Email Scope Wiring** — verify email scope in X OAuth2, store/overwrite real email in `from_omniauth`
+- [x] **Phase 90: OAuth2 Email Scope Wiring** — verify email scope in X OAuth2, store/overwrite real email in `from_omniauth`
 
 ## Phase Details
 
@@ -74,7 +74,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 89. Static Policy Pages | 2/2 | Complete | 2026-05-19 |
-| 90. OAuth2 Email Scope Wiring | 0/1 | Not started | - |
+| 90. OAuth2 Email Scope Wiring | 1/1 | Complete | 2026-05-19 |
 
 ---
 

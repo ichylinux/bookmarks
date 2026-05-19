@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.27
 milestone_name: Privacy Policy for X OAuth2 Email
-status: executing
+status: complete
 stopped_at: ""
 last_updated: "2026-05-19T00:00:00.000Z"
-last_activity: 2026-05-19 — Phase 89 complete (Plans 89-01 and 89-02 executed; tri-suite green; human checkpoint approved)
+last_activity: 2026-05-19 — Phase 90 complete (Plan 90-01 executed; tri-suite green: 485 runs 0 failures, lint clean, 27/27 Cucumber)
 progress:
   total_phases: 2
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 50
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 89 — Static Policy Pages (complete)
-Plan: 89-02 (complete)
-Status: Phase 89 done; ready for Phase 90
-Last activity: 2026-05-19 — Phase 89 complete — policy pages live at /privacy and /terms
+Phase: 90 — OAuth2 Email Scope Wiring (complete)
+Plan: 90-01 (complete)
+Status: All phases complete — v1.27 milestone ready for audit
+Last activity: 2026-05-19 — Phase 90 complete — OAUTH-03 re-auth email update shipped
 
 ```
-Progress: [██████████░░░░░░░░░░] 50% (1/2 phases)
+Progress: [████████████████████] 100% (2/2 phases)
 ```
 
 ## Project Reference
@@ -94,10 +94,11 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 ## Session Continuity
 
 Last session: 2026-05-19
-Stopped at: roadmap creation complete
-Last activity: 2026-05-19 — v1.27 roadmap written (Phases 89–90); ready for `/gsd:plan-phase 89`
+Stopped at: all phases complete
+Last activity: 2026-05-19 — v1.27 all phases executed; ready for milestone audit
 Resume file: None
 
 ## Operator Next Steps
 
-- Execute Phase 90: `/gsd:execute-phase 90`
+- Audit milestone: `/gsd:audit-milestone`
+- Or complete milestone: `/gsd:complete-milestone`
