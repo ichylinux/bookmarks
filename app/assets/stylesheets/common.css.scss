@@ -459,3 +459,8 @@ body.no-icons .drawer-nav-icon {
 .gadget a.link--visited {
   opacity: 0.55;
 }
+
+// Bookmark gadget: do not dim visited links (matches JS exclusion in visited_links.js).
+#bookmark_gadget a.link--visited {
+  opacity: 1;
+}
