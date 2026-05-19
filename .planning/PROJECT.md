@@ -8,9 +8,15 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Next Milestone
+## Current Milestone: v1.27 Privacy Policy for X OAuth2 Email
 
-Goals are not set yet. Run `/gsd-new-milestone` to capture requirements and phases; then update this section and `.planning/ROADMAP.md`.
+**Goal:** Create a publicly accessible privacy policy page so the X (Twitter) Developer Portal can approve email scope access in the OAuth2 app.
+
+**Target features:**
+- Privacy policy static page (public, unauthenticated access)
+- Content covering data collected, X login, and email handling
+- Linked from footer and landing page
+- Terms of Service page if X Developer Portal requires it
 
 <details>
 <summary>Shipped: v1.26 Visited Link Tracking (2026-05-18)</summary>
@@ -331,4 +337,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-18 after v1.26 milestone archive (`/gsd-complete-milestone`)*
+*Last updated: 2026-05-19 — Milestone v1.27 started*

@@ -1,27 +1,27 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.26
-milestone_name: milestone
-status: Awaiting next milestone
-stopped_at: context exhaustion at 75% (2026-05-19)
-last_updated: "2026-05-19T06:07:31.323Z"
-last_activity: 2026-05-19 — Added new-bookmark dialog on dashboard (hover "new" link in bookmark gadget header)
+milestone: v1.27
+milestone_name: Privacy Policy for X OAuth2 Email
+status: planning
+stopped_at: ""
+last_updated: "2026-05-19T00:00:00.000Z"
+last_activity: 2026-05-19 — Milestone v1.27 started
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: Milestone v1.26 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-05-19 — Added new-bookmark dialog on dashboard (hover "new" link in bookmark gadget header)
+Status: Defining requirements
+Last activity: 2026-05-19 — Milestone v1.27 started
 
 ## Project Reference
 
