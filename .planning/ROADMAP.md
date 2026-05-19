@@ -49,8 +49,11 @@
   3. Both pages render content in Japanese when locale is `:ja` and in English when locale is `:en`
   4. The privacy policy content addresses data collected, purpose of X login, and email address handling
   5. The terms of service content addresses acceptable use, service availability, and account termination
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+
+Plans:
+- [ ] 89-01-PLAN.md — Routes, PagesController, pages.css.scss, test scaffolds
+- [ ] 89-02-PLAN.md — ERB views, locale YAML content (ja + en), tri-suite gate
 
 ### Phase 90: OAuth2 Email Scope Wiring
 **Goal**: X OAuth2 sign-in captures and persists the user's real email address at sign-in and re-authentication
@@ -67,7 +70,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 89. Static Policy Pages | 0/? | Not started | - |
+| 89. Static Policy Pages | 0/2 | Not started | - |
 | 90. OAuth2 Email Scope Wiring | 0/? | Not started | - |
 
 ---
@@ -113,4 +116,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-19 — v1.27 roadmap created (Phases 89–90)*
+*Last updated: 2026-05-19 — Phase 89 planned (2 plans: 89-01, 89-02)*
