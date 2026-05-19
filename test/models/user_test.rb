@@ -155,6 +155,66 @@ class UserTest < ActiveSupport::TestCase
     User.where(uid: 'brand-new-oauth2-uid-with-email', provider: 'twitter2').delete_all
   end
 
+  def test_twitter2_from_omniauth_updates_dummy_email_on_reauth
+    u = users(:twitter_user)
+    # u.email is already dummy_00000000-0000-0000-0000-000000000001@example.com
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => u.uid,
+      'info' => { 'name' => u.name, 'email' => 'real-x-email@example.com' },
+      'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
+    )
+    User.from_omniauth(auth)
+    u.reload
+    assert_equal 'real-x-email@example.com', u.email
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
+      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
+    )
+  end
+
+  def test_twitter2_from_omniauth_does_not_overwrite_real_email_on_reauth
+    u = users(:twitter_user)
+    u.update_columns(email: 'already-real@example.com')
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => u.uid,
+      'info' => { 'name' => u.name, 'email' => 'new-x-email@example.com' },
+      'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
+    )
+    User.from_omniauth(auth)
+    u.reload
+    assert_equal 'already-real@example.com', u.email
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
+      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
+    )
+  end
+
+  def test_twitter2_from_omniauth_does_not_change_email_when_x_provides_none
+    u = users(:twitter_user)
+    # u.email is already dummy — X sends no email
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => u.uid,
+      'info' => { 'name' => u.name },
+      'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
+    )
+    User.from_omniauth(auth)
+    u.reload
+    assert_match(/\Adummy_/, u.email)
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
+      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
+    )
+  end
+
   def test_oauth2_token_encrypted_at_rest
     u = users(:twitter_user)
     u.oauth2_token = 'plain-oauth2-token'

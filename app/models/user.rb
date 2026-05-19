@@ -64,11 +64,15 @@ class User < ApplicationRecord
 
       user = User.where(uid: uid).where(provider: %w[twitter twitter2]).first
       if user
-        user.assign_attributes(
+        # OAUTH-01: users.email scope is configured in devise.rb — email arrives here when granted
+        attrs = {
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
-        )
+        }
+        # OAUTH-03: overwrite dummy email with real X email on re-auth when user lacks a valid email
+        attrs[:email] = data['email'] if data['email'].present? && !user.has_valid_email?
+        user.assign_attributes(attrs)
         user.save(validate: false)
         user
       else
@@ -79,6 +83,7 @@ class User < ApplicationRecord
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at,
           name: data['name'],
+          # OAUTH-02: real email stored on create
           email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
           password: Devise.friendly_token[0, 20]
         )
