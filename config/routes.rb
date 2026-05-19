@@ -15,6 +15,9 @@ Rails.application.routes.draw do
 
     get  'users/email_registration', to: 'users/email_registrations#new', as: :users_email_registration
     post 'users/email_registration', to: 'users/email_registrations#create'
+
+    get 'privacy', to: 'pages#privacy'
+    get 'terms',   to: 'pages#terms'
   end
 
   resources :bookmarks do
