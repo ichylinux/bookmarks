@@ -140,6 +140,20 @@ $(function() {
         }
       });
     });
+
+    // Tap-to-show edit time tooltip on touch devices
+    if (window.matchMedia('(hover: none)').matches) {
+      $gadget.off('.noteEditedBadge').on('click.noteEditedBadge', '.note-edited-badge', function(e) {
+        e.stopPropagation();
+        var $badge = $(this);
+        var wasActive = $badge.hasClass('tooltip-active');
+        $('.note-edited-badge.tooltip-active').removeClass('tooltip-active');
+        if (!wasActive) $badge.addClass('tooltip-active');
+      });
+      $(document).off('.noteEditedBadgeDismiss').on('click.noteEditedBadgeDismiss', function() {
+        $('.note-edited-badge.tooltip-active').removeClass('tooltip-active');
+      });
+    }
   }
 
   // Initialize on DOM ready (SSR path — modern/classic without AJAX, or future use)
