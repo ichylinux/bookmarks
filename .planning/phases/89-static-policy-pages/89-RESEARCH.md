@@ -540,7 +540,7 @@ end
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Single-paragraph vs. multi-paragraph section body text**
    - What we know: Each YAML section has a `body` key
