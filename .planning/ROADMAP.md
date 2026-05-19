@@ -64,14 +64,17 @@ Plans:
   2. A new user signing in via X OAuth2 has their real X email stored on `users.email` instead of a dummy address, when X provides one
   3. An existing user with a dummy-pattern email who re-authenticates via X OAuth2 has their `users.email` overwritten with the real X email
   4. An existing user with a real email who re-authenticates via X OAuth2 does not have their email changed
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 90-01-PLAN.md — OAUTH-03 re-auth email update, 3 new tests, tri-suite gate
 
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 89. Static Policy Pages | 2/2 | Complete | 2026-05-19 |
-| 90. OAuth2 Email Scope Wiring | 0/? | Not started | - |
+| 90. OAuth2 Email Scope Wiring | 0/1 | Not started | - |
 
 ---
 
