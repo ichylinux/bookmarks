@@ -19,13 +19,19 @@ class NotesController < ApplicationController
   end
 
   def update
-    @updated = @note.update(note_params)
-    @error   = @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic') unless @updated
-    respond_to do |format|
-      format.html do
-        @updated ? redirect_to(root_path(tab: 'notes')) : redirect_to(root_path(tab: 'notes'), alert: @error)
+    if @note.update(note_params)
+      if request.xhr?
+        render partial: 'note_item', locals: { note: @note }, layout: false
+      else
+        redirect_to root_path(tab: 'notes')
       end
-      format.js
+    else
+      error_msg = @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic')
+      if request.xhr?
+        render plain: error_msg, status: :unprocessable_entity
+      else
+        redirect_to root_path(tab: 'notes'), alert: error_msg
+      end
     end
   end
 

@@ -102,7 +102,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_equal old_body, note.reload.body
   end
 
-  def test_successful_update_js_renders_update_template
+  def test_successful_update_xhr_renders_note_item_partial
     sign_in @user
     note = notes(:one)
 
@@ -110,17 +110,18 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal 'AJAX更新', note.reload.body
+    assert_select '.note-item'
     assert_match(/AJAX更新/, response.body)
   end
 
-  def test_blank_body_update_js_renders_alert
+  def test_blank_body_update_xhr_returns_error_text
     sign_in @user
     note = notes(:one)
 
     patch note_path(note), params: { note: { body: '   ' } }, xhr: true
 
-    assert_response :success
-    assert_match(/alert\(/, response.body)
+    assert_response :unprocessable_entity
+    assert_not_empty response.body
   end
 
   def test_destroy_is_logical_delete

@@ -55,6 +55,15 @@ $(function() {
       $item.find('.note-item-display').focus();
     }
 
+    $gadget.off('.noteGadgetUpdate')
+      .on('ajax:success.noteGadgetUpdate', '.note-item-edit-form', function(e, data) {
+        $(this).closest('.note-item').replaceWith(data);
+        initNoteGadget();
+      })
+      .on('ajax:error.noteGadgetUpdate', '.note-item-edit-form', function(e, xhr) {
+        alert(xhr.responseText || 'エラーが発生しました');
+      });
+
     // Remove any previously attached delegated handlers to avoid duplicates on re-init
     $gadget.off('.noteGadgetSave').on('keydown.noteGadgetSave', 'textarea', function(e) {
       if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
