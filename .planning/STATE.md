@@ -67,12 +67,6 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 
 - Phase 88 added: v1.26 closure — planning traceability sync (REQUIREMENTS, ROADMAP, SUMMARY `requirements_completed`) — after `/gsd-audit-milestone` option B (tech debt before milestone complete)
 
-### Pending Todos
-
-| File | Title | Area |
-|------|-------|------|
-| [2026-05-19-investigate-x-api-bearer-token-auth.md](./todos/pending/2026-05-19-investigate-x-api-bearer-token-auth.md) | Investigate X API Bearer Token vs OAuth 1.0a | api |
-
 ### Quick Tasks Completed
 
 | # | Description | Date | Commit | Directory |
