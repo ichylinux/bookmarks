@@ -82,12 +82,13 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 | 20260519 | new bookmark can be added in a dialog on dashboard page | 2026-05-19 | 7dfe7ec | [20260519-bookmark-gadget-new-dialog](./quick/20260519-bookmark-gadget-new-dialog/) |
 | 20260519 | refresh landing page — sync changelog (bookmark dialog + visited-links) | 2026-05-19 | d3470d7 | [20260519-refresh-landing-page](./quick/20260519-refresh-landing-page/) |
 | 20260519 | show note edit time inline on mobile (編集済み badge) | 2026-05-19 | aa6308e | [20260519-mobile-note-edit-time](./quick/20260519-mobile-note-edit-time/) |
+| 20260519 | note update replaces full reload with in-place AJAX | 2026-05-19 | eb98bc7 | [20260519-note-update-ajax](./quick/20260519-note-update-ajax/) |
 
 ## Session Continuity
 
 Last session: 2026-05-18
 Stopped at: Milestone v1.26 complete — `/gsd-complete-milestone`
-Last activity: 2026-05-18 — Archived v1.26 planning artifacts; removed living REQUIREMENTS.md per workflow
+Last activity: 2026-05-19 — Note update now uses in-place AJAX instead of full page reload
 Resume file: None
 
 ## Operator Next Steps
