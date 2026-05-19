@@ -14,7 +14,7 @@
       <% end %>
     </div>
   </div>
-  <%= form_with model: note, format: :html, html: { class: 'note-item-edit-form', hidden: true } do |f| %>
+  <%= form_with model: note, format: :html, local: false, html: { class: 'note-item-edit-form', hidden: true } do |f| %>
     <%= f.text_area :body, rows: 3 %>
     <%= note_gadget_action_button(
           f,

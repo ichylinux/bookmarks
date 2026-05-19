@@ -56,12 +56,14 @@ $(function() {
     }
 
     $gadget.off('.noteGadgetUpdate')
-      .on('ajax:success.noteGadgetUpdate', '.note-item-edit-form', function(e, data) {
-        $(this).closest('.note-item').replaceWith(data);
+      .on('ajax:success.noteGadgetUpdate', '.note-item-edit-form', function(e) {
+        const xhr = (e.originalEvent || e).detail[2];
+        $(this).closest('.note-item').replaceWith(xhr.responseText);
         initNoteGadget();
       })
-      .on('ajax:error.noteGadgetUpdate', '.note-item-edit-form', function(e, xhr) {
-        alert(xhr.responseText || 'エラーが発生しました');
+      .on('ajax:error.noteGadgetUpdate', '.note-item-edit-form', function(e) {
+        const xhr = (e.originalEvent || e).detail[2];
+        alert((xhr && xhr.responseText) || 'エラーが発生しました');
       });
 
     // Remove any previously attached delegated handlers to avoid duplicates on re-init
