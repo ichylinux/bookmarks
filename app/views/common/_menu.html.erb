@@ -44,7 +44,7 @@
           <div><%= link_to t('nav.todos'), todos_path %></div>
           <div><%= link_to t('nav.feeds'), feeds_path %></div>
           <div><%= link_to t('nav.mastodon'), mastodon_accounts_path %></div>
-          <% if current_user.uid.present? && current_user.token.present? %>
+          <% if current_user.uid.present? %>
             <div><%= link_to t('nav.x_accounts'), x_accounts_path %></div>
           <% end %>
           <div><%= link_to t('nav.sign_out'), destroy_user_session_path, method: 'delete' %></div>

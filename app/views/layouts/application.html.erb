@@ -41,7 +41,7 @@
           <%= render 'common/drawer_nav_link', label: t('nav.todos'), url: todos_path, icon: :todo %>
           <%= render 'common/drawer_nav_link', label: t('nav.feeds'), url: feeds_path, icon: :feed %>
           <%= render 'common/drawer_nav_link', label: t('nav.mastodon'), url: mastodon_accounts_path, icon: :mastodon %>
-          <% if current_user.uid.present? && current_user.token.present? %>
+          <% if current_user.uid.present? %>
             <%= render 'common/drawer_nav_link', label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
           <% end %>
           <%= render 'common/drawer_nav_link', label: t('nav.sign_out'), url: destroy_user_session_path, icon: :sign_out, method: 'delete' %>

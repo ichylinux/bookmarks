@@ -262,9 +262,9 @@ Devise.setup do |config|
       Rails.application.config.app_config.omniauth_twitter_client_secret
 
   config.omniauth :twitter2,
-      Rails.application.config.app_config.omniauth_twitter_client_id,
-      Rails.application.config.app_config.omniauth_twitter_client_secret,
-      scope: 'tweet.read users.read follows.read offline.access'
+      Rails.application.config.app_config.omniauth_twitter2_client_id,
+      Rails.application.config.app_config.omniauth_twitter2_client_secret,
+      scope: 'tweet.read users.read follows.read users.email offline.access'
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

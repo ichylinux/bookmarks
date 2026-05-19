@@ -52,7 +52,7 @@ class User < ApplicationRecord
         User.create!(
           attrs.merge(
             name: data['name'],
-            email: "dummy_#{SecureRandom.uuid}@example.com",
+            email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
             password: Devise.friendly_token[0, 20]
           )
         )
@@ -79,7 +79,7 @@ class User < ApplicationRecord
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at,
           name: data['name'],
-          email: "dummy_#{SecureRandom.uuid}@example.com",
+          email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
           password: Devise.friendly_token[0, 20]
         )
       end

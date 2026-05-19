@@ -139,6 +139,22 @@ class UserTest < ActiveSupport::TestCase
     User.where(uid: 'brand-new-oauth2-uid', provider: 'twitter2').delete_all
   end
 
+  def test_twitter2_from_omniauth_creates_new_user_with_email_when_provided
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => 'brand-new-oauth2-uid-with-email',
+      'info' => { 'name' => 'OAuth2 Emailer', 'email' => 'twitter-user@example.com' },
+      'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => Time.now.to_i + 7200, 'expires' => true }
+    )
+    result = nil
+    assert_difference 'User.count', 1 do
+      result = User.from_omniauth(auth)
+    end
+    assert_equal 'twitter-user@example.com', result.email
+  ensure
+    User.where(uid: 'brand-new-oauth2-uid-with-email', provider: 'twitter2').delete_all
+  end
+
   def test_oauth2_token_encrypted_at_rest
     u = users(:twitter_user)
     u.oauth2_token = 'plain-oauth2-token'
