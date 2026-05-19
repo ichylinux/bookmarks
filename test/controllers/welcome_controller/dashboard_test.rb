@@ -9,6 +9,15 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_equal '/', path
   end
 
+  def test_VisitedLinkに記録済みでもブックマークリンクにlink__visitedが付かない
+    sign_in user
+    VisitedLink.record!(user, 'www.example.com')
+    get root_path
+    assert_response :success
+    assert_select '#bookmark_gadget a[href=?]', 'www.example.com', text: 'ブックマーク1'
+    assert_select '#bookmark_gadget a.link--visited', count: 0
+  end
+
   def test_ブックマークを新しいタブで開く設定がオンのときリンクにtarget_blankが付く
     sign_in user
     user.preference.update!(open_links_in_new_tab: true)

@@ -63,4 +63,11 @@ class ApplicationHelperTest < ActionView::TestCase
     assert File.read(css_path).include?(".link--visited"),
       "Expected common.css.scss to contain '.link--visited' but it did not"
   end
+
+  test "common.css.scss excludes bookmark gadget from visited-link dimming" do
+    css_path = Rails.root.join("app/assets/stylesheets/common.css.scss")
+    css = File.read(css_path)
+    assert_includes css, "#bookmark_gadget"
+    assert_includes css, "opacity: 1"
+  end
 end

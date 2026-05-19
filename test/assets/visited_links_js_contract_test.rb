@@ -12,7 +12,11 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
   end
 
   test 'registers namespaced delegated handler on gadget links' do
-    assert_includes @source, "$(document).on('click.visitedLinks', '.gadget ol li a[href]'"
+    assert_includes @source, "$(document).on('click.visitedLinks', '.gadget:not(#bookmark_gadget) ol li a[href]'"
+  end
+
+  test 'excludes bookmark gadget links' do
+    assert_includes @source, ':not(#bookmark_gadget)'
   end
 
   test 'adds visited class before posting' do
