@@ -12,17 +12,17 @@
 
 ### Account Deletion — User Record
 
-- [ ] **ACCT-01**: Authenticated user can start account deletion from the preferences page
-- [ ] **ACCT-02**: Deletion requires an explicit confirmation step (e.g. type `DELETE` or confirm dialog) before proceeding
-- [ ] **ACCT-03**: On confirmed deletion, the `User` row is soft-deleted (`deleted: true`, `deleted_at` set)
-- [ ] **ACCT-04**: On deletion, user is signed out and cannot sign in again (password or OAuth), including re-auth with the same X/Google identity
-- [ ] **ACCT-05**: On deletion, user PII on `users` is cleared or anonymized (email uniqueness preserved via placeholder, OAuth/password secrets cleared)
-- [ ] **ACCT-06**: On deletion, transactional data rows (bookmarks, notes, feeds, todos, portals, portal_layouts, preferences, mastodon_accounts, x_accounts, visited_links) are **not** deleted or modified
+- [x] **ACCT-01**: Authenticated user can start account deletion from the preferences page
+- [x] **ACCT-02**: Deletion requires an explicit confirmation step (e.g. type `DELETE` or confirm dialog) before proceeding
+- [x] **ACCT-03**: On confirmed deletion, the `User` row is soft-deleted (`deleted: true`, `deleted_at` set)
+- [x] **ACCT-04**: On deletion, user is signed out and cannot sign in again (password or OAuth), including re-auth with the same X/Google identity
+- [x] **ACCT-05**: On deletion, user PII on `users` is cleared or anonymized (email uniqueness preserved via placeholder, OAuth/password secrets cleared)
+- [x] **ACCT-06**: On deletion, transactional data rows (bookmarks, notes, feeds, todos, portals, portal_layouts, preferences, mastodon_accounts, x_accounts, visited_links) are **not** deleted or modified
 
 ### Verification
 
-- [ ] **ACCT-07**: Minitest covers soft-delete, sign-in blocked, PII cleared, and transactional rows still present
-- [ ] **ACCT-08**: Cucumber scenario covers preferences → confirm → signed out → cannot access authenticated pages
+- [x] **ACCT-07**: Minitest covers soft-delete, sign-in blocked, PII cleared, and transactional rows still present
+- [x] **ACCT-08**: Cucumber scenario covers preferences → confirm → signed out → cannot access authenticated pages
 
 ## v2 / Future Requirements
 
