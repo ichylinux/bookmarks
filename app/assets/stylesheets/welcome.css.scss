@@ -134,21 +134,23 @@ div.gadgets {
     display: none;
   }
 
-  .portal--4col .gadgets {
-    width: 25%;
+  // float + % 幅は端数で右にすき間が出るため、デスクトップは flex で列を均等に伸ばす
+  .portal-track {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  div.gadgets {
+    float: none;
+    width: auto;
+    min-width: 0;
+    flex: 1 1 0;
   }
 
   .portal--custom-widths .portal-column {
-    width: var(--portal-col-width-pct, 33.33%);
+    flex: 0 0 var(--portal-col-width-pct, 33.33%);
   }
-
-  .portal--custom-widths.portal--4col .portal-column {
-    width: var(--portal-col-width-pct, 25%);
-  }
-}
-
-#bookmark_gadget > div {
-  margin-left: 0;
 }
 
 #bookmark_gadget .folder-header {
