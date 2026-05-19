@@ -82,6 +82,11 @@ spec:
       }
     }
   }
+  post {
+    success {
+      build job: 'bookmarks-features', wait: false
+    }
+  }
 }
 
 def publishUnitResult() {
