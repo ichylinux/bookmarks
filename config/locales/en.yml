@@ -372,6 +372,10 @@ en:
       protected_badge: Protected
       actions: Actions
       row_submit: Save
+    oauth2_upgraded: "X connection upgraded to OAuth 2.0."
+    oauth2_upgrade:
+      prompt: "Upgrade your X connection to OAuth 2.0 for improved security."
+      button: Upgrade X connection
     refresh:
       success: Following list updated.
     update:

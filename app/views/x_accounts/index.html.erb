@@ -16,6 +16,16 @@
     <% end %>
   </header>
 
+  <% if current_user.oauth2_token.blank? %>
+    <div class="flash-message flash-notice x-accounts-page__notice" role="status">
+      <span class="flash-message__body"><%= t('x_accounts.oauth2_upgrade.prompt') %></span>
+      <%= button_to t('x_accounts.oauth2_upgrade.button'),
+            user_twitter2_omniauth_authorize_path,
+            method: :post,
+            class: 'x-accounts-page__upgrade-btn' %>
+    </div>
+  <% end %>
+
   <% if @selection_soft_warning %>
     <div class="flash-message flash-notice x-accounts-page__notice" role="status">
       <span class="flash-message__body"><%= t('x_accounts.index.selection_soft_warning') %></span>

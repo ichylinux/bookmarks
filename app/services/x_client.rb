@@ -1,6 +1,7 @@
 require 'faraday/oauth1'
 
-# X (Twitter) API v2 client using OAuth 1.0a User Context (same credentials as omniauth-twitter).
+# X (Twitter) API v2 client. Uses OAuth 2.0 Bearer when the user has an oauth2_token;
+# falls back to OAuth 1.0a for users who have not yet upgraded.
 class XClient
   CONNECT_TIMEOUT = 3
   READ_TIMEOUT = 5
@@ -64,7 +65,7 @@ class XClient
     qs << 'tweet.fields=entities,edit_history_tweet_ids'
     path = "/2/users/#{xid}/tweets?#{qs.join('&')}"
 
-    res = oauth_faraday('https://api.twitter.com', user).get(path)
+    res = connection_for(user).get(path)
     result = parse_tweets_response(res)
     return result unless result[:success]
 
@@ -82,7 +83,64 @@ class XClient
   def following_connection(user)
     return @forced_connection if @forced_connection
 
-    oauth_faraday('https://api.twitter.com', user)
+    connection_for(user)
+  end
+
+  def connection_for(user)
+    if user.oauth2_token.present?
+      refresh_if_expired!(user)
+      bearer_faraday('https://api.twitter.com', user)
+    else
+      oauth_faraday('https://api.twitter.com', user)
+    end
+  end
+
+  def bearer_faraday(base_url, user)
+    Faraday.new(url: base_url, request: { open_timeout: CONNECT_TIMEOUT, timeout: READ_TIMEOUT }) do |f|
+      f.headers['Authorization'] = "Bearer #{user.oauth2_token}"
+      f.adapter Faraday.default_adapter
+    end
+  end
+
+  def refresh_if_expired!(user)
+    return unless user.oauth2_token_expires_at.present? &&
+                  user.oauth2_token_expires_at <= Time.current + 60.seconds
+
+    refresh_oauth2_token!(user)
+  end
+
+  def refresh_oauth2_token!(user)
+    return unless user.oauth2_refresh_token.present?
+
+    ck = Rails.application.config.app_config.omniauth_twitter_client_id.to_s
+    cs = Rails.application.config.app_config.omniauth_twitter_client_secret.to_s
+    return if ck.blank? || cs.blank?
+
+    conn = Faraday.new(url: 'https://api.x.com') do |f|
+      f.request :url_encoded
+      f.adapter Faraday.default_adapter
+    end
+
+    res = conn.post('/2/oauth2/token') do |req|
+      req.headers['Authorization'] = "Basic #{Base64.strict_encode64("#{ck}:#{cs}")}"
+      req.body = { grant_type: 'refresh_token', refresh_token: user.oauth2_refresh_token, client_id: ck }
+    end
+
+    return unless res.status == 200
+
+    body = parse_json_safe(res.body)
+    return unless body.is_a?(Hash) && body['access_token'].present?
+
+    expires_in = body['expires_in']
+    expires_at = expires_in ? Time.current + expires_in.to_i.seconds : nil
+    user.assign_attributes(
+      oauth2_token: body['access_token'],
+      oauth2_refresh_token: body['refresh_token'] || user.oauth2_refresh_token,
+      oauth2_token_expires_at: expires_at
+    )
+    user.save(validate: false)
+  rescue Faraday::Error, JSON::ParserError
+    nil
   end
 
   def oauth_faraday(base_url, user)

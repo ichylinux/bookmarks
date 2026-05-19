@@ -372,6 +372,10 @@ ja:
       protected_badge: 非公開
       actions: 操作
       row_submit: 保存
+    oauth2_upgraded: "XのOAuth 2.0連携を完了しました。"
+    oauth2_upgrade:
+      prompt: "セキュリティ向上のため、X連携をOAuth 2.0にアップグレードしてください。"
+      button: X連携をアップグレード
     refresh:
       success: フォロー一覧を更新しました。
     update:

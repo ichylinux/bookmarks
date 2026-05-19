@@ -71,6 +71,55 @@ class XClientTest < ActiveSupport::TestCase
     u.update_columns(uid: nil, token: nil, token_secret: nil)
   end
 
+  def test_bearer_header_used_when_oauth2_token_present
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get('/2/ping') do |env|
+      auth = env[:request_headers]['Authorization'].to_s
+      assert_match(/\ABearer /, auth)
+      assert_no_match(/oauth_consumer_key/, auth)
+      [200, { 'Content-Type' => 'application/json' }, '{}']
+    end
+
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: 'my-bearer-token', oauth2_token_expires_at: 1.hour.from_now)
+
+    conn = Faraday.new(url: 'https://api.twitter.com') do |f|
+      f.headers['Authorization'] = "Bearer #{u.oauth2_token}"
+      f.adapter :test, stubs
+    end
+
+    conn.get('/2/ping')
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: nil, oauth2_token_expires_at: nil)
+  end
+
+  def test_fetch_following_uses_bearer_when_oauth2_token_present
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/\w+/following}) do |env|
+      assert_match(/\ABearer /, env[:request_headers]['Authorization'].to_s)
+      [200, { 'Content-Type' => 'application/json' },
+       { data: [{ id: '1', username: 'b', name: 'B', protected: false }], meta: {} }.to_json]
+    end
+
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: 'my-bearer-token', oauth2_token_expires_at: 1.hour.from_now)
+
+    conn = Faraday.new do |f|
+      f.headers['Authorization'] = "Bearer #{u.oauth2_token}"
+      f.adapter :test, stubs
+      f.options.timeout = 5
+      f.options.open_timeout = 3
+    end
+
+    r = XClient.new(connection: conn).fetch_following(user: u)
+    assert r[:success]
+    assert_equal 'b', r[:items].first[:username]
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: nil, oauth2_token_expires_at: nil)
+  end
+
   def test_oauth1_header_present_on_real_faraday_stack
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get('/2/ping') do |env|

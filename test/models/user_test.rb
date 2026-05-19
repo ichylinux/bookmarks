@@ -105,6 +105,53 @@ class UserTest < ActiveSupport::TestCase
     User.where(uid: 'brand-new-uid-999', provider: 'twitter').delete_all
   end
 
+  def test_twitter2_from_omniauth_stores_oauth2_tokens_on_existing_user
+    u = users(:twitter_user)
+    expires_ts = Time.now.to_i + 7200
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => u.uid,
+      'info' => { 'name' => u.name },
+      'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => expires_ts, 'expires' => true }
+    )
+    result = User.from_omniauth(auth)
+    assert_equal u.id, result.id
+    u.reload
+    assert_equal 'bearer-tok', u.oauth2_token
+    assert_equal 'ref-tok', u.oauth2_refresh_token
+    assert_in_delta expires_ts, u.oauth2_token_expires_at.to_i, 1
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil)
+  end
+
+  def test_twitter2_from_omniauth_creates_new_user_when_uid_unknown
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => 'brand-new-oauth2-uid',
+      'info' => { 'name' => 'OAuth2 Newcomer' },
+      'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => Time.now.to_i + 7200, 'expires' => true }
+    )
+    assert_difference 'User.count', 1 do
+      User.from_omniauth(auth)
+    end
+  ensure
+    User.where(uid: 'brand-new-oauth2-uid', provider: 'twitter2').delete_all
+  end
+
+  def test_oauth2_token_encrypted_at_rest
+    u = users(:twitter_user)
+    u.oauth2_token = 'plain-oauth2-token'
+    u.save!(validate: false)
+    raw = ActiveRecord::Base.connection.select_value(
+      ActiveRecord::Base.sanitize_sql_array(['SELECT oauth2_token FROM users WHERE id = ?', u.id])
+    )
+    assert_not_equal 'plain-oauth2-token', raw
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(oauth2_token: nil)
+  end
+
   def test_token_encrypted_at_rest
     u = users(:twitter_user)
     u.token = 'plain-token-value'

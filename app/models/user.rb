@@ -3,9 +3,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
-         omniauth_providers: [:google_oauth2, :twitter]
+         omniauth_providers: [:google_oauth2, :twitter, :twitter2]
 
   encrypts :token, :token_secret
+  encrypts :oauth2_token, :oauth2_refresh_token
 
   validates :email,
             format: { without: /\Adummy_.+@example\.com\z/, message: :dummy_email },
@@ -54,6 +55,32 @@ class User < ApplicationRecord
             email: "dummy_#{SecureRandom.uuid}@example.com",
             password: Devise.friendly_token[0, 20]
           )
+        )
+      end
+    when :twitter2
+      creds = access_token.credentials || {}
+      uid = access_token.uid.to_s
+      expires_at = creds['expires_at'] ? Time.at(creds['expires_at'].to_i) : nil
+
+      user = User.where(uid: uid).where(provider: %w[twitter twitter2]).first
+      if user
+        user.assign_attributes(
+          oauth2_token: creds['token'],
+          oauth2_refresh_token: creds['refresh_token'],
+          oauth2_token_expires_at: expires_at
+        )
+        user.save(validate: false)
+        user
+      else
+        User.create!(
+          provider: 'twitter2',
+          uid: uid,
+          oauth2_token: creds['token'],
+          oauth2_refresh_token: creds['refresh_token'],
+          oauth2_token_expires_at: expires_at,
+          name: data['name'],
+          email: "dummy_#{SecureRandom.uuid}@example.com",
+          password: Devise.friendly_token[0, 20]
         )
       end
     else
