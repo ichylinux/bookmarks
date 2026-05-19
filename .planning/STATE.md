@@ -5,7 +5,7 @@ milestone_name: "Account Self-Service Deletion"
 status: planning
 stopped_at: ""
 last_updated: "2026-05-20T12:00:00.000Z"
-last_activity: 2026-05-20 — Milestone v1.28 started
+last_activity: 2026-05-20 — Phase 91 context gathered
 progress:
   total_phases: 4
   completed_phases: 0
@@ -81,10 +81,9 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 ## Session Continuity
 
 Last session: 2026-05-20
-Stopped at: Milestone v1.28 initialized
-Resume file: None
+Stopped at: Phase 91 context gathered
+Resume file: .planning/phases/91-policy-wording-90-day-retention/91-CONTEXT.md
 
 ## Operator Next Steps
 
-- `/gsd-discuss-phase 91` — policy wording (90-day retention)
-- `/gsd-plan-phase 91` — plan Phase 91 directly
+- `/gsd-plan-phase 91` — plan Phase 91 (policy YAML updates)
