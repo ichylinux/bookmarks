@@ -73,6 +73,7 @@ $(function() {
     portalEl.addEventListener(
       'touchstart',
       function(e) {
+        if (portalEl.classList.contains('portal--gadget-sorting')) return;
         const t = e.touches[0];
         if (!t) return;
         startX = t.clientX;
@@ -86,6 +87,7 @@ $(function() {
     portalEl.addEventListener(
       'touchmove',
       function(e) {
+        if (portalEl.classList.contains('portal--gadget-sorting')) return;
         if (scrollIntent) return;
         const t = e.touches[0];
         if (!t) return;
@@ -103,6 +105,7 @@ $(function() {
     );
 
     portalEl.addEventListener('touchend', function() {
+      if (portalEl.classList.contains('portal--gadget-sorting')) return;
       if (scrollIntent || Math.abs(totalDx) < 50) return;
 
       const $portal = $(portalEl);

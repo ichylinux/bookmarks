@@ -28,19 +28,9 @@
   }
 
   $(document).ready(function() {
-    $('.gadgets').sortable({
-      connectWith: '.gadgets',
-      handle: 'div.title',
-      start: function() {
-        $(this).addClass('dragging')
-      },
-      stop: function() {
-        $(this).removeClass('dragging')
-      },
-      update: function(event, ui) {
-        const params = collect_portal_layout_params();
-        $.post('<%= url_for action: 'save_state' %>', params);
-      }
+    window.portalGadgetSort.init({
+      saveUrl: '<%= url_for action: 'save_state' %>',
+      collectParams: collect_portal_layout_params
     });
   });
 </script>

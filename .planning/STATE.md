@@ -4,8 +4,8 @@ milestone: ""
 milestone_name: ""
 status: ready_for_planning
 stopped_at: ""
-last_updated: "2026-05-19T12:00:00.000Z"
-last_activity: 2026-05-19 — v1.27 milestone archived and tagged
+last_updated: "2026-05-20T12:00:00.000Z"
+last_activity: 2026-05-20 — Completed quick task 20260520: mobile gadget long-press sort
 progress:
   total_phases: 2
   completed_phases: 2
@@ -90,6 +90,7 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 | 20260519 | refresh landing page — sync changelog (bookmark dialog + visited-links) | 2026-05-19 | d3470d7 | [20260519-refresh-landing-page](./quick/20260519-refresh-landing-page/) |
 | 20260519 | show note edit time inline on mobile (編集済み badge) | 2026-05-19 | aa6308e | [20260519-mobile-note-edit-time](./quick/20260519-mobile-note-edit-time/) |
 | 20260519 | note update replaces full reload with in-place AJAX | 2026-05-19 | eb98bc7 | [20260519-note-update-ajax](./quick/20260519-note-update-ajax/) |
+| 20260520 | スマホでガジェットの長押しドラッグ並べ替え | 2026-05-20 | — | [20260520-mobile-gadget-sort](./quick/20260520-mobile-gadget-sort/) |
 
 ## Session Continuity
 
