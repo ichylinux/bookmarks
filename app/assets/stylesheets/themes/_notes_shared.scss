@@ -103,6 +103,13 @@
     cursor: help;
   }
 
+  @media (hover: none) {
+    .note-item .note-edited-badge::after {
+      content: " (" attr(data-time) ")";
+      font-weight: 400;
+    }
+  }
+
   .note-item .note-item-delete-form {
     margin: 0;
     justify-self: start;

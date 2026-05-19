@@ -29,7 +29,8 @@
               <% if edited %>
                 <span class="note-edited-badge"
                       title="<%= t('.edited_tooltip', time: updated_time) %>"
-                      aria-label="<%= t('.edited_tooltip', time: updated_time) %>"><%= t('.edited_badge') %></span>
+                      aria-label="<%= t('.edited_tooltip', time: updated_time) %>"
+                      data-time="<%= updated_time %>"><%= t('.edited_badge') %></span>
               <% end %>
             </div>
           </div>
