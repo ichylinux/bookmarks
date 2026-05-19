@@ -39,15 +39,22 @@
       <li class="email">
         <a href="#"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>
         <div class="menu hidden">
-          <div><%= link_to t('nav.preferences'), preferences_path %></div>
-          <div><%= link_to t('nav.bookmarks'), bookmarks_path %></div>
-          <div><%= link_to t('nav.todos'), todos_path %></div>
-          <div><%= link_to t('nav.feeds'), feeds_path %></div>
-          <div><%= link_to t('nav.mastodon'), mastodon_accounts_path %></div>
-          <% if current_user.uid.present? %>
-            <div><%= link_to t('nav.x_accounts'), x_accounts_path %></div>
-          <% end %>
-          <div><%= link_to t('nav.sign_out'), destroy_user_session_path, method: 'delete' %></div>
+          <div class="menu-section menu-section--primary">
+            <div><%= link_to t('nav.preferences'), preferences_path %></div>
+            <div><%= link_to t('nav.bookmarks'), bookmarks_path %></div>
+            <div><%= link_to t('nav.todos'), todos_path %></div>
+            <div><%= link_to t('nav.feeds'), feeds_path %></div>
+            <div><%= link_to t('nav.mastodon'), mastodon_accounts_path %></div>
+            <% if current_user.uid.present? %>
+              <div><%= link_to t('nav.x_accounts'), x_accounts_path %></div>
+            <% end %>
+          </div>
+          <div class="menu-divider" role="separator"></div>
+          <div class="menu-section menu-section--secondary">
+            <div><%= link_to t('nav.privacy'), privacy_path %></div>
+            <div><%= link_to t('nav.terms'), terms_path %></div>
+            <div><%= link_to t('nav.sign_out'), destroy_user_session_path, method: 'delete' %></div>
+          </div>
         </div>
       </li>
     </ul>

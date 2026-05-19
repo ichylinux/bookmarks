@@ -44,6 +44,8 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.drawer a[href=?]', todos_path
     assert_select '.drawer a[href=?]', feeds_path
     assert_select '.drawer a[href=?]', mastodon_accounts_path
+    assert_select '.drawer a[href=?]', privacy_path
+    assert_select '.drawer a[href=?]', terms_path
     assert_select '.drawer a[href=?]', destroy_user_session_path
     assert_select '.drawer a[href=?][data-method=?]', destroy_user_session_path, 'delete'
   end
@@ -57,14 +59,17 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.wrapper div.drawer', count: 0
   end
 
-  def test_ドロワー内のnav要素が7リンクを含む
+  def test_ドロワー内のnav要素が9リンクを含む
     user.preference.update!(theme: 'modern')
     sign_in user
     get root_path
     assert_response :success
     assert_select '.drawer > nav', count: 1
-    assert_select '.drawer > nav > a', count: 7
-    assert_select '.drawer .drawer-nav-icon', count: 7
+    assert_select '.drawer nav a', count: 9
+    assert_select '.drawer .drawer-nav-icon', count: 9
+    assert_select '.drawer-nav-divider[role=?]', 'separator', count: 1
+    assert_select '.drawer-nav-section--primary a', count: 6
+    assert_select '.drawer-nav-section--secondary a', count: 3
   end
 
   def test_クラシックテーマでハンバーガーとドロワーが表示される
@@ -88,6 +93,11 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'body.simple', count: 1
     assert_select 'ul.navigation', count: 1
     assert_select 'ul.navigation a[href=?]', root_path
+    assert_select '.menu-divider[role=?]', 'separator', count: 1
+    assert_select '.menu-section--primary a', count: 5
+    assert_select '.menu-section--secondary a', count: 3
+    assert_select '.menu a[href=?]', privacy_path
+    assert_select '.menu a[href=?]', terms_path
   end
 
   def test_非ログイン時はランディングページが表示される
@@ -174,12 +184,12 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '#header a.head-note-btn', count: 0
   end
 
-  def test_モダンテーマでuse_noteオンのときドロワーnavは7リンク
+  def test_モダンテーマでuse_noteオンのときドロワーnavは9リンク
     user.preference.update!(theme: 'modern', use_note: true)
     sign_in user
     get root_path
     assert_response :success
-    assert_select '.drawer > nav > a', count: 7
+    assert_select '.drawer nav a', count: 9
   end
 
   def test_モダンテーマでポータル列タブと既定の列状態が出力される

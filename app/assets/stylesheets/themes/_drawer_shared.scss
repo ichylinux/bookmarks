@@ -74,6 +74,17 @@
     padding: 16px 24px;
   }
 
+  .drawer-nav-divider {
+    height: 0;
+    margin: 8px 0;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .drawer-nav-section--secondary {
+    padding-top: 4px;
+  }
+
   .drawer nav a {
     display: flex;
     align-items: center;

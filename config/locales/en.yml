@@ -176,6 +176,8 @@ en:
     feeds: Feeds
     mastodon: Mastodon
     x_accounts: X (Twitter)
+    privacy: Privacy Policy
+    terms: Terms of Service
     sign_out: Sign out
     menu_aria: Menu
 

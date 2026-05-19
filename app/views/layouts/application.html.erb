@@ -35,16 +35,23 @@
     <% if drawer_ui? %>
       <div class="drawer">
         <nav>
-          <%= render 'common/drawer_nav_link', label: t('nav.home'), url: root_path, icon: :home %>
-          <%= render 'common/drawer_nav_link', label: t('nav.preferences'), url: preferences_path, icon: :preferences %>
-          <%= render 'common/drawer_nav_link', label: t('nav.bookmarks'), url: bookmarks_path, icon: :bookmark %>
-          <%= render 'common/drawer_nav_link', label: t('nav.todos'), url: todos_path, icon: :todo %>
-          <%= render 'common/drawer_nav_link', label: t('nav.feeds'), url: feeds_path, icon: :feed %>
-          <%= render 'common/drawer_nav_link', label: t('nav.mastodon'), url: mastodon_accounts_path, icon: :mastodon %>
-          <% if current_user.uid.present? %>
-            <%= render 'common/drawer_nav_link', label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
-          <% end %>
-          <%= render 'common/drawer_nav_link', label: t('nav.sign_out'), url: destroy_user_session_path, icon: :sign_out, method: 'delete' %>
+          <div class="drawer-nav-section drawer-nav-section--primary">
+            <%= render 'common/drawer_nav_link', label: t('nav.home'), url: root_path, icon: :home %>
+            <%= render 'common/drawer_nav_link', label: t('nav.preferences'), url: preferences_path, icon: :preferences %>
+            <%= render 'common/drawer_nav_link', label: t('nav.bookmarks'), url: bookmarks_path, icon: :bookmark %>
+            <%= render 'common/drawer_nav_link', label: t('nav.todos'), url: todos_path, icon: :todo %>
+            <%= render 'common/drawer_nav_link', label: t('nav.feeds'), url: feeds_path, icon: :feed %>
+            <%= render 'common/drawer_nav_link', label: t('nav.mastodon'), url: mastodon_accounts_path, icon: :mastodon %>
+            <% if current_user.uid.present? %>
+              <%= render 'common/drawer_nav_link', label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
+            <% end %>
+          </div>
+          <div class="drawer-nav-divider" role="separator"></div>
+          <div class="drawer-nav-section drawer-nav-section--secondary">
+            <%= render 'common/drawer_nav_link', label: t('nav.privacy'), url: privacy_path, icon: :privacy %>
+            <%= render 'common/drawer_nav_link', label: t('nav.terms'), url: terms_path, icon: :terms %>
+            <%= render 'common/drawer_nav_link', label: t('nav.sign_out'), url: destroy_user_session_path, icon: :sign_out, method: 'delete' %>
+          </div>
         </nav>
       </div>
       <div class="drawer-overlay"></div>
