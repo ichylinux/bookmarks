@@ -1,2 +1,20 @@
 <main class="landing-page">
+  <div class="landing-lang-switcher">
+    <%= link_to "日本語", privacy_path(locale: 'ja'), class: "landing-lang-link #{I18n.locale == :ja ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
+    <%= link_to "English", privacy_path(locale: 'en'), class: "landing-lang-link #{I18n.locale == :en ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
+  </div>
+
+  <div class="policy-back-link">
+    <%= link_to t('pages.privacy.back_home'), root_path %>
+  </div>
+
+  <article class="policy-content">
+    <h1><%= t('pages.privacy.title') %></h1>
+    <% %w[data_collected x_login email_handling data_retention contact].each do |section| %>
+      <section>
+        <h2 class="policy-section-heading"><%= t("pages.privacy.sections.#{section}.heading") %></h2>
+        <%= simple_format t("pages.privacy.sections.#{section}.body") %>
+      </section>
+    <% end %>
+  </article>
 </main>

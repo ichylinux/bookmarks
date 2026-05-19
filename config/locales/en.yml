@@ -392,3 +392,37 @@ en:
       signed_up_but_inactive: Your account has been created. It will be available soon.
       signed_up_but_locked: Your account has been created, but it is currently locked.
       signed_up_but_unconfirmed: Check your email to finish confirming your account.
+
+  pages:
+    privacy:
+      title: Privacy Policy
+      back_home: "← Back to home"
+      sections:
+        data_collected:
+          heading: Data We Collect
+          body: "This service stores your bookmarks, feed settings, portal configuration, and preferences. This data is used solely to provide the service. When you sign in with X (formerly Twitter), we obtain an OAuth token and user ID.\n\nAccess logs including IP addresses, browser type, and access timestamps are recorded for server administration purposes only and are never shared with third parties."
+        x_login:
+          heading: Purpose of X (Twitter) Login
+          body: "This service offers authentication via X (formerly Twitter) OAuth 2.0. Signing in with your X account allows you to create and use an account without storing a password with this service.\n\nThe permissions requested are read-only (account information and email address verification). This service does not post tweets, follow or unfollow accounts, or send direct messages on your behalf."
+        email_handling:
+          heading: Email Address Handling
+          body: "When you sign in with X, the email address provided by X is used for account identification. Your email address is used solely for internal account identification and is never used for marketing or shared with third parties.\n\nIf X does not provide an email address, an alternative identifier is generated automatically. If a real email address becomes available later, the account information is updated."
+        data_retention:
+          heading: Data Retention
+          body: "Your data is retained for as long as your account is active. When you delete your account, all bookmarks, feed settings, portal configuration, and account information are permanently deleted.\n\nThis is a personal-use service. You retain full control of your data and can delete your account at any time from the settings page."
+        contact:
+          heading: Contact
+          body: "For privacy-related inquiries, please send a direct message to @ichylinux on X (formerly Twitter)."
+    terms:
+      title: Terms of Service
+      back_home: "← Back to home"
+      sections:
+        acceptable_use:
+          heading: Acceptable Use
+          body: "This service is provided for personal use only. Commercial redistribution, resale, or use intended to provide access to third parties is prohibited.\n\nAutomated scraping, excessive request volume, or any activity that disrupts normal service operation is prohibited. Use for any purpose that violates applicable law is also prohibited."
+        availability:
+          heading: Service Availability
+          body: "This service is provided on an as-is basis. While we aim for continuous availability, the service may be temporarily unavailable due to maintenance, outages, or other reasons.\n\nThe operator accepts no liability for damages arising from service interruptions, data loss, or unavailability. We recommend backing up important data regularly."
+        termination:
+          heading: Account Termination
+          body: "You may delete your account at any time from the settings page. Deleting your account permanently removes all your data and cannot be undone.\n\nIf a violation of these terms is identified, the operator may suspend or delete an account without prior notice."

@@ -1,2 +1,20 @@
 <main class="landing-page">
+  <div class="landing-lang-switcher">
+    <%= link_to "日本語", terms_path(locale: 'ja'), class: "landing-lang-link #{I18n.locale == :ja ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
+    <%= link_to "English", terms_path(locale: 'en'), class: "landing-lang-link #{I18n.locale == :en ? 'landing-lang-link--active' : ''}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
+  </div>
+
+  <div class="policy-back-link">
+    <%= link_to t('pages.terms.back_home'), root_path %>
+  </div>
+
+  <article class="policy-content">
+    <h1><%= t('pages.terms.title') %></h1>
+    <% %w[acceptable_use availability termination].each do |section| %>
+      <section>
+        <h2 class="policy-section-heading"><%= t("pages.terms.sections.#{section}.heading") %></h2>
+        <%= simple_format t("pages.terms.sections.#{section}.body") %>
+      </section>
+    <% end %>
+  </article>
 </main>
