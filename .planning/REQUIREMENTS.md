@@ -1,0 +1,69 @@
+# Requirements: Bookmarks — v1.28
+
+**Defined:** 2026-05-20
+**Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
+
+## v1.28 Requirements
+
+### Policy Alignment (90-day retention)
+
+- [ ] **POLICY-01**: Privacy policy (ja/en) states that on account deletion, access stops immediately and stored data (bookmarks, feeds, portal settings, account info) is permanently erased within **90 days**, not used for service provision during retention
+- [ ] **POLICY-02**: Terms of service (ja/en) state that deletion deactivates the account immediately; associated data is permanently removed after **90 days**; user cannot access or restore the account during retention
+
+### Account Deletion — User Record
+
+- [ ] **ACCT-01**: Authenticated user can start account deletion from the preferences page
+- [ ] **ACCT-02**: Deletion requires an explicit confirmation step (e.g. type `DELETE` or confirm dialog) before proceeding
+- [ ] **ACCT-03**: On confirmed deletion, the `User` row is soft-deleted (`deleted: true`, `deleted_at` set)
+- [ ] **ACCT-04**: On deletion, user is signed out and cannot sign in again (password or OAuth), including re-auth with the same X/Google identity
+- [ ] **ACCT-05**: On deletion, user PII on `users` is cleared or anonymized (email uniqueness preserved via placeholder, OAuth/password secrets cleared)
+- [ ] **ACCT-06**: On deletion, transactional data rows (bookmarks, notes, feeds, todos, portals, portal_layouts, preferences, mastodon_accounts, x_accounts, visited_links) are **not** deleted or modified
+
+### Verification
+
+- [ ] **ACCT-07**: Minitest covers soft-delete, sign-in blocked, PII cleared, and transactional rows still present
+- [ ] **ACCT-08**: Cucumber scenario covers preferences → confirm → signed out → cannot access authenticated pages
+
+## v2 / Future Requirements
+
+### Data Purge
+
+- **ACCT-FUT-01**: Background job permanently deletes soft-deleted users and all related rows when `deleted_at` is older than 90 days
+- **ACCT-FUT-02**: Job is idempotent, logged, and safe to rerun; dev/test can use shorter retention via configuration
+
+### Data Export
+
+- **ACCT-FUT-03**: User can export personal data before deletion (deferred from v1.27)
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Immediate hard-delete of all related rows at delete request | Deferred — Phase 1 is user soft-delete only; purge via ACCT-FUT-01 |
+| Admin UI to restore deleted accounts | No restore promised in policy; operational restore out of scope |
+| Cookie consent / GDPR export pack | Personal app; export deferred |
+| Changing retention period without policy update | 90 days is fixed in POLICY-01/02 for v1.28 |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| POLICY-01 | Phase 91 | Pending |
+| POLICY-02 | Phase 91 | Pending |
+| ACCT-03 | Phase 92 | Pending |
+| ACCT-04 | Phase 92 | Pending |
+| ACCT-05 | Phase 92 | Pending |
+| ACCT-06 | Phase 92 | Pending |
+| ACCT-01 | Phase 93 | Pending |
+| ACCT-02 | Phase 93 | Pending |
+| ACCT-07 | Phase 94 | Pending |
+| ACCT-08 | Phase 94 | Pending |
+
+**Coverage:**
+- v1.28 requirements: 10 total
+- Mapped to phases: 10
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-05-20*
+*Last updated: 2026-05-20 after milestone v1.28 roadmap*

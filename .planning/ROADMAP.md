@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.28 — Account Self-Service Deletion** — Phases 91–94 (in progress) — see Phases below
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
 - ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
 - ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — [archived](milestones/v1.25-ROADMAP.md)

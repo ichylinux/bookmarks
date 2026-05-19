@@ -8,9 +8,18 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone
+## Current Milestone: v1.28 Account Self-Service Deletion (Phase 1)
 
-**Status:** v1.27 shipped (2026-05-19) — planning next milestone
+**Goal:** Let users request account deletion from preferences; immediately deactivate access and anonymize user PII; keep transactional rows until a future purge job; align ToS/privacy text with a 90-day retention window before permanent erasure.
+
+**Target features:**
+- Settings-page account deletion with confirmation step
+- `User` soft-delete (`deleted`, `deleted_at`); block sign-in; clear/anonymize OAuth tokens and email
+- Related content (bookmarks, notes, feeds, etc.) unchanged at delete time
+- ToS and privacy policy updated (ja/en) for two-stage deletion with **90-day** retention
+- Minitest + Cucumber coverage
+
+**Deferred:** Background job to hard-delete user + related data after 90 days; data export.
 
 <details>
 <summary>Shipped: v1.27 Privacy Policy for X OAuth2 Email (2026-05-19)</summary>
@@ -156,7 +165,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ### Active
 
-_(none — pick next milestone in `ROADMAP.md`)_
+- [ ] User can delete account from preferences; account deactivated immediately; cannot sign in again — **v1.28**
+- [ ] On deletion, user PII (email, OAuth tokens) cleared or anonymized; transactional data rows retained — **v1.28**
+- [ ] ToS and privacy policy describe 90-day retention before permanent data erasure (ja/en) — **v1.28**
 
 ### Out of Scope (revisit when planning)
 
@@ -350,4 +361,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-19 — after v1.27 milestone*
+*Last updated: 2026-05-20 — milestone v1.28 started*

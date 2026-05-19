@@ -1,41 +1,41 @@
 ---
 gsd_state_version: 1.0
-milestone: ""
-milestone_name: ""
-status: ready_for_planning
+milestone: "v1.28"
+milestone_name: "Account Self-Service Deletion"
+status: planning
 stopped_at: ""
 last_updated: "2026-05-20T12:00:00.000Z"
-last_activity: 2026-05-20 — Completed quick task 20260520: mobile gadget long-press sort
+last_activity: 2026-05-20 — Milestone v1.28 started
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.27 shipped — planning next milestone
-Last activity: 2026-05-19 — v1.27 milestone complete (archived, tagged)
+Status: Defining requirements
+Last activity: 2026-05-20 — Milestone v1.28 started
 
 ```
-Progress: [████████████████████] 100% (2/2 phases)
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
 ```
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Planning next milestone (`/gsd-new-milestone`)
+**Current focus:** v1.28 — account self-service deletion (user soft-delete; 90-day policy alignment; purge job deferred)
 
 ## Performance Metrics
 
-- v1.26 close: `yarn run lint` — green; `bin/rails test` — 458 runs, 0 failures; `bundle exec rake dad:test` — 27/27 (`88-VERIFICATION.md` / audit)
-- v1.25 close: `yarn run lint` — green; `bin/rails test` — 416 runs, 0 failures; `bundle exec rake dad:test` — 25/25 on first run; second run 1 scenario-order flake (settings form visit / note gadget)
+- v1.27 close: `yarn run lint` — green; `bin/rails test` — 485 runs, 0 failures; `bundle exec rake dad:test` — 27/27
+- v1.26 close: `yarn run lint` — green; `bin/rails test` — 458 runs, 0 failures; `bundle exec rake dad:test` — 27/27
 
 ## Deferred Items
 
@@ -51,54 +51,40 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 
 ### Decisions
 
-- (v1.26) `visited_links` table: `(user_id, url varchar(2083), visited_at)`; unique prefix index on `(user_id, url)` length **767** (utf8mb4 / InnoDB key-length limit; not 768)
-- (v1.26) `VisitedLink.record!(user, url)` uses `upsert` (atomic insert-or-ignore, no TOCTOU race); `urls_for(user)` returns a `Set` of normalized URLs
-- (v1.26) `normalize_url` strips fragment (`#...`) only — no query-string normalization by design
-- (v1.26) `@visited_urls` assigned once per gadget show action (`FeedsController`, `MastodonAccountsController`, `XAccountsController`) — not in `WelcomeController#index`; AJAX-only query
-- (v1.26) JS click handler uses `$(document).on('click.visitedLinks', '.gadget ol li a[href]', fn)` delegation — survives AJAX re-render; optimistic `addClass` before `$.post`
-- (v1.26) `jquery_ujs.js` `$.ajaxPrefilter` provides CSRF token automatically — no manual CSRF plumbing in `visited_links.js`
-- (v1.25) `preferences.portal_column_widths` JSON array; integers summing to 100; length must match `portal_column_count`
-- (v1.25) Equal defaults: 3列 `[34,33,33]`, 4列 `[25,25,25,25]`; nil/mismatch length normalizes to equal split before validate
-- (v1.25) Desktop: `--portal-col-width-pct` CSS variable per `.portal-column`; mobile unchanged
-- (v1.25) Preferences: linked range sliders (`portal_column_width_sliders.js`); column-count change rebuilds slider row via template
-- (v1.27 planning) `devise.rb` already includes `users.email` in the twitter2 scope string — OAUTH-01 may be a no-op or a verification-only step; confirm actual X Developer Portal approval status
-- (v1.27 planning) `from_omniauth` twitter2 re-auth branch (`user.assign_attributes`) does NOT currently set `email` — OAUTH-03 is a real code change
-- (v1.27 planning) Policy pages: no DB required; `PagesController` (or similar) with `skip_before_action :authenticate_user!`; content via locale YAML matching existing i18n pattern
+- (v1.28 planning) Account deletion is **two-stage**: (1) user soft-delete + immediate access/PII cut-off; (2) hard-delete user + related rows via background job after **90 days** (job deferred to future milestone)
+- (v1.28 planning) Transactional tables (bookmarks, notes, feeds, todos, portals, portal_layouts, preferences, mastodon_accounts, x_accounts, visited_links) are **not** modified at delete request time
+- (v1.28 planning) ToS/privacy locale text must be **updated** to match 90-day retention (v1.27 promised immediate full erasure — wording correction required before ship)
+- (v1.26) `visited_links` table: unique prefix index on `(user_id, url)` length **767**
+- (v1.26) `VisitedLink.record!(user, url)` uses `upsert`; fragment-only normalization
+- (v1.27) `PagesController` fully public for `/privacy` and `/terms`
 
 ### Blockers/Concerns
 
-- Pre-existing: Cucumber scenario-order flakes (note gadget AJAX timing, occasional preferences visit without session)
-- (v1.26) Cucumber `Before` hook must include `VisitedLink.delete_all` in same commit as migration to prevent visited-state leakage between scenarios
+- Pre-existing: Cucumber scenario-order flakes
+- (v1.28) Do not ship deletion UI until policy pages reflect 90-day model (Phase 91 before or with Phase 93)
 
 ### Roadmap Evolution
 
-- Phase 88 added: v1.26 closure — planning traceability sync (REQUIREMENTS, ROADMAP, SUMMARY `requirements_completed`) — after `/gsd-audit-milestone` option B (tech debt before milestone complete)
+- v1.28 phases 91–94 added for account self-service deletion
 
 ### Quick Tasks Completed
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 20260518 | center note gadget loading message | 2026-05-18 | 7c3d626 | [20260518-center-note-gadget-loading-message](./quick/20260518-center-note-gadget-loading-message/) |
-| 20260518 | archive completed milestone | 2026-05-18 | 2b78b34 | [20260518-archive-completed-milestone](./quick/20260518-archive-completed-milestone/) |
-| 20260518 | ポータル列数変更時のスライダー数連動修正 | 2026-05-18 | 35c7c75 | [20260518-portal-slider-count-sync](./quick/20260518-portal-slider-count-sync/) |
-| 20260518 | landing page refresh — value copy + v1.25 changelog entry | 2026-05-18 | fdfea61 | [20260518-landing-page-refresh](./quick/20260518-landing-page-refresh/) |
-| 20260518 | scroll to top when switching mobile portal columns via swipe | 2026-05-18 | 6587d2d | [20260518-mobile-swipe-scroll-top](./quick/20260518-mobile-swipe-scroll-top/) |
-| 20260518 | simplify CSS styles — remove redundant declarations | 2026-05-18 | 737db5a | [20260518-simplify-css-styles](./quick/20260518-simplify-css-styles/) |
-| 20260518 | auto-resize note edit textarea height on mobile | 2026-05-18 | 296fe5c | [20260518-mobile-note-edit-textarea-height](./quick/20260518-mobile-note-edit-textarea-height/) |
-| 20260519 | landing page language switcher for guest users | 2026-05-19 | d5128ea | [20260519-landing-language-switcher](./quick/20260519-landing-language-switcher/) |
-| 20260519 | new bookmark can be added in a dialog on dashboard page | 2026-05-19 | 7dfe7ec | [20260519-bookmark-gadget-new-dialog](./quick/20260519-bookmark-gadget-new-dialog/) |
-| 20260519 | refresh landing page — sync changelog (bookmark dialog + visited-links) | 2026-05-19 | d3470d7 | [20260519-refresh-landing-page](./quick/20260519-refresh-landing-page/) |
-| 20260519 | show note edit time inline on mobile (編集済み badge) | 2026-05-19 | aa6308e | [20260519-mobile-note-edit-time](./quick/20260519-mobile-note-edit-time/) |
-| 20260519 | note update replaces full reload with in-place AJAX | 2026-05-19 | eb98bc7 | [20260519-note-update-ajax](./quick/20260519-note-update-ajax/) |
 | 20260520 | スマホでガジェットの長押しドラッグ並べ替え | 2026-05-20 | 09c9ee8 | [20260520-mobile-gadget-sort](./quick/20260520-mobile-gadget-sort/) |
+| 20260519 | note update replaces full reload with in-place AJAX | 2026-05-19 | eb98bc7 | [20260519-note-update-ajax](./quick/20260519-note-update-ajax/) |
+| 20260519 | show note edit time inline on mobile | 2026-05-19 | aa6308e | [20260519-mobile-note-edit-time](./quick/20260519-mobile-note-edit-time/) |
+| 20260519 | refresh landing page — sync changelog | 2026-05-19 | d3470d7 | [20260519-refresh-landing-page](./quick/20260519-refresh-landing-page/) |
+| 20260519 | new bookmark dialog on dashboard | 2026-05-19 | 7dfe7ec | [20260519-bookmark-gadget-new-dialog](./quick/20260519-bookmark-gadget-new-dialog/) |
+| 20260519 | landing page language switcher | 2026-05-19 | d5128ea | [20260519-landing-language-switcher](./quick/20260519-landing-language-switcher/) |
 
 ## Session Continuity
 
-Last session: 2026-05-19
-Stopped at: all phases complete
-Last activity: 2026-05-19 — v1.27 all phases executed; ready for milestone audit
+Last session: 2026-05-20
+Stopped at: Milestone v1.28 initialized
 Resume file: None
 
 ## Operator Next Steps
 
-- Start next milestone: `/gsd-new-milestone`
+- `/gsd-discuss-phase 91` — policy wording (90-day retention)
+- `/gsd-plan-phase 91` — plan Phase 91 directly
