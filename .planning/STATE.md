@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.26
-milestone_name: Visited Link Tracking
+milestone_name: milestone
 status: Awaiting next milestone
-stopped_at: Milestone v1.26 archived — awaiting `/gsd-new-milestone`
-last_updated: "2026-05-18T12:58:22.627Z"
-last_activity: 2026-05-18 — Milestone v1.26 completed and archived
+stopped_at: context exhaustion at 75% (2026-05-19)
+last_updated: "2026-05-19T06:07:31.323Z"
+last_activity: 2026-05-19 — Added new-bookmark dialog on dashboard (hover "new" link in bookmark gadget header)
 progress:
   total_phases: 5
   completed_phases: 5
@@ -86,8 +86,8 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 
 ## Session Continuity
 
-Last session: 2026-05-18
-Stopped at: Milestone v1.26 complete — `/gsd-complete-milestone`
+Last session: 2026-05-19T06:07:31.319Z
+Stopped at: context exhaustion at 75% (2026-05-19)
 Last activity: 2026-05-19 — Note update now uses in-place AJAX instead of full page reload
 Resume file: None
 
