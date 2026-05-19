@@ -5,9 +5,9 @@ milestone_name: Privacy Policy for X OAuth2 Email
 status: planning
 stopped_at: ""
 last_updated: "2026-05-19T00:00:00.000Z"
-last_activity: 2026-05-19 — Milestone v1.27 started
+last_activity: 2026-05-19 — Roadmap created (Phases 89–90)
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,15 +18,19 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 89 — Static Policy Pages (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-19 — Milestone v1.27 started
+Status: Roadmap defined; ready for Phase 89 planning
+Last activity: 2026-05-19 — Roadmap created (Phases 89–90)
+
+```
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/2 phases)
+```
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Plan next milestone (`/gsd-new-milestone`)
+**Current focus:** v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90)
 
 ## Performance Metrics
 
@@ -57,6 +61,9 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 - (v1.25) Equal defaults: 3列 `[34,33,33]`, 4列 `[25,25,25,25]`; nil/mismatch length normalizes to equal split before validate
 - (v1.25) Desktop: `--portal-col-width-pct` CSS variable per `.portal-column`; mobile unchanged
 - (v1.25) Preferences: linked range sliders (`portal_column_width_sliders.js`); column-count change rebuilds slider row via template
+- (v1.27 planning) `devise.rb` already includes `users.email` in the twitter2 scope string — OAUTH-01 may be a no-op or a verification-only step; confirm actual X Developer Portal approval status
+- (v1.27 planning) `from_omniauth` twitter2 re-auth branch (`user.assign_attributes`) does NOT currently set `email` — OAUTH-03 is a real code change
+- (v1.27 planning) Policy pages: no DB required; `PagesController` (or similar) with `skip_before_action :authenticate_user!`; content via locale YAML matching existing i18n pattern
 
 ### Blockers/Concerns
 
@@ -86,11 +93,11 @@ Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` 
 
 ## Session Continuity
 
-Last session: 2026-05-19T06:07:31.319Z
-Stopped at: context exhaustion at 75% (2026-05-19)
-Last activity: 2026-05-19 — Note update now uses in-place AJAX instead of full page reload
+Last session: 2026-05-19
+Stopped at: roadmap creation complete
+Last activity: 2026-05-19 — v1.27 roadmap written (Phases 89–90); ready for `/gsd:plan-phase 89`
 Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Plan Phase 89: `/gsd:plan-phase 89`

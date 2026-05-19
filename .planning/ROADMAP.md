@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (active 2026-05-19)
 - ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
 - ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — [archived](milestones/v1.25-ROADMAP.md)
 - ✅ **v1.24 — Mobile Column Lazy Loading** — Phases 76–79 (shipped 2026-05-17) — [archived](milestones/v1.24-ROADMAP.md)
@@ -31,7 +32,45 @@
 
 ## Phases
 
-_No active phases — start the next milestone with `/gsd-new-milestone`._
+### v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90)
+
+- [ ] **Phase 89: Static Policy Pages** — `/privacy` and `/terms` publicly accessible, bilingual, full content
+- [ ] **Phase 90: OAuth2 Email Scope Wiring** — verify email scope in X OAuth2, store/overwrite real email in `from_omniauth`
+
+## Phase Details
+
+### Phase 89: Static Policy Pages
+**Goal**: Unauthenticated users can read the privacy policy and terms of service in Japanese or English
+**Depends on**: Nothing (no new data layer; public routes only)
+**Requirements**: PRIV-01, PRIV-02, PRIV-03, TOS-01, TOS-02, TOS-03
+**Success Criteria** (what must be TRUE):
+  1. Visiting `/privacy` without signing in returns a 200 page with the privacy policy content
+  2. Visiting `/terms` without signing in returns a 200 page with the terms of service content
+  3. Both pages render content in Japanese when locale is `:ja` and in English when locale is `:en`
+  4. The privacy policy content addresses data collected, purpose of X login, and email address handling
+  5. The terms of service content addresses acceptable use, service availability, and account termination
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 90: OAuth2 Email Scope Wiring
+**Goal**: X OAuth2 sign-in captures and persists the user's real email address at sign-in and re-authentication
+**Depends on**: Phase 89 (policy pages must exist for X Developer Portal approval before email scope is live)
+**Requirements**: OAUTH-01, OAUTH-02, OAUTH-03
+**Success Criteria** (what must be TRUE):
+  1. The X OAuth2 authorization request includes the `users.email` scope (confirmed in OmniAuth config or X Developer Portal flow)
+  2. A new user signing in via X OAuth2 has their real X email stored on `users.email` instead of a dummy address, when X provides one
+  3. An existing user with a dummy-pattern email who re-authenticates via X OAuth2 has their `users.email` overwritten with the real X email
+  4. An existing user with a real email who re-authenticates via X OAuth2 does not have their email changed
+**Plans**: TBD
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 89. Static Policy Pages | 0/? | Not started | - |
+| 90. OAuth2 Email Scope Wiring | 0/? | Not started | - |
+
+---
 
 <details>
 <summary>✅ v1.26 — Visited Link Tracking (Phases 84–88) — SHIPPED 2026-05-18</summary>
@@ -74,4 +113,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-18 — v1.26 archived to milestones/; living ROADMAP collapsed; awaiting next milestone*
+*Last updated: 2026-05-19 — v1.27 roadmap created (Phases 89–90)*

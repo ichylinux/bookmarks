@@ -40,21 +40,21 @@ _(none identified for this milestone)_
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PRIV-01 | — | Pending |
-| PRIV-02 | — | Pending |
-| PRIV-03 | — | Pending |
-| TOS-01 | — | Pending |
-| TOS-02 | — | Pending |
-| TOS-03 | — | Pending |
-| OAUTH-01 | — | Pending |
-| OAUTH-02 | — | Pending |
-| OAUTH-03 | — | Pending |
+| PRIV-01 | Phase 89 | Pending |
+| PRIV-02 | Phase 89 | Pending |
+| PRIV-03 | Phase 89 | Pending |
+| TOS-01 | Phase 89 | Pending |
+| TOS-02 | Phase 89 | Pending |
+| TOS-03 | Phase 89 | Pending |
+| OAUTH-01 | Phase 90 | Pending |
+| OAUTH-02 | Phase 90 | Pending |
+| OAUTH-03 | Phase 90 | Pending |
 
 **Coverage:**
 - v1.27 requirements: 9 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 9 ⚠️
+- Mapped to phases: 9 (Phase 89: 6, Phase 90: 3)
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-19*
-*Last updated: 2026-05-19 after initial definition*
+*Last updated: 2026-05-19 — traceability mapped after roadmap creation*
