@@ -171,4 +171,65 @@ class UserTest < ActiveSupport::TestCase
       token_secret: 'fixture_plain_secret'
     )
   end
+
+  def test_destroy_account_soft_deletes_and_anonymizes_pii
+    u = User.find(3)
+    note_count = Note.where(user_id: u.id).count
+
+    u.destroy_account!
+    u.reload
+
+    assert u.deleted?
+    assert u.deleted_at.present?
+    assert_match(/\Adeleted_\d+_[a-f0-9]+@deleted\.invalid\z/, u.email)
+    assert_nil u.provider
+    assert_nil u.uid
+    assert_nil u.oauth2_token
+    assert_equal note_count, Note.where(user_id: u.id).count
+  ensure
+    u = User.find(3)
+    u.update_columns(
+      deleted: false,
+      deleted_at: nil,
+      email: 'user3@example.com',
+      provider: nil,
+      uid: nil,
+      oauth2_token: nil,
+      oauth2_refresh_token: nil,
+      oauth2_token_expires_at: nil
+    )
+  end
+
+  def test_active_for_authentication_false_when_deleted
+    u = User.find(3)
+    u.update_columns(deleted: true, deleted_at: Time.current)
+    assert_not u.active_for_authentication?
+  ensure
+    User.find(3).update_columns(deleted: false, deleted_at: nil)
+  end
+
+  def test_from_omniauth_twitter2_does_not_match_deleted_user
+    u = users(:twitter_user)
+    u.update_columns(deleted: true, deleted_at: Time.current, provider: 'twitter2', uid: 'deleted-oauth-uid')
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => 'deleted-oauth-uid',
+      'info' => { 'name' => 'New', 'email' => 'new@example.com' },
+      'credentials' => { 'token' => 't', 'refresh_token' => 'r' }
+    )
+
+    result = User.from_omniauth(auth)
+    assert_not_equal u.id, result.id
+    assert result.persisted?
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      deleted: false,
+      deleted_at: nil,
+      provider: 'twitter',
+      uid: 'fixture_twitter_uid'
+    )
+    User.active.where(uid: 'deleted-oauth-uid', provider: 'twitter2').delete_all
+  end
 end

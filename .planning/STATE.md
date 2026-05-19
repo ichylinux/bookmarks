@@ -2,88 +2,66 @@
 gsd_state_version: 1.0
 milestone: "v1.28"
 milestone_name: "Account Self-Service Deletion"
-status: planning
+status: ready_for_audit
 stopped_at: ""
-last_updated: "2026-05-20T12:00:00.000Z"
-last_activity: 2026-05-20 — Phase 91 context gathered
+last_updated: "2026-05-20T18:00:00.000Z"
+last_activity: 2026-05-20 — Phases 91–94 executed (autonomous)
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 4
+  total_plans: 4
+  completed_plans: 4
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 94 complete — milestone ready for audit
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-20 — Milestone v1.28 started
+Status: All v1.28 phases implemented; tri-suite green
+Last activity: 2026-05-20 — Autonomous run completed phases 91–94
 
 ```
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0% (0/4 phases)
+Progress: [████████████████████] 100% (4/4 phases)
 ```
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.28 — account self-service deletion (user soft-delete; 90-day policy alignment; purge job deferred)
+**Current focus:** Milestone audit / complete for v1.28
 
 ## Performance Metrics
 
-- v1.27 close: `yarn run lint` — green; `bin/rails test` — 485 runs, 0 failures; `bundle exec rake dad:test` — 27/27
-- v1.26 close: `yarn run lint` — green; `bin/rails test` — 458 runs, 0 failures; `bundle exec rake dad:test` — 27/27
+- v1.28 close (autonomous): `yarn run lint` ✓ · `bin/rails test` 500/500 ✓ · `dad:test` 28/28 ✓
 
 ## Deferred Items
 
-Items acknowledged at milestone close on 2026-05-18 (`gsd-sdk query audit-open` showed quick-task rows as `missing` while work is already merged — scanner / directory drift only):
-
 | Category | Item | Status |
 |----------|------|--------|
-| quick_task | archive-completed-milestone | acknowledged |
-| quick_task | mobile-note-edit-textarea-height | acknowledged |
-| quick_task | portal-slider-count-sync | acknowledged |
+| v2 | ACCT-FUT-01 purge job after 90 days | open |
+| v2 | ACCT-FUT-03 data export | open |
 
 ## Accumulated Context
 
 ### Decisions
 
-- (v1.28 planning) Account deletion is **two-stage**: (1) user soft-delete + immediate access/PII cut-off; (2) hard-delete user + related rows via background job after **90 days** (job deferred to future milestone)
-- (v1.28 planning) Transactional tables (bookmarks, notes, feeds, todos, portals, portal_layouts, preferences, mastodon_accounts, x_accounts, visited_links) are **not** modified at delete request time
-- (v1.28 planning) ToS/privacy locale text must be **updated** to match 90-day retention (v1.27 promised immediate full erasure — wording correction required before ship)
-- (v1.26) `visited_links` table: unique prefix index on `(user_id, url)` length **767**
-- (v1.26) `VisitedLink.record!(user, url)` uses `upsert`; fragment-only normalization
-- (v1.27) `PagesController` fully public for `/privacy` and `/terms`
+- (v1.28) Account deletion: user soft-delete + PII strip immediately; transactional rows retained; purge job deferred (ACCT-FUT-01)
+- (v1.28) Policy text: general collective phrasing + separate OAuth token sentence; 90-day erasure window
+- (v1.28) Confirmation token: type `DELETE` on `/account_deletion/new`
+- (v1.28) Cucumber `@account_deletion` uses `rack_test` driver for reliable DELETE form submit
 
 ### Blockers/Concerns
 
-- Pre-existing: Cucumber scenario-order flakes
-- (v1.28) Do not ship deletion UI until policy pages reflect 90-day model (Phase 91 before or with Phase 93)
-
-### Roadmap Evolution
-
-- v1.28 phases 91–94 added for account self-service deletion
-
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 20260520 | スマホでガジェットの長押しドラッグ並べ替え | 2026-05-20 | 09c9ee8 | [20260520-mobile-gadget-sort](./quick/20260520-mobile-gadget-sort/) |
-| 20260519 | note update replaces full reload with in-place AJAX | 2026-05-19 | eb98bc7 | [20260519-note-update-ajax](./quick/20260519-note-update-ajax/) |
-| 20260519 | show note edit time inline on mobile | 2026-05-19 | aa6308e | [20260519-mobile-note-edit-time](./quick/20260519-mobile-note-edit-time/) |
-| 20260519 | refresh landing page — sync changelog | 2026-05-19 | d3470d7 | [20260519-refresh-landing-page](./quick/20260519-refresh-landing-page/) |
-| 20260519 | new bookmark dialog on dashboard | 2026-05-19 | 7dfe7ec | [20260519-bookmark-gadget-new-dialog](./quick/20260519-bookmark-gadget-new-dialog/) |
-| 20260519 | landing page language switcher | 2026-05-19 | d5128ea | [20260519-landing-language-switcher](./quick/20260519-landing-language-switcher/) |
+- None for v1.28 implementation
 
 ## Session Continuity
 
 Last session: 2026-05-20
-Stopped at: Phase 91 context gathered
-Resume file: .planning/phases/91-policy-wording-90-day-retention/91-CONTEXT.md
+Stopped at: Phases 91–94 complete
+Resume file: None
 
 ## Operator Next Steps
 
-- `/gsd-plan-phase 91` — plan Phase 91 (policy YAML updates)
+- `/gsd-audit-milestone` then `/gsd-complete-milestone v1.28`

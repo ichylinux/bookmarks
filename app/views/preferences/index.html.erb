@@ -87,6 +87,12 @@
       <td><%= link_to t('two_factor.setup_link'), users_two_factor_setup_path %></td>
     </tr>
   </table>
-  
+
   <%= f.submit t('.submit') %>
 <% end %>
+
+<section class="preferences-danger-zone">
+  <h2 class="preferences-danger-zone-heading"><%= t('preferences.index.account_deletion_section_title') %></h2>
+  <p><%= t('preferences.index.account_deletion_warning') %></p>
+  <p><%= link_to t('preferences.index.account_deletion_link'), new_account_deletion_path, class: 'preferences-danger-zone-link' %></p>
+</section>

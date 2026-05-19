@@ -43,4 +43,18 @@ class TermsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h2.policy-section-heading'
   end
+
+  def test_termsのアカウント終了は90日以内の完全削除を説明する
+    get terms_path
+    assert_response :success
+    assert_match(/90日/, response.body)
+    assert_match(/直ちに無効化/, response.body)
+  end
+
+  def test_terms_en_termination_describes_90_day_removal
+    get terms_path, params: { locale: 'en' }
+    assert_response :success
+    assert_match(/90 days/, response.body)
+    assert_match(/deactivated immediately/i, response.body)
+  end
 end

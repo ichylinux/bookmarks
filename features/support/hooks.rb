@@ -110,3 +110,27 @@ end
 After('@feed_visited_links') do
   WebMock.remove_request_stub(@_feed_visited_stub) if @_feed_visited_stub
 end
+
+Before('@account_deletion') do
+  @account_deletion_previous_driver = Capybara.current_driver
+  Capybara.current_driver = :rack_test
+
+  u = User.find(3)
+  u.update_columns(
+    deleted: false,
+    deleted_at: nil,
+    email: 'user3@example.com',
+    name: nil,
+    provider: nil,
+    uid: nil,
+    token: nil,
+    token_secret: nil,
+    oauth2_token: nil,
+    oauth2_refresh_token: nil,
+    oauth2_token_expires_at: nil
+  )
+end
+
+After('@account_deletion') do
+  Capybara.current_driver = @account_deletion_previous_driver if @account_deletion_previous_driver
+end

@@ -1,0 +1,19 @@
+<h1 class="account-deletions-title"><%= t('account_deletions.new.title') %></h1>
+
+<p class="account-deletions-warning"><%= t('account_deletions.new.warning') %></p>
+
+<% if flash[:alert].present? %>
+  <p class="account-deletions-alert"><%= flash[:alert] %></p>
+<% end %>
+
+<%= form_tag account_deletion_path, method: :delete, class: 'account-deletions-form', data: { turbo: false }, novalidate: true do %>
+  <p>
+    <%= label_tag :confirmation, t('account_deletions.new.confirmation_label') %><br>
+    <%= text_field_tag :confirmation, params[:confirmation], autocomplete: 'off', required: true %>
+  </p>
+  <p class="account-deletions-help"><%= t('account_deletions.new.confirmation_help', token: Users::AccountDeletionsController::CONFIRMATION_TOKEN) %></p>
+  <p>
+    <%= submit_tag t('account_deletions.new.submit'), class: 'account-deletions-submit' %>
+    <%= link_to t('account_deletions.new.cancel'), preferences_path %>
+  </p>
+<% end %>

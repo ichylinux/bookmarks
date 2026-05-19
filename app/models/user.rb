@@ -14,6 +14,8 @@ class User < ApplicationRecord
 
   before_create :generate_otp_secret_if_missing
 
+  scope :active, -> { where(deleted: false) }
+
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
 
@@ -34,7 +36,7 @@ class User < ApplicationRecord
       uid = access_token.uid.to_s
       expires_at = creds['expires_at'] ? Time.at(creds['expires_at'].to_i) : nil
 
-      user = User.where(uid: uid).where(provider: %w[twitter twitter2]).first
+      user = User.active.where(uid: uid).where(provider: %w[twitter twitter2]).first
       if user
         # OAUTH-01: users.email scope is configured in devise.rb — email arrives here when granted
         attrs = {
@@ -61,7 +63,7 @@ class User < ApplicationRecord
         )
       end
     else
-      user = User.where(email: data["email"]).first
+      user = User.active.where(email: data["email"]).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
       user
     end
@@ -82,7 +84,35 @@ class User < ApplicationRecord
   end
 
   def admin?
-    self.email == User.first.email
+    self.email == User.active.order(:id).first&.email
+  end
+
+  def destroy_account!
+    return if deleted?
+
+    now = Time.current
+    update!(
+      deleted: true,
+      deleted_at: now,
+      email: anonymized_email_for_deletion,
+      name: nil,
+      provider: nil,
+      uid: nil,
+      token: nil,
+      token_secret: nil,
+      oauth2_token: nil,
+      oauth2_refresh_token: nil,
+      oauth2_token_expires_at: nil,
+      password: Devise.friendly_token[0, 20]
+    )
+  end
+
+  def active_for_authentication?
+    super && !deleted?
+  end
+
+  def inactive_message
+    deleted? ? :deleted_account : super
   end
 
   def preference
@@ -116,6 +146,10 @@ class User < ApplicationRecord
 
   def generate_otp_secret_if_missing
     self.otp_secret ||= self.class.generate_otp_secret
+  end
+
+  def anonymized_email_for_deletion
+    "deleted_#{id}_#{SecureRandom.hex(4)}@deleted.invalid"
   end
 
   def create_default_portal

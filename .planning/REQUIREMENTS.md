@@ -7,8 +7,8 @@
 
 ### Policy Alignment (90-day retention)
 
-- [ ] **POLICY-01**: Privacy policy (ja/en) states that on account deletion, access stops immediately and stored data (bookmarks, feeds, portal settings, account info) is permanently erased within **90 days**, not used for service provision during retention
-- [ ] **POLICY-02**: Terms of service (ja/en) state that deletion deactivates the account immediately; associated data is permanently removed after **90 days**; user cannot access or restore the account during retention
+- [x] **POLICY-01**: Privacy policy (ja/en) states that on account deletion, access stops immediately and stored data (bookmarks, feeds, portal settings, account info) is permanently erased within **90 days**, not used for service provision during retention
+- [x] **POLICY-02**: Terms of service (ja/en) state that deletion deactivates the account immediately; associated data is permanently removed after **90 days**; user cannot access or restore the account during retention
 
 ### Account Deletion — User Record
 

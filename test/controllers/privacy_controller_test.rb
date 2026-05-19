@@ -43,4 +43,18 @@ class PrivacyControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h2.policy-section-heading'
   end
+
+  def test_privacyのデータ保持は90日以内の完全削除を説明する
+    get privacy_path
+    assert_response :success
+    assert_match(/90日/, response.body)
+    assert_match(/直ちに無効化/, response.body)
+  end
+
+  def test_privacy_en_data_retention_describes_90_day_erasure
+    get privacy_path, params: { locale: 'en' }
+    assert_response :success
+    assert_match(/90 days/, response.body)
+    assert_match(/deactivated immediately/i, response.body)
+  end
 end

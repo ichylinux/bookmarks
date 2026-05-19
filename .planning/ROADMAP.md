@@ -33,6 +33,64 @@
 
 ## Phases
 
+### v1.28 — Account Self-Service Deletion (Phases 91–94)
+
+- [x] Phase 91: Policy Wording — 90-Day Retention — 2026-05-20
+- [x] Phase 92: User Soft-Delete Data Layer — 2026-05-20
+- [x] Phase 93: Preferences Deletion UI + Flow — 2026-05-20
+- [x] Phase 94: Tests & Tri-suite Gate — 2026-05-20
+
+## Phase Details (v1.28)
+
+### Phase 91: Policy Wording — 90-Day Retention
+
+**Goal:** Public privacy policy and terms (ja/en) accurately describe two-stage deletion: immediate deactivation, permanent erasure within 90 days.
+**Depends on:** Nothing
+**Requirements:** POLICY-01, POLICY-02
+
+**Success Criteria:**
+1. `/privacy` data retention section mentions immediate access stop and 90-day permanent erasure window (ja + en)
+2. `/terms` termination section matches: immediate deactivation, 90-day purge, no access during retention (ja + en)
+3. Wording no longer claims instantaneous deletion of all bookmarks/feeds at button press
+4. Locale key parity test still passes
+
+### Phase 92: User Soft-Delete Data Layer
+
+**Goal:** `users` table supports soft-delete timestamp; `User` can be deactivated with PII stripped while related rows remain.
+**Depends on:** Phase 91 (policy must match behavior before UI ships)
+**Requirements:** ACCT-03, ACCT-04, ACCT-05, ACCT-06
+
+**Success Criteria:**
+1. Migration adds `deleted` (boolean, default false) and `deleted_at` (datetime, nullable) on `users`
+2. `User#destroy_account!` (or equivalent) sets deleted flags, clears OAuth tokens and anonymizes email
+3. Deleted user fails `active_for_authentication?` / OAuth lookup treats as absent for sign-in
+4. `Bookmark` / `Note` / etc. row counts unchanged after user deletion in tests
+
+### Phase 93: Preferences Deletion UI + Flow
+
+**Goal:** User can request account deletion from `/preferences` with confirmation and lands signed out.
+**Depends on:** Phase 92
+**Requirements:** ACCT-01, ACCT-02
+
+**Success Criteria:**
+1. Preferences page shows a danger-zone section with delete action and warning copy (ja/en)
+2. Confirmation step required before `destroy_account!` runs
+3. Successful deletion signs user out and redirects to guest-visible page (e.g. `/`)
+4. Deleted user cannot reach `/preferences` or dashboard when attempting sign-in
+
+### Phase 94: Tests & Tri-suite Gate
+
+**Goal:** Automated coverage and green lint / Minitest / Cucumber.
+**Depends on:** Phase 93
+**Requirements:** ACCT-07, ACCT-08
+
+**Success Criteria:**
+1. Minitest: deletion, auth block, PII anonymization, transactional data retained
+2. Cucumber: end-to-end delete from preferences
+3. `yarn run lint && bin/rails test && bundle exec rake dad:test` green
+
+---
+
 <details>
 <summary>✅ v1.27 — Privacy Policy for X OAuth2 Email (Phases 89–90) — SHIPPED 2026-05-19</summary>
 
@@ -88,4 +146,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-19 — v1.27 shipped and archived*
+*Last updated: 2026-05-20 — v1.28 milestone started (phases 91–94)*
