@@ -102,6 +102,38 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_equal old_body, note.reload.body
   end
 
+  def test_successful_update_json_returns_note_data
+    sign_in @user
+    note = notes(:one)
+
+    patch note_path(note, format: :json),
+          params: { note: { body: 'AJAX更新' } },
+          as: :json
+
+    assert_response :success
+    json = response.parsed_body
+    assert_equal note.id, json['id']
+    assert_equal 'AJAX更新', json['body']
+    assert json.key?('created_time')
+    assert json.key?('updated_time')
+    assert json.key?('edited')
+    assert json.key?('edited_badge')
+    assert json.key?('edited_tooltip')
+  end
+
+  def test_blank_body_update_json_returns_error
+    sign_in @user
+    note = notes(:one)
+
+    patch note_path(note, format: :json),
+          params: { note: { body: '   ' } },
+          as: :json
+
+    assert_response :unprocessable_entity
+    json = response.parsed_body
+    assert json.key?('error')
+  end
+
   def test_destroy_is_logical_delete
     sign_in @user
     note = notes(:one)

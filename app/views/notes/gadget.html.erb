@@ -21,7 +21,7 @@
         <% created_time = note.created_at.strftime('%Y-%m-%d %H:%M') %>
         <% updated_time = note.updated_at.strftime('%Y-%m-%d %H:%M') %>
         <% edited = note.updated_at.to_i != note.created_at.to_i %>
-        <div class="note-item">
+        <div class="note-item" data-note-id="<%= note.id %>">
           <div class="note-item-display" tabindex="0">
             <div class="note-body"><%= note.body %></div>
             <div class="note-timestamp">
