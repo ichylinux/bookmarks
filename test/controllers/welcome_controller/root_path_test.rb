@@ -14,6 +14,13 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_select 'a.landing-cta--secondary[href=?]', new_user_session_path
   end
 
+  def test_rootにプライバシーと利用規約へのリンクが表示される
+    get root_path
+    assert_response :success
+    assert_select '.landing-footer-nav a[href=?]', privacy_path
+    assert_select '.landing-footer-nav a[href=?]', terms_path
+  end
+
   def test_rootは英語ロケールで英語見出しを表示する
     get root_path, headers: { 'Accept-Language' => 'en-US,en;q=0.9,ja;q=0.8' }
     assert_response :success

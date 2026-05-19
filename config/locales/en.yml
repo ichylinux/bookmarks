@@ -256,6 +256,8 @@ en:
     auth:
       sign_in_intro: Welcome back. Jump straight into the information you saved.
       sign_up_intro: Get started in minutes and keep everything important in one place.
+    footer:
+      legal_nav_aria: Legal information
     integrations:
       heading: Integrations
       x:

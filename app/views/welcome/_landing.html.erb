@@ -73,4 +73,11 @@
       </article>
     <% end %>
   </section>
+
+  <footer class="landing-footer">
+    <nav class="landing-footer-nav" aria-label="<%= t('landing.footer.legal_nav_aria') %>">
+      <%= link_to t('nav.privacy'), privacy_path %>
+      <%= link_to t('nav.terms'), terms_path %>
+    </nav>
+  </footer>
 </main>

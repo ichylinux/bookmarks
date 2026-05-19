@@ -239,6 +239,31 @@
   margin: 0;
 }
 
+.landing-footer {
+  border-top: 1px solid #d6dbe5;
+  margin-top: 28px;
+  padding-top: 16px;
+}
+
+.landing-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: center;
+
+  a {
+    color: #4f6b95;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      color: #2f6feb;
+      text-decoration: underline;
+    }
+  }
+}
+
 @media (max-width: 767px) {
   .landing-page {
     margin-top: 14px;
