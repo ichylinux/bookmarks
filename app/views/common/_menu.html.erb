@@ -48,6 +48,9 @@
             <% if current_user.uid.present? %>
               <div><%= link_to t('nav.x_accounts'), x_accounts_path %></div>
             <% end %>
+            <% if current_user.admin? %>
+              <div><%= link_to t('nav.x_api_usages'), admin_x_api_usages_path %></div>
+            <% end %>
           </div>
           <div class="menu-divider" role="separator"></div>
           <div class="menu-section menu-section--secondary">
