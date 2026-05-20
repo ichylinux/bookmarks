@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.28 — Account Self-Service Deletion** — Phases 91–94 (in progress) — see Phases below
+- 🚧 **v1.28 — Account Self-Service Deletion** — Phases 91–95 (in progress) — see Phases below
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
 - ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
 - ✅ **v1.25 — Portal Column Width Ratios** — Phases 80–83 (shipped 2026-05-18) — [archived](milestones/v1.25-ROADMAP.md)
@@ -33,12 +33,13 @@
 
 ## Phases
 
-### v1.28 — Account Self-Service Deletion (Phases 91–94)
+### v1.28 — Account Self-Service Deletion (Phases 91–95)
 
 - [x] Phase 91: Policy Wording — 90-Day Retention — 2026-05-20
 - [x] Phase 92: User Soft-Delete Data Layer — 2026-05-20
 - [x] Phase 93: Preferences Deletion UI + Flow — 2026-05-20
 - [x] Phase 94: Tests & Tri-suite Gate — 2026-05-20
+- [ ] Phase 95: Closure: retroactive verification artifacts for Phases 92–94
 
 ## Phase Details (v1.28)
 
@@ -88,6 +89,16 @@
 1. Minitest: deletion, auth block, PII anonymization, transactional data retained
 2. Cucumber: end-to-end delete from preferences
 3. `yarn run lint && bin/rails test && bundle exec rake dad:test` green
+
+### Phase 95: Closure: retroactive verification artifacts for Phases 92–94
+
+**Goal:** Phases 92–94 each have a retroactive VERIFICATION.md and the v1.28 requirements traceability is fully synced, clearing the milestone audit's artifact-debt gap.
+**Depends on:** Phase 94
+**Requirements:** (closure — verifies POLICY-01/02, ACCT-01..08)
+**Plans:** 1 plan
+
+Plans:
+- [ ] 95-01-PLAN.md — Create VERIFICATION.md for Phases 92–94 and sync REQUIREMENTS.md / ROADMAP.md
 
 ---
 
@@ -146,4 +157,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-20 — v1.28 milestone started (phases 91–94)*
+*Last updated: 2026-05-20 — v1.28 milestone: Phase 95 (artifact closure) planned*

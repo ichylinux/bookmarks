@@ -52,6 +52,10 @@ Progress: [████████████████████] 100% (4
 - (v1.28) Confirmation token: type `DELETE` on `/account_deletion/new`
 - (v1.28) Cucumber `@account_deletion` uses `rack_test` driver for reliable DELETE form submit
 
+### Roadmap Evolution
+
+- Phase 95 added: Closure: retroactive verification artifacts for Phases 92–94
+
 ### Blockers/Concerns
 
 - None for v1.28 implementation
