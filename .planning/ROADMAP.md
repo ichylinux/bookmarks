@@ -98,7 +98,7 @@
 **Plans:** 1 plan
 
 Plans:
-- [ ] 95-01-PLAN.md — Create VERIFICATION.md for Phases 92–94 and sync REQUIREMENTS.md / ROADMAP.md
+- [x] 95-01-PLAN.md — Create VERIFICATION.md for Phases 92–94 and sync REQUIREMENTS.md / ROADMAP.md
 
 ---
 
