@@ -1,6 +1,15 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
+  def test_admin_question_mark_uses_database_flag
+    u = users(:twitter_user)
+    assert_not u.admin?
+
+    u.update_columns(admin: true)
+    u.reload
+    assert_predicate u, :admin?
+  end
+
   def test_dummy_email_rejected_on_update
     u = users(:twitter_user)
     u.email = "dummy_00000000-0000-0000-0000-000000000099@example.com"

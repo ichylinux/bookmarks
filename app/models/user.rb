@@ -83,10 +83,6 @@ class User < ApplicationRecord
     true
   end
 
-  def admin?
-    self.email == User.active.order(:id).first&.email
-  end
-
   def destroy_account!
     return if deleted?
 
