@@ -22,12 +22,8 @@ After completing each phase (and before marking it complete in `.planning/STATE.
 
 Cucumber is part of the green-bar gate. Do not declare a phase "complete" if `dad:test` reports failures attributable to the phase's changes.
 
-## Cucumber suite — known flakiness (as of 2026-05-01)
+## Cucumber suite — flakiness status (resolved 2026-05-19)
 
-`bundle exec rake dad:test` exhibits intermittent scenario-order-dependent failures unrelated to any individual phase:
-- Scenarios share DB state (no truncation between scenarios). One scenario's `preference.theme = 'simple'` or `use_note: true` updates can leak into a later scenario that assumes default state.
-- Specific symptoms seen: `Unable to find checkbox "タスクを表示する"`, missing `.todo_actions` on `/`, missing `#notes-tab-panel`.
+Scenario-order-dependent failures caused by preference state leakage were fixed in `bce47df`: Cucumber step definitions now use browser-driven form submissions (`/preferences` UI) for preference changes instead of direct ActiveRecord writes. This eliminates the cross-connection snapshot problem that previously caused `Unable to find checkbox "タスクを表示する"`, missing `.todo_actions`, and missing `#notes-tab-panel` failures.
 
-**Until this is fixed,** when verifying a phase: if `dad:test` fails, re-run once. A consistent failure across two runs indicates a real regression. A flake that disappears on re-run is pre-existing and tracked separately.
-
-A future quick task should add proper between-scenario preference reset (e.g., a `Before` hook that re-creates the fixture user's preference to defaults).
+`dad:test` should be consistently green. If it fails, re-run once — a consistent failure across two runs indicates a real regression.
