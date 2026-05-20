@@ -2,36 +2,36 @@
 gsd_state_version: 1.0
 milestone: v1.29
 milestone_name: Admin X API Usage Report
-status: in_progress
-last_updated: "2026-05-21T00:00:00.000Z"
-last_activity: 2026-05-21 — Phase 96 complete (lint ✓ · 508/508 Minitest · 28/28 Cucumber)
+status: complete
+last_updated: "2026-05-21T12:00:00.000Z"
+last_activity: 2026-05-21 — Phases 97–100 complete (lint ✓ · 515/515 Minitest · 30/30 Cucumber)
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 5
+  total_plans: 4
+  completed_plans: 4
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 97 of 100 (Instrumentation + Cucumber Isolation) — ready to plan
+Phase: 100 of 100 (Tri-Suite Verification Closure) — complete
 Plan: —
-Status: Phase 96 complete — ready to plan Phase 97
-Last activity: 2026-05-21 — Phase 96 executed; tri-suite green
+Status: v1.29 milestone complete — ready for `/gsd-complete-milestone`
+Last activity: 2026-05-21 — Autonomous run from Phase 97; tri-suite green
 
-Progress: [██░░░░░░░░] 20%
+Progress: [██████████] 100%
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.29 — Admin X API Usage Report (Phase 96: Data Layer)
+**Current focus:** v1.29 shipped — Admin X API Usage Report
 
 ## Performance Metrics
 
-- v1.28 close (autonomous): `yarn run lint` ✓ · `bin/rails test` 500/500 ✓ · `dad:test` 28/28 ✓
+- v1.29 close (autonomous from 97): `yarn run lint` ✓ · `bin/rails test` 515/515 ✓ · `dad:test` 30/30 ✓
 
 ## Deferred Items
 
@@ -44,12 +44,10 @@ Progress: [██░░░░░░░░] 20%
 
 ### Decisions
 
-- (v1.29 research) Instrumentation placement: controller call site (after transaction block returns) using result from XClient — avoids transaction-rollback data loss; write `XApiCall.record!` outside any transaction wrapper
-- (v1.29 research) Schema: `success boolean + error_code varchar(32)` (maps directly to XClient `{ success:, error: }` return contract)
-- (v1.29 research) Admin gate returns 404 (not 403) — obscures existence of admin routes from non-admins
-- (v1.29 research) Nav link guard: `user_signed_in? && current_user.admin?` — both conditions required; `current_user` is nil on guest path
-- (v1.29 research) Cucumber isolation: `XApiCall.delete_all` must ship in Phase 97 (same phase as instrumentation), not as a follow-up
-- (v1.29 research) Admin resource: `resources :x_api_usages` under `namespace :admin` → `Admin::XApiUsagesController`
+- (v1.29) Instrumentation at controller after XClient returns; `record_x_api_call` helper
+- (v1.29) Admin gate 404 for non-admins; drawer link `current_user.admin?`
+- (v1.29) Report identity: email if valid, else `@username` from first XAccount
+- (v1.29) `usage_summary(since:, until_time:)` for date-range filter
 
 ### Blockers/Concerns
 
@@ -57,10 +55,10 @@ Progress: [██░░░░░░░░] 20%
 
 ## Session Continuity
 
-Last session: 2026-05-20
-Stopped at: Roadmap created — all 12 requirements mapped to Phases 96–100
+Last session: 2026-05-21
+Stopped at: v1.29 phases 97–100 complete
 Resume file: None
 
 ## Operator Next Steps
 
-- Run `/gsd:execute-phase 96` to execute the data layer plans
+- Run `/gsd-complete-milestone` to archive v1.29

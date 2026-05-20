@@ -12,6 +12,7 @@ class XAccountsController < ApplicationController
 
   def refresh
     result = XClient.new.fetch_following(user: current_user)
+    record_x_api_call(endpoint: 'fetch_following', result: result)
     unless result[:success]
       flash[:alert] = t("errors.x_client.#{result[:error]}")
       redirect_to x_accounts_path and return
@@ -28,6 +29,7 @@ class XAccountsController < ApplicationController
       x_user_id: @x_account.x_user_id,
       limit: @x_account.display_count
     )
+    record_x_api_call(endpoint: 'fetch_recent_tweets', result: result)
 
     if result[:success]
       @x_items = result[:items]
@@ -75,5 +77,15 @@ class XAccountsController < ApplicationController
 
   def x_account_params
     params.require(:x_account).permit(:selected, :protected_acknowledged, :display_count)
+  end
+
+  def record_x_api_call(endpoint:, result:)
+    XApiCall.record!(
+      user_id: current_user.id,
+      endpoint: endpoint,
+      success: result[:success],
+      error_code: result[:success] ? nil : result[:error].to_s,
+      rate_limit_remaining: result[:rate_limit_remaining]
+    )
   end
 end

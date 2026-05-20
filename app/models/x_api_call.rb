@@ -14,8 +14,10 @@ class XApiCall < ApplicationRecord
     )
   end
 
-  def self.usage_summary(since: nil)
-    scope = since ? where('called_at >= ?', since) : all
+  def self.usage_summary(since: nil, until_time: nil)
+    scope = all
+    scope = scope.where('called_at >= ?', since) if since
+    scope = scope.where('called_at <= ?', until_time) if until_time
     scope.group(:user_id).select(
       :user_id,
       'COUNT(*) AS total_calls',

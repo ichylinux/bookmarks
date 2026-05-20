@@ -147,6 +147,19 @@ ja:
       submit: アカウントを削除する
       cancel: キャンセル
 
+  admin:
+    x_api_usages:
+      index:
+        title: X API 利用状況
+        filter_from: 開始日
+        filter_to: 終了日
+        filter_submit: 絞り込む
+        empty: 該当する利用記録がありません。
+        col_identity: ユーザー
+        col_total_calls: 呼び出し回数
+        col_last_called_at: 最終呼び出し
+        col_error_count: エラー回数
+
   email_registrations:
     saved: メールアドレスを保存しました。
     new:
@@ -191,6 +204,7 @@ ja:
     feeds: フィード
     mastodon: Mastodon
     x_accounts: X (旧Twitter)
+    x_api_usages: X API 利用状況
     privacy: プライバシーポリシー
     terms: 利用規約
     sign_out: ログアウト

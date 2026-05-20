@@ -45,6 +45,9 @@
             <% if current_user.uid.present? %>
               <%= render 'common/drawer_nav_link', label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
             <% end %>
+            <% if current_user.admin? %>
+              <%= render 'common/drawer_nav_link', label: t('nav.x_api_usages'), url: admin_x_api_usages_path, icon: :preferences %>
+            <% end %>
           </div>
           <div class="drawer-nav-divider" role="separator"></div>
           <div class="drawer-nav-section drawer-nav-section--secondary">

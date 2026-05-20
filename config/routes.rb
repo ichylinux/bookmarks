@@ -70,6 +70,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :admin do
+    resources :x_api_usages, only: [:index]
+  end
+
   get 'up' => 'rails/health#show', as: :rails_health_check
   root to: 'welcome#index'
 end

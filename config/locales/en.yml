@@ -147,6 +147,19 @@ en:
       submit: Delete my account
       cancel: Cancel
 
+  admin:
+    x_api_usages:
+      index:
+        title: X API Usage
+        filter_from: From
+        filter_to: To
+        filter_submit: Filter
+        empty: No usage records match this filter.
+        col_identity: User
+        col_total_calls: Total calls
+        col_last_called_at: Last called at
+        col_error_count: Error count
+
   email_registrations:
     saved: Email address saved.
     new:
@@ -191,6 +204,7 @@ en:
     feeds: Feeds
     mastodon: Mastodon
     x_accounts: X (Twitter)
+    x_api_usages: X API Usage
     privacy: Privacy Policy
     terms: Terms of Service
     sign_out: Sign out

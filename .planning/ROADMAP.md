@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.29 — Admin X API Usage Report** — Phases 96–100 (in progress)
+- ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
 - ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
@@ -34,15 +34,15 @@
 
 ## Phases
 
-### 🚧 v1.29 — Admin X API Usage Report (In Progress)
+### ✅ v1.29 — Admin X API Usage Report (Shipped 2026-05-21)
 
 **Milestone Goal:** Give admins a view of X (Twitter) API usage across all users — request counts, rate-limit consumption, per-user breakdowns — using the existing Rails stack with no new gems.
 
 - [x] **Phase 96: Data Layer** — `x_api_calls` table, `XApiCall` model, `rate_limit_remaining` column
-- [ ] **Phase 97: Instrumentation + Cucumber Isolation** — XClient instrumentation hooks and `Before` hook cleanup (atomic unit)
-- [ ] **Phase 98: Admin Access Gate** — `Admin::BaseController` with `require_admin` before_action and negative integration tests
-- [ ] **Phase 99: Report View + Locale + Drawer Nav** — per-user report table, date-range filter, sort toggle, ja/en locale strings, drawer nav link
-- [ ] **Phase 100: Tri-Suite Verification Closure** — full `yarn run lint && bin/rails test && bundle exec rake dad:test` gate
+- [x] **Phase 97: Instrumentation + Cucumber Isolation** — XClient instrumentation hooks and `Before` hook cleanup (atomic unit)
+- [x] **Phase 98: Admin Access Gate** — `Admin::BaseController` with `require_admin` before_action and negative integration tests
+- [x] **Phase 99: Report View + Locale + Drawer Nav** — per-user report table, date-range filter, sort toggle, ja/en locale strings, drawer nav link
+- [x] **Phase 100: Tri-Suite Verification Closure** — full `yarn run lint && bin/rails test && bundle exec rake dad:test` gate
 
 ## Phase Details
 
@@ -111,10 +111,10 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 96. Data Layer | 2/2 | Complete | 2026-05-21 |
-| 97. Instrumentation + Cucumber Isolation | 0/TBD | Not started | - |
-| 98. Admin Access Gate | 0/TBD | Not started | - |
-| 99. Report View + Locale + Drawer Nav | 0/TBD | Not started | - |
-| 100. Tri-Suite Verification Closure | 0/TBD | Not started | - |
+| 97. Instrumentation + Cucumber Isolation | 1/1 | Complete | 2026-05-21 |
+| 98. Admin Access Gate | 1/1 | Complete | 2026-05-21 |
+| 99. Report View + Locale + Drawer Nav | 1/1 | Complete | 2026-05-21 |
+| 100. Tri-Suite Verification Closure | 1/1 | Complete | 2026-05-21 |
 
 ---
 

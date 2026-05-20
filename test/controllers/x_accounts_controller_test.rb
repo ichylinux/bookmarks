@@ -5,6 +5,7 @@ require 'test_helper'
 class XAccountsControllerTest < ActionDispatch::IntegrationTest
   def setup
     XAccount.where(user_id: twitter_user.id).delete_all
+    XApiCall.delete_all
   end
 
   def teardown
@@ -51,17 +52,27 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
         headers: { 'Content-Type' => 'application/json' }
       )
     sign_in twitter_user
-    post refresh_x_accounts_path
+    assert_difference -> { XApiCall.count }, 1 do
+      post refresh_x_accounts_path
+    end
     assert_redirected_to x_accounts_path
     assert_equal 1, XAccount.where(user_id: twitter_user.id).count
+    row = XApiCall.order(:id).last
+    assert_equal 'fetch_following', row.endpoint
+    assert row.success
   end
 
   def test_再取得が失敗するとアラートでリダイレクトされる
     WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/fixture_twitter_uid\/following/)
       .to_return(status: 503)
     sign_in twitter_user
-    post refresh_x_accounts_path
+    assert_difference -> { XApiCall.count }, 1 do
+      post refresh_x_accounts_path
+    end
     assert_redirected_to x_accounts_path
+    row = XApiCall.order(:id).last
+    assert_equal 'fetch_following', row.endpoint
+    assert_not row.success
     follow_redirect!
     assert_select 'span.flash-message__body'
   end
@@ -135,9 +146,14 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
         headers: { 'Content-Type' => 'application/json' }
       )
     sign_in twitter_user
-    get x_account_path(acc, format: :html), xhr: true
+    assert_difference -> { XApiCall.count }, 1 do
+      get x_account_path(acc, format: :html), xhr: true
+    end
     assert_response :success
     refute_match(%r{<html}i, @response.body)
+    row = XApiCall.order(:id).last
+    assert_equal 'fetch_recent_tweets', row.endpoint
+    assert row.success
   end
 
   def test_showでdisplay_countが5未満でもAPIエラーにならない
@@ -163,8 +179,14 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
       .to_timeout
     twitter_user.preference.update!(locale: 'en')
     sign_in twitter_user
-    get x_account_path(acc, format: :html), xhr: true
+    assert_difference -> { XApiCall.count }, 1 do
+      get x_account_path(acc, format: :html), xhr: true
+    end
     assert_response :success
+    row = XApiCall.order(:id).last
+    assert_equal 'fetch_recent_tweets', row.endpoint
+    assert_not row.success
+    assert_equal 'timeout', row.error_code
     assert_select 'span', text: I18n.t('errors.x_client.timeout', locale: :en)
   end
 

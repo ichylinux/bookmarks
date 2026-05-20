@@ -60,8 +60,9 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_ドロワー内のnav要素が9リンクを含む
-    user.preference.update!(theme: 'modern')
-    sign_in user
+    non_admin = User.find(2)
+    non_admin.preference.update!(theme: 'modern')
+    sign_in non_admin
     get root_path
     assert_response :success
     assert_select '.drawer > nav', count: 1
@@ -70,6 +71,18 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.drawer-nav-divider[role=?]', 'separator', count: 1
     assert_select '.drawer-nav-section--primary a', count: 6
     assert_select '.drawer-nav-section--secondary a', count: 3
+    assert_select '.drawer a[href=?]', admin_x_api_usages_path, count: 0
+  end
+
+  def test_管理者のドロワーにX_API利用状況リンクが含まれる
+    admin = User.find(1)
+    admin.preference.update!(theme: 'modern')
+    sign_in admin
+    get root_path
+    assert_response :success
+    assert_select '.drawer a[href=?]', admin_x_api_usages_path, count: 1
+    assert_select '.drawer nav a', count: 10
+    assert_select '.drawer-nav-section--primary a', count: 7
   end
 
   def test_クラシックテーマでハンバーガーとドロワーが表示される
@@ -185,8 +198,9 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_モダンテーマでuse_noteオンのときドロワーnavは9リンク
-    user.preference.update!(theme: 'modern', use_note: true)
-    sign_in user
+    non_admin = User.find(2)
+    non_admin.preference.update!(theme: 'modern', use_note: true)
+    sign_in non_admin
     get root_path
     assert_response :success
     assert_select '.drawer nav a', count: 9

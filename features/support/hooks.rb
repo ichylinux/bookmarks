@@ -5,6 +5,7 @@ Before do |scenario|
 
   MastodonAccount.delete_all
   XAccount.delete_all
+  XApiCall.delete_all
   VisitedLink.delete_all
 
   pref = user.preference
@@ -109,6 +110,15 @@ end
 
 After('@feed_visited_links') do
   WebMock.remove_request_stub(@_feed_visited_stub) if @_feed_visited_stub
+end
+
+Before('@admin_x_api_report_rack') do
+  @admin_report_prev_driver = Capybara.current_driver
+  Capybara.current_driver = :rack_test
+end
+
+After('@admin_x_api_report_rack') do
+  Capybara.current_driver = @admin_report_prev_driver if @admin_report_prev_driver
 end
 
 Before('@account_deletion') do
