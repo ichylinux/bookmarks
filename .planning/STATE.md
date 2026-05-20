@@ -1,31 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.28
-milestone_name: Account Self-Service Deletion
-status: between_milestones
-last_updated: "2026-05-20T05:20:00.000Z"
-last_activity: 2026-05-20 — v1.28 closed and archived; ready for next milestone
+milestone: v1.29
+milestone_name: Admin X API Usage Report
+status: planning
+last_updated: "2026-05-20T00:00:00.000Z"
+last_activity: 2026-05-20 — Milestone v1.29 started
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 1
-  completed_plans: 1
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: Milestone v1.28 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-05-20 — Milestone v1.28 completed and archived
+Status: Defining requirements
+Last activity: 2026-05-20 — Milestone v1.29 started
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Between milestones — planning v1.29
+**Current focus:** v1.29 — Admin X API Usage Report
 
 ## Performance Metrics
 

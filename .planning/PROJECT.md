@@ -165,9 +165,19 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ On deletion, user PII (email, OAuth tokens) cleared or anonymized; transactional data rows retained — **v1.28 Phase 92**
 - ✓ ToS and privacy policy describe 90-day retention before permanent data erasure (ja/en) — **v1.28 Phase 91**
 
+## Current Milestone: v1.29 Admin X API Usage Report
+
+**Goal:** Give admins a view of X (Twitter) API usage across all users — request counts, rate-limit consumption, per-user breakdowns.
+
+**Target features:**
+- Admin-only access gate (`users.admin` boolean column already exists)
+- Per-user X API call tracking (record requests made through XClient)
+- Admin report page showing usage by user: request counts, last call, totals
+- Filtering / sorting (e.g. by user, by date range)
+
 ### Active
 
-(No active requirements — planning next milestone.)
+(Defining requirements for v1.29.)
 
 ### Out of Scope (revisit when planning)
 
@@ -365,4 +375,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-20 — after v1.28 milestone (Account Self-Service Deletion)*
+*Last updated: 2026-05-20 — milestone v1.29 started (Admin X API Usage Report)*
