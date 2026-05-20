@@ -61,6 +61,33 @@ class UserTest < ActiveSupport::TestCase
     u.update_columns(oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil)
   end
 
+  def test_twitter2_from_omniauth_links_existing_user_by_email_when_uid_missing
+    u = users(:twitter_user)
+    u.update_columns(uid: nil, provider: nil, email: 'link-by-email@example.com')
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => 'oauth2-uid-after-email-registration',
+      'info' => { 'name' => u.name, 'email' => 'link-by-email@example.com' },
+      'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => Time.now.to_i + 7200, 'expires' => true }
+    )
+    result = User.from_omniauth(auth)
+    assert_equal u.id, result.id
+    u.reload
+    assert_equal 'oauth2-uid-after-email-registration', u.uid
+    assert_equal 'twitter2', u.provider
+    assert_equal 'bearer-tok', u.oauth2_token
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      uid: 'fixture_twitter_uid',
+      provider: 'twitter',
+      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
+      oauth2_token: nil,
+      oauth2_refresh_token: nil,
+      oauth2_token_expires_at: nil
+    )
+  end
+
   def test_twitter2_from_omniauth_creates_new_user_when_uid_unknown
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
@@ -227,7 +254,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => 'restore-oauth-uid',
-      'info' => { 'name' => 'Restored', 'email' => 'restored@example.com' },
+      'info' => { 'name' => 'Changed Display Name', 'email' => 'restored@example.com' },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r' }
     )
 

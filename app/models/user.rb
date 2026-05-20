@@ -37,10 +37,13 @@ class User < ApplicationRecord
       uid = access_token.uid.to_s
       expires_at = creds['expires_at'] ? Time.at(creds['expires_at'].to_i) : nil
 
-      user = User.active.where(uid: uid).where(provider: %w[twitter twitter2]).first
+      user = User.active.find_by(uid: uid)
+      user ||= User.active.find_by(email: data['email']) if data['email'].present?
       if user
         # OAUTH-01: users.email scope is configured in devise.rb — email arrives here when granted
         attrs = {
+          provider: 'twitter2',
+          uid: uid,
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
@@ -64,7 +67,7 @@ class User < ApplicationRecord
         )
       end
     else
-      user = User.active.where(email: data["email"]).first
+      user = User.active.where(email: data['email']).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
       user
     end
