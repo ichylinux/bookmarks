@@ -9,6 +9,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
 <details>
+<summary>Shipped: v1.29 Admin X API Usage Report (2026-05-21)</summary>
+
+**Delivered (phases 96–100):**
+- `x_api_calls` append-only table; `XApiCall.record!` and `usage_summary(since:, until_time:)` for per-user aggregates
+- `XAccountsController#refresh` and `#show` instrument every X API call; Cucumber `Before` clears `XApiCall` rows
+- `Admin::BaseController` + `require_admin` (404 for non-admins); `/admin/x_api_usages` report with date filter, column sort, ja/en locale, drawer nav link for admins only
+- Tri-suite gate green: lint ✓ · 515/515 Minitest · 30/30 Cucumber
+
+</details>
+
+<details>
 <summary>Shipped: v1.28 Account Self-Service Deletion (2026-05-20)</summary>
 
 **Delivered (phases 91–95):**
@@ -164,20 +175,15 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ User can delete account from preferences; account deactivated immediately; cannot sign in again — **v1.28 Phases 92–93**
 - ✓ On deletion, user PII (email, OAuth tokens) cleared or anonymized; transactional data rows retained — **v1.28 Phase 92**
 - ✓ ToS and privacy policy describe 90-day retention before permanent data erasure (ja/en) — **v1.28 Phase 91**
+- ✓ `x_api_calls` table and `XApiCall` model with `record!` and per-user `usage_summary` aggregation — **v1.29 Phase 96**
+- ✓ Controller instrumentation writes rows on X API refresh/show (success and error paths); Cucumber isolation via `XApiCall.delete_all` — **v1.29 Phase 97**
+- ✓ Admin routes gated (`require_admin`, 404 for non-admins); drawer nav link for admins only — **v1.29 Phases 98–99**
+- ✓ Admin usage report at `/admin/x_api_usages` with date-range filter, column sort, ja/en locale — **v1.29 Phase 99**
+- ✓ Tri-suite gate green with v1.29 changes (515 Minitest, 30 Cucumber) — **v1.29 Phase 100**
 
-## Current Milestone: v1.29 Admin X API Usage Report
+## Next Milestone
 
-**Goal:** Give admins a view of X (Twitter) API usage across all users — request counts, rate-limit consumption, per-user breakdowns.
-
-**Target features:**
-- Admin-only access gate (`users.admin` boolean column already exists)
-- Per-user X API call tracking (record requests made through XClient)
-- Admin report page showing usage by user: request counts, last call, totals
-- Filtering / sorting (e.g. by user, by date range)
-
-### Active
-
-(Defining requirements for v1.29.)
+Run `/gsd-new-milestone` to define the next version (questioning → research → requirements → roadmap).
 
 ### Out of Scope (revisit when planning)
 
@@ -192,6 +198,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.29 (2026-05-21):** Admin X API usage report — `x_api_calls` logging, controller instrumentation, admin gate, per-user report with filter/sort/locale, tri-suite gate. Tri-suite: lint ✓ · 515 Minitest 0 failures · 30/30 Cucumber. Details: `.planning/milestones/v1.29-ROADMAP.md`. No milestone audit file at close (process debt).
 - **Shipped v1.28 (2026-05-20):** Account self-service deletion — soft-delete data layer, preferences danger-zone UI, DELETE confirmation, PII anonymization, 90-day policy text (ja/en), tri-suite gate. Tri-suite: lint ✓ · 500 Minitest 0 failures · 28/28 Cucumber. Details: `.planning/milestones/v1.28-ROADMAP.md`. Audit: `.planning/milestones/v1.28-MILESTONE-AUDIT.md` (`tech_debt`; 10/10 requirements; purge job deferred ACCT-FUT-01).
 - **Shipped v1.27 (2026-05-19):** Privacy policy + terms of service at `/privacy` and `/terms` (bilingual, public); X OAuth2 email scope wiring (OAUTH-01–03). Tri-suite: lint ✓ · 485 Minitest 0 failures · 27/27 Cucumber. Details: `.planning/milestones/v1.27-ROADMAP.md`. Audit: `.planning/milestones/v1.27-MILESTONE-AUDIT.md` (`tech_debt`; 9/9 requirements; Phase 90 process artifacts deferred).
 - **Shipped v1.19 (2026-05-14):** HTTP test stubs → WebMock — `webmock 3.26.2` in `:test` group; `test/support/webmock.rb` global config; Minitest service/controller tests migrated to Faraday `:test` + WebMock; Cucumber hooks migrated to per-scenario `WebMock.stub_request`; 133-line prepend stub file deleted. Tri-suite green (363 Minitest, 24 Cucumber). Details: `.planning/milestones/v1.19-ROADMAP.md`. Audit: `.planning/milestones/v1.19-MILESTONE-AUDIT.md` (`tech_debt`; 5/5 requirements; accepted: no per-phase artifacts for Phases 65–66).
@@ -275,6 +282,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Soft-delete + immediate PII strip (not hard-delete) on account deletion (v1.28) | Transactional rows (bookmarks, notes, feeds, etc.) must remain; purge job deferred (ACCT-FUT-01) | ✓ Good — `destroy_account!` uses `update!` not `destroy`; `deleted_at` captured for future purge |
 | Type `DELETE` confirmation token for account deletion (v1.28) | High-stakes destructive action; explicit text confirmation reduces accidental deletion | ✓ Good — `AccountDeletionsController` validates `params[:confirmation] == 'DELETE'` |
 | Cucumber `@account_deletion` uses `rack_test` driver (v1.28) | `DELETE` form submit via Capybara + Selenium was unreliable with CSRF; `rack_test` is reliable for this flow | ✓ Good — explicit `driver: :rack_test` on the tag |
+| Append-only `x_api_calls` without timestamps (v1.29) | Logging table uses `called_at` only; avoids Rails `created_at`/`updated_at` noise | ✓ Good — `record!` + grouped `usage_summary` relation chainable in report |
+| Controller-level instrumentation after XClient returns (v1.29) | Keeps `XClient` free of logging concerns; captures success and error paths uniformly | ✓ Good — `record_x_api_call` helper on both paths |
+| Admin 404 (not 403) for non-admins (v1.29) | Hides admin surface existence from regular users | ✓ Good — integration tests assert 404 |
+| Report identity: valid email else `@handle` from first XAccount (v1.29) | Dummy-email Twitter users have no display email | ✓ Good — readable per-user rows without exposing placeholders |
 
 ## Evolution
 

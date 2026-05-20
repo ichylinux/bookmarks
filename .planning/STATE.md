@@ -1,37 +1,39 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.29
-milestone_name: Admin X API Usage Report
-status: complete
-last_updated: "2026-05-21T12:00:00.000Z"
-last_activity: 2026-05-21 — Phases 97–100 complete (lint ✓ · 515/515 Minitest · 30/30 Cucumber)
+milestone: null
+milestone_name: null
+status: planning_next
+last_updated: "2026-05-21T12:30:00.000Z"
+last_activity: 2026-05-21 — v1.29 milestone archived via /gsd-complete-milestone
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 100 of 100 (Tri-Suite Verification Closure) — complete
+Phase: —
 Plan: —
-Status: v1.29 milestone complete — ready for `/gsd-complete-milestone`
-Last activity: 2026-05-21 — Autonomous run from Phase 97; tri-suite green
+Status: v1.29 shipped — planning next milestone
+Last activity: 2026-05-21 — Milestone v1.29 archived
 
-Progress: [██████████] 100%
+Progress: [          ] 0%
 
 ## Project Reference
 
+See: .planning/PROJECT.md (updated 2026-05-21)
+
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.29 shipped — Admin X API Usage Report
+**Current focus:** Planning next milestone (`/gsd-new-milestone`)
 
 ## Performance Metrics
 
-- v1.29 close (autonomous from 97): `yarn run lint` ✓ · `bin/rails test` 515/515 ✓ · `dad:test` 30/30 ✓
+- v1.29 close: `yarn run lint` ✓ · `bin/rails test` 515/515 ✓ · `dad:test` 30/30 ✓
 
 ## Deferred Items
 
@@ -56,9 +58,9 @@ Progress: [██████████] 100%
 ## Session Continuity
 
 Last session: 2026-05-21
-Stopped at: v1.29 phases 97–100 complete
+Stopped at: v1.29 milestone complete and archived
 Resume file: None
 
 ## Operator Next Steps
 
-- Run `/gsd-complete-milestone` to archive v1.29
+- Run `/gsd-new-milestone` to start the next version

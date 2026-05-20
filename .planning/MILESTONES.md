@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.29 — Admin X API Usage Report (shipped 2026-05-21)
+
+**Scope:** Phases 96–100 (5 phases, 6 plans) — `x_api_calls` data layer, controller instrumentation, admin access gate, usage report UI with ja/en locale, tri-suite closure. 49 files changed, 3,460 insertions(+), 1,500 deletions(-).
+
+**Key accomplishments:**
+
+- `x_api_calls` append-only table and `XApiCall` model with `record!` and grouped `usage_summary(since:, until_time:)` for per-user aggregates (DATA-01–03).
+- `XAccountsController#refresh` and `#show` write `XApiCall` rows on success and error paths; Cucumber `Before` hook clears rows between scenarios (INST-01–03).
+- `Admin::BaseController` with `require_admin` — guests redirect to sign-in, non-admins get 404; admin report at `/admin/x_api_usages` with date-range filter, column sort, drawer nav link gated on `admin?` (ADMIN-01/02, REPORT-01–03, LOCALE-01).
+- Tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` 515/515 · `bundle exec rake dad:test` 30/30.
+
+**Tech debt at close (non-blocking):** No `v1.29-MILESTONE-AUDIT.md`; Phases 97–100 lack formal `*-SUMMARY.md` (evidence in code review + tests); future requirements deferred (rate-limit windows, charts, 90-day prune job, per-endpoint drill-down).
+
+Known deferred items at close: 2 (ACCT-FUT-01 purge job, ACCT-FUT-03 data export — carried from v1.28, see STATE.md).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.29-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.29-REQUIREMENTS.md) · [Phase archive](milestones/v1.29-phases/)
+
+---
+
 ## v1.28 — Account Self-Service Deletion (shipped 2026-05-20)
 
 **Scope:** Phases 91–95 (5 phases, 1 plan) — 90-day policy alignment, soft-delete data layer, preferences danger zone UI, tri-suite coverage, and retroactive artifact closure. 38 files changed, 1,559 insertions(+), 117 deletions(-).

@@ -2,6 +2,38 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.29 — Admin X API Usage Report
+
+**Shipped:** 2026-05-21
+**Phases:** 5 (96–100) | **Plans:** 6 (Phase 96: 2; Phases 97–100: 1 each)
+
+### What Was Built
+
+- `x_api_calls` append-only table; `XApiCall.record!` and `usage_summary` with date-range filters
+- Controller instrumentation on `XAccountsController#refresh` and `#show` (success + error paths)
+- `Admin::BaseController` + admin usage report at `/admin/x_api_usages` (filter, sort, ja/en, drawer link)
+- Tri-suite: `yarn run lint` ✓ · 515/515 Minitest · 30/30 Cucumber
+
+### What Worked
+
+- Phase 96 formal GSD plans (2 waves) produced clean data-layer foundation for later phases
+- Reusing existing `users.admin` + Rake task pattern avoided admin-promotion UI scope creep
+- 404 (not 403) for non-admins keeps admin surface hidden
+
+### What Was Inefficient
+
+- Phases 97–100 shipped without `*-SUMMARY.md` artifacts — traceability relies on code review + tri-suite
+- No `v1.29-MILESTONE-AUDIT.md` at close (recommended for next milestone)
+- `gsd-sdk query` subcommands unavailable in Cursor environment — manual archival for complete-milestone
+
+### Key Lessons
+
+- Controller-level `record_x_api_call` after `XClient` keeps the service layer logging-free
+- `usage_summary` returning an AR relation (not Array) enables report chaining without extra queries
+- Phase directories archived via `/gsd-cleanup` before `/gsd-complete-milestone` reduces close friction
+
+---
+
 ## Milestone: v1.28 — Account Self-Service Deletion
 
 **Shipped:** 2026-05-20

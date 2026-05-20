@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21)
+- ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
 - ✅ **v1.26 — Visited Link Tracking** — Phases 84–88 (shipped 2026-05-18) — [archived](milestones/v1.26-ROADMAP.md)
@@ -34,87 +34,22 @@
 
 ## Phases
 
-### ✅ v1.29 — Admin X API Usage Report (Shipped 2026-05-21)
+_(No active phases — start the next milestone with `/gsd-new-milestone`.)_
 
-**Milestone Goal:** Give admins a view of X (Twitter) API usage across all users — request counts, rate-limit consumption, per-user breakdowns — using the existing Rails stack with no new gems.
+---
 
-- [x] **Phase 96: Data Layer** — `x_api_calls` table, `XApiCall` model, `rate_limit_remaining` column
-- [x] **Phase 97: Instrumentation + Cucumber Isolation** — XClient instrumentation hooks and `Before` hook cleanup (atomic unit)
-- [x] **Phase 98: Admin Access Gate** — `Admin::BaseController` with `require_admin` before_action and negative integration tests
-- [x] **Phase 99: Report View + Locale + Drawer Nav** — per-user report table, date-range filter, sort toggle, ja/en locale strings, drawer nav link
-- [x] **Phase 100: Tri-Suite Verification Closure** — full `yarn run lint && bin/rails test && bundle exec rake dad:test` gate
+<details>
+<summary>✅ v1.29 — Admin X API Usage Report (Phases 96–100) — SHIPPED 2026-05-21</summary>
 
-## Phase Details
+Full goals, success criteria, and notes: [milestones/v1.29-ROADMAP.md](milestones/v1.29-ROADMAP.md).
 
-### Phase 96: Data Layer
-**Goal**: The `x_api_calls` schema and `XApiCall` model exist and can record and aggregate X API call events
-**Depends on**: Nothing (extends existing schema)
-**Requirements**: DATA-01, DATA-02, DATA-03
-**Success Criteria** (what must be TRUE):
-  1. Migration creates `x_api_calls` table with `user_id`, `endpoint`, `success`, `error_code`, `called_at`, `rate_limit_remaining` columns and the `(user_id, called_at)` composite index
-  2. `XApiCall.record!` creates a row with correct values when called with a user_id, endpoint, success flag, and optional error_code/rate_limit_remaining
-  3. `XApiCall.usage_summary` returns per-user aggregates (total calls, last called_at, error count) correctly filtering by `since:` date parameter
-  4. Minitest model unit tests are green for all three behaviors above
-**Plans**: 2 plans
-Plans:
-- [ ] 96-01-PLAN.md — Migration + Model (x_api_calls table, XApiCall record! and usage_summary)
-- [ ] 96-02-PLAN.md — Minitest model tests (DATA-01/02/03 coverage)
+- [x] Phase 96: Data Layer (2/2 plans) — 2026-05-21
+- [x] Phase 97: Instrumentation + Cucumber Isolation (1/1 plan) — 2026-05-21
+- [x] Phase 98: Admin Access Gate (1/1 plan) — 2026-05-21
+- [x] Phase 99: Report View + Locale + Drawer Nav (1/1 plan) — 2026-05-21
+- [x] Phase 100: Tri-Suite Verification Closure (1/1 plan) — 2026-05-21
 
-### Phase 97: Instrumentation + Cucumber Isolation
-**Goal**: Every X API call made through `XAccountsController` writes an `XApiCall` row, and Cucumber scenarios are isolated from row accumulation
-**Depends on**: Phase 96
-**Requirements**: INST-01, INST-02, INST-03
-**Success Criteria** (what must be TRUE):
-  1. `XAccountsController#refresh` writes an `XApiCall` row on both the success path and the error path after `fetch_following` returns
-  2. `XAccountsController#show` writes an `XApiCall` row on both the success path and the error path after `fetch_recent_tweets` returns
-  3. The Cucumber `Before` hook in `features/support/hooks.rb` includes `XApiCall.delete_all` so no rows from one scenario are visible in the next
-  4. Existing `@x_gadget` Cucumber scenarios continue to pass with the instrumentation in place
-**Plans**: TBD
-
-### Phase 98: Admin Access Gate
-**Goal**: Admin-namespaced routes exist and are protected — non-admins and guests cannot reach them
-**Depends on**: Phase 96
-**Requirements**: ADMIN-01
-**Success Criteria** (what must be TRUE):
-  1. An unauthenticated request to `GET /admin/x_api_usages` redirects to the sign-in page (Devise default)
-  2. An authenticated request from a non-admin user to `GET /admin/x_api_usages` receives a 404 response
-  3. An authenticated request from an admin user to `GET /admin/x_api_usages` receives a 200 response
-  4. Both negative cases are covered by dedicated Minitest integration tests that assert the correct response codes
-**Plans**: TBD
-
-### Phase 99: Report View + Locale + Drawer Nav
-**Goal**: Admin can view, filter, and sort the X API usage report in their preferred language, and the drawer nav provides a link when signed in as admin
-**Depends on**: Phase 97, Phase 98
-**Requirements**: REPORT-01, REPORT-02, REPORT-03, LOCALE-01, ADMIN-02
-**Success Criteria** (what must be TRUE):
-  1. Admin visiting `/admin/x_api_usages` sees a table of per-user rows with: email (or Twitter handle for dummy-email accounts), total call count, last called at timestamp, and error count
-  2. Admin can submit a date-range filter (from/to date inputs) and the table updates to show only calls within that range, with no schema changes required
-  3. Admin can click a column header (total calls or last called at) to toggle sort order between ascending and descending
-  4. All report UI strings — page title, table headers, filter labels, empty-state message — have corresponding ja and en locale keys, and the i18n parity test passes
-  5. The drawer nav shows a link to `/admin/x_api_usages` only when `user_signed_in? && current_user.admin?` is true; non-admin and guest users see no admin link
-**Plans**: TBD
-**UI hint**: yes
-
-### Phase 100: Tri-Suite Verification Closure
-**Goal**: All three test suites pass with v1.29 changes in place, confirming no regressions
-**Depends on**: Phase 99
-**Requirements**: (no new requirements — verification gate)
-**Success Criteria** (what must be TRUE):
-  1. `yarn run lint` exits 0 with no new ESLint violations
-  2. `bin/rails test` runs all Minitest cases with 0 failures
-  3. `bundle exec rake dad:test` runs all Cucumber scenarios with 0 failed scenarios on first run
-  4. A Cucumber scenario exercises the full admin report path: sign in as admin, visit `/admin/x_api_usages`, assert per-user row is present; a second scenario confirms non-admin gets 404
-**Plans**: TBD
-
-## Progress
-
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 96. Data Layer | 2/2 | Complete | 2026-05-21 |
-| 97. Instrumentation + Cucumber Isolation | 1/1 | Complete | 2026-05-21 |
-| 98. Admin Access Gate | 1/1 | Complete | 2026-05-21 |
-| 99. Report View + Locale + Drawer Nav | 1/1 | Complete | 2026-05-21 |
-| 100. Tri-Suite Verification Closure | 1/1 | Complete | 2026-05-21 |
+</details>
 
 ---
 
@@ -184,4 +119,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-20 — Phase 96 planned (2 plans: 96-01, 96-02)*
+*Last updated: 2026-05-21 — v1.29 milestone shipped and archived*
