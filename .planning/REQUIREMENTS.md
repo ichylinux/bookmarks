@@ -48,16 +48,16 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| POLICY-01 | Phase 91 | Pending |
-| POLICY-02 | Phase 91 | Pending |
-| ACCT-03 | Phase 92 | Pending |
-| ACCT-04 | Phase 92 | Pending |
-| ACCT-05 | Phase 92 | Pending |
-| ACCT-06 | Phase 92 | Pending |
-| ACCT-01 | Phase 93 | Pending |
-| ACCT-02 | Phase 93 | Pending |
-| ACCT-07 | Phase 94 | Pending |
-| ACCT-08 | Phase 94 | Pending |
+| POLICY-01 | Phase 91 | Complete |
+| POLICY-02 | Phase 91 | Complete |
+| ACCT-03 | Phase 92 | Complete |
+| ACCT-04 | Phase 92 | Complete |
+| ACCT-05 | Phase 92 | Complete |
+| ACCT-06 | Phase 92 | Complete |
+| ACCT-01 | Phase 93 | Complete |
+| ACCT-02 | Phase 93 | Complete |
+| ACCT-07 | Phase 94 | Complete |
+| ACCT-08 | Phase 94 | Complete |
 
 **Coverage:**
 - v1.28 requirements: 10 total
@@ -66,4 +66,4 @@
 
 ---
 *Requirements defined: 2026-05-20*
-*Last updated: 2026-05-20 after milestone v1.28 roadmap*
+*Last updated: 2026-05-20 — v1.28 closed; all requirements verified (Phase 95)*
