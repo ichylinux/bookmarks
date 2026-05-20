@@ -2,15 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.28
 milestone_name: Account Self-Service Deletion
-status: ready_for_audit
-stopped_at: ""
-last_updated: "2026-05-20T18:30:00.000Z"
-last_activity: 2026-05-20 — Phase 95 complete (artifact closure); all 5 phases done
+status: between_milestones
+last_updated: "2026-05-20T05:20:00.000Z"
+last_activity: 2026-05-20 — v1.28 closed and archived; ready for next milestone
 progress:
   total_phases: 5
   completed_phases: 5
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 1
+  completed_plans: 1
   percent: 100
 ---
 
@@ -18,19 +17,15 @@ progress:
 
 ## Current Position
 
-Phase: 95 complete — all v1.28 phases complete; ready for audit
+Phase: Milestone v1.28 complete
 Plan: —
-Status: All v1.28 phases done (91–95); artifact debt cleared
-Last activity: 2026-05-20 — Phase 95 artifact closure: retroactive VERIFICATION.md for phases 92–94
-
-```
-Progress: [████████████████████] 100% (5/5 phases)
-```
+Status: Awaiting next milestone
+Last activity: 2026-05-20 — Milestone v1.28 completed and archived
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Milestone audit / complete for v1.28
+**Current focus:** Between milestones — planning v1.29
 
 ## Performance Metrics
 
@@ -62,10 +57,10 @@ Progress: [████████████████████] 100% (5
 
 ## Session Continuity
 
-Last session: 2026-05-20T04:47:04.677Z
-Stopped at: Phases 91–94 complete
+Last session: 2026-05-20
+Stopped at: milestone close complete
 Resume file: None
 
 ## Operator Next Steps
 
-- Milestone lifecycle: `/gsd-audit-milestone` → `/gsd-complete-milestone v1.28` → `/gsd-cleanup`
+- Start the next milestone with `/gsd-new-milestone`

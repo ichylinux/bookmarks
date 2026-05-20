@@ -2,6 +2,39 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.28 — Account Self-Service Deletion
+
+**Shipped:** 2026-05-20
+**Phases:** 5 (91–95) | **Plans:** 1 (95 only; 91–94 implemented in single cursor-run commit)
+
+### What Was Built
+
+- Privacy policy + ToS (ja/en) updated for two-stage deletion: immediate deactivation + 90-day permanent erasure window
+- `users` soft-delete migration (`deleted`, `deleted_at`); `User#destroy_account!` strips PII + anonymizes email; `active_for_authentication?` blocks auth; `User.active` scope excludes deleted users from OAuth re-auth
+- Preferences danger zone: bilingual "delete account" section with DELETE confirmation step at `/account_deletion/new`, `AccountDeletionsController#destroy`, sign-out redirect
+- Tri-suite: `yarn run lint` ✓ · 500/500 Minitest · 28/28 Cucumber
+- Phase 95 artifact closure: retroactive VERIFICATION.md for all phases; 10/10 requirements traced to Complete
+
+### What Worked
+
+- Single-commit implementation (de956cd) for phases 91–94 moved fast; Phase 95 closure pattern handles audit gaps cleanly
+- `@account_deletion` Cucumber tag with `rack_test` driver was a clean fix for DELETE form reliability
+- Routing `DELETE /account_deletion` via a dedicated `AccountDeletionsController` kept concerns separate from `UsersController`
+
+### What Was Inefficient
+
+- Phases 91–94 implemented without GSD phase directories, requiring a full Phase 95 artifact-closure pass
+- Context exhaustion at 81% during complete-milestone forced a fresh session for archival
+- Quick task SUMMARY.md naming convention (`SUMMARY.md` vs `{date}-SUMMARY.md`) caused audit-open false positives requiring manual resolution
+
+### Key Lessons
+
+- `destroy_account!` using `update!` not `destroy` is the correct pattern — preserves transactional rows without cascade; but `has_many :x_accounts, dependent: :destroy` is now fragile if `destroy` is ever called
+- Retroactive VERIFICATION.md files work well as audit closure when code is already proven by tri-suite
+- SUMMARY.md files for quick tasks must use the un-prefixed `SUMMARY.md` filename (not `{date}-SUMMARY.md`) for gsd-sdk audit-open to recognize them as complete
+
+---
+
 ## Milestone: v1.27 — Privacy Policy for X OAuth2 Email
 
 **Shipped:** 2026-05-19

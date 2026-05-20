@@ -8,18 +8,17 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## Current Milestone: v1.28 Account Self-Service Deletion (Phase 1)
+<details>
+<summary>Shipped: v1.28 Account Self-Service Deletion (2026-05-20)</summary>
 
-**Goal:** Let users request account deletion from preferences; immediately deactivate access and anonymize user PII; keep transactional rows until a future purge job; align ToS/privacy text with a 90-day retention window before permanent erasure.
+**Delivered (phases 91–95):**
+- Privacy policy + ToS (ja/en) updated for two-stage deletion: immediate deactivation + 90-day erasure window
+- `users` soft-delete: `deleted`/`deleted_at` columns; `User#destroy_account!` anonymizes PII; `active_for_authentication?` blocks auth; `User.active` scope excludes deleted users from OAuth re-auth
+- Preferences danger zone: DELETE confirmation step at `/account_deletion/new`; on success → sign-out → redirect root
+- Tri-suite gate green: lint ✓ · 500/500 Minitest · 28/28 Cucumber
+- Phase 95 artifact closure: retroactive VERIFICATION.md for all phases, 10/10 requirements traced
 
-**Target features:**
-- Settings-page account deletion with confirmation step
-- `User` soft-delete (`deleted`, `deleted_at`); block sign-in; clear/anonymize OAuth tokens and email
-- Related content (bookmarks, notes, feeds, etc.) unchanged at delete time
-- ToS and privacy policy updated (ja/en) for two-stage deletion with **90-day** retention
-- Minitest + Cucumber coverage
-
-**Deferred:** Background job to hard-delete user + related data after 90 days; data export.
+</details>
 
 <details>
 <summary>Shipped: v1.27 Privacy Policy for X OAuth2 Email (2026-05-19)</summary>
@@ -162,12 +161,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Privacy policy covers data collected, X login purpose, email handling, retention, and contact — **v1.27 Phase 89**
 - ✓ Terms of service covers acceptable use, availability, and account termination — **v1.27 Phase 89**
 - ✓ X OAuth2 requests `users.email` scope; new-user create stores real X email; re-auth overwrites dummy-pattern email — **v1.27 Phase 90**
+- ✓ User can delete account from preferences; account deactivated immediately; cannot sign in again — **v1.28 Phases 92–93**
+- ✓ On deletion, user PII (email, OAuth tokens) cleared or anonymized; transactional data rows retained — **v1.28 Phase 92**
+- ✓ ToS and privacy policy describe 90-day retention before permanent data erasure (ja/en) — **v1.28 Phase 91**
 
 ### Active
 
-- [ ] User can delete account from preferences; account deactivated immediately; cannot sign in again — **v1.28**
-- [ ] On deletion, user PII (email, OAuth tokens) cleared or anonymized; transactional data rows retained — **v1.28**
-- [ ] ToS and privacy policy describe 90-day retention before permanent data erasure (ja/en) — **v1.28**
+(No active requirements — planning next milestone.)
 
 ### Out of Scope (revisit when planning)
 
@@ -182,6 +182,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.28 (2026-05-20):** Account self-service deletion — soft-delete data layer, preferences danger-zone UI, DELETE confirmation, PII anonymization, 90-day policy text (ja/en), tri-suite gate. Tri-suite: lint ✓ · 500 Minitest 0 failures · 28/28 Cucumber. Details: `.planning/milestones/v1.28-ROADMAP.md`. Audit: `.planning/milestones/v1.28-MILESTONE-AUDIT.md` (`tech_debt`; 10/10 requirements; purge job deferred ACCT-FUT-01).
 - **Shipped v1.27 (2026-05-19):** Privacy policy + terms of service at `/privacy` and `/terms` (bilingual, public); X OAuth2 email scope wiring (OAUTH-01–03). Tri-suite: lint ✓ · 485 Minitest 0 failures · 27/27 Cucumber. Details: `.planning/milestones/v1.27-ROADMAP.md`. Audit: `.planning/milestones/v1.27-MILESTONE-AUDIT.md` (`tech_debt`; 9/9 requirements; Phase 90 process artifacts deferred).
 - **Shipped v1.19 (2026-05-14):** HTTP test stubs → WebMock — `webmock 3.26.2` in `:test` group; `test/support/webmock.rb` global config; Minitest service/controller tests migrated to Faraday `:test` + WebMock; Cucumber hooks migrated to per-scenario `WebMock.stub_request`; 133-line prepend stub file deleted. Tri-suite green (363 Minitest, 24 Cucumber). Details: `.planning/milestones/v1.19-ROADMAP.md`. Audit: `.planning/milestones/v1.19-MILESTONE-AUDIT.md` (`tech_debt`; 5/5 requirements; accepted: no per-phase artifacts for Phases 65–66).
 - **Shipped v1.17 (2026-05-13):** Email registration for dummy-email (X/Twitter) users — model update validation, `Users::EmailRegistrationsController`, preferences link, ja/en, Minitest. Details: `.planning/milestones/v1.17-ROADMAP.md`. Audit: `.planning/milestones/v1.17-MILESTONE-AUDIT.md`.
@@ -261,6 +262,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Visited URLs: upsert + single-query gadget preload + delegated click POST (v1.26) | Server truth across devices; avoid N+1; survive AJAX re-render without rebinding | ✓ Good — thin vertical slice; Cucumber isolation via `VisitedLink.delete_all` |
 | Fully public `PagesController` (no `only:` on skip_before_action) (v1.27) | Both policy pages are 100% public; simpler than per-action skip | ✓ Good — matches landing-page pattern |
 | Conditional attrs hash before `assign_attributes` on twitter2 re-auth (v1.27) | OAUTH-03 needs selective email merge without touching other fields | ✓ Good — `has_valid_email?` + `data['email'].present?` guards |
+| Soft-delete + immediate PII strip (not hard-delete) on account deletion (v1.28) | Transactional rows (bookmarks, notes, feeds, etc.) must remain; purge job deferred (ACCT-FUT-01) | ✓ Good — `destroy_account!` uses `update!` not `destroy`; `deleted_at` captured for future purge |
+| Type `DELETE` confirmation token for account deletion (v1.28) | High-stakes destructive action; explicit text confirmation reduces accidental deletion | ✓ Good — `AccountDeletionsController` validates `params[:confirmation] == 'DELETE'` |
+| Cucumber `@account_deletion` uses `rack_test` driver (v1.28) | `DELETE` form submit via Capybara + Selenium was unreliable with CSRF; `rack_test` is reliable for this flow | ✓ Good — explicit `driver: :rack_test` on the tag |
 
 ## Evolution
 
@@ -361,4 +365,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-20 — milestone v1.28 started*
+*Last updated: 2026-05-20 — after v1.28 milestone (Account Self-Service Deletion)*

@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.28 — Account Self-Service Deletion (shipped 2026-05-20)
+
+**Scope:** Phases 91–95 (5 phases, 1 plan) — 90-day policy alignment, soft-delete data layer, preferences danger zone UI, tri-suite coverage, and retroactive artifact closure. 38 files changed, 1,559 insertions(+), 117 deletions(-).
+
+**Key accomplishments:**
+
+- Privacy policy + ToS updated (ja/en) for two-stage deletion: immediate access deactivation + 90-day permanent erasure window aligned with `destroy_account!` behavior (POLICY-01, POLICY-02).
+- `users` table: `deleted boolean NOT NULL DEFAULT false` + `deleted_at datetime` migration; `User#destroy_account!` sets flags, anonymizes email, clears OAuth tokens; `active_for_authentication?` returns `false` when deleted; `User.active` scope excludes deleted users from OAuth re-auth.
+- Preferences danger zone: bilingual (ja/en) "delete account" section, `/account_deletion/new` confirmation form requiring `DELETE` typed, `AccountDeletionsController#destroy` → `destroy_account!` → sign-out → redirect root.
+- Tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` 500/500 · `bundle exec rake dad:test` 28/28. Minitest covers soft-delete, auth block, PII anonymization, transactional row preservation. Cucumber E2E: preferences → confirm → signed out → cannot sign in.
+- Phase 95 retroactive artifact closure: VERIFICATION.md for all 5 phases; 10/10 requirements traced to Complete in REQUIREMENTS.md.
+
+**Tech debt at close (non-blocking):** 90-day purge job deferred (ACCT-FUT-01); Google OAuth post-deletion test gap (ACCT-04); partial transactional row coverage in tests (Notes + Bookmarks only, 8 other types by inspection); `has_many :x_accounts, dependent: :destroy` fragility; flash double-render cosmetic issue; 2 weak Cucumber assertions. See audit.
+
+Known deferred items at close: 0 (quick tasks resolved before close).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.28-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.28-REQUIREMENTS.md) · [Audit](milestones/v1.28-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.27 — Privacy Policy for X OAuth2 Email (shipped 2026-05-19)
 
 **Scope:** Phases 89–90 (2 phases, 3 plans) — public bilingual policy pages and X OAuth2 email scope wiring for Developer Portal approval.
