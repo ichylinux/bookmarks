@@ -27,7 +27,7 @@ class XApiCall < ApplicationRecord
       :user_id,
       'COUNT(*) AS total_calls',
       'MAX(called_at) AS last_called_at',
-      'SUM(CASE WHEN success = 0 THEN 1 ELSE 0 END) AS error_count'
+      'SUM(CASE WHEN success = false THEN 1 ELSE 0 END) AS error_count'
     )
   end
 end
