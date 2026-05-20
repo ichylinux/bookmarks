@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.29
 milestone_name: Admin X API Usage Report
-status: planning
+status: ready_to_plan
 last_updated: "2026-05-20T00:00:00.000Z"
-last_activity: 2026-05-20 — Milestone v1.29 started
+last_activity: 2026-05-20 — Roadmap created (Phases 96–100)
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,15 +17,17 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 96 of 100 (Data Layer) — ready to plan
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-20 — Milestone v1.29 started
+Status: Ready to plan Phase 96
+Last activity: 2026-05-20 — Roadmap created; 12/12 requirements mapped; Phase 96 is next
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Project Reference
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.29 — Admin X API Usage Report
+**Current focus:** v1.29 — Admin X API Usage Report (Phase 96: Data Layer)
 
 ## Performance Metrics
 
@@ -42,31 +44,23 @@ Last activity: 2026-05-20 — Milestone v1.29 started
 
 ### Decisions
 
-- (v1.28) Account deletion: user soft-delete + PII strip immediately; transactional rows retained; purge job deferred (ACCT-FUT-01)
-- (v1.28) Policy text: general collective phrasing + separate OAuth token sentence; 90-day erasure window
-- (v1.28) Confirmation token: type `DELETE` on `/account_deletion/new`
-- (v1.28) Cucumber `@account_deletion` uses `rack_test` driver for reliable DELETE form submit
-
-### Roadmap Evolution
-
-- Phase 95 added: Closure: retroactive verification artifacts for Phases 92–94
+- (v1.29 research) Instrumentation placement: controller call site (after transaction block returns) using result from XClient — avoids transaction-rollback data loss; write `XApiCall.record!` outside any transaction wrapper
+- (v1.29 research) Schema: `success boolean + error_code varchar(32)` (maps directly to XClient `{ success:, error: }` return contract)
+- (v1.29 research) Admin gate returns 404 (not 403) — obscures existence of admin routes from non-admins
+- (v1.29 research) Nav link guard: `user_signed_in? && current_user.admin?` — both conditions required; `current_user` is nil on guest path
+- (v1.29 research) Cucumber isolation: `XApiCall.delete_all` must ship in Phase 97 (same phase as instrumentation), not as a follow-up
+- (v1.29 research) Admin resource: `resources :x_api_usages` under `namespace :admin` → `Admin::XApiUsagesController`
 
 ### Blockers/Concerns
 
-- None for v1.28 implementation
+- None
 
 ## Session Continuity
 
 Last session: 2026-05-20
-Stopped at: milestone close complete
+Stopped at: Roadmap created — all 12 requirements mapped to Phases 96–100
 Resume file: None
-
-## Quick Tasks Completed
-
-| Slug | Date | Summary |
-|------|------|---------|
-| refresh-landing-page | 2026-05-20 | Added 2 changelog entries (account deletion, mobile gadget reorder) to en.yml and ja.yml |
 
 ## Operator Next Steps
 
-- Start the next milestone with `/gsd-new-milestone`
+- Run `/gsd:plan-phase 96` to plan the data layer phase

@@ -51,15 +51,15 @@ Give admins a view of X (Twitter) API usage across all users — request counts,
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DATA-01 | — | pending |
-| DATA-02 | — | pending |
-| DATA-03 | — | pending |
-| INST-01 | — | pending |
-| INST-02 | — | pending |
-| INST-03 | — | pending |
-| ADMIN-01 | — | pending |
-| ADMIN-02 | — | pending |
-| REPORT-01 | — | pending |
-| REPORT-02 | — | pending |
-| REPORT-03 | — | pending |
-| LOCALE-01 | — | pending |
+| DATA-01 | Phase 96 | pending |
+| DATA-02 | Phase 96 | pending |
+| DATA-03 | Phase 96 | pending |
+| INST-01 | Phase 97 | pending |
+| INST-02 | Phase 97 | pending |
+| INST-03 | Phase 97 | pending |
+| ADMIN-01 | Phase 98 | pending |
+| ADMIN-02 | Phase 99 | pending |
+| REPORT-01 | Phase 99 | pending |
+| REPORT-02 | Phase 99 | pending |
+| REPORT-03 | Phase 99 | pending |
+| LOCALE-01 | Phase 99 | pending |
