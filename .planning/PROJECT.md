@@ -386,4 +386,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-20 — milestone v1.29 started (Admin X API Usage Report)*
+*Last updated: 2026-05-21 after v1.29 milestone*

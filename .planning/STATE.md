@@ -59,7 +59,7 @@ See: .planning/PROJECT.md (updated 2026-05-21)
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | (pending) | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
+| 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | 3f51073 | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
 
 ## Session Continuity
 

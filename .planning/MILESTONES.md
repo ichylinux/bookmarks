@@ -469,4 +469,4 @@ Pre–GSD planning work on this repo:
 
 ---
 
-*Last updated: 2026-05-16 — v1.21 X Gadget Tweet Count Preference shipped (Phase 69)*
+*Last updated: 2026-05-21 — v1.29 Admin X API Usage Report shipped (Phases 96–100)*
