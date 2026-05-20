@@ -289,6 +289,14 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-20"
+          headline: Delete your account from preferences
+          tag: new
+          description: You can now delete your own account from the preferences page. Account data is anonymized immediately and fully erased within 90 days per our privacy policy.
+        - date: "2026-05-20"
+          headline: Reorder dashboard gadgets on mobile
+          tag: new
+          description: Long-press any gadget header on a smartphone to drag and rearrange gadgets across columns without needing a mouse.
         - date: "2026-05-19"
           headline: Add bookmarks directly from your dashboard
           tag: new

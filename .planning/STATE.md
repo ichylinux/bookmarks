@@ -61,6 +61,12 @@ Last session: 2026-05-20
 Stopped at: milestone close complete
 Resume file: None
 
+## Quick Tasks Completed
+
+| Slug | Date | Summary |
+|------|------|---------|
+| refresh-landing-page | 2026-05-20 | Added 2 changelog entries (account deletion, mobile gadget reorder) to en.yml and ja.yml |
+
 ## Operator Next Steps
 
 - Start the next milestone with `/gsd-new-milestone`
