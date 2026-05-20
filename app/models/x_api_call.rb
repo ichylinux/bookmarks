@@ -1,6 +1,11 @@
 class XApiCall < ApplicationRecord
   belongs_to :user, optional: false
 
+  validates :endpoint, presence: true
+  validates :success, inclusion: { in: [true, false] }
+  validates :called_at, presence: true
+  validates :error_code, length: { maximum: 32 }, allow_nil: true
+
   # NOTE: Call record! OUTSIDE any surrounding transaction block.
   # If the caller's transaction rolls back, the log row would be lost.
   def self.record!(user_id:, endpoint:, success:, error_code: nil, rate_limit_remaining: nil)
