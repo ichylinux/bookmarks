@@ -38,7 +38,7 @@
 
 **Milestone Goal:** Give admins a view of X (Twitter) API usage across all users — request counts, rate-limit consumption, per-user breakdowns — using the existing Rails stack with no new gems.
 
-- [ ] **Phase 96: Data Layer** — `x_api_calls` table, `XApiCall` model, `rate_limit_remaining` column
+- [ ] **Phase 96: Data Layer** — `x_api_calls` table, `XApiCall` model, `rate_limit_remaining` column (2 plans ready)
 - [ ] **Phase 97: Instrumentation + Cucumber Isolation** — XClient instrumentation hooks and `Before` hook cleanup (atomic unit)
 - [ ] **Phase 98: Admin Access Gate** — `Admin::BaseController` with `require_admin` before_action and negative integration tests
 - [ ] **Phase 99: Report View + Locale + Drawer Nav** — per-user report table, date-range filter, sort toggle, ja/en locale strings, drawer nav link
@@ -110,7 +110,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 96. Data Layer | 0/2 | Not started | - |
+| 96. Data Layer | 0/2 | Planned | - |
 | 97. Instrumentation + Cucumber Isolation | 0/TBD | Not started | - |
 | 98. Admin Access Gate | 0/TBD | Not started | - |
 | 99. Report View + Locale + Drawer Nav | 0/TBD | Not started | - |
