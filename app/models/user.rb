@@ -86,7 +86,9 @@ class User < ApplicationRecord
   def destroy_account!
     return if deleted?
 
-    update!(deleted: true, deleted_at: Time.current)
+    now = Time.current
+    # Skip validations: X-only users may still have a dummy email, which is valid at create time.
+    update_columns(deleted: true, deleted_at: now, updated_at: now)
   end
 
   def active_for_authentication?
