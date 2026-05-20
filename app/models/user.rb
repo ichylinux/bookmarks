@@ -22,6 +22,7 @@ class User < ApplicationRecord
   # No dependent: :destroy — disabling an account is the normal lifecycle; a rare
   # hard-delete of User must not synchronously load/destroy unbounded notes (see ROADMAP).
   has_many :notes
+  has_many :x_api_calls, dependent: :delete_all
 
   has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
   has_many :x_accounts, dependent: :destroy
