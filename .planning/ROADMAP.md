@@ -39,7 +39,7 @@
 - [x] Phase 92: User Soft-Delete Data Layer — 2026-05-20
 - [x] Phase 93: Preferences Deletion UI + Flow — 2026-05-20
 - [x] Phase 94: Tests & Tri-suite Gate — 2026-05-20
-- [ ] Phase 95: Closure: retroactive verification artifacts for Phases 92–94
+- [x] Phase 95: Closure: retroactive verification artifacts for Phases 92–94 — 2026-05-20
 
 ## Phase Details (v1.28)
 

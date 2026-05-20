@@ -2,29 +2,29 @@
 gsd_state_version: 1.0
 milestone: v1.28
 milestone_name: Account Self-Service Deletion
-status: All v1.28 phases implemented; tri-suite green
-stopped_at: Phases 91–94 complete
-last_updated: "2026-05-20T04:47:04.694Z"
-last_activity: 2026-05-20 — Autonomous run completed phases 91–94
+status: ready_for_audit
+stopped_at: ""
+last_updated: "2026-05-20T18:30:00.000Z"
+last_activity: 2026-05-20 — Phase 95 complete (artifact closure); all 5 phases done
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 20
+  completed_phases: 5
+  total_plans: 5
+  completed_plans: 5
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 94 complete — milestone ready for audit
+Phase: 95 complete — all v1.28 phases complete; ready for audit
 Plan: —
-Status: All v1.28 phases implemented; tri-suite green
-Last activity: 2026-05-20 — Autonomous run completed phases 91–94
+Status: All v1.28 phases done (91–95); artifact debt cleared
+Last activity: 2026-05-20 — Phase 95 artifact closure: retroactive VERIFICATION.md for phases 92–94
 
 ```
-Progress: [██████████] 100%
+Progress: [████████████████████] 100% (5/5 phases)
 ```
 
 ## Project Reference
@@ -68,4 +68,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- `/gsd-audit-milestone` then `/gsd-complete-milestone v1.28`
+- Milestone lifecycle: `/gsd-audit-milestone` → `/gsd-complete-milestone v1.28` → `/gsd-cleanup`
