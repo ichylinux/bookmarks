@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
+もし /^X API 利用状況のデータが存在する$/ do
+  u2 = User.find_by!(email: 'user2@example.com')
+  XApiCall.record!(user_id: u2.id, endpoint: 'fetch_following', success: true)
+end
+
 もし /^管理者としてサインインします。$/ do
-  admin = User.find(1)
-  admin.update_columns(admin: true)
+  admin = User.find_by!(email: 'user@example.com')
   admin.preference.update!(theme: 'modern')
-  XApiCall.delete_all
-  XApiCall.record!(user_id: 2, endpoint: 'fetch_following', success: true)
   sign_in admin
 end
 
 もし /^一般ユーザーとしてサインインします。$/ do
-  u = User.find(2)
+  u = User.find_by!(email: 'user2@example.com')
   u.update_columns(admin: false)
   u.preference.update!(theme: 'modern')
   sign_in u

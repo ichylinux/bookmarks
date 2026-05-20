@@ -6,14 +6,14 @@ class XApiCallTest < ActiveSupport::TestCase
   end
 
   def test_record_が行を作成する
-    user = User.find(1)
+    user = users(:one)
     assert_difference -> { XApiCall.count }, 1 do
       XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true)
     end
   end
 
   def test_record_が正しい値を保存する
-    user = User.find(1)
+    user = users(:one)
     row = XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: false,
                            error_code: 'timeout', rate_limit_remaining: 42)
     assert_equal 'fetch_following', row.endpoint
@@ -24,7 +24,7 @@ class XApiCallTest < ActiveSupport::TestCase
   end
 
   def test_usage_summaryが正しい集計を返す
-    user = User.find(1)
+    user = users(:one)
     XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true)
     XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true)
     XApiCall.record!(user_id: user.id, endpoint: 'fetch_recent_tweets', success: false)
@@ -36,7 +36,7 @@ class XApiCallTest < ActiveSupport::TestCase
   end
 
   def test_usage_summaryのsinceフィルタが機能する
-    user = User.find(1)
+    user = users(:one)
     XApiCall.create!(user_id: user.id, endpoint: 'fetch_following', success: true,
                      called_at: 2.days.ago)
     XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true)

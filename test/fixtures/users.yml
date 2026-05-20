@@ -1,4 +1,4 @@
-1:
+one:
   id: 1
   email: user@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
@@ -6,14 +6,14 @@
   otp_secret: KCWJDXNH2EJIHB7NUZL42TFZYDRWERPB
   otp_required_for_login: false
 
-2:
+two:
   id: 2
   email: user2@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
   otp_secret: KCWJDXNH2EJIHB7NUZL42TFZYDRWERPB
   otp_required_for_login: false
 
-3:
+three:
   id: 3
   email: user3@example.com
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6

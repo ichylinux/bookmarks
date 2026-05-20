@@ -14,20 +14,20 @@ module Admin
     end
 
     def test_非管理者は404を返す
-      sign_in User.find(2)
+      sign_in users(:two)
       get admin_x_api_usages_path
       assert_response :not_found
     end
 
     def test_管理者は200を返す
-      sign_in User.find(1)
+      sign_in users(:one)
       get admin_x_api_usages_path
       assert_response :success
       assert_select 'h1', text: I18n.t('admin.x_api_usages.index.title', locale: :ja)
     end
 
     def test_利用記録があるユーザー行が表示される
-      admin = User.find(1)
+      admin = users(:one)
       twitter = users(:twitter_user)
       XAccount.create!(
         user: twitter,
@@ -46,7 +46,7 @@ module Admin
     end
 
     def test_日付範囲で絞り込める
-      admin = User.find(1)
+      admin = users(:one)
       twitter = users(:twitter_user)
       XApiCall.create!(user_id: twitter.id, endpoint: 'fetch_following', success: true,
                        called_at: 10.days.ago)
@@ -59,8 +59,8 @@ module Admin
     end
 
     def test_総呼び出し回数で昇順ソートできる
-      admin = User.find(1)
-      u2 = User.find(2)
+      admin = users(:one)
+      u2 = users(:two)
       XApiCall.record!(user_id: u2.id, endpoint: 'fetch_following', success: true)
       3.times { XApiCall.record!(user_id: admin.id, endpoint: 'fetch_following', success: true) }
       sign_in admin

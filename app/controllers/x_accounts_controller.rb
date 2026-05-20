@@ -87,5 +87,7 @@ class XAccountsController < ApplicationController
       error_code: result[:success] ? nil : result[:error].to_s,
       rate_limit_remaining: result[:rate_limit_remaining]
     )
+  rescue StandardError => e
+    Rails.logger.error "Failed to record X API call: #{e.message}"
   end
 end

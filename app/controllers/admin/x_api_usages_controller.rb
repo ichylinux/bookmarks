@@ -12,19 +12,26 @@ module Admin
       until_time = @to_date&.in_time_zone&.end_of_day
 
       summaries = XApiCall.usage_summary(since: since_time, until_time: until_time).to_a
-      users_by_id = User.where(id: summaries.map(&:user_id)).index_by(&:id)
+      users_by_id = User.includes(:x_accounts).where(id: summaries.map(&:user_id)).index_by(&:id)
 
       @rows = summaries.map do |summary|
         user = users_by_id[summary.user_id]
         {
           identity: identity_label(user),
-          total_calls: summary.total_calls,
-          last_called_at: summary.last_called_at,
-          error_count: summary.error_count
+          total_calls: summary.total_calls.to_i,
+          last_called_at: summary.last_called_at ? Time.zone.parse(summary.last_called_at.to_s) : nil,
+          error_count: summary.error_count.to_i
         }
       end
 
-      @rows.sort_by! { |row| row[@sort.to_sym] || 0 }
+      @rows.sort_by! do |row|
+        val = row[@sort.to_sym]
+        if val.nil?
+          @sort == 'last_called_at' ? Time.at(0) : 0
+        else
+          val
+        end
+      end
       @rows.reverse! if @direction == 'desc'
     end
 
@@ -43,7 +50,7 @@ module Admin
 
       return user.email if user.has_valid_email?
 
-      acct = user.x_accounts.not_deleted.order(:id).first
+      acct = user.x_accounts.reject(&:deleted?).sort_by(&:id).first
       return "@#{acct.username}" if acct
 
       user.name.presence || '—'
