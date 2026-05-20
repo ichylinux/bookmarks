@@ -4,7 +4,7 @@ milestone: null
 milestone_name: null
 status: planning_next
 last_updated: "2026-05-21T12:30:00.000Z"
-last_activity: 2026-05-21 — v1.29 milestone archived via /gsd-complete-milestone
+last_activity: 2026-05-21 — Completed quick task 260521-001: simple-theme X API usage menu link
 progress:
   total_phases: 0
   completed_phases: 0
@@ -54,6 +54,12 @@ See: .planning/PROJECT.md (updated 2026-05-21)
 ### Blockers/Concerns
 
 - None
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | (pending) | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
 
 ## Session Continuity
 
