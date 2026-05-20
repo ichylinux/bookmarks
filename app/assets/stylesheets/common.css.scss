@@ -485,3 +485,8 @@ body.no-icons .drawer-nav-icon {
 #bookmark_gadget a.link--visited {
   opacity: 1;
 }
+
+// Todo gadget: action links (complete / new task) are not content URLs.
+#todo a.link--visited {
+  opacity: 1;
+}
