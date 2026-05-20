@@ -86,21 +86,7 @@ class User < ApplicationRecord
   def destroy_account!
     return if deleted?
 
-    now = Time.current
-    update!(
-      deleted: true,
-      deleted_at: now,
-      email: anonymized_email_for_deletion,
-      name: nil,
-      provider: nil,
-      uid: nil,
-      token: nil,
-      token_secret: nil,
-      oauth2_token: nil,
-      oauth2_refresh_token: nil,
-      oauth2_token_expires_at: nil,
-      password: Devise.friendly_token[0, 20]
-    )
+    update!(deleted: true, deleted_at: Time.current)
   end
 
   def active_for_authentication?
@@ -142,10 +128,6 @@ class User < ApplicationRecord
 
   def generate_otp_secret_if_missing
     self.otp_secret ||= self.class.generate_otp_secret
-  end
-
-  def anonymized_email_for_deletion
-    "deleted_#{id}_#{SecureRandom.hex(4)}@deleted.invalid"
   end
 
   def create_default_portal

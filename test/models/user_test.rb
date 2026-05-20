@@ -181,8 +181,13 @@ class UserTest < ActiveSupport::TestCase
     )
   end
 
-  def test_destroy_account_soft_deletes_and_anonymizes_pii
-    u = User.find(3)
+  def test_destroy_account_soft_deletes_without_modifying_account_data
+    u = users(:twitter_user)
+    email = u.email
+    name = u.name
+    uid = u.uid
+    provider = u.provider
+    token = u.token
     note_count = Note.where(user_id: u.id).count
 
     u.destroy_account!
@@ -190,23 +195,15 @@ class UserTest < ActiveSupport::TestCase
 
     assert u.deleted?
     assert u.deleted_at.present?
-    assert_match(/\Adeleted_\d+_[a-f0-9]+@deleted\.invalid\z/, u.email)
-    assert_nil u.provider
-    assert_nil u.uid
-    assert_nil u.oauth2_token
+    assert_equal email, u.email
+    assert_equal name, u.name
+    assert_equal uid, u.uid
+    assert_equal provider, u.provider
+    assert_equal token, u.token
     assert_equal note_count, Note.where(user_id: u.id).count
   ensure
-    u = User.find(3)
-    u.update_columns(
-      deleted: false,
-      deleted_at: nil,
-      email: 'user3@example.com',
-      provider: nil,
-      uid: nil,
-      oauth2_token: nil,
-      oauth2_refresh_token: nil,
-      oauth2_token_expires_at: nil
-    )
+    u = users(:twitter_user)
+    u.update_columns(deleted: false, deleted_at: nil)
   end
 
   def test_active_for_authentication_false_when_deleted
@@ -215,6 +212,67 @@ class UserTest < ActiveSupport::TestCase
     assert_not u.active_for_authentication?
   ensure
     User.find(3).update_columns(deleted: false, deleted_at: nil)
+  end
+
+  def test_from_omniauth_twitter2_matches_user_after_operational_restore
+    u = users(:twitter_user)
+    u.update_columns(provider: 'twitter2', uid: 'restore-oauth-uid')
+
+    u.destroy_account!
+    u.reload
+    assert u.deleted?
+
+    u.update_columns(deleted: false, deleted_at: nil)
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'twitter2',
+      'uid' => 'restore-oauth-uid',
+      'info' => { 'name' => 'Restored', 'email' => 'restored@example.com' },
+      'credentials' => { 'token' => 't', 'refresh_token' => 'r' }
+    )
+
+    result = User.from_omniauth(auth)
+    assert_equal u.id, result.id
+    assert_equal 'restored@example.com', result.email
+    assert_not result.deleted?
+  ensure
+    u = users(:twitter_user)
+    u.update_columns(
+      deleted: false,
+      deleted_at: nil,
+      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
+      name: 'twitter_test_user',
+      provider: 'twitter',
+      uid: 'fixture_twitter_uid',
+      oauth2_token: nil,
+      oauth2_refresh_token: nil,
+      oauth2_token_expires_at: nil
+    )
+  end
+
+  def test_from_omniauth_google_matches_user_after_operational_restore
+    u = User.create!(
+      email: 'google-restore@example.com',
+      password: Devise.friendly_token[0, 20]
+    )
+
+    u.destroy_account!
+    u.reload
+    assert u.deleted?
+
+    u.update_columns(deleted: false, deleted_at: nil)
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'google_oauth2',
+      'uid' => 'google-restore-uid',
+      'info' => { 'email' => 'google-restore@example.com', 'name' => 'Google User' }
+    )
+
+    result = User.from_omniauth(auth)
+    assert_equal u.id, result.id
+    assert_not result.deleted?
+  ensure
+    User.where(email: 'google-restore@example.com').delete_all
   end
 
   def test_from_omniauth_twitter2_does_not_match_deleted_user

@@ -141,7 +141,7 @@ en:
       confirmation_mismatch: Type DELETE exactly as shown to confirm.
     new:
       title: Delete account
-      warning: Deleting your account deactivates it immediately and you will no longer be able to sign in. All data associated with your account is permanently removed within 90 days of your request and cannot be restored.
+      warning: Deleting your account deactivates it immediately and you will no longer be able to sign in. Your account information (email address, display name, OAuth identifiers, and related data) is retained on our servers for up to 90 days from your request and then permanently removed. You cannot restore your account yourself during this retention period. If the operator determines that deletion was accidental, the account may be restored during the retention period.
       confirmation_label: Confirmation
       confirmation_help: 'Type %{token} to continue.'
       submit: Delete my account
@@ -292,7 +292,7 @@ en:
         - date: "2026-05-20"
           headline: Delete your account from preferences
           tag: new
-          description: You can now delete your own account from the preferences page. Account data is anonymized immediately and fully erased within 90 days per our privacy policy.
+          description: You can now delete your own account from the preferences page. Your account is deactivated immediately and all data is fully erased within 90 days per our privacy policy.
         - date: "2026-05-20"
           headline: Reorder dashboard gadgets on mobile
           tag: new
@@ -442,7 +442,7 @@ en:
           body: "When you sign in with X, the email address provided by X is used for account identification. Your email address is used solely for internal account identification and is never used for marketing or shared with third parties.\n\nIf X does not provide an email address, an alternative identifier is generated automatically. If a real email address becomes available later, the account information is updated."
         data_retention:
           heading: Data Retention
-          body: "Your data is retained for as long as your account is active.\n\nWhen you delete your account from the settings page, your account is deactivated immediately and you can no longer sign in or use the service. All data associated with your account, including account information and authentication tokens, is permanently erased from our servers within 90 days of your deletion request. During this retention period you cannot access or restore your account, and your data is not used to provide the service.\n\nThis is a personal-use service. You retain full control of your data and can delete your account at any time from the settings page."
+          body: "Your data is retained for as long as your account is active.\n\nWhen you delete your account from the settings page, your account is deactivated immediately and you can no longer sign in or use the service. Your account information (email address, display name, OAuth identifiers, and related data such as bookmarks and feed settings) is retained on our servers for up to 90 days from your deletion request. During this retention period you cannot access or restore your account yourself, and your data is not used to provide the service. If the operator determines that deletion was accidental, the account may be restored during the retention period. After 90 days, all retained data is permanently erased.\n\nThis is a personal-use service. You retain full control of your data and can delete your account at any time from the settings page."
         contact:
           heading: Contact
           body: "For privacy-related inquiries, please send a direct message to @ichylinux on X (formerly Twitter)."
@@ -458,4 +458,4 @@ en:
           body: "This service is provided on an as-is basis. While we aim for continuous availability, the service may be temporarily unavailable due to maintenance, outages, or other reasons.\n\nThe operator accepts no liability for damages arising from service interruptions, data loss, or unavailability. We recommend backing up important data regularly."
         termination:
           heading: Account Termination
-          body: "You may delete your account at any time from the settings page. When you request deletion, your account is deactivated immediately and you can no longer sign in or use the service. All data associated with your account, including account information and authentication tokens, is permanently removed within 90 days of your request and cannot be restored after that period.\n\nIf a violation of these terms is identified, the operator may suspend or delete an account without prior notice."
+          body: "You may delete your account at any time from the settings page. When you request deletion, your account is deactivated immediately and you can no longer sign in or use the service. Your account information (email address, display name, OAuth identifiers, and related data) is retained on our servers for up to 90 days from your request and then permanently removed. You cannot restore your account yourself during the retention period. If the operator determines that deletion was accidental, the account may be restored during the retention period.\n\nIf a violation of these terms is identified, the operator may suspend or delete an account without prior notice."

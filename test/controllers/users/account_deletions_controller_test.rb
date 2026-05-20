@@ -39,12 +39,13 @@ class Users::AccountDeletionsControllerTest < ActionDispatch::IntegrationTest
     u.reload
     assert u.deleted?
     assert u.deleted_at.present?
-    assert_match(/\Adeleted_\d+_[a-f0-9]+@deleted\.invalid\z/, u.email)
-    assert_nil u.oauth2_token
+    assert_equal 'user3@example.com', u.email
     assert_equal bookmark_count, Bookmark.where(user_id: u.id).count
 
     sign_out u
     post user_session_path, params: { user: { email: 'user3@example.com', password: 'testtest' } }
     assert_redirected_to new_user_session_path
+  ensure
+    User.find(3).update_columns(deleted: false, deleted_at: nil)
   end
 end
