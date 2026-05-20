@@ -22,21 +22,38 @@
     background-position: top center;
   }
 
-  table {
+  // Scoped above .modern table { width: auto } (same issue as table.calendar).
+  form.todo table.todo-form {
     width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 
     tr {
       width: 100%;
-      
-      td {
-        padding: 0 1px;
-        text-align: center;
-        
-        input[type="text"] {
-          width: 100%;
-        }
+    }
+
+    td {
+      padding: 0 1px;
+      text-align: center;
+      vertical-align: middle;
+
+      &:first-child {
+        width: 3.5em;
+      }
+
+      &:last-child {
+        width: 4.5em;
+        white-space: nowrap;
+      }
+
+      input[type="text"],
+      select {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
       }
     }
   }
@@ -71,5 +88,10 @@ html:lang(en) .todo {
     min-width: 4.5em;
     max-width: 4.5em;
     box-sizing: border-box;
+  }
+
+  form.todo table.todo-form td:first-child {
+    // Longest label is "Normal"; needs room beyond list-item priority spans (4.5em).
+    width: 7em;
   }
 }

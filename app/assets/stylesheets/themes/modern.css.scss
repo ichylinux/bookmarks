@@ -141,6 +141,32 @@
   background: transparent;
 }
 
+// Todo gadget create/edit form: width:auto and cell padding break the 3-column row
+.modern table.todo-form {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.modern table.todo-form th,
+.modern table.todo-form td {
+  padding: 0 1px;
+  border-bottom: none;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modern table.todo-form tbody tr:nth-child(even),
+.modern table.todo-form tbody tr:hover {
+  background: transparent;
+}
+
+.modern table.todo-form select {
+  padding: 4px 6px;
+}
+
 .modern .preferences-form input[type="submit"] {
   border: none;
   border-radius: 6px;
