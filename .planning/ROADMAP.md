@@ -55,7 +55,10 @@
   2. `XApiCall.record!` creates a row with correct values when called with a user_id, endpoint, success flag, and optional error_code/rate_limit_remaining
   3. `XApiCall.usage_summary` returns per-user aggregates (total calls, last called_at, error count) correctly filtering by `since:` date parameter
   4. Minitest model unit tests are green for all three behaviors above
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 96-01-PLAN.md — Migration + Model (x_api_calls table, XApiCall record! and usage_summary)
+- [ ] 96-02-PLAN.md — Minitest model tests (DATA-01/02/03 coverage)
 
 ### Phase 97: Instrumentation + Cucumber Isolation
 **Goal**: Every X API call made through `XAccountsController` writes an `XApiCall` row, and Cucumber scenarios are isolated from row accumulation
@@ -107,7 +110,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 96. Data Layer | 0/TBD | Not started | - |
+| 96. Data Layer | 0/2 | Not started | - |
 | 97. Instrumentation + Cucumber Isolation | 0/TBD | Not started | - |
 | 98. Admin Access Gate | 0/TBD | Not started | - |
 | 99. Report View + Locale + Drawer Nav | 0/TBD | Not started | - |
@@ -181,4 +184,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-20 — v1.29 milestone roadmap created (Admin X API Usage Report, Phases 96–100)*
+*Last updated: 2026-05-20 — Phase 96 planned (2 plans: 96-01, 96-02)*
