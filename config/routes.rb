@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
+    resources :users, only: [:index]
     resources :x_api_usages, only: [:index]
   end
 
