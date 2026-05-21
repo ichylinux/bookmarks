@@ -1,0 +1,54 @@
+<%# locals: intro (String), path_helper (Symbol), page_class (String, optional) %>
+<main class="auth-page <%= page_class %>">
+  <div class="auth-page__toolbar">
+    <%= link_to root_path, class: 'auth-back-link' do %>
+      <span aria-hidden="true">←</span>
+      <%= t('pages.privacy.back_home').sub(/\A←\s*/, '') %>
+    <% end %>
+    <%= render 'welcome/landing_lang_switcher', path_helper: path_helper %>
+  </div>
+
+  <div class="auth-shell">
+    <aside class="auth-brand-panel" aria-label="Bookmarks">
+      <div class="auth-brand-panel__inner">
+        <div class="auth-brand-lockup">
+          <%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'auth-brand-icon' %>
+          <p class="auth-brand-title">Bookmarks</p>
+        </div>
+        <p class="auth-intro auth-brand-tagline"><%= intro %></p>
+
+        <ul class="auth-highlights">
+          <li class="auth-highlight">
+            <span class="auth-highlight-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+            </span>
+            <span class="auth-highlight-text"><%= t('landing.values.capture.title') %></span>
+          </li>
+          <li class="auth-highlight">
+            <span class="auth-highlight-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+            </span>
+            <span class="auth-highlight-text"><%= t('landing.values.organize.title') %></span>
+          </li>
+          <li class="auth-highlight">
+            <span class="auth-highlight-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </span>
+            <span class="auth-highlight-text"><%= t('landing.values.focus.title') %></span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <section class="auth-card">
+      <%= yield %>
+    </section>
+  </div>
+
+  <footer class="auth-footer">
+    <nav class="auth-footer-nav" aria-label="<%= t('landing.footer.legal_nav_aria') %>">
+      <%= link_to t('nav.privacy'), privacy_path %>
+      <%= link_to t('nav.terms'), terms_path %>
+    </nav>
+  </footer>
+</main>

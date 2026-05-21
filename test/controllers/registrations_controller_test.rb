@@ -5,6 +5,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     get new_user_registration_path
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
+    assert_select 'body.auth-flow'
     assert_select '.auth-intro', text: I18n.t('landing.auth.sign_up_intro', locale: :ja)
     assert_select 'input[type=submit][value=?]', I18n.t('devise.registrations.new.sign_up', locale: :ja)
   end

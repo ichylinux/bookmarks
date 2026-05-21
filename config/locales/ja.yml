@@ -301,6 +301,7 @@ ja:
     auth:
       sign_in_intro: おかえりなさい。保存した情報にすぐアクセスできます。
       sign_up_intro: 数分で始められます。気になる情報をひとつに整理しましょう。
+      or_continue_with: または次で続行
     footer:
       legal_nav_aria: 法的情報
     integrations:

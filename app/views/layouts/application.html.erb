@@ -13,7 +13,7 @@
 
   </head>
 
-  <body class="<%= [favorite_theme, font_size_class, no_icons_class].join(' ').strip %>">
+  <body class="<%= [favorite_theme, font_size_class, no_icons_class, ('auth-flow' if auth_flow_page?)].compact.join(' ').strip %>">
     <%= render 'layouts/header' %>
 
     <div class="wrapper">

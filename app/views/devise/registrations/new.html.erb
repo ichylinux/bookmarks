@@ -1,34 +1,38 @@
-<div class="auth-page">
-  <h1><%= t('devise.registrations.new.sign_up') %></h1>
-  <p class="auth-intro"><%= t('landing.auth.sign_up_intro') %></p>
+<%= render layout: 'devise/shared/auth_frame',
+           locals: {
+             intro: t('landing.auth.sign_up_intro'),
+             path_helper: :new_user_registration_path,
+             page_class: 'auth-page--sign-up'
+           } do %>
+  <h1 id="auth-sign-up-heading" class="auth-card__title"><%= t('devise.registrations.new.sign_up') %></h1>
 
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: 'auth-form' }) do |f| %>
     <%= render 'devise/shared/error_messages', resource: resource %>
 
-    <div>
-      <%= f.label :email %><br />
-      <%= f.email_field :email, autofocus: true, autocomplete: 'email' %>
+    <div class="auth-field">
+      <%= f.label :email, class: 'auth-label' %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email', class: 'auth-input' %>
     </div>
 
-    <div>
-      <%= f.label :password %>
+    <div class="auth-field">
+      <%= f.label :password, class: 'auth-label' %>
       <% if @minimum_password_length %>
-        <em>(<%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %>)</em>
-      <% end %><br />
-      <%= f.password_field :password, autocomplete: 'new-password' %>
+        <p class="auth-hint"><%= t('devise.shared.minimum_password_length', count: @minimum_password_length) %></p>
+      <% end %>
+      <%= f.password_field :password, autocomplete: 'new-password', class: 'auth-input' %>
     </div>
 
-    <div>
-      <%= f.label :password_confirmation %><br />
-      <%= f.password_field :password_confirmation, autocomplete: 'new-password' %>
+    <div class="auth-field">
+      <%= f.label :password_confirmation, class: 'auth-label' %>
+      <%= f.password_field :password_confirmation, autocomplete: 'new-password', class: 'auth-input' %>
     </div>
 
-    <div>
-      <%= f.submit t('devise.registrations.new.sign_up') %>
+    <div class="auth-actions">
+      <%= f.submit t('devise.registrations.new.sign_up'), class: 'auth-submit' %>
     </div>
   <% end %>
 
   <div class="auth-links">
     <%= render 'devise/shared/links' %>
   </div>
-</div>
+<% end %>

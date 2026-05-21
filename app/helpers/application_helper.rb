@@ -17,4 +17,9 @@ module ApplicationHelper
     normalized = VisitedLink.normalize_url(url)
     visited_set&.include?(normalized) ? "link--visited" : ""
   end
+
+  # Sign-in / sign-up: brand panel already shows logo + name; hide site header on narrow viewports.
+  def auth_flow_page?
+    !user_signed_in? && devise_controller? && %w[sessions registrations].include?(controller_name)
+  end
 end
