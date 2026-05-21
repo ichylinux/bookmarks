@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: null
 milestone_name: null
 status: planning_next
-last_updated: "2026-05-21T12:30:00.000Z"
-last_activity: 2026-05-21 — Completed quick task 260521-002: add index on users.uid
+last_updated: "2026-05-21T13:00:00.000Z"
+last_activity: 2026-05-21 — Completed quick task 260521-003: admin section separator in drawer/menu
 progress:
   total_phases: 0
   completed_phases: 0
@@ -61,6 +61,7 @@ See: .planning/PROJECT.md (updated 2026-05-21)
 |---|-------------|------|--------|-----------|
 | 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | 3f51073 | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
 | 260521-002 | Add unique index on users.uid; nullify uid on soft-delete | 2026-05-21 | 8889a6c | [add-index-users-uid](./quick/20260521-add-index-users-uid/) |
+| 260521-003 | X API 使用状況を管理メニューとしてドロワー内でセパレータを使ってセクションを分離する | 2026-05-21 | 15142d0 | [admin-section-separator](./quick/20260521-admin-section-separator/) |
 
 ## Session Continuity
 
