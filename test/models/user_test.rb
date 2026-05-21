@@ -224,7 +224,7 @@ class UserTest < ActiveSupport::TestCase
     assert u.deleted_at.present?
     assert_equal email, u.email
     assert_equal x_user_name, u.x_user_name
-    assert_equal uid, u.uid
+    assert_nil u.uid
     assert_equal provider, u.provider
     assert_equal token, u.token
     assert_equal note_count, Note.where(user_id: u.id).count
@@ -249,7 +249,7 @@ class UserTest < ActiveSupport::TestCase
     u.reload
     assert u.deleted?
 
-    u.update_columns(deleted: false, deleted_at: nil)
+    u.update_columns(deleted: false, deleted_at: nil, uid: 'restore-oauth-uid')
 
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
@@ -304,7 +304,8 @@ class UserTest < ActiveSupport::TestCase
 
   def test_from_omniauth_twitter2_does_not_match_deleted_user
     u = users(:twitter_user)
-    u.update_columns(deleted: true, deleted_at: Time.current, provider: 'twitter2', uid: 'deleted-oauth-uid')
+    u.update_columns(provider: 'twitter2', uid: 'deleted-oauth-uid')
+    u.destroy_account!
 
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',

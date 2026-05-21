@@ -93,7 +93,7 @@ class User < ApplicationRecord
 
     now = Time.current
     # Skip validations: X-only users may still have a dummy email, which is valid at create time.
-    update_columns(deleted: true, deleted_at: now, updated_at: now)
+    update_columns(deleted: true, deleted_at: now, updated_at: now, uid: nil)
   end
 
   def active_for_authentication?
