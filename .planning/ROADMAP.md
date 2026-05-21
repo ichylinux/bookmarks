@@ -155,7 +155,7 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
   5. Refreshing a follow-synced account that also matches a manually-added row does not flip `manually_added` to `false`
 **Plans**: 2 plans
 Plans:
-- [ ] 104-01-PLAN.md — Add manually_added migration to x_accounts
+- [x] 104-01-PLAN.md — Add manually_added migration to x_accounts (beebee2, 2026-05-22)
 - [ ] 104-02-PLAN.md — upsert_manual! + refresh guard + Minitest
 
 ### Phase 105: XClient Lookup Service
@@ -211,7 +211,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 104. Schema, Model & Refresh Guard | 0/2 | Not started | - |
+| 104. Schema, Model & Refresh Guard | 1/2 | In progress | - |
 | 105. XClient Lookup Service | 0/1 | Not started | - |
 | 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
 | 107. View Form & Manually-Added Badge | 0/1 | Not started | - |

@@ -19,9 +19,9 @@ progress:
 ## Current Position
 
 Phase: 104 — Schema, Model & Refresh Guard
-Plan: Not yet planned
-Status: Roadmap complete — ready for Phase 104
-Last activity: 2026-05-22 — v1.31 roadmap created, Phases 104–108 defined
+Plan: 104-01 complete; 104-02 next
+Status: In progress — 1/2 plans complete
+Last activity: 2026-05-22 — 104-01 executed: manually_added column migrated (beebee2)
 
 Progress: [          ] 0% (0/5 phases)
 
@@ -76,8 +76,8 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 ## Session Continuity
 
 Last session: 2026-05-22
-Stopped at: v1.31 roadmap created; Phase 104 not yet planned
-Resume file: None
+Stopped at: Phase 104 plan 01 complete; resume with 104-02
+Resume file: .planning/phases/104-schema-model-refresh-guard/104-02-PLAN.md
 
 ## Accumulated Context
 
