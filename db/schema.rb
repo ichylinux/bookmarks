@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_21_091442) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_22_000001) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -143,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_091442) do
     t.boolean "deleted", default: false, null: false
     t.integer "display_count", default: 5, null: false
     t.string "display_name", default: "", null: false
+    t.boolean "manually_added", default: false, null: false
     t.boolean "protected", default: false, null: false
     t.boolean "protected_acknowledged", default: false, null: false
     t.boolean "selected", default: false, null: false
