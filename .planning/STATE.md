@@ -19,9 +19,9 @@ progress:
 ## Current Position
 
 Phase: 104 — Schema, Model & Refresh Guard
-Plan: 104-01 complete; 104-02 next
-Status: In progress — 1/2 plans complete
-Last activity: 2026-05-22 — 104-01 executed: manually_added column migrated (beebee2)
+Plan: 104-02 complete; Phase 104 complete; 105 next
+Status: In progress — Phase 104 complete (2/2 plans)
+Last activity: 2026-05-22 — 104-02 executed: upsert_manual! + refresh guard + Minitest (bfacd43, a98b6f0)
 
 Progress: [          ] 0% (0/5 phases)
 
@@ -53,6 +53,8 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 - (v1.31) No cap on manually-added accounts for v1.31 — personal app, low volume; deferred as XMAN-FUT-01
 - (v1.31) `upsert_manual!` uses `first_or_initialize` on `(user_id, x_user_id)`; always sets `manually_added: true, deleted: false` unconditionally regardless of new_record? state
 - (v1.31) `refresh_cache_from_items!` soft-delete loop gains `next if acc.manually_added?`; `assign_attributes` call must NOT include `manually_added` field to preserve flag on overlap rows
+- (v1.31) `upsert_manual!` implemented: first_or_initialize on (user_id, x_user_id); unconditionally sets manually_added: true, deleted: false; no selection side-effect
+- (v1.31) refresh soft-delete loop guard: next if acc.manually_added? skips manually-added rows; assign_attributes in refresh loop excludes manually_added: to preserve flag on overlap rows
 - (v1.31) `lookup_user_by_username` strips leading `@` before building URL path; stores API-returned canonical username, not raw input
 - (v1.31) HTTP 403 from X API for suspended accounts maps to `:suspended` error symbol
 - (v1.29) Instrumentation at controller after XClient returns; `record_x_api_call` helper
@@ -76,8 +78,8 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 ## Session Continuity
 
 Last session: 2026-05-22
-Stopped at: Phase 104 plan 01 complete; resume with 104-02
-Resume file: .planning/phases/104-schema-model-refresh-guard/104-02-PLAN.md
+Stopped at: Phase 104 complete (2/2 plans); resume with Phase 105
+Resume file: .planning/phases/105-xclient-lookup-service/
 
 ## Accumulated Context
 

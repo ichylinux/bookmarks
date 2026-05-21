@@ -156,7 +156,7 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 **Plans**: 2 plans
 Plans:
 - [x] 104-01-PLAN.md — Add manually_added migration to x_accounts (beebee2, 2026-05-22)
-- [ ] 104-02-PLAN.md — upsert_manual! + refresh guard + Minitest
+- [x] 104-02-PLAN.md — upsert_manual! + refresh guard + Minitest (bfacd43, a98b6f0, 2026-05-22)
 
 ### Phase 105: XClient Lookup Service
 **Goal**: `XClient` can resolve a public X handle to a user record, returning a structured result or a typed error symbol, fully covered by isolated service tests
@@ -211,7 +211,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 104. Schema, Model & Refresh Guard | 1/2 | In progress | - |
+| 104. Schema, Model & Refresh Guard | 2/2 | Complete | 2026-05-22 |
 | 105. XClient Lookup Service | 0/1 | Not started | - |
 | 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
 | 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
