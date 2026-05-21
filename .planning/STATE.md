@@ -1,36 +1,36 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.30
-milestone_name: Admin User Management Screen
-status: complete
-stopped_at: v1.30 milestone complete and archived
+milestone: v1.31
+milestone_name: X Account Manual Add (Non-Following)
+status: planning
+stopped_at: ~
 last_updated: "2026-05-22T00:00:00.000Z"
-last_activity: 2026-05-22 -- v1.30 milestone archived
+last_activity: 2026-05-22 -- Milestone v1.31 started
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: v1.30 archived
+Phase: Not started (defining requirements)
 Plan: —
-Status: Milestone v1.30 complete and archived
-Last activity: 2026-05-22 — v1.30 Admin User Management Screen shipped and archived
+Status: Defining requirements
+Last activity: 2026-05-22 — Milestone v1.31 started
 
-Progress: [██████████] 100%
+Progress: [          ] 0%
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-21)
+See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.30 archived — start next milestone with `/gsd:new-milestone`
+**Current focus:** v1.31 — X Account Manual Add (Non-Following)
 
 ## Performance Metrics
 
@@ -79,4 +79,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Run `/gsd:new-milestone` to start the next milestone cycle.
+- Run `/gsd:plan-phase 104` to plan the first phase of v1.31.

@@ -198,9 +198,16 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `admin_flag` renders ✓ for admins, — for regular users — **v1.30 Phase 102**
 - ✓ Drawer nav link to `/admin/users` for admins; bilingual ja/en column headers via locale keys; i18n parity test passes — **v1.30 Phase 103**
 
-## Current Milestone
+## Current Milestone: v1.31 X Account Manual Add (Non-Following)
 
-Planning next milestone — run `/gsd:new-milestone` to begin.
+**Goal:** Allow users to add any public X account to their dashboard by entering a handle (@xxxx), complementing the existing follow-based discovery flow.
+
+**Target features:**
+- Input field on the X accounts screen to add a public X account by handle (@xxxx)
+- Fetch the account's profile from X API to confirm it exists, then add to `x_accounts`
+- `x_accounts` table gets a flag to distinguish manually-added vs follow-synced origin
+- Manually-added and follow-synced accounts work identically for selection and dashboard display
+- Existing "fetch following + select" flow unchanged
 
 ### Out of Scope (standing)
 
@@ -410,4 +417,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-22 after v1.30 milestone*
+*Last updated: 2026-05-22 — milestone v1.31 started*
