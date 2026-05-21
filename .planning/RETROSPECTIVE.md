@@ -716,6 +716,46 @@
 
 ---
 
+## Milestone: v1.30 — Admin User Management Screen
+
+**Shipped:** 2026-05-22
+**Phases:** 4 (101–103.1) | **Plans:** 4
+
+### What Was Built
+
+- `Admin::UsersController#index` at `/admin/users` — reuses `Admin::BaseController#require_admin` (404 non-admins, redirect guests); 3 access-control Minitest scenarios
+- 7-column user list table (id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at); `User.all.includes(:x_accounts)` for N+1 prevention; soft-deleted users visible; `x_user_name` from first non-deleted XAccount or blank; `admin_flag` ✓ / —
+- Drawer nav: `admin_users_path` before `admin_x_api_usages_path`, guarded by `current_user.admin?`; 9 new locale keys each in ja.yml/en.yml; i18n parity test passes
+- Phase 103.1 retroactive artifact closure: VERIFICATION.md + VALIDATION.md (`nyquist_compliant: true`) for all 3 phases; audit re-run confirmed `passed`
+- Tri-suite: lint ✓ · 528/528 Minitest · 31/31 Cucumber
+
+### What Worked
+
+- **Reuse of v1.29 admin infrastructure:** `Admin::BaseController` + `require_admin` meant Phase 101 was a thin scaffold — controller + route + 3 Minitest scenarios in one pass
+- **Milestone audit before close:** `v1.30-MILESTONE-AUDIT.md` run promptly; tech debt flagged, Phase 103.1 inserted, debt closed before archive — clean `passed` status at archive
+- **Retroactive artifact closure pattern mature:** Phase 103.1 mirrors v1.28 Phase 95; pattern is now routine — audit finds gaps, insert decimal phase, close, proceed
+
+### What Was Inefficient
+
+- Phase 103.1 artifact debt was predictable — the pattern is now consistent enough that VERIFICATION.md / VALIDATION.md should be created during the phase rather than retroactively
+- REQUIREMENTS.md traceability left at `—` status through all three feature phases; updated only in 103.1 — should update in-phase
+
+### Patterns Established
+
+- `User.all` (not `User.active`) for admin-facing screens that need to see all users including soft-deleted
+- In-memory `reject(&:deleted?).sort_by(&:id).first&.username` after `includes(:x_accounts)` — avoids N+1 without an extra scope
+
+### Key Lessons
+
+16. Create VERIFICATION.md and VALIDATION.md during the phase, not as a retroactive step — the retroactive pattern works but costs a full extra phase each time (v1.30).
+17. Update the REQUIREMENTS traceability in-phase, not at 103.1 — leaving it until artifact closure creates stale documentation for the review window between feature ship and audit (v1.30).
+
+### Cost Observations
+
+- Not tracked in-repo.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -736,6 +776,7 @@
 | v1.21 | 1 (69) | Single-phase autonomous execution; X API lower-bound clamping pattern established; per-account preference stored on resource row |
 | v1.22 | 3 (70–72) | Routing simplification milestone; `LandingController` deleted, guest path inlined into `WelcomeController#index`; deferred uid bug fixed in parallel phase |
 | v1.26 | 5 (84–88) | Visited link persistence + gadget wiring + delegated JS; Phase 88 planning/trace harness (`v1_26_closure_planning_contract_test.rb`); milestone audit passed before archive |
+| v1.30 | 4 (101–103.1) | Admin user list reusing v1.29 admin infra; retroactive artifact closure pattern now mature (Phase 103.1 mirrors v1.28 Phase 95); audit run promptly and resolved before archive |
 
 ### Cumulative quality
 
@@ -755,6 +796,7 @@
 | v1.21 | Minitest 382/382 + Cucumber 25 scenarios green | Per-account tweet count preference; X API `max_results` clamp pattern; autonomous single-phase execution |
 | v1.22 | Minitest 384/384 + Cucumber 25 scenarios green | Routing simplification; `LandingController` deleted; `from_omniauth` uid fix; no new test infrastructure needed |
 | v1.26 | Minitest 458 + Cucumber 27 scenarios green | Feed-path Cucumber E2E; planning closure locked traceability; pre-close `audit-open` quick-task scanner drift acknowledged in STATE |
+| v1.30 | Minitest 528/528 + Cucumber 31/31 green | Admin user list + retroactive artifacts; milestone audit `passed` before archive; 7-column view with N+1 prevention via `includes(:x_accounts)` |
 
 ### Top lessons (carry forward)
 
