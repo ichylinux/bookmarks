@@ -50,12 +50,20 @@ class XAccount < ApplicationRecord
 
       XAccount.where(user_id: user.id).find_each do |acc|
         next if seen[acc.x_user_id]
+        next if acc.manually_added?
 
         acc.update!(deleted: true)
       end
 
       user.update_column(:x_accounts_last_refreshed_at, refreshed_at)
     end
+  end
+
+  def self.upsert_manual!(user:, x_user_id:, username:, display_name:, avatar_url: nil)
+    acc = XAccount.where(user_id: user.id, x_user_id: x_user_id.to_s).first_or_initialize
+    acc.assign_attributes(username: username, display_name: display_name, avatar_url: avatar_url, manually_added: true, deleted: false)
+    acc.save!
+    acc
   end
 
   def self.selected_count_for(user)
