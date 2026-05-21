@@ -11,7 +11,6 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     patch preference_path(user), params: {
       user: {
-        name: 'twitter_name',
         preference_attributes: preference_param
       }
     }
@@ -29,7 +28,6 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     patch preference_path(user), params: {
       user: {
-        name: 'twitter_name',
         preference_attributes: preference_param
       }
     }
@@ -46,7 +44,6 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     sign_in user
     patch preference_path(user), params: {
       user: {
-        name: 'twitter_name',
         preference_attributes: preference_param
       }
     }

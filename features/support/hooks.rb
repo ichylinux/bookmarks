@@ -130,7 +130,7 @@ Before('@account_deletion') do
     deleted: false,
     deleted_at: nil,
     email: 'user3@example.com',
-    name: nil,
+    x_user_name: nil,
     provider: nil,
     uid: nil,
     token: nil,

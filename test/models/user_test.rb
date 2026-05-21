@@ -47,7 +47,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => u.uid,
-      'info' => { 'name' => u.name },
+      'info' => { 'name' => u.x_user_name },
       'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => expires_ts, 'expires' => true }
     )
     result = User.from_omniauth(auth)
@@ -67,7 +67,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => 'oauth2-uid-after-email-registration',
-      'info' => { 'name' => u.name, 'email' => 'link-by-email@example.com' },
+      'info' => { 'name' => u.x_user_name, 'email' => 'link-by-email@example.com' },
       'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => Time.now.to_i + 7200, 'expires' => true }
     )
     result = User.from_omniauth(auth)
@@ -124,7 +124,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => u.uid,
-      'info' => { 'name' => u.name, 'email' => 'real-x-email@example.com' },
+      'info' => { 'name' => u.x_user_name, 'email' => 'real-x-email@example.com' },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
     User.from_omniauth(auth)
@@ -144,7 +144,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => u.uid,
-      'info' => { 'name' => u.name, 'email' => 'new-x-email@example.com' },
+      'info' => { 'name' => u.x_user_name, 'email' => 'new-x-email@example.com' },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
     User.from_omniauth(auth)
@@ -164,7 +164,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => u.uid,
-      'info' => { 'name' => u.name },
+      'info' => { 'name' => u.x_user_name },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
     User.from_omniauth(auth)
@@ -211,7 +211,7 @@ class UserTest < ActiveSupport::TestCase
   def test_destroy_account_soft_deletes_without_modifying_account_data
     u = users(:twitter_user)
     email = u.email
-    name = u.name
+    x_user_name = u.x_user_name
     uid = u.uid
     provider = u.provider
     token = u.token
@@ -223,7 +223,7 @@ class UserTest < ActiveSupport::TestCase
     assert u.deleted?
     assert u.deleted_at.present?
     assert_equal email, u.email
-    assert_equal name, u.name
+    assert_equal x_user_name, u.x_user_name
     assert_equal uid, u.uid
     assert_equal provider, u.provider
     assert_equal token, u.token
@@ -268,7 +268,7 @@ class UserTest < ActiveSupport::TestCase
       deleted: false,
       deleted_at: nil,
       email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      name: 'twitter_test_user',
+      x_user_name: 'twitter_test_user',
       provider: 'twitter',
       uid: 'fixture_twitter_uid',
       oauth2_token: nil,

@@ -44,7 +44,7 @@ class User < ApplicationRecord
         attrs = {
           provider: 'twitter2',
           uid: uid,
-          name: data['name'],
+          x_user_name: data['name'],
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
@@ -61,7 +61,7 @@ class User < ApplicationRecord
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at,
-          name: data['name'],
+          x_user_name: data['name'],
           # OAUTH-02: real email stored on create
           email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
           password: Devise.friendly_token[0, 20]
@@ -78,7 +78,7 @@ class User < ApplicationRecord
     if has_valid_email?
       email
     else
-      name
+      x_user_name
     end
   end
 

@@ -22,7 +22,7 @@ three:
 
 twitter_user:
   email: dummy_00000000-0000-0000-0000-000000000001@example.com
-  name: twitter_test_user
+  x_user_name: twitter_test_user
   encrypted_password: $2a$10$JifTmwNy.DQ4Sbs.Y3xW.uVQ4xj54RWqL25AU0OR62WVug5Pz3Jy6
   otp_secret: KCWJDXNH2EJIHB7NUZL42TFZYDRWERPB
   otp_required_for_login: false

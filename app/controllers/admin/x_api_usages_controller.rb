@@ -53,7 +53,7 @@ module Admin
       acct = user.x_accounts.reject(&:deleted?).sort_by(&:id).first
       return "@#{acct.username}" if acct
 
-      user.name.presence || '—'
+      user.x_user_name.presence || '—'
     end
   end
 end
