@@ -47,8 +47,8 @@ module Admin
 
     def test_初回表示は直近7日がデフォルトになる
       sign_in users(:one)
-      XApiCall.record!(user_id: users(:two).id, endpoint: 'fetch_following', success: true)
       travel_to Time.zone.local(2026, 5, 21, 12, 0, 0) do
+        XApiCall.record!(user_id: users(:two).id, endpoint: 'fetch_following', success: true)
         get admin_x_api_usages_path
         assert_response :success
         assert_select 'input#from[value=?]', 7.days.ago.to_date.iso8601
