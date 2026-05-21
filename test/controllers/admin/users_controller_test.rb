@@ -19,7 +19,7 @@ module Admin
       sign_in users(:one)
       get admin_users_path
       assert_response :success
-      assert_select 'h1', text: 'Users'
+      assert_select 'h1', text: I18n.t('admin.users.index.title', locale: :ja)
     end
 
     def test_テーブルに7カラムのヘッダーが表示される

@@ -148,6 +148,16 @@ ja:
       cancel: キャンセル
 
   admin:
+    users:
+      index:
+        title: ユーザー一覧
+        col_id: ID
+        col_email: メールアドレス
+        col_x_user_name: X ユーザー名
+        col_admin_flag: 管理者
+        col_last_sign_in_at: 最終サインイン
+        col_created_at: 登録日時
+        col_updated_at: 更新日時
     x_api_usages:
       index:
         title: X API 利用状況
@@ -205,6 +215,7 @@ ja:
     feeds: フィード
     mastodon: Mastodon
     x_accounts: X (旧Twitter)
+    users: ユーザー一覧
     x_api_usages: X API 利用状況
     privacy: プライバシーポリシー
     terms: 利用規約

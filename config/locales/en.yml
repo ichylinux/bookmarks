@@ -148,6 +148,16 @@ en:
       cancel: Cancel
 
   admin:
+    users:
+      index:
+        title: Users
+        col_id: ID
+        col_email: Email
+        col_x_user_name: X Username
+        col_admin_flag: Admin
+        col_last_sign_in_at: Last sign-in
+        col_created_at: Created at
+        col_updated_at: Updated at
     x_api_usages:
       index:
         title: X API Usage
@@ -205,6 +215,7 @@ en:
     feeds: Feeds
     mastodon: Mastodon
     x_accounts: X (Twitter)
+    users: Users
     x_api_usages: X API Usage
     privacy: Privacy Policy
     terms: Terms of Service

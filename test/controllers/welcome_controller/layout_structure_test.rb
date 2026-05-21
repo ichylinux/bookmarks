@@ -81,9 +81,10 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '.drawer a[href=?]', admin_x_api_usages_path, count: 1
-    assert_select '.drawer nav a', count: 10
+    assert_select '.drawer a[href=?]', admin_users_path, count: 1
+    assert_select '.drawer nav a', count: 11
     assert_select '.drawer-nav-section--primary a', count: 6
-    assert_select '.drawer-nav-section--admin a', count: 1
+    assert_select '.drawer-nav-section--admin a', count: 2
     assert_select '.drawer-nav-divider[role=?]', 'separator', count: 2
   end
 
@@ -110,9 +111,10 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'ul.navigation a[href=?]', root_path
     assert_select '.menu-divider[role=?]', 'separator', count: 2
     assert_select '.menu-section--primary a', count: 5
-    assert_select '.menu-section--admin a', count: 1
+    assert_select '.menu-section--admin a', count: 2
     assert_select '.menu-section--secondary a', count: 3
     assert_select '.menu a[href=?]', admin_x_api_usages_path, count: 1
+    assert_select '.menu a[href=?]', admin_users_path, count: 1
     assert_select '.menu a[href=?]', privacy_path
     assert_select '.menu a[href=?]', terms_path
   end
