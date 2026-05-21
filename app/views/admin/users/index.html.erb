@@ -1,3 +1,31 @@
 <section class="admin-users" aria-labelledby="admin-users-heading">
   <h1 id="admin-users-heading">Users</h1>
+  <div class="admin-users__table-scroll">
+    <table class="admin-users__table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Email</th>
+          <th scope="col">X Username</th>
+          <th scope="col">Admin</th>
+          <th scope="col">Last Sign In</th>
+          <th scope="col">Created At</th>
+          <th scope="col">Updated At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= user.email %></td>
+            <td><%= user.x_accounts.reject(&:deleted?).sort_by(&:id).first&.username %></td>
+            <td><%= user.admin? ? '✓' : '—' %></td>
+            <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :short) : '—' %></td>
+            <td><%= l(user.created_at, format: :short) %></td>
+            <td><%= l(user.updated_at, format: :short) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </section>
