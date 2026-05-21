@@ -9,6 +9,18 @@ Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organ
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
 <details>
+<summary>Shipped: v1.30 Admin User Management Screen (2026-05-22)</summary>
+
+**Delivered (phases 101–103.1):**
+- `Admin::UsersController#index` at `/admin/users` — reuses `Admin::BaseController#require_admin` (404 non-admins, redirect guests); 3 access-control Minitest scenarios
+- 7-column user list table (id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at); `User.all.includes(:x_accounts)` prevents N+1; soft-deleted users visible; `x_user_name` blank when no XAccount linked; `admin_flag` renders ✓ / —
+- Drawer nav: `admin_users_path` added before `admin_x_api_usages_path`, guarded by `current_user.admin?`; 9 new locale keys each in ja.yml/en.yml; i18n parity test passes
+- Tri-suite gate green: lint ✓ · 528/528 Minitest · 31/31 Cucumber
+- Phase 103.1 retroactive artifact closure: VERIFICATION.md + VALIDATION.md for all 3 phases; all 6 USR requirements traced to Complete
+
+</details>
+
+<details>
 <summary>Shipped: v1.29 Admin X API Usage Report (2026-05-21)</summary>
 
 **Delivered (phases 96–100):**
@@ -180,18 +192,17 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Admin routes gated (`require_admin`, 404 for non-admins); drawer nav link for admins only — **v1.29 Phases 98–99**
 - ✓ Admin usage report at `/admin/x_api_usages` with date-range filter, column sort, ja/en locale — **v1.29 Phase 99**
 - ✓ Tri-suite gate green with v1.29 changes (515 Minitest, 30 Cucumber) — **v1.29 Phase 100**
+- ✓ Admin user list at `/admin/users` — gated by `require_admin` (404 for non-admins, redirect for guests) — **v1.30 Phase 101**
+- ✓ 7-column user table (id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at); soft-deleted users visible; N+1 prevented via `includes(:x_accounts)` — **v1.30 Phase 102**
+- ✓ `x_user_name` resolves from first non-deleted XAccount; blank when no account linked — **v1.30 Phase 102**
+- ✓ `admin_flag` renders ✓ for admins, — for regular users — **v1.30 Phase 102**
+- ✓ Drawer nav link to `/admin/users` for admins; bilingual ja/en column headers via locale keys; i18n parity test passes — **v1.30 Phase 103**
 
-## Current Milestone: v1.30 Admin User Management Screen
+## Current Milestone
 
-**Goal:** Add an admin-only read-only user list at `/admin/users` showing all registered accounts with key identity and activity fields.
+Planning next milestone — run `/gsd:new-milestone` to begin.
 
-**Target features:**
-- Admin user list at `/admin/users` showing all registered users
-- Visible columns: id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at
-- Gated by existing `require_admin` from `Admin::BaseController` (404 for non-admins)
-- Bilingual (ja/en) column headers and UI chrome; drawer nav link for admins
-
-### Out of Scope (revisit when planning)
+### Out of Scope (standing)
 
 - Introducing a new frontend framework, npm-heavy bundler migration, or replacing the asset pipeline
 - Large UX redesigns unrelated to current milestone scope
@@ -201,9 +212,13 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - Real-time autosave — explicit save is the correct UX for deliberate capture
 - Locale beyond ja/en — not planned; `Preference::SUPPORTED_LOCALES` whitelist + `enforce_available_locales` keep the surface explicit
 - `?locale=` URL parameter override — intentionally absent (Phase 14 D-04); can be added if a use case emerges
+- Pagination for admin user table — deferred (user count is small)
+- Column sorting/filtering on admin screens — deferred
+- User role editing from admin screen — read-only for now
 
 ## Context
 
+- **Shipped v1.30 (2026-05-22):** Admin user management screen — `/admin/users` route + controller (reuses `require_admin`), 7-column user list with soft-deleted visibility + N+1 prevention, drawer nav link, bilingual ja/en locale keys + i18n parity test, Cucumber E2E. Tri-suite: lint ✓ · 528 Minitest 0 failures · 31/31 Cucumber. Details: `.planning/milestones/v1.30-ROADMAP.md`. Audit: `.planning/milestones/v1.30-MILESTONE-AUDIT.md` (passed; Phase 103.1 closed process debt).
 - **Shipped v1.29 (2026-05-21):** Admin X API usage report — `x_api_calls` logging, controller instrumentation, admin gate, per-user report with filter/sort/locale, tri-suite gate. Tri-suite: lint ✓ · 515 Minitest 0 failures · 30/30 Cucumber. Details: `.planning/milestones/v1.29-ROADMAP.md`. No milestone audit file at close (process debt).
 - **Shipped v1.28 (2026-05-20):** Account self-service deletion — soft-delete data layer, preferences danger-zone UI, DELETE confirmation, PII anonymization, 90-day policy text (ja/en), tri-suite gate. Tri-suite: lint ✓ · 500 Minitest 0 failures · 28/28 Cucumber. Details: `.planning/milestones/v1.28-ROADMAP.md`. Audit: `.planning/milestones/v1.28-MILESTONE-AUDIT.md` (`tech_debt`; 10/10 requirements; purge job deferred ACCT-FUT-01).
 - **Shipped v1.27 (2026-05-19):** Privacy policy + terms of service at `/privacy` and `/terms` (bilingual, public); X OAuth2 email scope wiring (OAUTH-01–03). Tri-suite: lint ✓ · 485 Minitest 0 failures · 27/27 Cucumber. Details: `.planning/milestones/v1.27-ROADMAP.md`. Audit: `.planning/milestones/v1.27-MILESTONE-AUDIT.md` (`tech_debt`; 9/9 requirements; Phase 90 process artifacts deferred).
@@ -292,6 +307,9 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Controller-level instrumentation after XClient returns (v1.29) | Keeps `XClient` free of logging concerns; captures success and error paths uniformly | ✓ Good — `record_x_api_call` helper on both paths |
 | Admin 404 (not 403) for non-admins (v1.29) | Hides admin surface existence from regular users | ✓ Good — integration tests assert 404 |
 | Report identity: valid email else `@handle` from first XAccount (v1.29) | Dummy-email Twitter users have no display email | ✓ Good — readable per-user rows without exposing placeholders |
+| `User.all` (not `User.active`) for admin user list (v1.30) | Admin must see soft-deleted accounts for audit purposes | ✓ Good — intentional difference from `User.active` scope; tested |
+| In-memory `reject(&:deleted?).sort_by(&:id).first` after `includes(:x_accounts)` (v1.30) | No extra query; Delegates filtering/sorting to Ruby after eager load; avoids additional DB round-trip | ✓ Good — clean, no N+1; consistent with v1.26 visited-links pattern |
+| Retroactive artifact phase (103.1) after milestone audit (v1.30) | Process debt found at audit; inserted closure phase rather than proceeding with gaps | ✓ Good — pattern used in v1.28 Phase 95; audit re-confirmed `passed` after closure |
 
 ## Evolution
 
@@ -392,4 +410,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-21 — v1.30 Admin User Management Screen started*
+*Last updated: 2026-05-22 after v1.30 milestone*

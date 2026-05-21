@@ -1,11 +1,11 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.30
-milestone_name: — Admin User Management Screen
-status: executing
-stopped_at: v1.29 milestone complete and archived
-last_updated: "2026-05-21T15:12:16.551Z"
-last_activity: 2026-05-21 -- Phase 103.1 planning complete
+milestone_name: Admin User Management Screen
+status: complete
+stopped_at: v1.30 milestone complete and archived
+last_updated: "2026-05-22T00:00:00.000Z"
+last_activity: 2026-05-22 -- v1.30 milestone archived
 progress:
   total_phases: 4
   completed_phases: 4
@@ -18,10 +18,10 @@ progress:
 
 ## Current Position
 
-Phase: 103.1 complete
-Plan: 103.1-01 complete
-Status: Phase 103.1 complete — v1.30 milestone ready to close
-Last activity: 2026-05-22 — Phase 103.1 execution complete
+Phase: v1.30 archived
+Plan: —
+Status: Milestone v1.30 complete and archived
+Last activity: 2026-05-22 — v1.30 Admin User Management Screen shipped and archived
 
 Progress: [██████████] 100%
 
@@ -30,7 +30,7 @@ Progress: [██████████] 100%
 See: .planning/PROJECT.md (updated 2026-05-21)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.30 all phases complete — ready for milestone close (`/gsd:complete-milestone`)
+**Current focus:** v1.30 archived — start next milestone with `/gsd:new-milestone`
 
 ## Performance Metrics
 
@@ -79,4 +79,4 @@ Resume file: None
 
 ## Operator Next Steps
 
-- Run `/gsd:complete-milestone` to archive v1.30 and prepare for the next milestone.
+- Run `/gsd:new-milestone` to start the next milestone cycle.

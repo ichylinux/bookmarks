@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.30 — Admin User Management Screen (shipped 2026-05-22)
+
+**Scope:** Phases 101–103.1 (4 phases, 4 plans) — admin user list controller + route, 7-column view, drawer nav link, bilingual locale, tri-suite closure, retroactive process artifacts. 32 files changed, 2,125 insertions(+), 44 deletions(-).
+
+**Key accomplishments:**
+
+- `Admin::UsersController#index` at `/admin/users` — reuses `Admin::BaseController#require_admin` (404 for non-admins, redirect for guests); 3 access-control Minitest scenarios (USR-01).
+- 7-column user list table (id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at) with `User.all.includes(:x_accounts)` for N+1 prevention; soft-deleted users visible; `x_user_name` blank when no XAccount linked (USR-02, USR-03, USR-04).
+- Drawer nav admin section: `admin_users_path` link added before `admin_x_api_usages_path`, guarded by `current_user.admin?`; 9 new locale keys each in `ja.yml` and `en.yml`; i18n parity test passes (USR-05, USR-06).
+- Tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` 528/528 · `bundle exec rake dad:test` 31/31.
+- Phase 103.1 retroactive artifact closure: VERIFICATION.md + VALIDATION.md (`nyquist_compliant: true`) for all three phases; REQUIREMENTS.md all 6 USR checkboxes `[x]`.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.30-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.30-REQUIREMENTS.md) · [Audit](milestones/v1.30-MILESTONE-AUDIT.md)
+
+---
+
 ## v1.29 — Admin X API Usage Report (shipped 2026-05-21)
 
 **Scope:** Phases 96–100 (5 phases, 6 plans) — `x_api_calls` data layer, controller instrumentation, admin access gate, usage report UI with ja/en locale, tri-suite closure. 49 files changed, 3,460 insertions(+), 1,500 deletions(-).
@@ -469,4 +485,4 @@ Pre–GSD planning work on this repo:
 
 ---
 
-*Last updated: 2026-05-21 — v1.29 Admin X API Usage Report shipped (Phases 96–100)*
+*Last updated: 2026-05-22 — v1.30 Admin User Management Screen shipped (Phases 101–103.1)*
