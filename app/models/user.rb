@@ -44,6 +44,7 @@ class User < ApplicationRecord
         attrs = {
           provider: 'twitter2',
           uid: uid,
+          name: data['name'],
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
