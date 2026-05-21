@@ -153,7 +153,10 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
   3. Calling `upsert_manual!` a second time (or on a soft-deleted row) restores it without creating a duplicate — `manually_added: true` is always set unconditionally
   4. Running `refresh_cache_from_items!` does not soft-delete rows where `manually_added: true`; a Minitest covering this guard passes
   5. Refreshing a follow-synced account that also matches a manually-added row does not flip `manually_added` to `false`
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 104-01-PLAN.md — Add manually_added migration to x_accounts
+- [ ] 104-02-PLAN.md — upsert_manual! + refresh guard + Minitest
 
 ### Phase 105: XClient Lookup Service
 **Goal**: `XClient` can resolve a public X handle to a user record, returning a structured result or a typed error symbol, fully covered by isolated service tests
@@ -208,10 +211,10 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 104. Schema, Model & Refresh Guard | 0/1 | Not started | - |
+| 104. Schema, Model & Refresh Guard | 0/2 | Not started | - |
 | 105. XClient Lookup Service | 0/1 | Not started | - |
 | 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
 | 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
 | 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
 
-*Last updated: 2026-05-22 — v1.31 X Account Manual Add (Non-Following) roadmap created (Phases 104–108)*
+*Last updated: 2026-05-22 — Phase 104 planned (2 plans, 2 waves)*
