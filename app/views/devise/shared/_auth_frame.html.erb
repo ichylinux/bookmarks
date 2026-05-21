@@ -1,12 +1,6 @@
 <%# locals: intro (String), path_helper (Symbol), page_class (String, optional) %>
 <main class="auth-page <%= page_class %>">
-  <div class="auth-page__toolbar">
-    <%= link_to root_path, class: 'auth-back-link' do %>
-      <span aria-hidden="true">←</span>
-      <%= t('pages.privacy.back_home').sub(/\A←\s*/, '') %>
-    <% end %>
-    <%= render 'welcome/landing_lang_switcher', path_helper: path_helper %>
-  </div>
+  <%= render 'welcome/landing_page_toolbar', path_helper: path_helper, back_home_key: 'pages.privacy.back_home' %>
 
   <div class="auth-shell">
     <aside class="auth-brand-panel" aria-label="Bookmarks">

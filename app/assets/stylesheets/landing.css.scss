@@ -3,6 +3,31 @@
   max-width: 960px;
 }
 
+.landing-page__toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  .landing-lang-switcher {
+    margin-bottom: 0;
+  }
+}
+
+.landing-back-link {
+  color: #4f6b95;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    color: #2f6feb;
+    text-decoration: underline;
+  }
+}
+
 .landing-lang-switcher {
   display: flex;
   gap: 8px;

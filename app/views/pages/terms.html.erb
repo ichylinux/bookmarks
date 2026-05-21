@@ -1,9 +1,5 @@
 <main class="landing-page">
-  <%= render 'welcome/landing_lang_switcher', path_helper: :terms_path %>
-
-  <div class="policy-back-link">
-    <%= link_to t('pages.terms.back_home'), root_path %>
-  </div>
+  <%= render 'welcome/landing_page_toolbar', path_helper: :terms_path, back_home_key: 'pages.terms.back_home' %>
 
   <article class="policy-content">
     <h1><%= t('pages.terms.title') %></h1>

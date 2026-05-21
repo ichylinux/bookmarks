@@ -1,9 +1,5 @@
 <main class="landing-page">
-  <%= render 'welcome/landing_lang_switcher', path_helper: :privacy_path %>
-
-  <div class="policy-back-link">
-    <%= link_to t('pages.privacy.back_home'), root_path %>
-  </div>
+  <%= render 'welcome/landing_page_toolbar', path_helper: :privacy_path, back_home_key: 'pages.privacy.back_home' %>
 
   <article class="policy-content">
     <h1><%= t('pages.privacy.title') %></h1>
