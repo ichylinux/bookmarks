@@ -55,6 +55,11 @@
 
 **Requirements:** USR-01
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 101-01-PLAN.md — Controller, route, placeholder view, 3-scenario Minitest
+
 **Success criteria:**
 1. `GET /admin/users` returns 200 for admin users, 404 for non-admins, redirect to sign-in for guests
 2. Controller inherits from `Admin::BaseController` and reuses the `require_admin` gate from v1.29
@@ -193,4 +198,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-21 — v1.30 Admin User Management Screen roadmap created (Phases 101–103)*
+*Last updated: 2026-05-21 — Phase 101 planned (1 plan)*
