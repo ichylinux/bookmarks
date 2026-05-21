@@ -1,211 +1,217 @@
-# Feature Research — v1.29 Admin X API Usage Report
+# Feature Research — v1.31 X Account Manual Add by Handle
 
-**Project:** Bookmarks v1.29
-**Domain:** Admin API usage reporting in a multi-user Rails app with external Twitter/X API calls
-**Researched:** 2026-05-20
-**Confidence:** HIGH (codebase read directly; X API rate-limit model confirmed via official sources; Rails audit-log patterns well-documented)
+**Project:** Bookmarks v1.31
+**Domain:** Add-by-handle account discovery on an existing Rails social dashboard
+**Researched:** 2026-05-22
+**Confidence:** HIGH (codebase read directly; X API v2 docs confirmed via official sources; UX patterns from established app conventions)
 
 ---
 
 ## Context: What Already Exists
 
-Understanding the exact shape of XClient calls constrains every design choice here.
+The `/x_accounts` index page shows every XAccount row for the current user (fetched from their X following list), each rendered as a card with a selection checkbox. The controller already handles:
 
-**XClient call sites (non-test code only):**
+- `GET /x_accounts` — renders the account list (ordered by username, excludes soft-deleted)
+- `POST /x_accounts/refresh` — calls `XClient#fetch_following`, diffs, upserts
+- `PATCH /x_accounts/:id` — saves selection state + display_count per row
 
-| Caller | Method | When Called | User Context |
-|--------|--------|-------------|--------------|
-| `XAccountsController#refresh` | `XClient#fetch_following` | User clicks "refresh" on `/x_accounts` | `current_user` |
-| `XAccountsController#show` | `XClient#fetch_recent_tweets` | AJAX gadget load on welcome page, per selected X account | `current_user` |
+The `x_accounts` table has a composite unique index on `(user_id, x_user_id)`, so adding a second row for the same account is a uniqueness violation — the system must detect this case and re-use the existing row or show a "already in your list" message.
 
-**What XClient currently returns (but does NOT persist):**
+**XClient already provides the right API surface:** The `bearer_faraday` method authenticates with `user.oauth2_token` (Bearer token, OAuth2). The X API v2 endpoint `GET /2/users/by/username/:username` uses the same Bearer token. Rate limit is 300 requests per 15-minute window per app — generously large compared to what this personal app will consume. The endpoint returns `id`, `name`, `username`, `protected`, `profile_image_url` by default.
 
-- Success/failure symbol (`:unauthorized`, `:rate_limited`, `:timeout`, `:network`, `:parse_error`, `:api_error`, `:not_found`)
-- Result items (following list or tweet previews)
-
-**Nothing is logged.** No `x_api_calls` table, no counter, no timestamp beyond `users.x_accounts_last_refreshed_at` (which only captures the last `fetch_following` time, not `fetch_recent_tweets`, and gives no error state, no count).
-
-**Admin column already exists.** `users.admin boolean NOT NULL DEFAULT false`. No admin controller or admin namespace exists yet. The admin role is defined at the DB level but has no gated routes.
-
-**X API rate limit model (as of 2026):**
-
-The free tier is 500 Posts / 100 Reads per month across the entire app. Basic and Pro tiers use 15-minute rolling windows. Per-user OAuth 1.0a calls count against both the per-user window AND the app-level cap. `fetch_recent_tweets` is a Read (GET /2/users/:id/tweets). `fetch_following` is a Read (GET /2/users/:id/following). Rate-limit headers are returned on every response (`x-rate-limit-remaining`, `x-rate-limit-limit`, `x-rate-limit-reset`). The `parse_following_response` and `parse_tweets_response` methods in XClient already detect HTTP 429 and return `{ success: false, error: :rate_limited }` — but this signal is lost after the controller renders.
+**The `manually_added` boolean flag** (to be added to `x_accounts`) distinguishes origin (manual vs follow-sync) but has no effect on selection, display, or any other behavior — it is metadata only.
 
 ---
 
 ## Feature Landscape
 
-### Table Stakes — Must Have for the Milestone to Deliver Value
+### Table Stakes — Required for the Milestone to Deliver Value
 
-An admin usage report is useless if any of these are absent. An admin who opens the report and sees no data, or sees data without the dimensions needed to act on it, receives no value.
+If any of these are absent, the "add by handle" flow is broken or confusing.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Per-user request count** | The primary question an admin asks: "who is calling the API, how often?" Without totals per user, the report cannot identify heavy or anomalous callers. | LOW | `GROUP BY user_id COUNT(*)` on a log table. Trivial query with a compound index on `(user_id, called_at)`. |
-| **Last call timestamp per user** | Tells admin whether a user has been active recently. "User A made 400 calls last week, 0 this week — did something break?" A call count without recency context is much less actionable. | LOW | `MAX(called_at)` grouped by user. Same query as above, add `MAX`. |
-| **Endpoint dimension (following vs tweets)** | The two XClient methods hit different X API endpoints with different rate-limit budgets. An admin needs to know which endpoint is being hammered. If `fetch_following` is called 80 times in a day, that is suspicious (it should only be called on manual refresh). If `fetch_recent_tweets` is called 2000 times, that is the welcome-page AJAX loading. Without separating them, the count is uninterpretable. | LOW | Store `endpoint` as an enum or short string (`:following`, `:tweets`) in the log table. Group by `(user_id, endpoint)`. |
-| **Success vs error breakdown per user** | Rate-limit errors (`:rate_limited`) are the most important operational signal — they mean the X API cap was hit. Auth errors (`:unauthorized`) mean a user's OAuth token is stale. Without error tracking, the admin cannot distinguish "many calls, all successful" from "many calls, half failing with 429". | LOW | Store `success boolean` + `error_code varchar(32)` (nullable) in the log table. Filter and group in queries. |
-| **Admin-only access gate** | The report contains usage data across all users, including indirectly identifying information (who uses the app and how often). It must be inaccessible to non-admin users. The `users.admin` boolean exists but no middleware uses it yet. | LOW | `before_action :require_admin` in a new `Admin::BaseController`. Redirect 403 or root path on failure. One filter, applied once. |
-| **Basic filtering by date range** | Usage patterns are only meaningful in a time window. An admin asking "how many calls did we make this month?" cannot answer that from an all-time total. The minimum is a "this week / this month / all time" filter or a date range picker. | LOW-MEDIUM | Three radio buttons or a simple date range form. `WHERE called_at >= ? AND called_at <= ?`. No gem needed. |
-| **Ja/en locale strings** | The app is bilingual end-to-end. An admin-only page that renders in English only violates the established pattern. All labels, headings, column headers, and filter UI must exist in both `ja.yml` and `en.yml`. | LOW | Same i18n pattern as every other page in the app. Not optional given the project mandate. |
+| **Handle input field on `/x_accounts` screen** | The entry point is the existing management screen. Users expect the add form to live where accounts are managed, not on a separate page. Inline inline placement (above or below the account list) is the standard pattern for "add item to a managed list." | LOW | A single `<form>` with a text input and a submit button. No JS required for the initial implementation — a standard POST round-trip is sufficient. |
+| **Strip leading `@` before lookup** | Users type `@username` (with the `@`) because that is how X handles are conventionally written. Stripping the `@` before sending to the API is expected UX hygiene. Without it, the API returns 404 for `@username` even though `username` resolves. | LOW | `params[:username].to_s.lstrip.delete_prefix('@').strip` in the controller. One line. |
+| **API lookup before insert — confirm account exists** | The app must not allow adding a handle that does not exist. The X API `GET /2/users/by/username/:username` returns 404 if the account does not exist. This must be surfaced to the user as an error state, not silently ignored. | LOW | Call `XClient#fetch_user_by_username(user:, username:)` (new method) in the controller. On 404, flash `:alert`. |
+| **"Account not found" error state** | User types a nonexistent or suspended handle and clicks Add. The form re-renders with a clear message: "Account @foo was not found." Without this, users assume the button is broken. | LOW | Flash alert. No inline partial needed. |
+| **"Already in your list" guard** | The `(user_id, x_user_id)` unique index means inserting a duplicate raises `ActiveRecord::RecordNotUnique`. More importantly, if the account is already in the list (even soft-deleted), the user should get a clear message — not a 500, and not silently re-adding. Three sub-cases: (a) active row exists (not deleted), (b) soft-deleted row exists (it was previously removed by a follow-sync diff). Case (a): flash "already added". Case (b): un-delete and re-activate, then redirect. | LOW-MEDIUM | Model-level check before insert. `XAccount.where(user_id:, x_user_id:).first` — if found and not deleted, flash "already added" and redirect. If found and deleted, reset `deleted: false, manually_added: true` and redirect with success. If not found, insert new row. |
+| **Protected account warning on add** | The existing selection flow already shows a "protected account" acknowledgement checkbox before the user can select a protected account. An account added via manual add must also carry the `protected` field. If `protected: true`, the account is added but selection requires acknowledgement — same as the existing flow. The user should not be able to accidentally select a protected account they just added without acknowledging. | LOW | The API response includes `protected`. Store it in the row. No new UX needed — the existing `protected_acknowledged` validation and card UI handle it from here. |
+| **`manually_added boolean NOT NULL DEFAULT false` migration** | Adds the origin flag. Does not change any behavior. Required as a tracking field so the refresh diff does not delete manually-added accounts that are not in the following list. | LOW | One migration. One column. The `refresh_cache_from_items!` method must skip (or handle carefully) rows with `manually_added: true` when soft-deleting missing rows. |
+| **Refresh diff protection for manually-added rows** | `XAccount.refresh_cache_from_items!` currently soft-deletes every row not in the API response. Manually-added accounts are not in the following list by definition — so every refresh would soft-delete them. This must be fixed: `manually_added: true` rows must be excluded from the soft-delete sweep. | MEDIUM | In `refresh_cache_from_items!`, change the soft-delete sweep to: `where(manually_added: false).find_each { |acc| acc.update!(deleted: true) unless seen[acc.x_user_id] }`. This is a critical correctness fix, not optional. |
+| **Ja/en locale strings for the new form** | All UI strings must exist in both `ja.yml` and `en.yml`. The input label, placeholder, button text, and all error/success flash messages need keys. This is a project-wide requirement. | LOW | Six to eight new locale keys. Same pattern as every other form in the app. |
+| **Success feedback after add** | When the account is successfully added, the user is redirected to `/x_accounts` with a flash notice: "Account @foo has been added." Without feedback, the user may click Add multiple times wondering if it worked. | LOW | `flash[:notice] = t('x_accounts.add.success', username: '@' + username)` and redirect. |
+| **XApiCall instrumentation for the new lookup** | `XAccountsController#refresh` and `#show` already call `record_x_api_call`. The new lookup action must do the same. This is required for consistent API usage reporting that v1.29 introduced. | LOW | Call `record_x_api_call(endpoint: 'fetch_user_by_username', result: result)` in the new controller action. One line. |
 
-### Differentiators — Useful But Not Required for MVP
+---
 
-These improve operator experience but the report delivers real value without them.
+### Differentiators — Useful but Not Required for MVP
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Per-user rate-limit header capture** | X API returns `x-rate-limit-remaining` and `x-rate-limit-reset` on every response. Capturing these per-user in the log table would let the admin see "User A has 3 requests remaining in the current 15-minute window". This is operational gold for avoiding 429s proactively. | MEDIUM | XClient must read headers from the Faraday response and pass them back alongside the result hash. Adds columns to the log table. Requires Faraday header access in the response parsing path. The existing `parse_*_response` methods return only the parsed body — they would need to return headers too. **Worth building if rate-limit headroom is operationally important; defer if free-tier 100-read/month limit makes the window concept irrelevant.** |
-| **Sorting on the report table** | Admin can click column headers to sort by "total calls", "last call", "error rate". Makes finding the heaviest or most error-prone user faster when there are >5 users. | LOW-MEDIUM | Sort params in query string. `order(params[:sort] => params[:dir])` with a whitelist. Standard Rails pattern, no gem needed. |
-| **Pagination** | Needed once the log table has enough rows that a full-table render is slow. | LOW | `page` / `per_page` params. `limit/offset` on the query. At personal scale (a handful of users, hundreds of calls per day), a 30-row `GROUP BY` result is not paginated — but the raw log view (if added) would need it. |
-| **Raw call log view** | Admin can drill down from the per-user summary into individual call records — sorted by time, showing endpoint, success, error code, response time. Useful for debugging a specific incident. | MEDIUM | A detail page per user: `GET /admin/x_api_logs?user_id=N`. Paginated table of raw log rows. Adds one controller action and one view partial. |
-| **Response time tracking** | Log `duration_ms` (wall time of the XClient HTTP call). Enables spotting slow endpoints or degraded X API performance. | LOW | Wrap the Faraday call with `Process.clock_gettime(Process::CLOCK_MONOTONIC)` before and after. Store the delta in milliseconds. Adds one integer column. |
-| **CSV export** | Admin downloads the report as CSV for sharing or analysis outside the app. | LOW-MEDIUM | `respond_to :html, :csv` + `render csv:` with a template. No gem needed for simple row-by-row output. |
+| **Inline profile preview before confirming add** | After the user types a handle and clicks "Look Up", the form shows the account's display name and avatar inline, then a "Confirm Add" button. Reduces the chance of adding the wrong account (common username collisions). Pattern: Twitter's "follow" confirmation shows a profile card before the follow button. | MEDIUM | Requires a two-step flow: POST to a `preview` action renders the profile card inline (or as a partial replaced by JS). A second POST to `create` confirms. Alternatively, a single POST shows the preview page with a confirmation form. Without JS, this is a two-request round-trip — workable in server-rendered Rails but adds one more controller action and one view partial. Not needed for correctness; the account name/handle shown in the success flash is sufficient confirmation. |
+| **Case-insensitive handle input** | X usernames are case-insensitive but the API accepts any case. Normalizing to lowercase before lookup prevents duplicate rows if the user types `@HANDLE` once and `@handle` another time. The unique index is on `x_user_id` (not `username`), so the API is the source of truth — but normalized storage is cleaner. | LOW | `.downcase` on the username before lookup. Almost zero cost but depends on whether the X API always returns the canonical casing (it does — the API response `username` field is the canonical form). |
+| **Remove / soft-delete for manually-added accounts** | A user who added an account manually may want to remove it without triggering a refresh. A "Remove" button per card (only shown for `manually_added: true` accounts) sets `deleted: true`. The follow-synced accounts continue to be managed by refresh. | MEDIUM | Adds a `DELETE /x_accounts/:id` route. A confirm dialog (JS confirm or a separate confirmation page). The existing `preload_account` before_action already handles authorization. Low-risk addition but adds surface area. |
+| **Handle validation in the browser before submit** | A pattern attribute on the input (`[A-Za-z0-9_]{1,15}`) prevents submitting clearly invalid handles (too long, invalid characters). Reduces round-trips for typos. | LOW | One `pattern` attribute on the `<input>`. Zero JS required; browser native validation. |
+
+---
 
 ### Anti-Features — Explicitly Not This Milestone
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| **Real-time dashboard / live counters** | ActionCable/WebSocket push for live call counts adds infrastructure (Redis or async adapter) for a report that an admin checks at most once a day. The X API is not called frequently enough to make live updates meaningful. | Reload the page. A server-rendered HTML report is correct for this use case. |
-| **Alerting / email notifications** | "Send an email when User A exceeds 50 calls/hour." Adds Action Mailer wiring, a background job, configuration UI. Out of scope for a personal-scale app with a handful of users and a small API budget. | Admin reads the report manually. |
-| **Heavy BI / charting library (Chartkick, Highcharts, Chart.js)** | New npm/gem dependency. PROJECT.md forbids new bundler-level JS dependencies. A bar chart of calls per day looks nice but adds a CDN script tag or a Sprockets gem that needs ongoing maintenance. The report is operational, not a data product for presentations. | HTML table with clear numeric columns. Optionally a simple CSS bar representation using `width: N%` on a colored div — no library needed. |
-| **Sidekiq / background job for log writes** | Writing a log row synchronously on each XClient call adds <1ms to the controller response. The table will have a simple index and single-row inserts. There is no reason to introduce a background job framework for this workload. | Synchronous `XApiLog.create!(...)` in the XClient call path or in an observer/callback pattern. |
-| **Separate admin namespace gem (ActiveAdmin, Administrate)** | These gems are appropriate for large CRUD-heavy backends managing dozens of models. For one report page and one access gate, a gem adds hundreds of lines of configuration, its own asset pipeline, and version coupling risk. | A minimal `Admin::BaseController` with one subclass `Admin::XApiLogsController`. Two controllers, two view templates, one route namespace. Total: ~100 lines. |
-| **User management via admin panel** | Creating/deleting/editing users from the admin report page is a separate concern. The report answers "how is X API used?" — user management answers "who can sign in?" Mixing them in this milestone adds scope and defers the report. | User management via rake tasks (already established: `dad:create_admin_user`). |
-| **Per-account (x_account) granularity in logs** | Logging which specific X account's tweets were fetched (e.g., "@elonmusk's tweets were fetched 40 times") is more granular than what the admin needs. The per-user + per-endpoint breakdown is sufficient to identify load drivers. Per-X-account data adds a foreign key to the log table and complicates the GROUP BY queries. | Per-user + per-endpoint is the right granularity for v1.29. |
-| **X API quota meter / progress bar against monthly cap** | Showing "you've used 73 of 100 monthly reads" would require the app to know the billing period start date and aggregate all calls. This is valuable but requires knowing the X Developer portal billing cycle, which is not exposed in the API response. Rate-limit headers only show the current 15-minute window. | Expose raw call counts by time period; let the admin do the arithmetic against their known quota. |
+| **Modal/popup for the add form** | A modal requires JS to open/close, focus trapping, and ARIA management. The existing app has no modal component. Adding one for a simple text input adds JS complexity that violates the "no new JS complexity" standing constraint. | Inline form above or below the existing account list. Same page, no overlay. |
+| **Autocomplete / handle suggestions while typing** | Requires debounced XHR calls to a lookup endpoint on every keystroke. X API rate limits (300/15min for user lookup) are not a hard constraint, but adding live search creates a new AJAX endpoint, a new JS event handler, and new failure states. The app avoids AJAX complexity where server-rendered round-trips suffice. | Submit-on-click lookup. User types the full handle and clicks Add. |
+| **Importing multiple handles at once (bulk add)** | A textarea where the user pastes a list of handles and adds them all. More complex error reporting (per-line errors), a loop in the controller, and a transaction that may partially succeed. The single-add pattern is sufficient for personal use. | One handle at a time. The form is on the same page; adding several accounts is fast even one at a time. |
+| **Searching across all X accounts (not just the user's)** | A search box that queries X's full user directory. This is a different feature (discovery) from "add a specific account you already know the handle of." The milestone specifically calls for "type a handle to add." | Direct handle entry only. No query-against-all-users search. |
+| **Show tweet preview of the added account on the add page** | Fetching tweets for a just-added account and showing them inline during the add flow is a cross-feature scope expansion. The dashboard gadget handles tweet display. | The user can see tweets on the dashboard after selecting the account. |
+| **OmniAuth / OAuth "follow user" via the API** | Using the X API to programmatically follow the added account on behalf of the user. This app is read-only; it displays tweets, it does not write to X. | Read-only: add to local display list only. |
 
 ---
 
 ## Feature Dependencies
 
 ```
-[x_api_logs table + XApiLog model]
-    └──required by──> [per-user count query]
-    └──required by──> [last call timestamp query]
-    └──required by──> [endpoint breakdown query]
-    └──required by──> [success/error breakdown]
+[manually_added boolean migration]
+    └──required by──> [refresh diff protection logic]
+    └──required by──> [new XAccount row insert]
 
-[XClient instrumentation (log write on each call)]
-    └──requires──> [x_api_logs table]
-    └──hooks into──> [fetch_following + fetch_recent_tweets call sites]
-    └──records──> [user_id, endpoint, success, error_code, called_at]
+[XClient#fetch_user_by_username (new method)]
+    └──required by──> [controller lookup action]
+    └──uses──> [existing bearer_faraday connection]
+    └──mirrors──> [fetch_following structure: success/error contract]
 
-[Admin::BaseController + require_admin before_action]
-    └──required by──> [Admin::XApiLogsController]
-    └──gates on──> [current_user.admin?]
+[Controller: POST /x_accounts/add_by_handle (or POST /x_accounts)]
+    └──calls──> [XClient#fetch_user_by_username]
+    └──calls──> [XApiCall.record!]
+    └──checks──> [existing row by x_user_id]
+    └──writes──> [XAccount row with manually_added: true]
+    └──redirects to──> [x_accounts_path with flash]
 
-[Admin::XApiLogsController]
-    └──requires──> [Admin::BaseController]
-    └──queries──> [x_api_logs GROUP BY user_id, endpoint]
-    └──renders──> [admin/x_api_logs/index.html.erb]
+[refresh_cache_from_items! soft-delete sweep fix]
+    └──requires──> [manually_added column to exist]
+    └──protects──> [manually_added: true rows from being deleted on refresh]
 
-[Date range filter]
-    └──adds WHERE clause to──> [report query]
-    └──has no schema dependency]
+[Add form on index view]
+    └──renders on──> [existing x_accounts/index.html.erb]
+    └──posts to──> [new controller action]
 
 [Ja/en locale strings]
-    └──required by──> [admin report view]
-    └──pattern: existing config/locales/ja.yml + en.yml]
+    └──required by──> [add form view + flash messages]
+    └──keys in──> [config/locales/ja.yml + en.yml]
 ```
 
 ### Dependency Notes
 
-- **Log table is the foundation.** All reporting depends on it existing and being populated. Instrumentation (writing to the table) must be in place before any admin report can show data.
-- **XClient instrumentation should be non-intrusive.** The cleanest approach: a wrapper method in XClient that logs before returning, or a separate `XApiLog.record(user:, endpoint:, result:)` class method called at each call site in the controller. Do not modify XClient's return contract — callers already depend on `{ success:, items: }` and `{ success:, error: }`.
-- **`require_admin` before_action is a new cross-cutting concern.** It must check `current_user&.admin?` and redirect (not 403) to avoid leaking route existence. A 302 to root is appropriate. This goes in `Admin::BaseController`, not in `ApplicationController`, to avoid applying it globally.
-- **No Devise changes needed.** `users.admin` is already a boolean column. `current_user.admin?` works without any gem changes.
-- **Instrumentation call sites:** Two places in `XAccountsController` (`#refresh` calls `fetch_following`; `#show` calls `fetch_recent_tweets`). The log write should happen after the XClient call returns, using the result's `:success` and `:error` fields.
+- **`manually_added` column must precede all else.** The refresh diff fix and the new insert both depend on this column being present.
+- **The refresh diff fix is load-bearing.** Without it, a user who adds an account manually and then clicks Refresh will lose the account. This must ship in the same milestone.
+- **`XClient#fetch_user_by_username` is a new method, not a modification.** The existing `fetch_following` and `fetch_recent_tweets` are untouched. The new method follows the same `{ success:, items: }` contract.
+- **Authorization:** The new add action uses `before_action :require_twitter_linked` (already present), so it is already gated behind the OAuth2 link requirement. No new auth surface.
+- **Uniqueness:** The DB unique index on `(user_id, x_user_id)` is the canonical guard. The controller must handle the "already exists" case before the DB raises, to give a user-friendly error rather than a 500.
 
 ---
 
-## Log Table Schema Recommendation
+## X API Endpoint Details for `fetch_user_by_username`
 
-The table must be small, fast to insert into, and efficient to aggregate.
+**Endpoint:** `GET /2/users/by/username/:username`
 
+**Auth:** Bearer token (same as existing `bearer_faraday` setup)
+
+**Required fields to request:** `user.fields=id,name,username,profile_image_url,protected`
+
+**Rate limit:** 300 requests per 15-minute window per app — well within any personal-use scenario.
+
+**Error codes to handle (mirrors existing XClient contract):**
+
+| HTTP Status | Meaning | Error Symbol |
+|-------------|---------|--------------|
+| 200 | Account found | success |
+| 404 | Account does not exist or is suspended | `:not_found` |
+| 401 | OAuth2 token expired/invalid | `:unauthorized` |
+| 429 | Rate limited (300/15min would require hammering) | `:rate_limited` |
+| 5xx / network | X API down | `:api_error` / `:timeout` / `:network` |
+
+**Response shape (same as following items):**
+
+```json
+{
+  "data": {
+    "id": "12345",
+    "name": "Display Name",
+    "username": "handle",
+    "protected": false,
+    "profile_image_url": "https://pbs.twimg.com/..."
+  }
+}
 ```
-x_api_logs
-  id             bigint   PK
-  user_id        bigint   NOT NULL  FK → users.id
-  endpoint       varchar(32) NOT NULL  # 'following' or 'tweets'
-  success        boolean  NOT NULL
-  error_code     varchar(32)  NULL    # nil on success; ':rate_limited' etc. on failure
-  called_at      datetime NOT NULL
-  created_at     datetime NOT NULL
 
-INDEX (user_id, called_at)          # covers per-user time-range queries
-INDEX (called_at)                    # covers global time-range queries
-```
+The normalized row returned from `fetch_user_by_username` can use the same `normalize_following_row` format (`{ id:, username:, name:, profile_image_url:, protected: }`) so `XAccount.new(...)` assignment is identical to the refresh path.
 
-No `duration_ms` at MVP (add as differentiator). No `x_account_id` FK (per-account granularity is anti-feature for v1.29). `endpoint` as varchar(32) is simpler than a Rails enum and avoids migration risk if a third endpoint is added later. `error_code` mirrors the XClient error symbol as a string (`:rate_limited` → `"rate_limited"`).
+---
+
+## Error States to Handle
+
+All error states must have a flash message (alert) in both ja and en.
+
+| State | User-Visible Message | How to Produce in Tests |
+|-------|---------------------|------------------------|
+| Account not found (404) | "アカウント @foo が見つかりませんでした" / "Account @foo was not found." | WebMock stub returning 404 |
+| Already in active list | "アカウント @foo はすでに追加されています" / "Account @foo is already in your list." | Pre-existing XAccount row with deleted: false |
+| Previously deleted, now restored | (success flash) "アカウント @foo を追加しました" / "Account @foo has been added." | XAccount row with deleted: true — re-activate |
+| Protected account added | (success flash) "アカウント @foo を追加しました（非公開アカウントは選択時に確認が必要です）" / "Account @foo was added. Protected accounts require acknowledgement before selection." | API response with protected: true |
+| Input blank or invalid pattern | Form-level validation before API call | Empty string or `<input>` pattern rejection |
+| Rate limited | "X API の利用制限に達しました" / "X API rate limit reached." | WebMock stub returning 429 |
+| Network error / timeout | "X API に接続できませんでした" / "Could not reach the X API." | WebMock to raise Faraday::TimeoutError |
+| Unauthorized (token expired) | Existing `:unauthorized` locale key | WebMock stub returning 401 |
 
 ---
 
 ## MVP Definition
 
-### Build in v1.29
+### Build in v1.31
 
-- `x_api_logs` table with `user_id`, `endpoint`, `success`, `error_code`, `called_at`
-- `XApiLog` model: `belongs_to :user`, validations, `XApiLog.record!(user:, endpoint:, result:)` class method
-- Instrumentation: call `XApiLog.record!` in `XAccountsController#refresh` (after fetch_following) and `#show` (after fetch_recent_tweets)
-- `Admin::BaseController` with `require_admin` before_action (redirect non-admins to root)
-- `Admin::XApiLogsController#index`: aggregation query — per-user totals, per-endpoint breakdown, error counts, last call time; filterable by date range
-- `GET /admin/x_api_logs` route (namespaced under `admin`)
-- Admin report view: HTML table with per-user row, endpoint columns, error column, last-call column; date range filter form
-- Ja/en locale strings under `admin.x_api_logs.*` in both YAML files
-- Minitest: `XApiLog` model tests, `Admin::XApiLogsController` access control (non-admin redirected, admin allowed), query correctness
-- Cucumber: one scenario — admin signs in, visits report, sees per-user data; non-admin redirected
+1. **Schema:** `manually_added boolean NOT NULL DEFAULT false` migration on `x_accounts`
+2. **Model:** `XAccount` — permit `manually_added` as attr; update `refresh_cache_from_items!` soft-delete to exclude `manually_added: true` rows
+3. **XClient:** Add `fetch_user_by_username(user:, username:)` method returning `{ success: true, item: {...} }` or `{ success: false, error: Symbol }` + `rate_limit_remaining`
+4. **Controller:** New action (e.g., `POST /x_accounts/add` or a `create` action) that: strips `@`, calls `fetch_user_by_username`, handles all error states, upserts the row with `manually_added: true`, calls `record_x_api_call`, redirects
+5. **View:** Inline add form on `x_accounts/index.html.erb` — text input, submit button, locale keys for label/placeholder/button
+6. **Locales:** All error + success flash strings in ja.yml and en.yml
+7. **Tests:** Minitest for `XClient#fetch_user_by_username` (success, 404, 401, 429, timeout), controller action (all error states + success + already-added + soft-deleted restore), model `refresh_cache_from_items!` protection for manually_added rows; Cucumber E2E scenario: user types handle, account added, appears in list
 
 ### Explicitly Defer
 
-- Rate-limit header capture — only valuable for Pro/Basic tier (15-minute windows); less relevant at free-tier 100 reads/month
-- Response time logging — adds complexity; call duration is not operationally critical at personal scale
-- Raw per-call drill-down page — summary view is sufficient for v1.29
-- Sorting by column header — summary table will have few rows (one per user); sorting is low-value
-- CSV export — admin can copy the HTML table; not worth the respond_to plumbing at v1.29
-- CSS/JS chart visualizations — table is sufficient; no new JS/gem dependencies
-
----
-
-## X API Rate-Limit Context for the Report Design
-
-Understanding the rate-limit model prevents the report from misleading the admin.
-
-**Free tier (likely tier for this app):** 100 Reads per month across all users. `fetch_following` and `fetch_recent_tweets` are both Reads. 100 total reads is not a lot — a single user with 5 selected X accounts loading the welcome page 20 times in a month will consume 100 reads. The report must make this visible.
-
-**Rate-limit errors already detected:** XClient returns `{ success: false, error: :rate_limited }` on HTTP 429. Logging this error code lets the admin see how often the app is hitting the cap.
-
-**Per-user vs per-app:** X API v2 with OAuth 1.0a User Context has both per-user rate-limit windows (which reset every 15 minutes) and monthly read quotas that are app-wide. The admin report tracks app-wide call volume; it cannot know per-user window status without reading headers from each response.
-
-**`called_at` precision:** Storing `datetime` (second precision) is sufficient. The admin is not doing millisecond-level rate-limit analysis. MySQL `datetime` with a `called_at` index gives sub-millisecond range queries across millions of rows — vastly more than this app will ever produce.
+- Two-step confirmation/preview before insert — not needed for correctness at this scale
+- Remove / soft-delete for manually-added accounts — add-only is correct for v1.31
+- CSS badge distinguishing manually-added vs follow-synced on the card — origin is metadata, not a display concern
+- Bulk add — single-add form is sufficient
 
 ---
 
 ## Complexity Assessment
 
-| Feature | Effort | Risk | Notes |
-|---------|--------|------|-------|
-| `x_api_logs` table + model | 1 phase | LOW | Standard migration + model pattern |
-| XClient instrumentation | 1 phase | LOW | 2 call sites; no XClient return contract change |
-| Admin::BaseController + gate | 0.5 phase | LOW | One before_action, one redirect |
-| Report controller + view | 1 phase | LOW | GROUP BY query + HTML table |
-| Date range filter | 0.5 phase | LOW | WHERE clause addition, simple form |
-| Ja/en locale strings | Folded into view phase | LOW | Same pattern as every other page |
-| Minitest + Cucumber | 1 phase | LOW | Access control + query tests |
+| Component | Effort | Risk | Notes |
+|-----------|--------|------|-------|
+| Migration (`manually_added`) | 0.5 phases | LOW | One column, one migration |
+| `refresh_cache_from_items!` fix | 0.5 phases | MEDIUM | Correctness-critical; must not break existing refresh behavior; good test coverage required |
+| `XClient#fetch_user_by_username` | 0.5 phases | LOW | Mirrors existing `fetch_following` structure; new Faraday call, same auth |
+| Controller action + route | 1 phase | LOW | 6–8 error states, but all follow the same flash-and-redirect pattern |
+| View (inline form) | 0.5 phases | LOW | One `<form>` block added to existing index view |
+| Locales (ja/en) | Folded in | LOW | 8–12 keys |
+| Minitest coverage | 1 phase | LOW | Service + model + controller tests; WebMock for HTTP stubs |
+| Cucumber E2E | 0.5 phases | LOW | One happy-path scenario + one "not found" scenario |
 
-**Total: 5–6 phases.** Well within the existing milestone pattern (v1.26 was 5 phases, v1.28 was 4 phases for comparable scope).
+**Total: 4–5 phases.** Smaller than v1.29 (5–6 phases). The heaviest risk is the `refresh_cache_from_items!` fix — existing refresh tests must be extended to cover the manually_added exclusion.
 
 ---
 
 ## Sources
 
-- Codebase read directly: `app/services/x_client.rb`, `app/controllers/x_accounts_controller.rb`, `app/models/x_account.rb`, `app/models/portal.rb`, `db/schema.rb`
-- [X API v2 Rate Limits — developer.x.com](https://developer.x.com/en/docs/x-api/v1/rate-limits)
-- [X API Pricing 2026 — postproxy.dev](https://postproxy.dev/blog/x-api-pricing-2026/) — free tier 100 reads/month confirmed
-- [Audit Logging in Ruby and Rails — AppSignal Blog](https://blog.appsignal.com/2023/04/12/audit-logging-in-ruby-and-rails.html) — Rails audit log patterns
-- [Building a Custom Audit Trail in Rails — DEV Community](https://dev.to/nemwelboniface/building-a-custom-audit-trail-in-ruby-on-rails-without-papertrail-klk) — bespoke log table approach vs gem
+- Codebase read directly: `app/services/x_client.rb`, `app/controllers/x_accounts_controller.rb`, `app/models/x_account.rb`, `app/views/x_accounts/index.html.erb`, `db/schema.rb`
+- [X API v2: GET /2/users/by/username/:username — docs.x.com](https://docs.x.com/x-api/users/get-user-by-username) — endpoint fields and auth confirmed
+- [X API v2: Rate Limits — docs.x.com](https://docs.x.com/x-api/fundamentals/rate-limits) — 300/15min for user lookup endpoints confirmed
+- [X API v2: User lookup by usernames — docs.x.com](https://docs.x.com/x-api/users/user-lookup-by-usernames) — batch variant confirmed; single-username variant used here
 
 ---
 
-*Feature research for: admin X API usage report in multi-user Rails personal dashboard*
-*Researched: 2026-05-20*
+*Feature research for: manual add-by-handle on X accounts management screen in Rails personal dashboard*
+*Researched: 2026-05-22*

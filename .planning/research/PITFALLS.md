@@ -1,228 +1,219 @@
-# Domain Pitfalls: v1.29 Admin X API Usage Report
+# Domain Pitfalls: v1.31 X Account Manual Add (Non-Following)
 
-**Domain:** Adding API usage tracking + admin dashboard to an existing Rails 7/8 app
-**Researched:** 2026-05-20
-**Scope:** Pitfalls specific to this codebase (XClient, MySQL, WebMock, Minitest+Cucumber, no background jobs)
+**Domain:** Adding manual X account lookup-by-handle to an existing Rails diff-upsert refresh system
+**Researched:** 2026-05-22
+**Scope:** Pitfalls specific to adding `XClient#lookup_user_by_username`, a `manually_added` flag, and a controller add action to the existing `x_accounts` / `refresh_cache_from_items!` system
 
 ---
 
 ## Critical Pitfalls
 
-These mistakes cause rewrites, silent security holes, or complete test suite breakdown.
-
----
-
-### Pitfall 1: Tracking Hook Placed Inside XClient — Breaks All Existing Tests
+### Pitfall 1: `refresh_cache_from_items!` blindly soft-deletes manually-added accounts on every refresh
 
 **What goes wrong:**
-If the tracking write (`XApiCall.create!(...)`) is placed directly inside `XClient#fetch_following` or `#fetch_recent_tweets`, every existing Minitest that exercises XClient via Faraday `:test` stubs will begin writing to the `x_api_calls` table. Tests that do not reset that table between runs will see stale rows and produce non-deterministic counts. Tests that mock at the WebMock layer (controller integration tests, Cucumber `@x_gadget` hook) will also trigger tracking writes — meaning a green test run today will have `x_api_calls` rows that contaminate the next test that asserts on counts.
+`XAccount.refresh_cache_from_items!` builds a `seen` hash from the X following-API payload, then iterates every `x_accounts` row for the user and calls `acc.update!(deleted: true)` on any row whose `x_user_id` is absent from that hash. A manually-added account the user does not follow will always be absent from the following payload. Every call to Refresh silently soft-deletes all manually-added accounts.
 
 **Why it happens:**
-XClient is tested in three distinct ways in this codebase: (a) `XClientTest` via Faraday `:test` adapter with a forced `connection:` argument, (b) controller integration tests via `WebMock.stub_request`, and (c) Cucumber via `WebMock.stub_request` in the `@x_gadget` Before hook. None of these stubs prevent an `XApiCall.create!` inside XClient from writing — WebMock only blocks outbound HTTP, not ActiveRecord writes.
+The method was written when the only source of accounts was the following API. The soft-delete loop at lines 51–55 of `app/models/x_account.rb` has no concept of origin. Any row not seen in the following payload is a candidate for deletion — there is no exemption path.
 
 **Consequences:**
-- Minitest tests that assert on `XApiCall.count` break as soon as execution order changes.
-- Cucumber `@x_gadget` scenarios accumulate tracking rows from each scenario run; the global `Before` hook in `features/support/hooks.rb` resets `XAccount.delete_all` and `VisitedLink.delete_all` but does NOT reset `x_api_calls` — this must be added explicitly or scenarios will see phantom call counts.
-- Tracking writes in production introduce a DB write for every X API call, adding latency to what is currently a read-only Faraday call path.
+- User adds @handle manually, it appears on the dashboard. User clicks Refresh. The account vanishes. This repeats on every refresh, forever.
+- `selected: true` state persists on the soft-deleted row but the `not_deleted` scope excludes it from gadget queries, so the tweet feed also disappears silently.
+- No data is hard-deleted, so recovery is possible, but the user-visible experience is broken on every refresh cycle.
 
 **Prevention:**
-Place the tracking hook at the **call site** (the controller or service object that calls XClient), not inside XClient itself. XClient remains a pure HTTP adapter. This mirrors the existing pattern where `Portal#get_gadgets` drives XClient but XClient has no side effects beyond returning its result hash.
+Add a single guard line inside the soft-delete loop in `refresh_cache_from_items!`:
 
-Alternatively, use an `after_action` callback on `XAccountsController` and a dedicated service call in `WelcomeController` — but keep XClient ignorant of tracking.
+```ruby
+XAccount.where(user_id: user.id).find_each do |acc|
+  next if seen[acc.x_user_id]
+  next if acc.manually_added?   # guard: manually-added accounts survive refresh
+
+  acc.update!(deleted: true)
+end
+```
+
+This is the single most important change in the milestone. Write it and its Minitest case before any controller work.
 
 **Detection:**
-If `XClientTest` starts failing on `XApiCall`-related errors, or if Cucumber `@x_gadget` scenarios fail with unexpected row counts, tracking was placed inside XClient.
+Minitest:
+1. Create `XAccount` with `manually_added: true`, `deleted: false`.
+2. Call `XAccount.refresh_cache_from_items!(user, [])` (empty payload — row not in following list).
+3. Assert `acc.reload.deleted?` returns `false`.
+
+The existing tests `test_refresh_cache_soft_deletes_unselected_row_missing_from_payload` and `test_refresh_cache_soft_deletes_selected_row_missing_from_payload` show the correct pattern; add an equivalent "does NOT soft-delete manually-added row" test alongside them.
+
+**Phase:** Migration + model phase (Phase 1). Do not merge any controller work until this test is green.
 
 ---
 
-### Pitfall 2: Admin Gate Implemented Only in the View — Not at the Controller Level
+### Pitfall 2: `assign_attributes` in `refresh_cache_from_items!` must never include `manually_added: false`
 
 **What goes wrong:**
-The app currently has `users.admin boolean NOT NULL DEFAULT false` and a tested `admin?` predicate on User, but no admin controller, no `require_admin` before_action, and no routing namespace. The first admin feature risks having the view correctly hide admin links while the underlying route and action remain accessible to any authenticated non-admin user.
+When a manually-added account also appears in the following payload (the user follows someone they manually added), `refresh_cache_from_items!` upserts that row via `assign_attributes` and `save!`. Developers adding the `manually_added` column may be tempted to include `manually_added: false` in the `assign_attributes` call to ensure a "clean" follow-synced state. This silently clears the flag: the account is now treated as follow-synced and will be correctly soft-deleted on the next refresh if the user unfollows.
 
 **Why it happens:**
-It is tempting to add `<% if current_user.admin? %>` guards in the nav and rely on obscurity. But `ApplicationController` only enforces `authenticate_user!` — there is no second gate. Any signed-in user who knows or discovers `/admin/x_api_usage` can access the data.
+The following-API payload has no `manually_added` field. Developers reasoning about "state reset on upsert" may add the column to the attributes hash as a form of bookkeeping. The mistake is invisible until the user unfollows and refreshes.
 
 **Consequences:**
-- Any authenticated user can see all users' X API usage data — a privacy violation in a multi-user app.
-- Future admin features inherit the same gap by following the "established" pattern.
+- Manually-added account survives one refresh (because the follow lookup finds it), then disappears the next time the user unfollows — which was not the intent.
+- Root cause is one extra line in `assign_attributes`; very easy to introduce, hard to notice.
 
 **Prevention:**
-Create a `require_admin` before_action concern (or an `Admin::BaseController < ApplicationController` that includes it). The gate must call `head :forbidden` or redirect away if `!current_user.admin?`. This gate belongs at the controller level, not the view level. The view-level guard is additive (prevents the link showing) but cannot be the only guard.
-
-Test it explicitly: an integration test with a non-admin signed-in user must assert that `GET /admin/x_api_usage` returns 403 (or redirects), not 200. The existing fixture user id:2 (`admin: false`) is available for this negative case; user id:1 (`admin: true`) serves the positive case.
+Do NOT add `manually_added` to the `assign_attributes` call inside `refresh_cache_from_items!`. Let the column's DB default (`false`) apply only at row creation. Only the manual-add action should set `manually_added: true`.
 
 **Detection:**
-No `require_admin` before_action exists anywhere in the controller inheritance chain for the admin route.
+Minitest:
+1. Create a `manually_added: true` row with a `x_user_id` that IS present in the refresh payload.
+2. Call `refresh_cache_from_items!` with that row in the payload.
+3. Assert `acc.reload.manually_added?` is still `true`.
+
+**Phase:** Migration + model phase (Phase 1). Part of the same test suite as Pitfall 1.
 
 ---
 
-### Pitfall 3: Tracking Records Leak Between Cucumber Scenarios — Missing Before Hook Cleanup
+### Pitfall 3: Unique index on `(user_id, x_user_id)` raises `RecordNotUnique` on duplicate manual add
 
 **What goes wrong:**
-Minitest uses `fixtures :all` with transactional rollback (Rails default). Rows created during a Minitest method are rolled back after that method — this is safe automatically.
+`x_accounts` has `UNIQUE KEY index_x_accounts_on_user_id_and_x_user_id (user_id, x_user_id)`. If a user tries to add a handle that is already present in `x_accounts` (either as a follow-synced account, an earlier manual add, or a soft-deleted row), an INSERT raises `ActiveRecord::RecordNotUnique`. Two cases:
 
-Cucumber does NOT use transactional rollback — it runs through a real Puma server via Capybara. The global `Before` hook in `features/support/hooks.rb` explicitly resets `MastodonAccount.delete_all`, `XAccount.delete_all`, and `VisitedLink.delete_all`. A new `x_api_calls` table will NOT be in that list unless explicitly added. If `@x_gadget` scenarios trigger tracking writes, each subsequent scenario sees rows from all prior scenarios.
+1. Row exists with `deleted: false` — attempting a new create raises the constraint.
+2. Row exists with `deleted: true` — the soft-deleted row still holds the unique slot; inserting a new row raises the same constraint.
 
-**Why it happens:**
-New tables require explicit additions to the Cucumber `Before` hook cleanup list. The omission is not caught until two `@x_gadget` scenarios run back-to-back and the second one sees unexpected existing rows. The failure is non-obvious because it is scenario-order-dependent — the test suite passes in isolation but fails together.
-
-**Prevention:**
-Add `XApiCall.delete_all` (or whatever the model is named) to the global `Before` hook in `features/support/hooks.rb` alongside the existing cleanup lines. Do this in the same phase that introduces the table — not as a follow-up.
-
-**Detection:**
-Run the Cucumber suite twice in sequence without resetting the DB. If the second run sees different row counts than the first, the `Before` hook is missing the cleanup.
-
----
-
-### Pitfall 4: Tracking Write Inside an Existing Transaction — Silent Data Loss on Rollback
-
-**What goes wrong:**
-`XAccountsController#update` wraps its logic in `@x_account.transaction do` (confirmed in the codebase at line 47). If the tracking `XApiCall.create!` is placed inside an existing transaction block — or if the controller action wraps both the X API call and the tracking insert in a single transaction — a failed update to `x_accounts` will silently roll back the tracking record too. The API call happened (the X API was hit and consumed), but no tracking row survives.
-
-For the welcome-page gadget path (`WelcomeController#index` → `Portal#get_gadgets` → XClient), there is no explicit transaction, so this pitfall does not apply there. But the `XAccountsController` path has an active transaction.
-
-**Why it happens:**
-Developers naturally wrap "do X then record X" in a single transaction for atomicity — but that is the wrong mental model for usage tracking. The API call is external and irrevocable; the tracking record should survive even if the local business logic rolls back.
+**Consequences:**
+- Unrescued `RecordNotUnique` surfaces as a 500 to the user.
+- Case 2 is subtle: a user who previously had a follow-synced account, ran refresh after unfollowing (soft-delete), then tries to manually re-add sees a 500 rather than a clean re-activation.
 
 **Prevention:**
-Write tracking records **outside** any existing transaction, or use `after_commit` hooks if using callbacks. The simplest pattern: write the tracking row **after** the transaction block returns, using the result hash from XClient. This way even failed X API calls (`:rate_limited`, `:unauthorized`) are tracked — which is desirable for a rate-limit report.
+Use `XAccount.where(user_id: current_user.id, x_user_id: looked_up_id).first_or_initialize` — the same pattern already used in `refresh_cache_from_items!`. When the record already exists with `deleted: false`, return a flash indicating the account is already added. When it exists with `deleted: true`, un-delete it and set `manually_added: true` (resurrect rather than insert).
+
+If `save!` is used downstream, also rescue `ActiveRecord::RecordNotUnique` as a safety net, following the precedent set in `Users::EmailRegistrationsController`.
 
 **Detection:**
-Write a test where the containing transaction is forced to roll back (e.g., raise inside the transaction block after XClient call). Assert that `XApiCall.count` increased by 1 regardless. If the count is 0, the tracking is inside the transaction.
+Minitest: attempt to add the same handle twice; assert the second request returns a 302 with a flash message, not a 500. Add a separate test for the `deleted: true` resurrection path.
+
+**Phase:** Controller/service phase. Pair the rescue with the integration test.
 
 ---
 
 ## Moderate Pitfalls
 
----
-
-### Pitfall 5: Unbounded Growth of `x_api_calls` — No Pruning Strategy
+### Pitfall 4: Raw `@handle` input passed to the API path without stripping the `@` prefix
 
 **What goes wrong:**
-Every X API call (both `fetch_following` and `fetch_recent_tweets`) creates a tracking row. The welcome-page gadget fetches tweets for every selected X account on every page load. With multiple users, multiple selected accounts per user, and frequent page loads, the `x_api_calls` table can grow to millions of rows within weeks. MySQL with no index on `(user_id, called_at)` will make the admin report query a full-table scan. With no pruning, the table becomes a performance liability indefinitely.
-
-**Why it happens:**
-Schema design focuses on "record everything" without considering volume or access patterns. The codebase has no background jobs (no Sidekiq/Redis), so there is no obvious place to run automated pruning.
+Users naturally type `@handle` (with `@` prefix) or paste it from a mention. If the raw input is passed directly to `GET /2/users/by/username/{username}`, the API receives `@handle` as the literal username segment. X usernames do not include `@`; the API returns HTTP 404.
 
 **Prevention:**
-- Add a composite index on `(user_id, called_at)` at migration creation time — the admin report will filter and group by these columns.
-- Plan the retention model from the start. Two options:
-  - **Row-level tracking** with a defined retention window (e.g., keep 90 days): implement a purge Rake task runnable via cron or `rails runner`.
-  - **Aggregate counters**: a `x_api_daily_counts` table (user_id, date, endpoint, call_count) via SQL `INSERT ... ON DUPLICATE KEY UPDATE`. Much smaller, naturally bounded, loses per-call granularity.
-- For the MVP admin report, aggregating in SQL (`GROUP BY user_id, DATE(called_at)`) is sufficient and avoids storing fine-grained rows at all. Decide the schema model before writing the migration.
-
-**Detection:**
-`SHOW TABLE STATUS LIKE 'x_api_calls'` after two weeks of normal use. If rows exceed expected (users × accounts × daily loads × 14 days), pruning is needed.
-
----
-
-### Pitfall 6: N+1 on the Admin Report Page
-
-**What goes wrong:**
-The admin report shows usage by user. If the view iterates over `XApiCall.all` and calls `record.user.email` for each row, each distinct user triggers an additional `SELECT * FROM users WHERE id = ?` query. With 10 users and 1000 tracking rows, that is up to 10 extra queries on top of the main table scan.
-
-**Why it happens:**
-In every existing controller, the query is scoped to `current_user` — there is no cross-user loading anywhere in the codebase. The admin report is the first cross-user query, and the instinct to call `.user.email` from the view is inherited from the single-user pattern.
-
-**Prevention:**
-Query at the aggregate level rather than loading individual rows into the view:
+Strip leading `@` characters and surrounding whitespace before building the request path:
 
 ```ruby
-XApiCall.joins(:user)
-        .group('users.id', 'users.email')
-        .select('users.email, COUNT(*) AS call_count, MAX(x_api_calls.called_at) AS last_called_at')
+username = params[:username].to_s.strip.delete_prefix('@')
+return redirect with flash if username.blank?
 ```
 
-This returns a flat result set without N+1. If individual rows are needed, use `includes(:user)`.
+Additionally, validate the username matches the allowed character set (alphanumeric + underscore, 1–50 characters) before making the API call. Return a validation flash for invalid input rather than consuming a rate-limited API request.
 
 **Detection:**
-Enable query logging in development and load the admin report page. If the SQL log shows repeated `SELECT * FROM users WHERE id = ?` queries (one per unique user in the result set), N+1 is present.
+Minitest: pass `@testuser` to the lookup action; assert the Faraday stub receives `/2/users/by/username/testuser` (no `@`). Also test all-whitespace input returns a redirect with a validation flash, not an API call.
+
+**Phase:** Service phase when `XClient#lookup_user_by_username` is first implemented.
 
 ---
 
-### Pitfall 7: Admin UI Elements Bleeding Into the Guest Path
+### Pitfall 5: New `lookup_user_by_username` method missing HTTP error status handling — especially 403 for suspended accounts
 
 **What goes wrong:**
-If admin navigation links are added to the shared application layout with a `if current_user.admin?` guard, and `current_user` is nil (guest path — `WelcomeController#index` uses `skip_before_action :authenticate_user!, only: :index`), calling `current_user.admin?` will raise `NoMethodError: undefined method 'admin?' for nil`.
+`parse_following_response` and `parse_tweets_response` both map 401 → `:unauthorized`, 404 → `:not_found`, 429 → `:rate_limited`, else → `:api_error`. The new lookup method needs the same exhaustive handling. Two gaps are most likely:
 
-**Why it happens:**
-The guest landing path is a known nil-`current_user` surface. The existing layout is carefully guarded: `current_user.preference` is only called inside blocks guarded by `user_signed_in?`. An admin link added carelessly without the same guard breaks the guest path.
+- **429 mapped to `:api_error` instead of `:rate_limited`**: losing the specific signal breaks the admin usage report error_code column and renders the wrong flash message.
+- **403 not handled**: the X API v2 returns HTTP 403 with a user-suspension error when looking up a suspended account. An unhandled 403 falls through to `:api_error` instead of a meaningful `:suspended` or `:forbidden` symbol. Users see a generic error rather than "that account is suspended."
+
+**Rate limit context (MEDIUM confidence):**
+`GET /2/users/by/username/{username}` has a per-app (bearer token) limit of 300 requests per 15 minutes per the X API rate limits documentation. This is generous for a personal app with infrequent manual adds, but the 429 path must still be handled correctly.
 
 **Prevention:**
-Guard all admin UI with `user_signed_in? && current_user.admin?` (both conditions required, in that order). Prefer isolating admin navigation in a dedicated admin layout rather than polluting the main application layout.
-
-Regression contract: the existing v1.22 test that loads `GET /` as a guest must remain green. Any `NoMethodError` on `nil.admin?` will cause that test to fail with a 500 rather than the expected 200 — this is a clear signal.
+Copy the full `case res.status` block from `parse_following_response` as the starting point for the new response parser. Add a `when 403` branch returning a distinct error symbol (`:forbidden` or `:suspended`). Ensure 429 maps to `:rate_limited`.
 
 **Detection:**
-Load the root page as a guest (no session). Any 500 response mentioning `NoMethodError` or `admin?` indicates the guard is missing.
+Service unit tests using Faraday `:test` adapter:
+- Stub 429 → assert `result[:error] == :rate_limited`
+- Stub 403 → assert `result[:error] == :forbidden` (or `:suspended`)
+- Stub 404 → assert `result[:error] == :not_found`
+
+**Phase:** Service phase (`XClient#lookup_user_by_username`).
 
 ---
 
-### Pitfall 8: WebMock Scope Does Not Prevent Tracking Writes in Tests
+### Pitfall 6: Storing user-input username instead of the API-returned canonical username
 
 **What goes wrong:**
-When writing integration tests for the admin report controller (e.g., `GET /admin/x_api_usage`), test setup inserts `x_api_calls` rows to assert on. If that setup calls through XClient (instead of inserting rows directly via `XApiCall.create!`), WebMock will raise `WebMock::NetConnectNotAllowedError` unless the Twitter API endpoints are stubbed. This is not a tracking-in-XClient problem — it is a test setup discipline issue.
+X usernames are case-insensitive at the URL level but the API returns canonical casing (e.g., user types `ELONMUSK`, API returns `"username": "elonmusk"`). If the controller stores `params[:username]` directly rather than `result[:username]` from the API response body, `x_accounts.username` has wrong casing from creation, breaking `XAccount#profile_url` display and creating inconsistency with the refresh flow which always uses API-sourced values.
 
-More subtly: if an integration test loads the full portal (sign in, then `GET /`), the `@x_gadget` fixture setup path can trigger XClient calls. Without the existing `WebMock.stub_request(:get, /api\.twitter\.com/)` stubs in the test, the failure message will be a WebMock connection error rather than an assertion failure — harder to diagnose.
+A second scenario: the handle the user typed is an old handle that was renamed. The API returns `"username": "NewHandle"` but the controller stores `"OldHandle"`. The stored row is stale from the start.
 
 **Prevention:**
-- Insert `XApiCall` rows directly in test setup, never by calling through XClient.
-- If an integration test loads the portal, copy the `WebMock.stub_request` pattern from `x_client_test.rb` into the test.
-- Keep `XApiCall.delete_all` in the Cucumber `Before` hook (see Pitfall 3).
+Always assign `username` from the API response, not the input parameter. The input is used only to form the lookup URL path.
 
 **Detection:**
-Any `WebMock::NetConnectNotAllowedError` mentioning `api.twitter.com` in a test file other than `x_client_test.rb` indicates missing stubs.
+Minitest: stub the API to return `"username": "canonical_user"` when queried for `CANONICAL_USER`. Assert the persisted `XAccount#username` is `"canonical_user"`, not `"CANONICAL_USER"`.
+
+**Phase:** Service phase. One-line discipline issue, easy to miss.
 
 ---
 
-### Pitfall 9: Admin Controller Accidentally Inheriting a `skip_before_action` Pattern
+### Pitfall 7: Manually-added account resurrection does not unconditionally set `manually_added: true`
 
 **What goes wrong:**
-`PagesController` uses `skip_before_action :authenticate_user!` with no `only:` — intentionally fully public. If an admin controller is created by copying `PagesController` as a template, or if a developer adds `skip_before_action :authenticate_user!` thinking it is needed for some other reason, the authentication gate disappears.
-
-**Why it happens:**
-Copy-paste from a "public" controller into an "admin" controller is a common mistake. The admin controller structure (`Admin::BaseController`) is new to the codebase and there is no existing template to follow.
+`first_or_initialize` finds an existing row (e.g., `deleted: true` from a prior soft-delete). The developer sets `deleted: false` to resurrect it but branches on `new_record?` to set `manually_added: true` — only new rows get the flag. An existing soft-deleted row is resurrected without the flag. On the next refresh the row is soft-deleted again because `manually_added?` is false.
 
 **Prevention:**
-`Admin::BaseController` inherits from `ApplicationController` and adds ONLY `require_admin` — it never adds `skip_before_action`. Write the two negative integration tests (unauthenticated → redirect to sign-in; authenticated non-admin → 403) before writing any admin views. These tests are the specification that prevents the bypass.
+In the manual-add code path, after `first_or_initialize`, unconditionally assign `manually_added: true, deleted: false` before save — do not branch on `new_record?`.
 
 **Detection:**
-`curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/admin/x_api_usage` without a session. Anything other than 302 (redirect to sign-in) means authentication is not enforced.
+Minitest: create a `deleted: true, manually_added: false` row with the target `x_user_id`. Run the add action. Assert `acc.reload.manually_added?` is `true` and `acc.reload.deleted?` is `false`.
+
+**Phase:** Controller/service phase.
+
+---
+
+### Pitfall 8: Missing `XApiCall.record!` instrumentation for the new lookup action
+
+**What goes wrong:**
+`XAccountsController#refresh` and `#show` both call the private `record_x_api_call(endpoint:, result:)` helper. A new controller action that calls `XClient#lookup_user_by_username` may skip this instrumentation. The admin X API usage report at `/admin/x_api_usages` then undercounts API usage.
+
+**Prevention:**
+Call `record_x_api_call(endpoint: 'lookup_user_by_username', result: result)` in the new action, using the same private helper already on `XAccountsController`. The helper already rescues `StandardError` so a logging failure will not break the main flow.
+
+**Phase:** Controller phase.
 
 ---
 
 ## Minor Pitfalls
 
----
-
-### Pitfall 10: Counting `refresh_oauth2_token!` Calls as X API Usage
+### Pitfall 9: WebMock stubs in Cucumber `Before` hooks do not cover the new `/2/users/by/username/` path
 
 **What goes wrong:**
-`XClient#refresh_if_expired!` makes a POST to `https://api.x.com/2/oauth2/token`. This is a token refresh call, not a user-data read. If tracking is placed at the Faraday connection level or in a way that intercepts all outbound calls, token refreshes inflate the usage count with unrelated calls.
+`test/support/webmock.rb` applies `disable_net_connect!(allow_localhost: true)` globally. Cucumber scenarios that exercise the manual-add form trigger a real HTTP request to `api.twitter.com/2/users/by/username/...`. Without a WebMock stub registered for this path, WebMock raises `WebMock::NetConnectNotAllowedError` and the scenario fails with an opaque connection error rather than a meaningful assertion.
 
 **Prevention:**
-Track only at the `fetch_following` and `fetch_recent_tweets` call sites. The result hash from those methods identifies the endpoint and outcome. Do not intercept at the Faraday middleware level.
+Register `WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/by\/username\//)` in the relevant Cucumber `Before` hook or scenario step, mirroring the pattern used for `@x_gadget` in the existing feature support files.
 
----
+**Detection:**
+Run the new Cucumber scenario without the stub. The `WebMock::NetConnectNotAllowedError` message will name the unmatched URL.
 
-### Pitfall 11: Date/Timezone Mismatch in Report Grouping
-
-**What goes wrong:**
-The admin report groups calls by date. MySQL's `DATE()` function uses the server timezone. Rails stores datetimes in UTC by default. If `config.time_zone` is set to `'Tokyo'` (JST, UTC+9), a call at 23:30 JST is stored as 14:30 UTC. `GROUP BY DATE(called_at)` in MySQL will assign that call to the UTC date (one day earlier in JST). The report date will be wrong by up to one day for evening calls.
-
-**Prevention:**
-Use `GROUP BY DATE(CONVERT_TZ(called_at, 'UTC', 'Asia/Tokyo'))` in SQL, or aggregate in Ruby after fetching rows using `called_at.in_time_zone.to_date`. Verify `config.time_zone` and MySQL server timezone before shipping the report.
+**Phase:** Cucumber/E2E phase.
 
 ---
 
-### Pitfall 12: Admin Report Displaying Dummy Emails Without Twitter Identity
+### Pitfall 10: No explicit decision on total account count cap (selected vs. all rows)
 
 **What goes wrong:**
-Users who signed in via Twitter OAuth and never registered a real email have `dummy_UUID@example.com` addresses. The admin report showing only `users.email` will display unreadable dummy addresses for those users, making the report unusable for identifying which user consumed which quota.
+The selection cap (12) limits `selected: true` accounts. The `manually_added` flag adds accounts to the `x_accounts` pool without selecting them. There is currently no limit on total rows per user (selected + unselected + manually added). A user could add 200 accounts manually, cluttering the management screen and creating an unbounded table growth scenario.
 
 **Prevention:**
-Show both `users.email` and the associated Twitter handle (available from `x_accounts.username` or `users.uid`) on the report. This gives the admin a complete identity picture for all user types.
+Decide explicitly whether the 12-account selection cap is sufficient, or whether a separate cap on total `x_accounts` rows is needed. Document the decision in the roadmap. If a cap is added, enforce it both at the model level (validation) and return a clear flash from the controller when the cap is hit.
+
+**Phase:** Model/migration phase. This is a product decision; raise it explicitly rather than inheriting silence.
 
 ---
 
@@ -230,25 +221,23 @@ Show both `users.email` and the associated Twitter handle (available from `x_acc
 
 | Phase Topic | Likely Pitfall | Mitigation |
 |-------------|----------------|------------|
-| Schema: tracking table migration | Unbounded growth; missing index | Add `(user_id, called_at)` index at migration time; decide row vs. aggregate model before writing migration |
-| XClient instrumentation hook | Breaking existing XClient tests; tracking inside transaction | Hook at controller call site; write outside any transaction block |
-| `Admin::BaseController` + gate | Auth bypass; `skip_before_action` inheritance | Two negative integration tests (unauthed + non-admin) before wiring any admin views |
-| Cucumber hook updates | `x_api_calls` rows leaking between `@x_gadget` scenarios | Add `XApiCall.delete_all` to global `Before` hook in the same phase that introduces the table |
-| Admin report view | N+1 on user association; admin link on guest path | Use aggregate SQL with `joins(:user)`; guard all `current_user.admin?` inside `user_signed_in?` |
-| Date filtering in report | Timezone mismatch in `GROUP BY DATE(called_at)` | Use timezone-aware grouping from day one; verify `config.time_zone` |
-| Test setup for admin controller tests | WebMock errors from incidental XClient calls | Insert tracking rows directly via `XApiCall.create!`; stub Twitter endpoints if portal is loaded |
+| Migration: add `manually_added` column | Pitfall 2 — `assign_attributes` reset | Audit every `assign_attributes` call in `refresh_cache_from_items!`; do not include the new column |
+| Model: guard in `refresh_cache_from_items!` | Pitfall 1 (critical) | Add `next if acc.manually_added?` to the soft-delete loop; write the Minitest case before marking phase complete |
+| Model tests for refresh behavior | Pitfalls 1, 2 | Two new Minitest cases: (a) manually-added row survives empty refresh; (b) manually-added flag not cleared when row appears in following payload |
+| Service: `XClient#lookup_user_by_username` | Pitfalls 4, 5, 6 | Strip `@` before URL path; copy full status-code parser from existing methods; use API-returned `username` |
+| Controller: new add action | Pitfalls 3, 7, 8 | Use `first_or_initialize`; unconditionally set `manually_added: true`; rescue `RecordNotUnique`; call `record_x_api_call` |
+| Cucumber E2E | Pitfall 9 | Register WebMock stub for `/2/users/by/username/` in the relevant Before hook |
 
 ---
 
-## Sources
+## Confidence Assessment
 
-- Direct code inspection: `app/services/x_client.rb` — hook placement analysis; `refresh_oauth2_token!` separation; three-path Faraday connection strategy
-- Direct code inspection: `test/support/webmock.rb` — WebMock isolation scope (blocks HTTP, not ActiveRecord)
-- Direct code inspection: `features/support/hooks.rb` — confirmed cleanup list: `MastodonAccount.delete_all`, `XAccount.delete_all`, `VisitedLink.delete_all`; confirmed `x_api_calls` is absent
-- Direct code inspection: `app/controllers/application_controller.rb` — `authenticate_user!` inheritance chain; no admin gate exists
-- Direct code inspection: `app/controllers/pages_controller.rb` — `skip_before_action :authenticate_user!` without `only:` (public pattern to not copy)
-- Direct code inspection: `app/controllers/x_accounts_controller.rb` — transaction wrapping at line 47 (Pitfall 4 basis)
-- Direct code inspection: `db/schema.rb` — `users.admin boolean NOT NULL DEFAULT false` confirmed; no admin controllers confirmed absent
-- Direct code inspection: `test/fixtures/users.yml` — id:1 `admin: true`, id:2 `admin: false`; ready for positive/negative gate tests
-- Direct code inspection: `test/services/x_client_test.rb` — three distinct test strategies documented (Faraday `:test`, WebMock, mixed)
-- Confidence: HIGH — all pitfalls grounded in actual codebase structure, not general Rails patterns alone
+| Area | Confidence | Notes |
+|------|------------|-------|
+| refresh/manually_added interaction (Pitfalls 1–3) | HIGH | Direct code inspection of `refresh_cache_from_items!` lines 51–55; logic is unambiguous; existing Minitest cases confirm soft-delete behavior |
+| Unique index / duplicate add (Pitfall 3) | HIGH | `db/schema.rb` confirms `UNIQUE KEY index_x_accounts_on_user_id_and_x_user_id`; `first_or_initialize` pattern confirmed in model |
+| Username sanitization (Pitfall 4) | HIGH | X API documented behavior; `@` is not part of the username in the URL path segment |
+| Rate limits (Pitfall 5) | MEDIUM | 300/15 min per-app confirmed from docs.x.com rate limits page; tier-specific caps may apply |
+| HTTP 403 for suspended accounts (Pitfall 5) | MEDIUM | Confirmed from X Developer Community forum threads; not in official API reference excerpt retrieved |
+| Username casing from API (Pitfall 6) | HIGH | X API v2 always returns canonical `username` in response body; storing input vs. response is a code-level decision |
+| WebMock gap (Pitfall 9) | HIGH | Direct inspection of `test/support/webmock.rb`; `disable_net_connect!` is global; new URL path will not be covered by existing stubs |

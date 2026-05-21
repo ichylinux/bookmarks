@@ -1,267 +1,368 @@
-# Architecture Patterns: v1.29 Admin X API Usage Report
+# Architecture Patterns: v1.31 X Account Manual Add (Non-Following)
 
-**Domain:** Admin instrumentation layer on top of existing XClient service
-**Researched:** 2026-05-20
-**Confidence:** HIGH — based on direct codebase inspection
-
----
-
-## Existing Architecture (what we build on)
-
-### XClient call sites (two, both synchronous)
-
-| Call site | Method | Where |
-|-----------|--------|-------|
-| `XAccountsController#refresh` | `XClient.new.fetch_following(user:)` | controller action |
-| `XAccountsController#show` | `XClient.new.fetch_recent_tweets(user:, x_user_id:, limit:)` | controller action, also via `Portal#get_gadgets` |
-
-Both call sites instantiate `XClient.new` directly. No service layer sits between controller and client. No background jobs. No callbacks on `XClient`.
-
-### Existing data tables relevant to this milestone
-
-- `users.admin boolean NOT NULL DEFAULT false` — already exists; the access gate predicate is free
-- `x_accounts` — per-user cache table; has `user_id`, `username`, `x_user_id`, timestamps
-- No existing usage tracking table — must be created
+**Domain:** Add-by-handle action layered on top of existing XAccountsController / XClient service
+**Researched:** 2026-05-22
+**Confidence:** HIGH — based on direct codebase inspection + X API v2 official documentation
 
 ---
 
-## Component Map: New vs Modified
+## Existing Architecture Baseline
+
+### What already exists
+
+| Component | State | Key details |
+|-----------|-------|-------------|
+| `XClient` | Exists | OAuth2 Bearer token only. Public methods: `fetch_following(user:)`, `fetch_recent_tweets(user:, x_user_id:, limit:)`. Both return `{ success:, items: }` or `{ success: false, error: Symbol }`. |
+| `XAccountsController` | Exists | `index`, `refresh`, `show`, `update`. Includes `TwitterLinkRequirement` (`require_twitter_linked` before_action). `record_x_api_call` private helper writes to `x_api_calls`. |
+| `XAccount` model | Exists | `Crud::ByUser` concern, soft-delete, `selected` cap 12/warn 9, `protected_acknowledged` gate. `refresh_cache_from_items!` class method does diff-upsert against following payload. |
+| `x_accounts` table | Exists | `user_id`, `x_user_id`, `username`, `display_name`, `avatar_url`, `protected`, `protected_acknowledged`, `selected`, `deleted`, `display_count`. Unique index on `(user_id, x_user_id)`. |
+| `x_api_calls` table | Exists | Append-only log: `user_id`, `endpoint`, `success`, `error_code`, `called_at`. |
+
+### What does NOT yet exist
+
+- `x_accounts.manually_added` column
+- `XClient#lookup_user_by_username` method
+- A controller action to receive and process a handle submission
+- Any view form for handle input on the `index` page
+
+---
+
+## New vs Modified Components
 
 | Component | Status | Description |
 |-----------|--------|-------------|
-| `x_api_calls` table | **NEW** | Permanent usage log, one row per XClient call |
-| `XApiCall` model | **NEW** | ActiveRecord model for the table |
-| `XClient` (instrumentation) | **MODIFIED** | Wrap `fetch_following` and `fetch_recent_tweets` to record after each call |
-| `Admin::XApiUsagesController` | **NEW** | Admin-only controller, namespaced |
-| `app/views/admin/x_api_usages/` | **NEW** | Report view, filter form |
-| `admin/` namespace in routes | **NEW** | `namespace :admin` block |
-| `app/controllers/admin/base_controller.rb` | **NEW** | Shared admin `before_action` for `admin?` gate |
-| Layout drawer nav (admin link) | **MODIFIED** | Conditional `current_user.admin?` drawer link |
-| Locale files `ja.yml` / `en.yml` | **MODIFIED** | `admin.*` key section |
+| `x_accounts` migration | **NEW** | Add `manually_added boolean NOT NULL DEFAULT false` |
+| `XClient#lookup_user_by_username` | **NEW** | Calls `GET /2/users/by/username/:username`, returns normalized hash or error symbol |
+| `XAccountsController#lookup_and_add` | **NEW** | POST collection action; calls `lookup_user_by_username`, upserts into `x_accounts` with `manually_added: true` |
+| `XAccount.upsert_manual!` | **NEW** | Class method that creates or un-deletes an account with `manually_added: true` |
+| `XAccount.refresh_cache_from_items!` | **MODIFIED** | Must preserve `manually_added` flag on existing rows; must NOT soft-delete manually-added rows that are absent from the following payload |
+| `app/views/x_accounts/index.html.erb` | **MODIFIED** | Add handle input form that POSTs to `lookup_and_add_x_accounts_path` |
+| `config/routes.rb` | **MODIFIED** | Add `post :lookup_and_add` to the `x_accounts` collection |
+| `config/locales/ja.yml`, `en.yml` | **MODIFIED** | New keys under `x_accounts.lookup_and_add.*` |
 
 ---
 
-## Tracking Hook: Where to Put It
+## New Action: `lookup_and_add`
 
-### Decision: Instrument inside XClient, not in a concern, not in the controller
-
-**Rationale:**
-
-There are only two call sites and both are in `XAccountsController`. Instrumenting in the controller via a `before_action`/`after_action` concern would require passing call metadata (which method, which user, success/failure) through instance variables — awkward coupling.
-
-A concern on the controller is also the wrong layer: if a future background job or second controller ever calls `XClient`, tracking would be silently missed. Putting tracking inside `XClient` is the only place that is guaranteed to fire regardless of call site.
-
-A Rails `ActiveSupport::Notifications` hook (instrument/subscribe) is the textbook approach for cross-cutting concerns in Rails services. However, given this codebase's size and the fact that tracking is the primary goal (not an incidental side effect), a direct approach inside `XClient` is simpler and more debuggable.
-
-**Recommended pattern: wrap the two public methods with a private `record_call` helper**
+### Route
 
 ```ruby
-def fetch_following(user:, max_results: 100)
-  result = fetch_following_internal(user:, max_results:)
-  record_call(user: user, endpoint: 'fetch_following', success: result[:success], error_code: result[:error]&.to_s)
-  result
-end
-
-private
-
-def record_call(user:, endpoint:, success:, error_code: nil)
-  XApiCall.create!(
-    user_id: user.id,
-    endpoint: endpoint,
-    success: success,
-    error_code: error_code,
-    called_at: Time.current
-  )
-rescue StandardError
-  nil  # never let a tracking failure break the API call result
-end
-```
-
-The implementation renames the existing method body to `fetch_following_internal` (private) and the public `fetch_following` becomes a thin tracking wrapper. Same pattern for `fetch_recent_tweets`.
-
-**What NOT to do:**
-
-- Do not use `ActiveSupport::Notifications` — subscription setup in an initializer adds hidden indirection with no benefit at this scale
-- Do not add a callback on `XAccount` model — `XAccount` has no knowledge of when API calls happen
-- Do not use a controller `around_action` — call metadata (endpoint, user, success) is not available cleanly from the controller level without coupling
-
----
-
-## DB Schema: One Row per Call
-
-### Decision: One row per call, NOT daily rollup, NOT counter columns
-
-**Rationale:**
-
-The report goal is "per-user breakdowns, request counts, last call, filtering by user or date range." Daily rollup cannot answer "show me all calls this user made yesterday." Counter columns (increment a `x_accounts.call_count`) cannot answer date-range queries at all.
-
-One row per call gives full flexibility: the admin can see exact timestamps, error symbols, and per-user totals with a simple `GROUP BY user_id`. MySQL can handle tens of thousands of rows per year for a personal app with one admin; no partitioning needed.
-
-Rollup is only worth adding if raw row volume becomes a problem, which is not a near-term concern. Defer.
-
-### `x_api_calls` table schema
-
-```sql
-CREATE TABLE x_api_calls (
-  id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-  user_id     INT       NOT NULL,
-  endpoint    VARCHAR(64) NOT NULL,             -- 'fetch_following' | 'fetch_recent_tweets'
-  success     BOOLEAN   NOT NULL DEFAULT false,
-  error_code  VARCHAR(32),                      -- NULL on success; error symbol string on failure
-  called_at   DATETIME(6) NOT NULL,
-  INDEX idx_x_api_calls_user_called (user_id, called_at),
-  INDEX idx_x_api_calls_called (called_at)
-);
-```
-
-**Column notes:**
-
-- `endpoint` (VARCHAR not enum) — easier to extend if a third endpoint is added; values are controlled by `XClient` code, not user input
-- `error_code` — nullable; stores the 7-symbol error contract values (`:timeout`, `:network`, `:rate_limited`, etc.) as strings for display in the report
-- `called_at` — use `Time.current` explicitly (not relying on `created_at`) so the semantics are unambiguous in queries
-- No `deleted` soft-delete — audit records must not be removed; hard-delete only via a future admin purge action
-- No foreign key constraint at DB level (consistent with this codebase — no FK constraints exist in `schema.rb`)
-
-**No counter cache on `x_accounts` or `users`.** The report queries `x_api_calls` directly with `GROUP BY`.
-
----
-
-## Admin Routes: Namespaced Under `/admin`
-
-### Decision: `namespace :admin` in `routes.rb`
-
-```ruby
-namespace :admin do
-  resources :x_api_usages, only: [:index]
-end
-```
-
-URL: `GET /admin/x_api_usages`
-
-**Rationale:**
-
-- Namespacing is the Rails convention for admin surfaces; it makes the access gate easy to test (path prefix is the tell)
-- A flat `AdminController` at `/admin_x_api_usages` is unconventional and harder to extend
-- The single route (`index` only) means no nested resource complexity now; future admin pages drop into the same namespace
-
-**`Admin::BaseController`:**
-
-```ruby
-class Admin::BaseController < ApplicationController
-  before_action :require_admin!
-
-  private
-
-  def require_admin!
-    redirect_to root_path, alert: t('errors.unauthorized') unless current_user&.admin?
+resources :x_accounts, only: %i[index show update] do
+  collection do
+    post :refresh
+    post :lookup_and_add   # NEW
   end
 end
 ```
 
-`Admin::XApiUsagesController` inherits from `Admin::BaseController`. This inherits `authenticate_user!` from `ApplicationController`, so Devise authentication fires first, then the admin check. No need to call `authenticate_user!` again.
+Route helper: `lookup_and_add_x_accounts_path` — `POST /x_accounts/lookup_and_add`
+
+### Why a new collection action, not extending `refresh`
+
+Refresh syncs the following list (one canonical source → replace). Lookup-and-add is a user-initiated point lookup (one username → upsert). They have different inputs, different API endpoints, different error semantics, and a different success path. Merging them into a single action would require branching on params and muddying both code paths. A dedicated action keeps both paths simple and testable independently.
+
+### Controller action shape
+
+```ruby
+def lookup_and_add
+  handle = params[:username].to_s.strip.delete_prefix('@').downcase
+  if handle.blank? || handle !~ /\A[A-Za-z0-9_]{1,15}\z/
+    flash[:alert] = t('x_accounts.lookup_and_add.invalid_handle')
+    redirect_to x_accounts_path and return
+  end
+
+  result = XClient.new.lookup_user_by_username(user: current_user, username: handle)
+  record_x_api_call(endpoint: 'lookup_user_by_username', result: result)
+
+  unless result[:success]
+    flash[:alert] = t("errors.x_client.#{result[:error]}")
+    redirect_to x_accounts_path and return
+  end
+
+  XAccount.upsert_manual!(current_user, result[:item])
+  flash[:notice] = t('x_accounts.lookup_and_add.success', handle: handle)
+  redirect_to x_accounts_path
+rescue ActiveRecord::RecordInvalid => e
+  flash[:alert] = e.record.errors.full_messages.first
+  redirect_to x_accounts_path
+end
+```
+
+Handle normalisation (strip `@`, downcase, pattern check against `^[A-Za-z0-9_]{1,15}$`) must happen in the controller before calling the API — cheap and avoids a wasteful network round-trip for obvious bad input.
+
+### Where validation lives
+
+| Validation | Location | Rationale |
+|------------|----------|-----------|
+| Handle format (`/\A[A-Za-z0-9_]{1,15}\z/`) | Controller, before API call | Avoid network cost; this is a cheap guard |
+| Account existence | XClient (API response status) | Only the API can confirm existence |
+| Selection cap | XAccount model (`selection_cap` validation) | Already enforced by the model; no duplication |
+| Protected-acknowledgement gate | XAccount model (`protected_acknowledgement` validation) | Already enforced; add-by-handle creates the row as unselected, so this gate is irrelevant at creation time; it fires when the user later toggles `selected: true`, which is the existing `update` flow |
+| `manually_added` assignment | `XAccount.upsert_manual!` class method | Model layer owns the semantics of the flag |
+
+Do not duplicate model validations in the controller. The controller's job is format-checking the raw string param and translating errors to flash messages.
 
 ---
 
-## Admin Layout / Nav Integration
+## New XClient Method: `lookup_user_by_username`
 
-### Decision: Conditional drawer link; no separate admin layout
+### X API v2 endpoint
 
-**Rationale:**
+`GET /2/users/by/username/{username}`
 
-The app has one layout (`application.html.erb`) used by all authenticated controllers. Creating a separate `admin.html.erb` layout for one admin page is over-engineering. The existing drawer nav already has a secondary section (privacy, terms, sign-out). Adding an admin link behind `current_user.admin?` is the minimal, consistent approach — identical to the existing `current_user.uid.present?` conditional guard on the X accounts link.
+Required: Bearer token (same as existing `fetch_following` / `fetch_recent_tweets`).
 
-**Drawer nav change in `app/views/layouts/application.html.erb`:**
+Response shape (200):
+```json
+{ "data": { "id": "...", "username": "...", "name": "...", "profile_image_url": "...", "protected": false } }
+```
 
-Inside the `drawer_ui?` block, after the secondary section (privacy/terms/sign-out), add:
+Not-found: 400 with `errors[0].title == "Invalid Request"` or 404 depending on API version. Treat both as `:not_found`.
+
+### Method contract (same pattern as existing methods)
+
+```ruby
+# Returns { success: true, item: { id:, username:, name:, profile_image_url:, protected: } }
+#      or { success: false, error: Symbol }
+def lookup_user_by_username(user:, username:)
+  res = connection_for(user).get("/2/users/by/username/#{CGI.escape(username)}") do |req|
+    req.params['user.fields'] = 'id,name,username,profile_image_url,protected'
+  end
+
+  parse_lookup_response(res)
+rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+  { success: false, error: :timeout }
+rescue Faraday::Error
+  { success: false, error: :network }
+rescue JSON::ParserError
+  { success: false, error: :parse_error }
+end
+```
+
+The private `parse_lookup_response` follows the same status-code pattern as `parse_following_response`:
+- 200 → parse JSON, normalize to `item:` using `normalize_following_row` (identical shape)
+- 401 → `:unauthorized`
+- 404 → `:not_found`
+- 400 → `:not_found` (X API returns 400 for unknown usernames in some API tiers)
+- 429 → `:rate_limited`
+- other → `:api_error`
+
+`normalize_following_row` is already private on `XClient` and produces the exact hash shape the new method needs. Reuse it directly.
+
+---
+
+## `manually_added` Flag: Schema and Model
+
+### Migration
+
+```ruby
+add_column :x_accounts, :manually_added, :boolean, null: false, default: false
+```
+
+A NOT NULL DEFAULT false column is safe to add to existing rows without a backfill: all existing rows are from `refresh_cache_from_items!` (follow-based) and should start as `false`.
+
+### `XAccount.upsert_manual!`
+
+```ruby
+def self.upsert_manual!(user, item)
+  item = item.with_indifferent_access
+  xid  = item[:id].to_s
+  raise ArgumentError, 'x_user_id blank' if xid.blank?
+
+  acc = XAccount.where(user_id: user.id, x_user_id: xid).first_or_initialize
+  acc.assign_attributes(
+    username:        item[:username].to_s,
+    display_name:    item[:name].to_s,
+    avatar_url:      item[:profile_image_url].presence,
+    protected:       ActiveModel::Type::Boolean.new.cast(item[:protected]),
+    deleted:         false,
+    manually_added:  true
+  )
+  acc.save!
+  acc
+end
+```
+
+Upsert semantics: if the account already exists (from following sync), it gains the `manually_added: true` flag and is un-deleted. If it was already manually added, idempotent. `acc.save!` will raise `ActiveRecord::RecordInvalid` if, say, `x_user_id` is blank — the controller rescues this.
+
+Do NOT set `selected: true` on creation. The user manually selects the account after it appears in the list, using the existing `update` flow. This matches how follow-synced accounts work.
+
+---
+
+## Refresh Flow: Preserving `manually_added`
+
+### The problem
+
+`refresh_cache_from_items!` currently soft-deletes any `x_accounts` row NOT present in the following payload. Without changes, a manually-added account that the user does not follow would be soft-deleted on the next refresh, silently removing the user's intentional addition.
+
+### The fix: skip soft-delete for `manually_added: true` rows
+
+The current soft-delete loop in `refresh_cache_from_items!`:
+
+```ruby
+XAccount.where(user_id: user.id).find_each do |acc|
+  next if seen[acc.x_user_id]
+  acc.update!(deleted: true)
+end
+```
+
+Change to:
+
+```ruby
+XAccount.where(user_id: user.id).find_each do |acc|
+  next if seen[acc.x_user_id]
+  next if acc.manually_added?   # NEW: preserve manually-added rows
+  acc.update!(deleted: true)
+end
+```
+
+This is a minimal, contained change. All test assertions for the existing behavior (soft-delete of unselected/selected rows absent from payload) remain valid — those test rows have `manually_added: false` (default). New tests cover the manual-add exception.
+
+### When a manually-added account IS in the following payload
+
+`refresh_cache_from_items!` upserts it normally (updates username/display_name/avatar, clears `deleted`). The `manually_added` flag must NOT be reset to `false` by refresh. The upsert block in `refresh_cache_from_items!` currently does not set `manually_added`, so no change is needed there. Confirm by reading the `assign_attributes` call in `refresh_cache_from_items!`:
+
+```ruby
+acc.assign_attributes(
+  username: ..., display_name: ..., avatar_url: ..., protected: ..., deleted: false
+)
+```
+
+`manually_added` is not in this list, so it is naturally preserved. No change required here.
+
+---
+
+## Data Flow: End-to-End for Add-by-Handle
+
+```
+User fills handle input form on /x_accounts (index page)
+  └─ POST /x_accounts/lookup_and_add  params: { username: 'somehandle' }
+       └─ XAccountsController#lookup_and_add
+            ├─ require_twitter_linked (before_action — same gate as all other actions)
+            ├─ normalize + format-validate handle
+            ├─ XClient.new.lookup_user_by_username(user: current_user, username: handle)
+            │     └─ GET https://api.twitter.com/2/users/by/username/somehandle?user.fields=...
+            │          (uses connection_for(user) → Bearer token, same as fetch_following)
+            ├─ record_x_api_call(endpoint: 'lookup_user_by_username', result:)
+            │     └─ XApiCall.record!(...)     # writes to x_api_calls
+            ├─ XAccount.upsert_manual!(current_user, result[:item])
+            │     └─ first_or_initialize on (user_id, x_user_id)
+            │          → assign_attributes + save!   (manually_added: true, deleted: false)
+            └─ redirect_to x_accounts_path with flash
+```
+
+---
+
+## Data Flow: Refresh Interaction with `manually_added`
+
+```
+POST /x_accounts/refresh
+  └─ XAccountsController#refresh
+       └─ XClient.new.fetch_following(user:)
+            └─ XAccount.refresh_cache_from_items!(user, items)
+                 ├─ For each item in payload → upsert (manually_added untouched)
+                 └─ For each row NOT in payload:
+                      ├─ if manually_added? → skip (NEW)
+                      └─ else → soft-delete (existing behavior)
+```
+
+---
+
+## View: Handle Input Form
+
+Add above or below the existing accounts list on `index.html.erb`. A simple inline form:
 
 ```erb
-<% if current_user.admin? %>
-  <div class="drawer-nav-divider" role="separator"></div>
-  <div class="drawer-nav-section drawer-nav-section--admin">
-    <%= render 'common/drawer_nav_link',
-          label: t('nav.admin_x_api_usages'),
-          url: admin_x_api_usages_path,
-          icon: :admin %>
-  </div>
-<% end %>
+<section class="x-accounts-page__add-manual">
+  <%= form_with url: lookup_and_add_x_accounts_path, method: :post, local: true,
+        html: { class: 'x-accounts-page__add-manual-form' } do |f| %>
+    <%= f.label :username, t('x_accounts.lookup_and_add.label'), class: 'x-accounts-page__add-manual-label' %>
+    <%= f.text_field :username, placeholder: '@username',
+          pattern: '[A-Za-z0-9_]{1,15}',
+          maxlength: 16,
+          class: 'x-accounts-page__add-manual-input' %>
+    <%= f.submit t('x_accounts.lookup_and_add.submit'), class: 'x-accounts-page__add-manual-btn' %>
+  <% end %>
+</section>
 ```
 
-**Admin report view:** Standard ERB at `app/views/admin/x_api_usages/index.html.erb`. No new SCSS file required at first — the existing `common.css.scss` table styles cover basic report tables. Add `admin.css.scss` only if admin-specific styles accumulate beyond one or two rules.
+No JS required. Standard synchronous POST, redirect-after-POST pattern consistent with all other forms in the app.
+
+The `@` prefix handling: accept input with or without `@`, strip it server-side in the controller. Do not rely on the HTML `pattern` attribute for security validation; it is UX only.
 
 ---
 
-## Data Flow
+## Locale Keys Required
 
+```yaml
+x_accounts:
+  lookup_and_add:
+    label:          "ハンドルで追加"            # ja
+    submit:         "追加"                     # ja
+    success:        "@%{handle} を追加しました。"  # ja
+    invalid_handle: "有効なXハンドルを入力してください（英数字・アンダースコア、1〜15文字）。"  # ja
 ```
-Controller action
-  └─ XClient.new.fetch_following(user:) OR fetch_recent_tweets(user:, ...)
-       ├─ [public wrapper — NEW]
-       │     ├─ delegates to private implementation method
-       │     ├─ record_call(user:, endpoint:, success:, error_code:)
-       │     │     └─ XApiCall.create!(...)   rescue nil
-       │     └─ returns result hash unchanged
-       └─ result returned to controller (unchanged)
 
-Admin browser request
-  └─ GET /admin/x_api_usages
-       └─ Admin::XApiUsagesController#index
-            ├─ authenticate_user! (Devise, from ApplicationController)
-            ├─ require_admin! (from Admin::BaseController)
-            └─ XApiCall.joins(:user)
-                        .group(:user_id)
-                        .select('user_id, users.email, COUNT(*) AS call_count,
-                                 SUM(success = 0) AS error_count,
-                                 MAX(called_at) AS last_called_at')
-                        .order('call_count DESC')
-                        [optional: .where(called_at: date_range)]
-```
+`errors.x_client.not_found` (already exists in both locales) covers the API 404 path. `errors.x_client.unauthorized`, `timeout`, `rate_limited`, `api_error`, `parse_error` already exist and are reused.
+
+English equivalents follow the same key paths under `en.yml`.
 
 ---
 
-## Phase Build Order
+## Build Order
 
-Dependencies flow data-layer-first:
+Dependencies flow strictly data-layer-first:
 
-1. **Data layer** — `x_api_calls` migration + `XApiCall` model + model unit tests
-   Must be first: `XClient` instrumentation and the admin controller both depend on this model existing.
+**Phase A — Schema migration**
+Add `manually_added boolean NOT NULL DEFAULT false` to `x_accounts`. This must precede all other code changes since both the model and `refresh_cache_from_items!` change depend on the column existing.
 
-2. **XClient instrumentation** — add `record_call` private method; refactor both public methods to be thin tracking wrappers over private implementation methods
-   Must be second: all subsequent tests assume tracking is live.
+**Phase B — XClient `lookup_user_by_username`**
+New private `parse_lookup_response`; reuse `normalize_following_row` and `connection_for`. Add unit test with Faraday `:test` adapter. No controller changes yet.
 
-3. **Admin base controller + route namespace** — `Admin::BaseController`, `routes.rb` `namespace :admin` block
-   Can overlap with phase 2; must precede the admin controller.
+**Phase C — XAccount model changes**
+- `manually_added` attribute (column already exists from Phase A)
+- `upsert_manual!` class method
+- `refresh_cache_from_items!` modification (preserve `manually_added: true` rows)
+- Model unit tests for `upsert_manual!`, refresh-preserves-manual, refresh-deletes-non-manual
 
-4. **Admin report controller + view** — `Admin::XApiUsagesController#index`, ERB table, filter form (user / date range)
-   Depends on phases 1, 2, 3.
+**Phase D — Controller action + routes**
+- `post :lookup_and_add` in routes
+- `XAccountsController#lookup_and_add` action
+- `record_x_api_call` call with `endpoint: 'lookup_user_by_username'`
+- Controller integration tests (success path, not_found, rate_limited, invalid handle, other-user isolation)
 
-5. **Drawer nav + locale strings** — admin conditional link in layout, `nav.admin_x_api_usages` and `admin.*` keys in ja/en YAMLs
-   Depends on phase 3 (route helper must exist). Can be done alongside phase 4.
+**Phase E — View + locale strings**
+- Handle input form on `index.html.erb`
+- All new locale keys in `ja.yml` and `en.yml`
+- i18n parity test covers new keys
+- Can be done in the same phase as D or as a thin follow-on
 
-6. **Test coverage closure** — Minitest for model, controller admin gate and non-admin rejection, XClient `record_call` path; Cucumber admin login and report scenario; tri-suite gate
-   Integrated throughout; closed in a final verification phase.
+**Phase F — Cucumber E2E + tri-suite gate**
+- Feature scenario: sign in, open `/x_accounts`, submit a handle, confirm account appears in list
+- WebMock stub for `GET /2/users/by/username/:username`
+- Tri-suite green gate
 
 ---
 
 ## Interfaces That Change
 
-| Interface | Change | Notes |
-|-----------|--------|-------|
-| `XClient#fetch_following` | Side effect added: writes `XApiCall` row | Return value identical — callers unaffected |
-| `XClient#fetch_recent_tweets` | Side effect added: writes `XApiCall` row | Return value identical — callers unaffected |
-| `app/views/layouts/application.html.erb` | Admin drawer section added under `current_user.admin?` guard | Simple-theme `_menu` partial likely unchanged |
-| `config/routes.rb` | `namespace :admin` block added | No existing routes change |
-| `config/locales/ja.yml`, `en.yml` | `nav.admin_x_api_usages`, `admin.*` keys added | No existing keys change |
+| Interface | Change | Caller impact |
+|-----------|--------|---------------|
+| `XClient` | New public method `lookup_user_by_username` added | None — additive |
+| `XAccount.refresh_cache_from_items!` | Soft-delete loop skips `manually_added?` rows | No existing callers affected; behavior only changes for rows that don't exist yet |
+| `XAccountsController` | New `lookup_and_add` action | Route added; all other actions unchanged |
+| `config/routes.rb` | `post :lookup_and_add` added to collection | No existing routes change |
+| `x_accounts` table | `manually_added` column added with DEFAULT false | All existing rows read as `false`; no backfill needed |
 
 ---
 
 ## What NOT to Build (Scope Boundaries)
 
-- **Rate-limit consumption tracking** — X API v2 does not return rate-limit headers consistently across endpoints; parsing `x-rate-limit-remaining` adds complexity disproportionate to an MVP report. Defer.
-- **Real-time dashboard** — WebSocket / ActionCable out of scope; plain HTML page is the target.
-- **Per-call log drilldown** — the index showing per-user totals is the target; row-level drilldown is a future enhancement.
-- **Separate admin layout file** — unnecessary; single application layout with conditional drawer section is sufficient.
-- **Counter cache columns on `users` or `x_accounts`** — not needed; `COUNT(*)` on a small table is trivial and keeps the data model simple.
-- **Pagination** — a personal app with one admin and a handful of users does not need it at this stage; a simple `LIMIT 100` is sufficient.
+- **Separate `manually_added` flag display in the UI** — the index list shows all non-deleted accounts regardless of origin; a visual badge for manually-added accounts is a nice-to-have but out of scope for v1.31.
+- **Bulk add or CSV import** — single-handle input only.
+- **Explicit delete of manually-added accounts** — the existing soft-delete + refresh logic now preserves them; a dedicated remove action is a future enhancement.
+- **Background job for lookup** — synchronous is consistent with all existing API calls in the app; no Sidekiq/ActiveJob infrastructure exists.
+- **Rate-limit header parsing** — the existing `record_x_api_call` already has a `rate_limit_remaining` column; wire it only if the API returns it reliably for this endpoint; otherwise leave nil (existing behavior).
 
 ---
 
@@ -269,8 +370,10 @@ Dependencies flow data-layer-first:
 
 - Direct inspection: `app/services/x_client.rb`
 - Direct inspection: `app/controllers/x_accounts_controller.rb`
-- Direct inspection: `app/controllers/application_controller.rb`
-- Direct inspection: `app/views/layouts/application.html.erb`
+- Direct inspection: `app/models/x_account.rb`
+- Direct inspection: `db/schema.rb`
 - Direct inspection: `config/routes.rb`
-- Direct inspection: `db/schema.rb` (confirmed `users.admin` exists; no usage tracking table exists)
-- Direct inspection: `app/models/x_account.rb`, `app/models/user.rb`
+- Direct inspection: `test/controllers/x_accounts_controller_test.rb`
+- Direct inspection: `test/models/x_account_test.rb`
+- Direct inspection: `app/views/x_accounts/index.html.erb`
+- X API v2 official documentation: [GET /2/users/by/username/{username}](https://docs.x.com/x-api/users/get-user-by-username)
