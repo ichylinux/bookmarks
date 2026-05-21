@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.30 — Admin User Management Screen** — Phases 101–103 (active)
+- ✅ **v1.30 — Admin User Management Screen** — Phases 101–103 (shipped 2026-05-21)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
@@ -121,9 +121,9 @@ Plans:
 
 ---
 
-- [ ] Phase 101: Admin Users Controller & Route
-- [ ] Phase 102: User List View
-- [ ] Phase 103: Navigation, Locale & Tri-suite Gate
+- [x] Phase 101: Admin Users Controller & Route — 2026-05-21
+- [x] Phase 102: User List View — 2026-05-21
+- [x] Phase 103: Navigation, Locale & Tri-suite Gate — 2026-05-21
 
 ---
 
@@ -208,4 +208,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-21 — Phase 102 planned (1 plan)*
+*Last updated: 2026-05-21 — v1.30 shipped, all 3 phases complete*
