@@ -23,7 +23,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'th', text: 'フィードURL'
     assert_select 'th', text: '操作'
     assert_select 'td', text: feed.title
-    assert_select 'div.feed_url', text: feed.feed_url
+    assert_select 'div.feed_url a[href=?][target=?][rel=?]', feed.feed_url, '_blank', 'noopener noreferrer', text: feed.feed_url
     assert_select 'a', text: '編集'
     assert_select 'a', text: '削除'
   end
@@ -42,7 +42,7 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'th', text: 'Feed URL'
     assert_select 'th', text: 'Actions'
     assert_select 'td', text: feed.title
-    assert_select 'div.feed_url', text: feed.feed_url
+    assert_select 'div.feed_url a[href=?][target=?][rel=?]', feed.feed_url, '_blank', 'noopener noreferrer', text: feed.feed_url
     assert_select 'a', text: 'Edit'
     assert_select 'a', text: 'Delete'
   end
