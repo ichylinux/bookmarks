@@ -90,6 +90,10 @@ ja:
     formats:
       calendar_month: "%Y年%-m月"
 
+  time:
+    formats:
+      admin_datetime: "%Y-%m-%d %H:%M"
+
   bookmarks:
     index:
       breadcrumbs_aria: パンくずリスト

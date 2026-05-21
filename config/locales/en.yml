@@ -90,6 +90,10 @@ en:
     formats:
       calendar_month: "%B %Y"
 
+  time:
+    formats:
+      admin_datetime: "%d %b %Y %H:%M"
+
   bookmarks:
     index:
       breadcrumbs_aria: Breadcrumbs
