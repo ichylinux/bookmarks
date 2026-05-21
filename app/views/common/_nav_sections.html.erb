@@ -1,0 +1,26 @@
+<% variant = local_assigns.fetch(:variant) %>
+<div class="<%= variant == :drawer ? 'drawer-nav-section drawer-nav-section--primary' : 'menu-section menu-section--primary' %>">
+  <% if local_assigns.fetch(:include_home, false) %>
+    <%= render 'common/nav_item', variant: variant, label: t('nav.home'), url: root_path, icon: :home %>
+  <% end %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.preferences'), url: preferences_path, icon: :preferences %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.bookmarks'), url: bookmarks_path, icon: :bookmark %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.todos'), url: todos_path, icon: :todo %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.feeds'), url: feeds_path, icon: :feed %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.mastodon'), url: mastodon_accounts_path, icon: :mastodon %>
+  <% if current_user.uid.present? %>
+    <%= render 'common/nav_item', variant: variant, label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
+  <% end %>
+</div>
+<% if current_user.admin? %>
+  <div class="<%= variant == :drawer ? 'drawer-nav-divider' : 'menu-divider' %>" role="separator"></div>
+  <div class="<%= variant == :drawer ? 'drawer-nav-section drawer-nav-section--admin' : 'menu-section menu-section--admin' %>">
+    <%= render 'common/nav_item', variant: variant, label: t('nav.x_api_usages'), url: admin_x_api_usages_path, icon: :preferences %>
+  </div>
+<% end %>
+<div class="<%= variant == :drawer ? 'drawer-nav-divider' : 'menu-divider' %>" role="separator"></div>
+<div class="<%= variant == :drawer ? 'drawer-nav-section drawer-nav-section--secondary' : 'menu-section menu-section--secondary' %>">
+  <%= render 'common/nav_item', variant: variant, label: t('nav.privacy'), url: privacy_path, icon: :privacy %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.terms'), url: terms_path, icon: :terms %>
+  <%= render 'common/nav_item', variant: variant, label: t('nav.sign_out'), url: destroy_user_session_path, icon: :sign_out, method: 'delete' %>
+</div>

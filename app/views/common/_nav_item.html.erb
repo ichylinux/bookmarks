@@ -1,0 +1,6 @@
+<% link_options = local_assigns.except(:label, :url, :icon, :variant) %>
+<% if variant == :drawer %>
+  <%= render 'common/drawer_nav_link', label: label, url: url, icon: icon, **link_options %>
+<% else %>
+  <div><%= link_to label, url, link_options %></div>
+<% end %>
