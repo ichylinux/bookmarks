@@ -181,9 +181,15 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Admin usage report at `/admin/x_api_usages` with date-range filter, column sort, ja/en locale — **v1.29 Phase 99**
 - ✓ Tri-suite gate green with v1.29 changes (515 Minitest, 30 Cucumber) — **v1.29 Phase 100**
 
-## Next Milestone
+## Current Milestone: v1.30 Admin User Management Screen
 
-Run `/gsd-new-milestone` to define the next version (questioning → research → requirements → roadmap).
+**Goal:** Add an admin-only read-only user list at `/admin/users` showing all registered accounts with key identity and activity fields.
+
+**Target features:**
+- Admin user list at `/admin/users` showing all registered users
+- Visible columns: id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at
+- Gated by existing `require_admin` from `Admin::BaseController` (404 for non-admins)
+- Bilingual (ja/en) column headers and UI chrome; drawer nav link for admins
 
 ### Out of Scope (revisit when planning)
 
@@ -386,4 +392,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-21 after v1.29 milestone*
+*Last updated: 2026-05-21 — v1.30 Admin User Management Screen started*

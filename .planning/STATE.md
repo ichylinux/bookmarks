@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: null
-milestone_name: null
-status: planning_next
-last_updated: "2026-05-21T13:00:00.000Z"
-last_activity: 2026-05-21 — Completed quick task 260521-003: admin section separator in drawer/menu
+milestone: v1.30
+milestone_name: Admin User Management Screen
+status: planning
+last_updated: "2026-05-21T00:00:00.000Z"
+last_activity: 2026-05-21 — Milestone v1.30 started
 progress:
   total_phases: 0
   completed_phases: 0
@@ -17,10 +17,10 @@ progress:
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: v1.29 shipped — planning next milestone
-Last activity: 2026-05-21 — Milestone v1.29 archived
+Status: Defining requirements
+Last activity: 2026-05-21 — Milestone v1.30 started
 
 Progress: [          ] 0%
 
