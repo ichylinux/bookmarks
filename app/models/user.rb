@@ -43,12 +43,12 @@ class User < ApplicationRecord
         # OAUTH-01: users.email scope is configured in devise.rb — email arrives here when granted
         attrs = {
           provider: 'twitter2',
-          uid: uid,
           x_user_name: data['name'],
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
         }
+        attrs[:uid] = uid if user.uid.blank?
         # OAUTH-03: overwrite dummy email with real X email on re-auth when user lacks a valid email
         attrs[:email] = data['email'] if data['email'].present? && !user.has_valid_email?
         user.assign_attributes(attrs)
@@ -93,7 +93,7 @@ class User < ApplicationRecord
 
     now = Time.current
     # Skip validations: X-only users may still have a dummy email, which is valid at create time.
-    update_columns(deleted: true, deleted_at: now, updated_at: now, uid: nil)
+    update_columns(deleted: true, deleted_at: now, updated_at: now)
   end
 
   def active_for_authentication?

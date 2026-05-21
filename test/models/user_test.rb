@@ -56,9 +56,6 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 'bearer-tok', u.oauth2_token
     assert_equal 'ref-tok', u.oauth2_refresh_token
     assert_in_delta expires_ts, u.oauth2_token_expires_at.to_i, 1
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil)
   end
 
   def test_twitter2_from_omniauth_links_existing_user_by_email_when_uid_missing
@@ -76,16 +73,6 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 'oauth2-uid-after-email-registration', u.uid
     assert_equal 'twitter2', u.provider
     assert_equal 'bearer-tok', u.oauth2_token
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      uid: 'fixture_twitter_uid',
-      provider: 'twitter',
-      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      oauth2_token: nil,
-      oauth2_refresh_token: nil,
-      oauth2_token_expires_at: nil
-    )
   end
 
   def test_twitter2_from_omniauth_creates_new_user_when_uid_unknown
@@ -98,8 +85,6 @@ class UserTest < ActiveSupport::TestCase
     assert_difference 'User.count', 1 do
       User.from_omniauth(auth)
     end
-  ensure
-    User.where(uid: 'brand-new-oauth2-uid', provider: 'twitter2').delete_all
   end
 
   def test_twitter2_from_omniauth_creates_new_user_with_email_when_provided
@@ -114,8 +99,6 @@ class UserTest < ActiveSupport::TestCase
       result = User.from_omniauth(auth)
     end
     assert_equal 'twitter-user@example.com', result.email
-  ensure
-    User.where(uid: 'brand-new-oauth2-uid-with-email', provider: 'twitter2').delete_all
   end
 
   def test_twitter2_from_omniauth_updates_dummy_email_on_reauth
@@ -130,12 +113,6 @@ class UserTest < ActiveSupport::TestCase
     User.from_omniauth(auth)
     u.reload
     assert_equal 'real-x-email@example.com', u.email
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
-    )
   end
 
   def test_twitter2_from_omniauth_does_not_overwrite_real_email_on_reauth
@@ -150,12 +127,6 @@ class UserTest < ActiveSupport::TestCase
     User.from_omniauth(auth)
     u.reload
     assert_equal 'already-real@example.com', u.email
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
-    )
   end
 
   def test_twitter2_from_omniauth_does_not_change_email_when_x_provides_none
@@ -170,12 +141,6 @@ class UserTest < ActiveSupport::TestCase
     User.from_omniauth(auth)
     u.reload
     assert_match(/\Adummy_/, u.email)
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil
-    )
   end
 
   def test_oauth2_token_encrypted_at_rest
@@ -186,9 +151,6 @@ class UserTest < ActiveSupport::TestCase
       ActiveRecord::Base.sanitize_sql_array(['SELECT oauth2_token FROM users WHERE id = ?', u.id])
     )
     assert_not_equal 'plain-oauth2-token', raw
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(oauth2_token: nil)
   end
 
   def test_token_encrypted_at_rest
@@ -200,12 +162,6 @@ class UserTest < ActiveSupport::TestCase
       ActiveRecord::Base.sanitize_sql_array(['SELECT token FROM users WHERE id = ?', u.id])
     )
     assert_not_equal 'plain-token-value', raw
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      token: 'fixture_plain_token',
-      token_secret: 'fixture_plain_secret'
-    )
   end
 
   def test_destroy_account_soft_deletes_without_modifying_account_data
@@ -224,21 +180,16 @@ class UserTest < ActiveSupport::TestCase
     assert u.deleted_at.present?
     assert_equal email, u.email
     assert_equal x_user_name, u.x_user_name
-    assert_nil u.uid
+    assert_equal uid, u.uid
     assert_equal provider, u.provider
     assert_equal token, u.token
     assert_equal note_count, Note.where(user_id: u.id).count
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(deleted: false, deleted_at: nil)
   end
 
   def test_active_for_authentication_false_when_deleted
     u = User.find(3)
     u.update_columns(deleted: true, deleted_at: Time.current)
     assert_not u.active_for_authentication?
-  ensure
-    User.find(3).update_columns(deleted: false, deleted_at: nil)
   end
 
   def test_from_omniauth_twitter2_matches_user_after_operational_restore
@@ -249,7 +200,7 @@ class UserTest < ActiveSupport::TestCase
     u.reload
     assert u.deleted?
 
-    u.update_columns(deleted: false, deleted_at: nil, uid: 'restore-oauth-uid')
+    u.update_columns(deleted: false, deleted_at: nil)
 
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
@@ -262,19 +213,6 @@ class UserTest < ActiveSupport::TestCase
     assert_equal u.id, result.id
     assert_equal 'restored@example.com', result.email
     assert_not result.deleted?
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      deleted: false,
-      deleted_at: nil,
-      email: 'dummy_00000000-0000-0000-0000-000000000001@example.com',
-      x_user_name: 'twitter_test_user',
-      provider: 'twitter',
-      uid: 'fixture_twitter_uid',
-      oauth2_token: nil,
-      oauth2_refresh_token: nil,
-      oauth2_token_expires_at: nil
-    )
   end
 
   def test_from_omniauth_google_matches_user_after_operational_restore
@@ -298,8 +236,6 @@ class UserTest < ActiveSupport::TestCase
     result = User.from_omniauth(auth)
     assert_equal u.id, result.id
     assert_not result.deleted?
-  ensure
-    User.where(email: 'google-restore@example.com').delete_all
   end
 
   def test_from_omniauth_twitter2_does_not_match_deleted_user
@@ -314,17 +250,8 @@ class UserTest < ActiveSupport::TestCase
       'credentials' => { 'token' => 't', 'refresh_token' => 'r' }
     )
 
-    result = User.from_omniauth(auth)
-    assert_not_equal u.id, result.id
-    assert result.persisted?
-  ensure
-    u = users(:twitter_user)
-    u.update_columns(
-      deleted: false,
-      deleted_at: nil,
-      provider: 'twitter',
-      uid: 'fixture_twitter_uid'
-    )
-    User.active.where(uid: 'deleted-oauth-uid', provider: 'twitter2').delete_all
+    assert_raise ActiveRecord::RecordNotUnique do
+      User.from_omniauth(auth)
+    end
   end
 end
