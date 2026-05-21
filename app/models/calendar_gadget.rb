@@ -29,14 +29,6 @@ class CalendarGadget
     @display_date = date
   end
 
-  def display_year
-    display_date.year
-  end
-
-  def display_month
-    display_date.month
-  end
-
   def holiday?(date)
     return false unless I18n.locale.to_sym == :ja
 
