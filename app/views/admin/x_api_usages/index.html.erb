@@ -3,44 +3,52 @@
 
   <%= form_with url: admin_x_api_usages_path, method: :get, local: true, class: 'admin-x-api-usages__filter' do %>
     <div class="admin-x-api-usages__filter-row">
-      <label for="from"><%= t('.filter_from') %></label>
-      <%= date_field_tag :from, @from_date, id: 'from' %>
-      <label for="to"><%= t('.filter_to') %></label>
-      <%= date_field_tag :to, @to_date, id: 'to' %>
-      <%= hidden_field_tag :sort, @sort %>
-      <%= hidden_field_tag :direction, @direction %>
-      <%= submit_tag t('.filter_submit') %>
+      <div class="admin-x-api-usages__filter-field">
+        <label for="from"><%= t('.filter_from') %></label>
+        <%= date_field_tag :from, @from_date, id: 'from' %>
+      </div>
+      <div class="admin-x-api-usages__filter-field">
+        <label for="to"><%= t('.filter_to') %></label>
+        <%= date_field_tag :to, @to_date, id: 'to' %>
+      </div>
+      <div class="admin-x-api-usages__filter-actions">
+        <%= hidden_field_tag :sort, @sort %>
+        <%= hidden_field_tag :direction, @direction %>
+        <%= submit_tag t('.filter_submit') %>
+      </div>
     </div>
   <% end %>
 
   <% if @rows.blank? %>
     <p class="admin-x-api-usages__empty"><%= t('.empty') %></p>
   <% else %>
-    <table class="admin-x-api-usages__table">
-      <thead>
-        <tr>
-          <th scope="col"><%= t('.col_identity') %></th>
-          <th scope="col">
-            <%= link_to t('.col_total_calls'),
-                  admin_x_api_usages_path(filter_params.merge(sort: 'total_calls', direction: toggle_direction('total_calls'))) %>
-          </th>
-          <th scope="col">
-            <%= link_to t('.col_last_called_at'),
-                  admin_x_api_usages_path(filter_params.merge(sort: 'last_called_at', direction: toggle_direction('last_called_at'))) %>
-          </th>
-          <th scope="col"><%= t('.col_error_count') %></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @rows.each do |row| %>
+    <div class="admin-x-api-usages__table-scroll">
+      <table class="admin-x-api-usages__table">
+        <thead>
           <tr>
-            <td><%= row[:identity] %></td>
-            <td><%= row[:total_calls] %></td>
-            <td><%= row[:last_called_at] ? l(row[:last_called_at], format: :short) : '—' %></td>
-            <td><%= row[:error_count] %></td>
+            <th scope="col"><%= t('.col_identity') %></th>
+            <th scope="col">
+              <%= link_to t('.col_total_calls'),
+                    admin_x_api_usages_path(filter_params.merge(sort: 'total_calls', direction: toggle_direction('total_calls'))) %>
+            </th>
+            <th scope="col">
+              <%= link_to t('.col_last_called_at'),
+                    admin_x_api_usages_path(filter_params.merge(sort: 'last_called_at', direction: toggle_direction('last_called_at'))) %>
+            </th>
+            <th scope="col"><%= t('.col_error_count') %></th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% @rows.each do |row| %>
+            <tr>
+              <td><%= row[:identity] %></td>
+              <td><%= row[:total_calls] %></td>
+              <td><%= row[:last_called_at] ? l(row[:last_called_at], format: :short) : '—' %></td>
+              <td><%= row[:error_count] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   <% end %>
 </section>
