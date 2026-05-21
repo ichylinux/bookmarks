@@ -37,11 +37,9 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| USR-01 | TBD   | —      |
-| USR-02 | TBD   | —      |
-| USR-03 | TBD   | —      |
-| USR-04 | TBD   | —      |
-| USR-05 | TBD   | —      |
-| USR-06 | TBD   | —      |
-
-*Traceability filled by roadmapper.*
+| USR-01 | 101   | —      |
+| USR-02 | 102   | —      |
+| USR-03 | 102   | —      |
+| USR-04 | 102   | —      |
+| USR-05 | 103   | —      |
+| USR-06 | 103   | —      |

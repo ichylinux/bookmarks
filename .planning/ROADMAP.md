@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.30 — Admin User Management Screen** — Phases 101–103 (active)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
 - ✅ **v1.27 — Privacy Policy for X OAuth2 Email** — Phases 89–90 (shipped 2026-05-19) — [archived](milestones/v1.27-ROADMAP.md)
@@ -34,7 +35,80 @@
 
 ## Phases
 
-_(No active phases — start the next milestone with `/gsd-new-milestone`.)_
+### v1.30 — Admin User Management Screen (Phases 101–103)
+
+**Milestone goal:** Add an admin-only read-only user list at `/admin/users` showing all registered accounts with key identity and activity fields.
+
+**3 phases** | **6 requirements** | All covered ✓
+
+| # | Phase | Goal | Requirements | Success Criteria |
+|---|-------|------|--------------|------------------|
+| 101 | Admin Users Controller & Route | Gated route + controller for admin user list | USR-01 | 2 |
+| 102 | User List View | Render all user rows with every required column | USR-02, USR-03, USR-04 | 3 |
+| 103 | Navigation, Locale & Tri-suite Gate | Drawer nav, bilingual locale, green tri-suite closure | USR-05, USR-06 | 3 |
+
+---
+
+#### Phase 101: Admin Users Controller & Route
+
+**Goal:** Create `Admin::UsersController#index`, route `/admin/users`, apply `require_admin` gate.
+
+**Requirements:** USR-01
+
+**Success criteria:**
+1. `GET /admin/users` returns 200 for admin users, 404 for non-admins, redirect to sign-in for guests
+2. Controller inherits from `Admin::BaseController` and reuses the `require_admin` gate from v1.29
+
+**Key deliverables:**
+- `app/controllers/admin/users_controller.rb`
+- Route: `namespace :admin { resources :users, only: [:index] }`
+- Placeholder view (populated in Phase 102)
+- Minitest: 3 access-control scenarios
+
+---
+
+#### Phase 102: User List View
+
+**Goal:** Render the user list table with all required columns, resolving `x_user_name` from XAccount and displaying `admin_flag` with a clear indicator.
+
+**Requirements:** USR-02, USR-03, USR-04
+
+**Success criteria:**
+1. Table displays all user records including soft-deleted in columns: id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at
+2. `x_user_name` shows `x_username` from `user.x_accounts.first` or blank; `User.all.includes(:x_accounts)` prevents N+1
+3. `admin_flag` renders ✓ for admins and — for regular users
+
+**Key deliverables:**
+- View table with all 7 columns
+- Controller: `@users = User.all.includes(:x_accounts).order(:id)`
+- Helper or view logic for `x_user_name` and `admin_flag` display
+- Minitest: column structure, data presence, soft-deleted visibility, blank fallback, flag indicator
+
+---
+
+#### Phase 103: Navigation, Locale & Tri-suite Gate
+
+**Goal:** Add drawer nav link for admins, wire all UI strings through ja/en locale YAML, close with green tri-suite.
+
+**Requirements:** USR-05, USR-06
+
+**Success criteria:**
+1. Drawer nav shows link to `/admin/users` for admins alongside `/admin/x_api_usages`; absent for non-admins
+2. All column headers and UI chrome use locale YAML keys; i18n parity test passes
+3. Tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` ✓ · `bundle exec rake dad:test` ✓
+
+**Key deliverables:**
+- Drawer partial updated with admin users nav link
+- `config/locales/ja.yml` and `en.yml` — `admin.users.*` keys
+- i18n parity test for new keys
+- Cucumber scenario: admin navigates to user list, sees user table
+- Tri-suite closure
+
+---
+
+- [ ] Phase 101: Admin Users Controller & Route
+- [ ] Phase 102: User List View
+- [ ] Phase 103: Navigation, Locale & Tri-suite Gate
 
 ---
 
@@ -119,4 +193,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-21 — v1.29 milestone shipped and archived*
+*Last updated: 2026-05-21 — v1.30 Admin User Management Screen roadmap created (Phases 101–103)*
