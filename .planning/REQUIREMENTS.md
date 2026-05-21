@@ -8,12 +8,12 @@
 
 ## Admin User Screen (USR)
 
-- [ ] **USR-01**: Admin can access `/admin/users` — route exists, gated by `require_admin` (non-admins get 404, guests redirect to sign-in)
-- [ ] **USR-02**: User list table displays all user records (including soft-deleted) with columns: id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at
-- [ ] **USR-03**: `x_user_name` column shows `x_username` from the user's first `XAccount` record; blank when no account is linked
-- [ ] **USR-04**: `admin_flag` column renders a clear boolean indicator (✓ for admin, — for regular user)
-- [ ] **USR-05**: Drawer nav link for admin users points to `/admin/users`, appearing alongside the existing `/admin/x_api_usages` link
-- [ ] **USR-06**: Column headers and all UI chrome are rendered via ja/en locale YAML keys; i18n parity test passes
+- [x] **USR-01**: Admin can access `/admin/users` — route exists, gated by `require_admin` (non-admins get 404, guests redirect to sign-in)
+- [x] **USR-02**: User list table displays all user records (including soft-deleted) with columns: id, email, x_user_name, admin_flag, last_sign_in_at, created_at, updated_at
+- [x] **USR-03**: `x_user_name` column shows `x_username` from the user's first `XAccount` record; blank when no account is linked
+- [x] **USR-04**: `admin_flag` column renders a clear boolean indicator (✓ for admin, — for regular user)
+- [x] **USR-05**: Drawer nav link for admin users points to `/admin/users`, appearing alongside the existing `/admin/x_api_usages` link
+- [x] **USR-06**: Column headers and all UI chrome are rendered via ja/en locale YAML keys; i18n parity test passes
 
 ---
 
@@ -37,9 +37,9 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| USR-01 | 101   | —      |
-| USR-02 | 102   | —      |
-| USR-03 | 102   | —      |
-| USR-04 | 102   | —      |
-| USR-05 | 103   | —      |
-| USR-06 | 103   | —      |
+| USR-01 | 101   | Complete |
+| USR-02 | 102   | Complete |
+| USR-03 | 102   | Complete |
+| USR-04 | 102   | Complete |
+| USR-05 | 103   | Complete |
+| USR-06 | 103   | Complete |
