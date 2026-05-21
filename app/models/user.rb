@@ -5,7 +5,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
          omniauth_providers: [:google_oauth2, :twitter2]
 
-  encrypts :token, :token_secret
   encrypts :oauth2_token, :oauth2_refresh_token
 
   validates :email,

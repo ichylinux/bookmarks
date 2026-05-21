@@ -55,10 +55,9 @@ end
 Before('@x_gadget') do
   u = user
   u.update_columns(
-    provider: 'twitter',
+    provider: 'twitter2',
     uid: '9988776655',
-    token: 'cucumber_oauth_token',
-    token_secret: 'cucumber_oauth_secret'
+    oauth2_token: 'cucumber_oauth2_token'
   )
 
   XAccount.create!(
@@ -83,7 +82,7 @@ end
 After('@x_gadget') do
   WebMock.remove_request_stub(@_x_stub_tweets) if @_x_stub_tweets
   XAccount.where(user_id: user.id).delete_all
-  user.update_columns(provider: nil, uid: nil, token: nil, token_secret: nil)
+  user.update_columns(provider: nil, uid: nil, oauth2_token: nil)
 end
 
 Before('@feed_visited_links') do
@@ -133,8 +132,6 @@ Before('@account_deletion') do
     x_user_name: nil,
     provider: nil,
     uid: nil,
-    token: nil,
-    token_secret: nil,
     oauth2_token: nil,
     oauth2_refresh_token: nil,
     oauth2_token_expires_at: nil

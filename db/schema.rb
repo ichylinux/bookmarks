@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_21_070921) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_21_091442) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -119,8 +119,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_21_070921) do
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
     t.integer "sign_in_count", default: 0
-    t.string "token"
-    t.string "token_secret"
     t.string "uid"
     t.datetime "updated_at"
     t.datetime "x_accounts_last_refreshed_at"

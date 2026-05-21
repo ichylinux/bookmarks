@@ -1,7 +1,4 @@
-require 'faraday/oauth1'
-
-# X (Twitter) API v2 client. Uses OAuth 2.0 Bearer when the user has an oauth2_token;
-# falls back to OAuth 1.0a for users who have not yet upgraded.
+# X (Twitter) API v2 client. Authenticates via OAuth 2.0 Bearer token (oauth2_token).
 class XClient
   CONNECT_TIMEOUT = 3
   READ_TIMEOUT = 5
@@ -87,12 +84,8 @@ class XClient
   end
 
   def connection_for(user)
-    if user.oauth2_token.present?
-      refresh_if_expired!(user)
-      bearer_faraday('https://api.twitter.com', user)
-    else
-      oauth_faraday('https://api.twitter.com', user)
-    end
+    refresh_if_expired!(user)
+    bearer_faraday('https://api.twitter.com', user)
   end
 
   def bearer_faraday(base_url, user)
@@ -141,20 +134,6 @@ class XClient
     user.save(validate: false)
   rescue Faraday::Error, JSON::ParserError
     nil
-  end
-
-  def oauth_faraday(base_url, user)
-    ck = Rails.application.config.app_config.omniauth_twitter_client_id.to_s
-    cs = Rails.application.config.app_config.omniauth_twitter_client_secret.to_s
-
-    Faraday.new(url: base_url, request: { open_timeout: CONNECT_TIMEOUT, timeout: READ_TIMEOUT }) do |f|
-      f.request :oauth1, 'header',
-        consumer_key: ck,
-        consumer_secret: cs,
-        token: user.token.to_s,
-        token_secret: user.token_secret.to_s
-      f.adapter Faraday.default_adapter
-    end
   end
 
   def parse_following_response(res)

@@ -153,24 +153,12 @@ class UserTest < ActiveSupport::TestCase
     assert_not_equal 'plain-oauth2-token', raw
   end
 
-  def test_token_encrypted_at_rest
-    u = users(:twitter_user)
-    u.token = 'plain-token-value'
-    u.token_secret = 'plain-secret-value'
-    u.save!(validate: false)
-    raw = ActiveRecord::Base.connection.select_value(
-      ActiveRecord::Base.sanitize_sql_array(['SELECT token FROM users WHERE id = ?', u.id])
-    )
-    assert_not_equal 'plain-token-value', raw
-  end
-
   def test_destroy_account_soft_deletes_without_modifying_account_data
     u = users(:twitter_user)
     email = u.email
     x_user_name = u.x_user_name
     uid = u.uid
     provider = u.provider
-    token = u.token
     note_count = Note.where(user_id: u.id).count
 
     u.destroy_account!
@@ -182,7 +170,6 @@ class UserTest < ActiveSupport::TestCase
     assert_equal x_user_name, u.x_user_name
     assert_equal uid, u.uid
     assert_equal provider, u.provider
-    assert_equal token, u.token
     assert_equal note_count, Note.where(user_id: u.id).count
   end
 
