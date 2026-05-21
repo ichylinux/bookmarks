@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.31
 milestone_name: X Account Manual Add (Non-Following)
-status: planning
+status: active
 stopped_at: ~
 last_updated: "2026-05-22T00:00:00.000Z"
-last_activity: 2026-05-22 -- Milestone v1.31 started
+last_activity: 2026-05-22 -- Roadmap created (Phases 104-108); ready for Phase 104 planning
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,12 +18,12 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-22 — Milestone v1.31 started
+Phase: 104 — Schema, Model & Refresh Guard
+Plan: Not yet planned
+Status: Roadmap complete — ready for Phase 104
+Last activity: 2026-05-22 — v1.31 roadmap created, Phases 104–108 defined
 
-Progress: [          ] 0%
+Progress: [          ] 0% (0/5 phases)
 
 ## Project Reference
 
@@ -34,7 +34,7 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 
 ## Performance Metrics
 
-- v1.29 close: `yarn run lint` ✓ · `bin/rails test` 515/515 ✓ · `dad:test` 30/30 ✓
+- v1.30 close: `yarn run lint` ✓ · `bin/rails test` 528/528 ✓ · `dad:test` 31/31 ✓
 
 ## Deferred Items
 
@@ -42,11 +42,19 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 |----------|------|--------|
 | v2 | ACCT-FUT-01 purge job after 90 days | open |
 | v2 | ACCT-FUT-03 data export | open |
+| v2 | XMAN-FUT-01 total cap on manually-added accounts | open |
+| v2 | XMAN-FUT-02 bulk add by handle list | open |
+| v2 | XMAN-FUT-03 dedicated remove action for manually-added accounts | open |
 
 ## Accumulated Context
 
 ### Decisions
 
+- (v1.31) No cap on manually-added accounts for v1.31 — personal app, low volume; deferred as XMAN-FUT-01
+- (v1.31) `upsert_manual!` uses `first_or_initialize` on `(user_id, x_user_id)`; always sets `manually_added: true, deleted: false` unconditionally regardless of new_record? state
+- (v1.31) `refresh_cache_from_items!` soft-delete loop gains `next if acc.manually_added?`; `assign_attributes` call must NOT include `manually_added` field to preserve flag on overlap rows
+- (v1.31) `lookup_user_by_username` strips leading `@` before building URL path; stores API-returned canonical username, not raw input
+- (v1.31) HTTP 403 from X API for suspended accounts maps to `:suspended` error symbol
 - (v1.29) Instrumentation at controller after XClient returns; `record_x_api_call` helper
 - (v1.29) Admin gate 404 for non-admins; drawer link `current_user.admin?`
 - (v1.29) Report identity: email if valid, else `@username` from first XAccount
@@ -67,8 +75,8 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 
 ## Session Continuity
 
-Last session: 2026-05-21
-Stopped at: v1.29 milestone complete and archived
+Last session: 2026-05-22
+Stopped at: v1.31 roadmap created; Phase 104 not yet planned
 Resume file: None
 
 ## Accumulated Context
@@ -76,7 +84,9 @@ Resume file: None
 ### Roadmap Evolution
 
 - Phase 103.1 inserted after Phase 103 (2026-05-22): Retroactive verification artifacts for Phases 101–103 — process closure identified at milestone audit (missing VERIFICATION.md / VALIDATION.md)
+- v1.31 Phases 104–108 defined (2026-05-22): Schema/Model/Refresh guard is load-bearing Phase 104; must have passing Minitest on refresh guard before Phase 105 begins
 
 ## Operator Next Steps
 
-- Run `/gsd:plan-phase 104` to plan the first phase of v1.31.
+- Run `/gsd:plan-phase 104` to plan Phase 104 (Schema, Model & Refresh Guard).
+- Critical: Phase 104 MUST include the `refresh_cache_from_items!` guard Minitest — nothing else ships until it passes.

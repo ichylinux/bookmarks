@@ -53,24 +53,24 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| XMAN-01 | — | Pending |
-| XMAN-02 | — | Pending |
-| XMAN-03 | — | Pending |
-| XSVC-01 | — | Pending |
-| XSVC-02 | — | Pending |
-| XCTL-01 | — | Pending |
-| XCTL-02 | — | Pending |
-| XVIEW-01 | — | Pending |
-| XVIEW-02 | — | Pending |
-| XVIEW-03 | — | Pending |
-| XTEST-01 | — | Pending |
-| XTEST-02 | — | Pending |
+| XMAN-01 | Phase 104 | Pending |
+| XMAN-02 | Phase 104 | Pending |
+| XMAN-03 | Phase 104 | Pending |
+| XSVC-01 | Phase 105 | Pending |
+| XSVC-02 | Phase 105 | Pending |
+| XCTL-01 | Phase 106 | Pending |
+| XCTL-02 | Phase 106 | Pending |
+| XVIEW-01 | Phase 107 | Pending |
+| XVIEW-02 | Phase 107 | Pending |
+| XVIEW-03 | Phase 107 | Pending |
+| XTEST-01 | Phase 108 | Pending |
+| XTEST-02 | Phase 108 | Pending |
 
 **Coverage:**
 - v1.31 requirements: 12 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 12 ⚠️
+- Mapped to phases: 12
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after initial definition*
+*Last updated: 2026-05-22 — traceability filled after roadmap creation (Phases 104–108)*

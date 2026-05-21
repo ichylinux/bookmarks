@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (active)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
@@ -34,6 +35,16 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+### v1.31 — X Account Manual Add (Non-Following)
+
+- [ ] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
+- [ ] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
+- [ ] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
+- [ ] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
+- [ ] **Phase 108: Full Test Coverage & Tri-suite Gate** — Minitest + Cucumber E2E + green gate
+
+---
 
 <details>
 <summary>✅ v1.30 — Admin User Management Screen (Phases 101–103.1) — SHIPPED 2026-05-22</summary>
@@ -130,4 +141,77 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-22 — v1.30 Admin User Management Screen archived (Phases 101–103.1)*
+## Phase Details
+
+### Phase 104: Schema, Model & Refresh Guard
+**Goal**: The data layer correctly stores and protects manually-added accounts — `manually_added` column exists, `upsert_manual!` creates/restores accounts idempotently, and the refresh soft-delete loop never deletes manually-added rows
+**Depends on**: Nothing (first phase of v1.31)
+**Requirements**: XMAN-01, XMAN-02, XMAN-03
+**Success Criteria** (what must be TRUE):
+  1. A database migration adds `manually_added boolean NOT NULL DEFAULT false` to `x_accounts`; existing rows default to `false` with no data loss
+  2. Calling `XAccount.upsert_manual!(user:, x_user_id:, ...)` on a new record creates a row with `manually_added: true, deleted: false`
+  3. Calling `upsert_manual!` a second time (or on a soft-deleted row) restores it without creating a duplicate — `manually_added: true` is always set unconditionally
+  4. Running `refresh_cache_from_items!` does not soft-delete rows where `manually_added: true`; a Minitest covering this guard passes
+  5. Refreshing a follow-synced account that also matches a manually-added row does not flip `manually_added` to `false`
+**Plans**: TBD
+
+### Phase 105: XClient Lookup Service
+**Goal**: `XClient` can resolve a public X handle to a user record, returning a structured result or a typed error symbol, fully covered by isolated service tests
+**Depends on**: Phase 104
+**Requirements**: XSVC-01, XSVC-02
+**Success Criteria** (what must be TRUE):
+  1. `XClient#lookup_user_by_username(username: '@handle')` strips the leading `@` and calls `GET /2/users/by/username/handle` via the existing Bearer auth connection
+  2. A successful 200 response returns `{ success: true, item: { ... } }` with the API-returned canonical `username` (not the raw user input)
+  3. HTTP 404 or 400 maps to `{ success: false, error: :not_found }`; HTTP 403 maps to `:suspended`; HTTP 429 maps to `:rate_limited`; all other errors map to `:api_error`
+  4. Minitest service tests covering all response codes (200, 404, 400, 403, 429, timeout, network error) pass using Faraday `:test` adapter stubs
+**Plans**: TBD
+
+### Phase 106: Controller Action, Routes & Locales
+**Goal**: Users can POST a handle to `/x_accounts/lookup_and_add` and receive a localized flash response for every success and error state
+**Depends on**: Phase 105
+**Requirements**: XCTL-01, XCTL-02
+**Success Criteria** (what must be TRUE):
+  1. `POST /x_accounts/lookup_and_add` is routed to `XAccountsController#lookup_and_add` and is gated by `require_twitter_linked`
+  2. A successful add redirects to `/x_accounts` with a success flash message in both Japanese and English
+  3. Each of the 6 error states (not found, already active, rate limited, suspended, blank input, network error) redirects with a distinct localized flash alert in both ja and en
+  4. Every API call from this action is instrumented via `record_x_api_call`
+  5. Controller integration tests for all 7 flash states (1 success + 6 errors) pass
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 107: View Form & Manually-Added Badge
+**Goal**: The `/x_accounts` index page has a usable handle input form and every manually-added account card displays a visual indicator of its origin
+**Depends on**: Phase 106
+**Requirements**: XVIEW-01, XVIEW-02, XVIEW-03
+**Success Criteria** (what must be TRUE):
+  1. A `form_with` handle input form appears on the `/x_accounts` index page with a text field and submit button; no new JavaScript is required
+  2. Submitting `@handle` (or `handle`) POSTs to `lookup_and_add_x_accounts_path` and the page redirects with a flash
+  3. Each account card for a `manually_added: true` account shows a visible badge or label; the label is rendered in Japanese when the UI locale is `ja` and in English when `en`
+  4. Follow-synced account cards do not show the manually-added badge
+  5. All new locale keys for form labels, button text, and the badge pass the i18n parity test (ja/en key sets match)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 108: Full Test Coverage & Tri-suite Gate
+**Goal**: All v1.31 behavior is verified end-to-end and the tri-suite gate is green
+**Depends on**: Phase 107
+**Requirements**: XTEST-01, XTEST-02
+**Success Criteria** (what must be TRUE):
+  1. Minitest: model tests for `manually_added` flag behavior + refresh guard, service tests for all `lookup_user_by_username` response codes, and controller integration tests for all error paths all pass
+  2. A Cucumber E2E happy-path scenario (enter a handle → account appears in the list → click Refresh → account survives) passes
+  3. A Cucumber not-found error scenario (enter a nonexistent handle → not-found flash appears) passes
+  4. The WebMock stub for `/2/users/by/username/` is registered in the relevant Cucumber `Before` hook so no `NetConnectNotAllowedError` occurs
+  5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+**Plans**: TBD
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 104. Schema, Model & Refresh Guard | 0/1 | Not started | - |
+| 105. XClient Lookup Service | 0/1 | Not started | - |
+| 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
+| 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
+| 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
+
+*Last updated: 2026-05-22 — v1.31 X Account Manual Add (Non-Following) roadmap created (Phases 104–108)*
