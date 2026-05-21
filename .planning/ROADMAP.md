@@ -89,6 +89,11 @@ Plans:
 - Helper or view logic for `x_user_name` and `admin_flag` display
 - Minitest: column structure, data presence, soft-deleted visibility, blank fallback, flag indicator
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 102-01-PLAN.md — Controller query, 7-column view table, Minitest (4 scenarios)
+
 ---
 
 #### Phase 103: Navigation, Locale & Tri-suite Gate
@@ -198,4 +203,4 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
-*Last updated: 2026-05-21 — Phase 101 planned (1 plan)*
+*Last updated: 2026-05-21 — Phase 102 planned (1 plan)*
