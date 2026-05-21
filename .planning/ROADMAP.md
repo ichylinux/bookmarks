@@ -114,6 +114,11 @@ Plans:
 - Cucumber scenario: admin navigates to user list, sees user table
 - Tri-suite closure
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 103-01-PLAN.md — Nav link, locale keys, i18n parity test, Cucumber, tri-suite gate
+
 ---
 
 - [ ] Phase 101: Admin Users Controller & Route
