@@ -60,7 +60,7 @@ See: .planning/PROJECT.md (updated 2026-05-21)
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | 3f51073 | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
-| 260521-002 | Add index on users.uid for OAuth lookup performance | 2026-05-21 | 2977309 | [add-index-users-uid](./quick/20260521-add-index-users-uid/) |
+| 260521-002 | Add unique index on users.uid; nullify uid on soft-delete | 2026-05-21 | 8889a6c | [add-index-users-uid](./quick/20260521-add-index-users-uid/) |
 
 ## Session Continuity
 
