@@ -158,6 +158,7 @@ ja:
         col_identity: ユーザー
         col_total_calls: 呼び出し回数
         col_last_called_at: 最終呼び出し
+        col_called_at: 呼び出し日
         col_error_count: エラー回数
 
   email_registrations:

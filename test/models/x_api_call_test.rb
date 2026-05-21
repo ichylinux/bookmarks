@@ -44,4 +44,25 @@ class XApiCallTest < ActiveSupport::TestCase
     assert_not_nil result
     assert_equal 1, result.total_calls
   end
+
+  def test_usage_by_dayがユーザーと日付で集計する
+    user = users(:one)
+    day = Time.zone.local(2026, 5, 20, 10, 0, 0)
+    travel_to day do
+      2.times { XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true) }
+      XApiCall.record!(user_id: user.id, endpoint: 'fetch_recent_tweets', success: false)
+    end
+    travel_to day + 1.day do
+      XApiCall.record!(user_id: user.id, endpoint: 'fetch_following', success: true)
+    end
+
+    results = XApiCall.usage_by_day.to_a.select { |r| r.user_id == user.id }
+    assert_equal 2, results.size
+    may20 = results.find { |r| r.called_on.to_s == '2026-05-20' }
+    assert_equal 3, may20.total_calls
+    assert_equal 1, may20.error_count
+    may21 = results.find { |r| r.called_on.to_s == '2026-05-21' }
+    assert_equal 1, may21.total_calls
+    assert_equal 0, may21.error_count
+  end
 end

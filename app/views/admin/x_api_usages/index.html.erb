@@ -27,14 +27,25 @@
         <thead>
           <tr>
             <th scope="col"><%= t('.col_identity') %></th>
-            <th scope="col">
-              <%= link_to t('.col_total_calls'),
-                    admin_x_api_usages_path(filter_params.merge(sort: 'total_calls', direction: toggle_direction('total_calls'))) %>
-            </th>
-            <th scope="col">
-              <%= link_to t('.col_last_called_at'),
-                    admin_x_api_usages_path(filter_params.merge(sort: 'last_called_at', direction: toggle_direction('last_called_at'))) %>
-            </th>
+            <% if @date_range_active %>
+              <th scope="col">
+                <%= link_to t('.col_called_at'),
+                      admin_x_api_usages_path(filter_params.merge(sort: 'called_at', direction: toggle_direction('called_at'))) %>
+              </th>
+              <th scope="col">
+                <%= link_to t('.col_total_calls'),
+                      admin_x_api_usages_path(filter_params.merge(sort: 'total_calls', direction: toggle_direction('total_calls'))) %>
+              </th>
+            <% else %>
+              <th scope="col">
+                <%= link_to t('.col_total_calls'),
+                      admin_x_api_usages_path(filter_params.merge(sort: 'total_calls', direction: toggle_direction('total_calls'))) %>
+              </th>
+              <th scope="col">
+                <%= link_to t('.col_last_called_at'),
+                      admin_x_api_usages_path(filter_params.merge(sort: 'last_called_at', direction: toggle_direction('last_called_at'))) %>
+              </th>
+            <% end %>
             <th scope="col"><%= t('.col_error_count') %></th>
           </tr>
         </thead>
@@ -42,8 +53,13 @@
           <% @rows.each do |row| %>
             <tr>
               <td><%= row[:identity] %></td>
-              <td><%= row[:total_calls] %></td>
-              <td><%= row[:last_called_at] ? l(row[:last_called_at], format: :short) : '—' %></td>
+              <% if @date_range_active %>
+                <td><%= row[:called_at] ? l(row[:called_at].to_date) : '—' %></td>
+                <td><%= row[:total_calls] %></td>
+              <% else %>
+                <td><%= row[:total_calls] %></td>
+                <td><%= row[:last_called_at] ? l(row[:last_called_at], format: :short) : '—' %></td>
+              <% end %>
               <td><%= row[:error_count] %></td>
             </tr>
           <% end %>

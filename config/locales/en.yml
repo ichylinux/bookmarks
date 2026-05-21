@@ -158,6 +158,7 @@ en:
         col_identity: User
         col_total_calls: Total calls
         col_last_called_at: Last called at
+        col_called_at: Called at
         col_error_count: Error count
 
   email_registrations:

@@ -20,14 +20,31 @@ class XApiCall < ApplicationRecord
   end
 
   def self.usage_summary(since: nil, until_time: nil)
-    scope = all
-    scope = scope.where('called_at >= ?', since) if since
-    scope = scope.where('called_at <= ?', until_time) if until_time
-    scope.group(:user_id).select(
+    scoped = filtered_scope(since: since, until_time: until_time)
+    scoped.group(:user_id).select(
       :user_id,
       'COUNT(*) AS total_calls',
       'MAX(called_at) AS last_called_at',
       'SUM(CASE WHEN success = false THEN 1 ELSE 0 END) AS error_count'
     )
   end
+
+  def self.usage_by_day(since: nil, until_time: nil)
+    scoped = filtered_scope(since: since, until_time: until_time)
+    scoped.group(:user_id, Arel.sql('DATE(called_at)')).select(
+      :user_id,
+      'DATE(called_at) AS called_on',
+      'COUNT(*) AS total_calls',
+      'SUM(CASE WHEN success = false THEN 1 ELSE 0 END) AS error_count'
+    )
+  end
+
+  def self.filtered_scope(since: nil, until_time: nil)
+    scope = all
+    scope = scope.where('called_at >= ?', since) if since
+    scope = scope.where('called_at <= ?', until_time) if until_time
+    scope
+  end
+
+  private_class_method :filtered_scope
 end
