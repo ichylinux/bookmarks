@@ -38,19 +38,6 @@ class User < ApplicationRecord
   has_many :x_accounts, dependent: :destroy
   has_many :x_api_calls, dependent: :delete_all
 
-  PURGE_ASSOCIATIONS = %i[
-    bookmarks
-    feeds
-    mastodon_accounts
-    notes
-    portal_layouts
-    portals
-    preference
-    todos
-    visited_links
-    x_accounts
-    x_api_calls
-  ].freeze
   after_save :create_default_portal
 
   def self.from_omniauth(access_token)
@@ -129,8 +116,8 @@ class User < ApplicationRecord
     raise NotPurgeableError unless purgeable?
 
     transaction do
-      PURGE_ASSOCIATIONS.each do |assoc|
-        association(assoc).scope.delete_all
+      purge_reflections.each do |reflection|
+        reflection.klass.unscoped.where(reflection.foreign_key => id).delete_all
       end
       delete
     end
@@ -172,6 +159,14 @@ class User < ApplicationRecord
   end
 
   private
+
+  def purge_reflections
+    self.class.reflect_on_all_associations.select do |reflection|
+      %i[has_one has_many].include?(reflection.macro) &&
+        reflection.foreign_key.to_s == 'user_id' &&
+        !reflection.options[:through]
+    end
+  end
 
   def generate_otp_secret_if_missing
     self.otp_secret ||= self.class.generate_otp_secret
