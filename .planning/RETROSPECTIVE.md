@@ -2,6 +2,47 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.31 — X Account Manual Add (Non-Following)
+
+**Shipped:** 2026-05-22
+**Phases:** 5 (104–108) | **Plans:** 6 (Phase 104: 2; Phases 105–108: 1 each)
+
+### What Was Built
+
+- `manually_added` schema column + `XAccount.upsert_manual!` (idempotent create/restore) + `next if acc.manually_added?` refresh guard
+- `XClient#lookup_user_by_username` with 7-symbol error contract; username format validation; Faraday `:test` adapter injection via `@forced_connection`
+- `POST /x_accounts/lookup_and_add` with all 7 flash states (blank, not_found, already_active, rate_limited, suspended, network, success); blank input guard in-controller
+- Inline `form_with` on `/x_accounts` index; `手動追加` badge on account cards; 4 locale keys in ja/en; i18n parity test
+- `@x_manual_add` Cucumber hook (3 WebMock stubs) + `features/07.X手動追加.feature` (2 Japanese scenarios) + 6 step definitions
+- Tri-suite at close: `yarn run lint` ✓ · 546/546 Minitest · 33/33 Cucumber
+
+### What Worked
+
+- Code review (Phase 105) caught 3 real bugs before shipping: username format bypass (CR-01), missing 401 branch (WR-02), `:timeout/:network` rescue conflation (WR-03) — review step earned its cost
+- `first_or_initialize` pattern for `upsert_manual!` handled both create and restore cleanly with no branching
+- `assign_attributes` exclusion of `manually_added:` in refresh loop was the right pattern for preserving flag on overlap rows — simple and auditable
+- `following_connection` routing for `lookup_user_by_username` aligned test injection with fetch_following — consistent API surface
+
+### What Was Inefficient
+
+- Phase 108 first run failed because exact URL WebMock stubs didn't match `?user.fields=...` query params — switching to regex in hooks.rb was straightforward but could have been anticipated from the lookup implementation
+- REQUIREMENTS.md checkbox state was not kept updated as phases executed — archive required manual completion assessment
+- No formal milestone audit file created (accepted at close)
+
+### Patterns Established
+
+- Cucumber WebMock stubs: always use regex (not exact URL strings) when the request appends query params
+- Manual-add Cucumber hooks pattern: separate `@x_manual_add` tag with own Before/After lifecycle; 3 stubs (lookup success, lookup 404, following for Refresh); cleanup in After hook
+- `upsert_manual!` + `refresh guard` together form the core invariant for manually-added account persistence: unconditional set on write, unconditional skip on refresh sweep
+
+### Key Lessons
+
+- Faraday `:test` adapter injection via `connection:` kwarg is the reliable Minitest pattern for `XClient`; WebMock regex is the reliable Cucumber pattern — keep consistent
+- Controller-level blank input guard (before API call) is better than service-level for UX errors; service-level blanks are for defense
+- `features/07.X手動追加.feature` naming convention (numeric prefix, Japanese filename) is established for X-related feature files
+
+---
+
 ## Milestone: v1.29 — Admin X API Usage Report
 
 **Shipped:** 2026-05-21
