@@ -38,7 +38,7 @@
 
 ### v1.31 — X Account Manual Add (Non-Following)
 
-- [ ] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
+- [x] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
 - [ ] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
 - [ ] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
 - [ ] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
