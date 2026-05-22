@@ -19,7 +19,7 @@
           <tr>
             <td><%= user.id %></td>
             <td><%= user.email %></td>
-            <td><%= user.x_accounts.reject(&:deleted?).sort_by(&:id).first&.username %></td>
+            <td><%= user.x_accounts.where(deleted: false).order(selected: :desc, id: :asc).first&.username %></td>
             <td><%= user.admin? ? '✓' : '—' %></td>
             <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :admin_datetime) : '—' %></td>
             <td><%= l(user.created_at, format: :admin_datetime) %></td>

@@ -133,6 +133,27 @@ module Admin
       assert response.body.include?(users(:three).email)
     end
 
+    def test_選択済みXアカウントが優先表示される
+      sign_in users(:one)
+      user = User.create!(email: 'x-account-priority@example.com', password: 'passwordpass',
+                          otp_secret: User.generate_otp_secret)
+      selected_username = 'selected_x_account_name'
+      fallback_username = 'fallback_x_account_name'
+
+      begin
+        XAccount.create!(user: user, x_user_id: 'x-1001', username: fallback_username, display_count: 5,
+                         selected: false, deleted: false)
+        XAccount.create!(user: user, x_user_id: 'x-1002', username: selected_username, display_count: 5,
+                         selected: true, deleted: false)
+
+        get admin_users_path
+        assert_response :success
+        assert_match(/#{Regexp.escape(user.email)}.*#{Regexp.escape(selected_username)}/m, response.body)
+      ensure
+        user.destroy if User.exists?(user.id)
+      end
+    end
+
     def test_管理者フラグが正しく表示される
       sign_in users(:one)
       get admin_users_path
