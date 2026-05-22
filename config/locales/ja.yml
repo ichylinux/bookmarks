@@ -425,6 +425,7 @@ ja:
       empty: フォロー一覧がありません。「更新」で取得してください。
       refresh: フォロー一覧を更新
       last_refreshed: "最終更新: %{time}"
+      manually_added_badge: 手動追加
       selection_soft_warning: 表示中のアカウントが9件に達しました。最大12件まで選択できます。
       protected_column: 非公開
       ack_column: 非公開の確認
@@ -439,6 +440,8 @@ ja:
       success: アカウントを追加しました。
       already_active: このアカウントはすでに追加されています。
       blank_input: ユーザー名を入力してください。
+      handle_label: ハンドル名（@なしでも可）
+      submit: 追加
     refresh:
       success: フォロー一覧を更新しました。
     update:

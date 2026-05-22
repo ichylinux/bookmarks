@@ -425,6 +425,7 @@ en:
       empty: No following list yet. Use Refresh to fetch it.
       refresh: Refresh following list
       last_refreshed: "Last refreshed: %{time}"
+      manually_added_badge: Manually added
       selection_soft_warning: You have 9 accounts selected. You can select up to 12.
       protected_column: Protected
       ack_column: Acknowledgement
@@ -439,6 +440,8 @@ en:
       success: Account added.
       already_active: This account is already added.
       blank_input: Please enter a username.
+      handle_label: Handle (@ is optional)
+      submit: Add
     refresh:
       success: Following list updated.
     update:

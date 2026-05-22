@@ -26,6 +26,16 @@
     </div>
   <% end %>
 
+  <div class="x-accounts-page__add-form">
+    <%= form_with url: lookup_and_add_x_accounts_path, method: :post, local: true do |f| %>
+      <%= f.label :username, t('x_accounts.lookup_and_add.handle_label'), class: 'x-accounts-page__add-label' %>
+      <div class="x-accounts-page__add-row">
+        <%= f.text_field :username, placeholder: '@handle', class: 'x-accounts-page__add-input' %>
+        <%= f.submit t('x_accounts.lookup_and_add.submit'), class: 'x-accounts-page__add-btn' %>
+      </div>
+    <% end %>
+  </div>
+
   <% if @selection_soft_warning %>
     <div class="flash-message flash-notice x-accounts-page__notice" role="status">
       <span class="flash-message__body"><%= t('x_accounts.index.selection_soft_warning') %></span>
@@ -43,6 +53,9 @@
               <h2 class="x-account-card__display-name"><%= account.display_name.presence || '@' + account.username %></h2>
               <p class="x-account-card__username">@<%= account.username %></p>
             </div>
+            <% if account.manually_added? %>
+              <span class="x-account-card__manually-added-badge"><%= t('x_accounts.index.manually_added_badge') %></span>
+            <% end %>
           </div>
 
           <div class="x-account-card__grid">
