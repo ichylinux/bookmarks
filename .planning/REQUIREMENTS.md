@@ -14,8 +14,8 @@
 
 ### X API Service (XSVC)
 
-- [ ] **XSVC-01**: `XClient#lookup_user_by_username(username:)` calls `GET /2/users/by/username/:username`, strips leading `@`, reuses existing Bearer token and `normalize_following_row`
-- [ ] **XSVC-02**: Response parser handles all error codes: 404/400 → `:not_found`, 403 → `:suspended`, 429 → `:rate_limited`, other → `:api_error`; stores API-returned `username` (not user input)
+- [x] **XSVC-01**: `XClient#lookup_user_by_username(username:)` calls `GET /2/users/by/username/:username`, strips leading `@`, reuses existing Bearer token and `normalize_following_row`
+- [x] **XSVC-02**: Response parser handles all error codes: 404/400 → `:not_found`, 403 → `:suspended`, 429 → `:rate_limited`, other → `:api_error`; stores API-returned `username` (not user input)
 
 ### Controller & Routes (XCTL)
 
@@ -56,8 +56,8 @@
 | XMAN-01 | Phase 104 | Pending |
 | XMAN-02 | Phase 104 | Pending |
 | XMAN-03 | Phase 104 | Pending |
-| XSVC-01 | Phase 105 | Pending |
-| XSVC-02 | Phase 105 | Pending |
+| XSVC-01 | Phase 105 | Complete |
+| XSVC-02 | Phase 105 | Complete |
 | XCTL-01 | Phase 106 | Pending |
 | XCTL-02 | Phase 106 | Pending |
 | XVIEW-01 | Phase 107 | Pending |
