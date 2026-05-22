@@ -30,7 +30,7 @@ Progress: [██████████] 100% (5/5 phases)
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Phase 106 — controller action, routes & locales
+**Current focus:** v1.31 complete — planning next milestone
 
 ## Performance Metrics
 

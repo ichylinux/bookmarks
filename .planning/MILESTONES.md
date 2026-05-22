@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.31 — X Account Manual Add (Non-Following) (shipped 2026-05-22)
+
+**Scope:** Phases 104–108 (5 phases, 6 plans) — `manually_added` schema column + `upsert_manual!` model method + refresh guard, `XClient#lookup_user_by_username` with 7-symbol error contract, `POST /x_accounts/lookup_and_add` controller with all flash states, handle input form + manually-added badge view, Cucumber E2E tri-suite gate. 80 files changed, 4,630 insertions(+), 1,033 deletions(-).
+
+**Key accomplishments:**
+
+- `manually_added boolean NOT NULL DEFAULT false` column on `x_accounts` via additive migration; `XAccount.upsert_manual!` (idempotent create/restore via `first_or_initialize`); `next if acc.manually_added?` guard in refresh soft-delete sweep; `assign_attributes` excludes `manually_added:` to preserve flag on follow-overlap rows — 4 Minitest cases (XMAN-01, XMAN-02, XMAN-03).
+- `XClient#lookup_user_by_username` routes via `following_connection` for test-stub injection; `parse_lookup_response` maps all 7 HTTP outcomes (200/400/404→:not_found, 403→:suspended, 429→:rate_limited, else→:api_error); username format validated (1–15 alnum/underscore) before URL interpolation — 8 Minitest cases with Faraday `:test` adapter (XSVC-01, XSVC-02).
+- `POST /x_accounts/lookup_and_add` handles all 7 flash states (blank input, not_found, already_active, rate_limited, suspended, network, success); blank input guard in-controller saves an API round-trip; already-active detection before `upsert_manual!`; 7 integration tests; 3 locale keys per language (XCTL-01, XCTL-02).
+- Inline `form_with` on `/x_accounts` index: `@handle` placeholder text input + `追加` submit button, no new JS; `manually_added?` badge on account cards (`手動追加` / `Manually Added`); 4 locale keys in ja/en; i18n parity test passes (XVIEW-01, XVIEW-02, XVIEW-03).
+- `@x_manual_add` Cucumber hook (3 regex WebMock stubs: lookup success/404, following for Refresh) + `features/07.X手動追加.feature` (2 Japanese scenarios) + 6 step definitions; tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` 546/546 · `bundle exec rake dad:test` 33/33 (XTEST-01, XTEST-02).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.31-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.31-REQUIREMENTS.md)
+
+---
+
 ## v1.30 — Admin User Management Screen (shipped 2026-05-22)
 
 **Scope:** Phases 101–103.1 (4 phases, 4 plans) — admin user list controller + route, 7-column view, drawer nav link, bilingual locale, tri-suite closure, retroactive process artifacts. 32 files changed, 2,125 insertions(+), 44 deletions(-).

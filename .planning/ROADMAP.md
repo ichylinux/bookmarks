@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (active)
+- ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
 - ✅ **v1.28 — Account Self-Service Deletion** — Phases 91–95 (shipped 2026-05-20) — [archived](milestones/v1.28-ROADMAP.md)
@@ -36,15 +36,16 @@
 
 ## Phases
 
-### v1.31 — X Account Manual Add (Non-Following)
+<details>
+<summary>✅ v1.31 — X Account Manual Add (Non-Following) (Phases 104–108) — SHIPPED 2026-05-22</summary>
 
-- [x] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
-- [x] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
-- [x] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
-- [x] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
-- [x] **Phase 108: Full Test Coverage & Tri-suite Gate** — Minitest + Cucumber E2E + green gate
+- [x] Phase 104: Schema, Model & Refresh Guard (2/2 plans) — 2026-05-22
+- [x] Phase 105: XClient Lookup Service (1/1 plan) — 2026-05-22
+- [x] Phase 106: Controller Action, Routes & Locales (1/1 plan) — 2026-05-22
+- [x] Phase 107: View Form & Manually-Added Badge (1/1 plan) — 2026-05-22
+- [x] Phase 108: Full Test Coverage & Tri-suite Gate (1/1 plan) — 2026-05-22
 
----
+</details>
 
 <details>
 <summary>✅ v1.30 — Admin User Management Screen (Phases 101–103.1) — SHIPPED 2026-05-22</summary>

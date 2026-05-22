@@ -197,17 +197,30 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `x_user_name` resolves from first non-deleted XAccount; blank when no account linked — **v1.30 Phase 102**
 - ✓ `admin_flag` renders ✓ for admins, — for regular users — **v1.30 Phase 102**
 - ✓ Drawer nav link to `/admin/users` for admins; bilingual ja/en column headers via locale keys; i18n parity test passes — **v1.30 Phase 103**
+- ✓ `manually_added boolean NOT NULL DEFAULT false` on `x_accounts` via additive migration; existing rows default to `false` — **v1.31 Phase 104**
+- ✓ `refresh_cache_from_items!` soft-delete sweep skips rows where `manually_added: true`; covered by Minitest — **v1.31 Phase 104**
+- ✓ `XAccount.upsert_manual!` creates or restores a manually-added account (`manually_added: true`, `deleted: false`) via `first_or_initialize` — **v1.31 Phase 104**
+- ✓ `XClient#lookup_user_by_username` calls `GET /2/users/by/username/:username`, strips leading `@`, validates 1–15 alnum/underscore, reuses `following_connection` and `normalize_following_row` — **v1.31 Phase 105**
+- ✓ `parse_lookup_response` handles all error codes: 400/404→`:not_found`, 403→`:suspended`, 429→`:rate_limited`, else→`:api_error` — **v1.31 Phase 105**
+- ✓ `POST /x_accounts/lookup_and_add` looks up handle, upserts via `upsert_manual!`, instruments via `record_x_api_call`, redirects with flash — **v1.31 Phase 106**
+- ✓ All 7 error states surface as localized flash alerts (ja/en): blank input, not found, already active, rate limited, suspended, network error, successful add — **v1.31 Phase 106**
+- ✓ Inline `form_with` on `/x_accounts` index: text input for handle with `@handle` placeholder, `追加` submit button, no new JS — **v1.31 Phase 107**
+- ✓ Account cards on `/x_accounts` show `手動追加` / `Manually Added` badge when `manually_added: true` — **v1.31 Phase 107**
+- ✓ Bilingual locale strings (ja/en) for all new flash messages and UI labels; i18n parity test passes — **v1.31 Phase 107**
+- ✓ Minitest: 4 model + 8 service + 7 controller tests covering `manually_added` flag, refresh guard, lookup error contract, and all flash paths — **v1.31 Phase 108**
+- ✓ Cucumber E2E: `@x_manual_add` hook (3 WebMock stubs), `features/07.X手動追加.feature` (2 Japanese scenarios), 6 step definitions; tri-suite gate: lint ✓ · 546/546 Minitest · 33/33 Cucumber — **v1.31 Phase 108**
 
-## Current Milestone: v1.31 X Account Manual Add (Non-Following)
+<details>
+<summary>Shipped: v1.31 X Account Manual Add (Non-Following) (2026-05-22)</summary>
 
-**Goal:** Allow users to add any public X account to their dashboard by entering a handle (@xxxx), complementing the existing follow-based discovery flow.
+**Delivered (phases 104–108):**
+- `manually_added boolean NOT NULL DEFAULT false` on `x_accounts` via additive migration; `XAccount.upsert_manual!` (idempotent create/restore); `next if acc.manually_added?` refresh guard; `assign_attributes` excludes `manually_added:` on overlap rows — 4 Minitest cases
+- `XClient#lookup_user_by_username` via `following_connection` (test-stub injection); `parse_lookup_response` with full 7-symbol error contract; username format validation before URL interpolation — 8 Minitest cases
+- `POST /x_accounts/lookup_and_add`: all 7 flash states (blank, not_found, already_active, rate_limited, suspended, network, success); blank input guard before API call; 7 integration tests; 3 locale keys per language
+- Inline `form_with` on `/x_accounts` index; `@handle` placeholder; `追加` submit; `手動追加` badge on manually-added account cards; i18n parity test passes
+- `@x_manual_add` Cucumber hook (3 WebMock stubs) + `features/07.X手動追加.feature` (2 Japanese scenarios) + 6 step definitions; tri-suite gate green: lint ✓ · 546/546 Minitest · 33/33 Cucumber
 
-**Target features:**
-- Input field on the X accounts screen to add a public X account by handle (@xxxx)
-- Fetch the account's profile from X API to confirm it exists, then add to `x_accounts`
-- `x_accounts` table gets a flag to distinguish manually-added vs follow-synced origin
-- Manually-added and follow-synced accounts work identically for selection and dashboard display
-- Existing "fetch following + select" flow unchanged
+</details>
 
 ### Out of Scope (standing)
 
@@ -225,6 +238,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.31 (2026-05-22):** X account manual add — `manually_added` schema column + `upsert_manual!` + refresh guard, `XClient#lookup_user_by_username` (7-symbol error contract), `POST /x_accounts/lookup_and_add` (7 flash states), handle input form + manually-added badge, Cucumber E2E `@x_manual_add` hook + 2 Japanese scenarios. Tri-suite: lint ✓ · 546 Minitest 0 failures · 33/33 Cucumber. Details: `.planning/milestones/v1.31-ROADMAP.md`. No formal audit file (tri-suite gate and SUMMARY.md presence accepted as evidence).
 - **Shipped v1.30 (2026-05-22):** Admin user management screen — `/admin/users` route + controller (reuses `require_admin`), 7-column user list with soft-deleted visibility + N+1 prevention, drawer nav link, bilingual ja/en locale keys + i18n parity test, Cucumber E2E. Tri-suite: lint ✓ · 528 Minitest 0 failures · 31/31 Cucumber. Details: `.planning/milestones/v1.30-ROADMAP.md`. Audit: `.planning/milestones/v1.30-MILESTONE-AUDIT.md` (passed; Phase 103.1 closed process debt).
 - **Shipped v1.29 (2026-05-21):** Admin X API usage report — `x_api_calls` logging, controller instrumentation, admin gate, per-user report with filter/sort/locale, tri-suite gate. Tri-suite: lint ✓ · 515 Minitest 0 failures · 30/30 Cucumber. Details: `.planning/milestones/v1.29-ROADMAP.md`. No milestone audit file at close (process debt).
 - **Shipped v1.28 (2026-05-20):** Account self-service deletion — soft-delete data layer, preferences danger-zone UI, DELETE confirmation, PII anonymization, 90-day policy text (ja/en), tri-suite gate. Tri-suite: lint ✓ · 500 Minitest 0 failures · 28/28 Cucumber. Details: `.planning/milestones/v1.28-ROADMAP.md`. Audit: `.planning/milestones/v1.28-MILESTONE-AUDIT.md` (`tech_debt`; 10/10 requirements; purge job deferred ACCT-FUT-01).
@@ -317,6 +331,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | `User.all` (not `User.active`) for admin user list (v1.30) | Admin must see soft-deleted accounts for audit purposes | ✓ Good — intentional difference from `User.active` scope; tested |
 | In-memory `reject(&:deleted?).sort_by(&:id).first` after `includes(:x_accounts)` (v1.30) | No extra query; Delegates filtering/sorting to Ruby after eager load; avoids additional DB round-trip | ✓ Good — clean, no N+1; consistent with v1.26 visited-links pattern |
 | Retroactive artifact phase (103.1) after milestone audit (v1.30) | Process debt found at audit; inserted closure phase rather than proceeding with gaps | ✓ Good — pattern used in v1.28 Phase 95; audit re-confirmed `passed` after closure |
+| `upsert_manual!` unconditionally sets `manually_added: true, deleted: false` (v1.31) | Idempotency: restore (previously deleted) and create look identical; simpler than branching | ✓ Good — `first_or_initialize` on `(user_id, x_user_id)` covers both paths |
+| `assign_attributes` in refresh loop excludes `manually_added:` (v1.31) | Preserves manually-added flag when a follow-synced account overlaps with a manually-added one | ✓ Good — guard + exclusion together make manually-added rows immutable during refresh |
+| Blank input guard in controller before XClient call (v1.31) | Saves an API round-trip; semantically correct — blank handle is a user error, not an API query | ✓ Good — clean separation of concerns; guard tested as a distinct controller case |
+| WebMock stubs use regex (not exact URL strings) for lookup endpoints (v1.31) | `XClient` appends `?user.fields=...` query params; exact strings reject the annotated request | ✓ Good — regex pattern consistent with all other stubs in `hooks.rb`; fixes Phase 108 first-run failure |
+| `lookup_user_by_username` routes via `following_connection(user)` not `connection_for(user)` (v1.31) | Ensures `@forced_connection` injection works for Faraday `:test` adapter in Minitest | ✓ Good — same pattern as `fetch_following`; aligns service test injection with OAuth token path |
 
 ## Evolution
 
@@ -417,4 +436,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-22 — Phase 105 complete (XClient lookup service)*
+*Last updated: 2026-05-22 — after v1.31 milestone (X Account Manual Add)*
