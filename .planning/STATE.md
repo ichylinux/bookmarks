@@ -64,6 +64,7 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 
 | # | Description | Date | Directory |
 |---|-------------|------|-----------|
+| 20260523-obsolete-adr-audit | Audit for obsolete ADRs / stale decision docs | 2026-05-23 | [20260523-obsolete-adr-audit](./quick/20260523-obsolete-adr-audit/) |
 | 20260523-001 | Admin users index pagination (50 per page) | 2026-05-23 | [20260523-001-admin-users-pagination](./quick/20260523-001-admin-users-pagination/) |
 
 ## Operator Next Steps
