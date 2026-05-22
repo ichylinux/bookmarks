@@ -1,7 +1,7 @@
-<!-- refreshed: 2026-05-18 -->
+<!-- refreshed: 2026-05-23 -->
 # Architecture
 
-**Analysis Date:** 2026-05-18
+**Analysis Date:** 2026-05-23
 
 ## System Overview
 
@@ -30,7 +30,7 @@
 │       ├── SessionsController          (2FA intercept)            │
 │       ├── TwoFactorAuthenticationController                      │
 │       ├── TwoFactorSetupController    (TOTP QR setup)            │
-│       ├── OmniauthCallbacksController (Google, Twitter)          │
+│       ├── OmniauthCallbacksController (Google, X / twitter2)       │
 │       └── EmailRegistrationsController (dummy->real email)       │
 └───────────┬──────────────────────────────────────────────────────┘
             │ ActiveRecord
@@ -47,7 +47,7 @@
 ┌──────────────────────────────────────────────────────────────────┐
 │                External Services (via Service Objects)           │
 │   MastodonClient  (app/services/mastodon_client.rb) — Faraday   │
-│   XClient         (app/services/x_client.rb) — Faraday+OAuth1   │
+│   XClient         (app/services/x_client.rb) — Faraday+OAuth2   │
 │   Feed retrieval  (inside Feed model, daddy HttpClient)          │
 └──────────────────────────────────────────────────────────────────┘
             │
@@ -64,14 +64,14 @@
 |-----------|----------------|------|
 | `ApplicationController` | Auth gate (`authenticate_user!`), 2FA session, locale, font-size notice | `app/controllers/application_controller.rb` |
 | `Localization` concern | `around_action` resolving locale from preference or Accept-Language | `app/controllers/concerns/localization.rb` |
-| `TwitterLinkRequirement` concern | Guard requiring persisted Twitter OAuth on X-related routes | `app/controllers/concerns/twitter_link_requirement.rb` |
+| `TwitterLinkRequirement` concern | Guard requiring `uid` + `oauth2_token` on X-related routes | `app/controllers/concerns/twitter_link_requirement.rb` |
 | `WelcomeController` | Renders portal dashboard or landing page; saves drag-drop layout | `app/controllers/welcome_controller.rb` |
 | `Portal` model | Assembles gadget list, maps `PortalLayout` rows to columns | `app/models/portal.rb` |
 | `Preference` model | Per-user settings (theme, font size, column count/widths, feature flags) | `app/models/preference.rb` |
 | `Crud::ByUser` | Shared `readable_by?` / `updatable_by?` / `deletable_by?` guards | `app/models/crud/by_user.rb` |
 | `Gadget` concern | Interface contract (`gadget_id`, `entries`, `visible?`) for portal widgets | `app/models/concerns/gadget.rb` |
 | `MastodonClient` | Read-only Mastodon REST API calls via Faraday | `app/services/mastodon_client.rb` |
-| `XClient` | X/Twitter API v2 via Faraday + OAuth1 (following list, recent tweets) | `app/services/x_client.rb` |
+| `XClient` | X API v2 via Faraday + OAuth 2.0 Bearer (following, tweets, username lookup, token refresh) | `app/services/x_client.rb` |
 
 ## Pattern Overview
 
@@ -227,10 +227,10 @@
 
 **Logging:** `Rails.logger` (stdout in production via `ActiveSupport::TaggedLogging`). Feed errors logged at `error` level in `Feed#feed`. AJAX failures logged in browser console via `console.warn`.
 **Validation:** ActiveRecord validations on all models. `Crud::ByUser` for ownership. `TwitterLinkRequirement` controller concern for X-specific auth.
-**Authentication:** Devise with `authenticate_user!` in `ApplicationController`. Two-factor via TOTP (`devise-two-factor`). OmniAuth for Google and Twitter — Twitter users get dummy emails and must register a real email separately via `Users::EmailRegistrationsController`.
+**Authentication:** Devise with `authenticate_user!` in `ApplicationController`. Two-factor via TOTP (`devise-two-factor`). OmniAuth for Google and X (`twitter2`) — X-only users may have dummy emails and can register a real email via `Users::EmailRegistrationsController`.
 **Locale:** `around_action :set_locale` in `Localization` concern resolves per-request from DB preference or HTTP header. Default locale is `:ja`.
-**ActiveRecord Encryption:** `User#token` and `User#token_secret` (Twitter OAuth) are encrypted via `ActiveRecord::Encryption`. Keys from ENV vars with hardcoded dev/test fallbacks in `config/application.rb`.
+**ActiveRecord Encryption:** `oauth2_token`, `oauth2_refresh_token`, and `otp_secret` on `User` are encrypted via `ActiveRecord::Encryption`. Keys from ENV vars with hardcoded dev/test fallbacks in `config/application.rb`.
 
 ---
 
-*Architecture analysis: 2026-05-18*
+*Architecture analysis: 2026-05-23*

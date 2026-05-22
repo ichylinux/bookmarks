@@ -1,6 +1,6 @@
 # Codebase Concerns
 
-**Analysis Date:** 2026-05-18
+**Analysis Date:** 2026-05-23 (OAuth2 / codebase doc refresh)
 
 ---
 
@@ -15,7 +15,7 @@
 
 ### [HIGH] Hardcoded Fallback Encryption Keys in `application.rb`
 
-- Risk: `config.active_record.encryption.*` keys fall back to the literal string `'dev_dummy_key'` when ENV vars are absent. If a production deployment is missing these ENV vars, all encrypted data (`users.token`, `users.token_secret`, `users.otp_secret`) is encrypted with known keys.
+- Risk: `config.active_record.encryption.*` keys fall back to the literal string `'dev_dummy_key'` when ENV vars are absent. If a production deployment is missing these ENV vars, all encrypted data (`users.oauth2_token`, `users.oauth2_refresh_token`, `users.otp_secret`) is encrypted with known keys.
 - Files: `config/application.rb:30–32`
 - Current mitigation: ENV var names are documented. Production deploys should set them.
 - Recommendation: Raise at boot if any of the three keys resolves to `'dev_dummy_key'` when `Rails.env.production?`. This prevents silent misconfiguration.
@@ -41,12 +41,12 @@
 - Current mitigation: Dev/test keys are non-secret by convention.
 - Recommendation: Remove the shell-backtick fallback in production. Require `SECRET_KEY_BASE` env var to be set, or migrate to Rails credentials (`credentials.yml.enc`).
 
-### [MEDIUM] `User.save(validate: false)` on Twitter OAuth Update
+### [MEDIUM] `User.save(validate: false)` on X OAuth2 Update
 
-- Risk: When an existing Twitter-linked user signs in via OAuth, `user.save(validate: false)` is called. This skips email format validation and any future validators.
-- Files: `app/models/user.rb:48`
-- Current mitigation: Only updates `provider`, `uid`, `token`, `token_secret` attributes — none of which have model-level validations currently.
-- Recommendation: Use `update_columns` for the specific attributes to be explicit about bypassing callbacks, or restructure to keep validations active.
+- Risk: When an existing X-linked user signs in via `twitter2` OmniAuth, `user.save(validate: false)` is called. This skips email format validation and any future validators.
+- Files: `app/models/user.rb` (`from_omniauth` twitter2 branch)
+- Current mitigation: Only updates OAuth/profile fields (`provider`, `uid`, `oauth2_token`, `oauth2_refresh_token`, `oauth2_token_expires_at`, `x_user_name`, optional `email`) — none have model-level validations beyond the dummy-email guard on `:update`.
+- Recommendation: Use `update_columns` for token fields to be explicit about bypassing callbacks, or restructure to keep validations active.
 
 ### [LOW] Host Authorization Disabled in Production
 
@@ -55,12 +55,12 @@
 - Current mitigation: `config.force_ssl = true` and `config.assume_ssl = true` are active.
 - Recommendation: Uncomment and set `config.hosts` to the production hostname.
 
-### [LOW] `admin?` Method Relies on Database Row Order
+### [LOW] `admin?` Relies on `users.admin` Column Only
 
-- Risk: `User#admin?` is implemented as `self.email == User.first.email`. This compares the current user to the first row returned by an unordered query. It works in practice because the seed user is the earliest record, but it is fragile.
-- Files: `app/models/user.rb:80–82`
-- Current mitigation: The `admin` boolean column exists in the schema (`users.admin`) but is not used by the method. Admin functionality appears to be minimal/unused in controllers.
-- Recommendation: Replace with `self.admin` column check. The column already exists.
+- Risk: Admin access is a plain boolean flag with no role hierarchy or audit trail.
+- Files: `users.admin`, `Admin::BaseController#require_admin`, drawer nav guards
+- Current mitigation: `User#admin?` is the Rails predicate for `users.admin`; admin routes return 404 for non-admins.
+- Recommendation: Document who receives `admin: true` in production seeds/ops runbooks.
 
 ---
 
@@ -71,14 +71,7 @@
 - Issue: `Gemfile.lock` shows `faraday (1.10.5)`. Faraday v2 was released and v1 is unmaintained. `faraday_middleware` is a v1-era companion gem.
 - Files: `Gemfile:14–16`, `Gemfile.lock`
 - Impact: Missing security fixes in HTTP client; `faraday_middleware` gem is deprecated and not compatible with Faraday v2.
-- Fix approach: Upgrade `faraday` to `~> 2.0`, replace `faraday_middleware` with Faraday v2 built-in middleware, update `faraday-oauth1` compatibility.
-
-### [HIGH] `omniauth-twitter` Uses OAuth 1.0a Against a Deprecated API Path
-
-- Issue: `omniauth-twitter` (v1.4.0) uses the Twitter v1.1 OAuth 1.0a callback flow, which X Corp has been deprecating. The gem is not actively maintained.
-- Files: `Gemfile`, `app/models/user.rb:30–58`
-- Impact: Twitter/X login may break without warning if X Corp disables the v1.1 endpoint.
-- Fix approach: Evaluate `omniauth-twitter2` or X's official OAuth 2.0 PKCE flow.
+- Fix approach: Upgrade `faraday` to `~> 2.0`, replace `faraday_middleware` with Faraday v2 built-in middleware (`:follow_redirects` in `BookmarksController#fetch_title`).
 
 ### [MEDIUM] `uglifier` Asset Pipeline (Legacy Sprockets JS Minifier)
 
@@ -108,11 +101,11 @@
 - Impact: `font_size_notice_pending?` is guarded so `update_column` is never reached on an unsaved record. Currently safe but the pattern is easy to misuse in future code.
 - Fix approach: Use `find_or_create_by` in `User#preference` instead of returning an unsaved record.
 
-### [LOW] `PreferencesController` Duplicates `create` and `update` Actions
+### [LOW] `PreferencesController` Uses Only `update` (POST route removed)
 
-- Issue: `PreferencesController#create` and `#update` are identical — same params, same save logic, same redirect. The duplication exists because preferences may or may not exist at create time, but `accepts_nested_attributes_for` on User handles this transparently.
-- Files: `app/controllers/preferences_controller.rb:8–38`
-- Fix approach: Merge into a single `upsert`-style action, or keep only `update` and redirect `create` to it.
+- Issue: Preferences form PATCHes `preference_path(@user)`; `POST /preferences` (`create`) was removed as dead code (2026-05-23).
+- Files: `app/controllers/preferences_controller.rb`, `config/routes.rb`
+- Fix approach: None required unless a new client starts POSTing to collection path again.
 
 ### [LOW] No `dependent:` Option on Most `User` Associations
 
@@ -176,11 +169,11 @@
 - Risk: SSRF guard regression could go undetected.
 - Priority: High (given SSRF risk noted above)
 
-### [LOW] `User#admin?` Not Tested
+### [LOW] Admin Gate Integration Coverage Thin Outside Admin Controllers
 
-- What's not tested: The `admin?` method. No test verifies the first-user-is-admin logic or that the `admin` column is the correct source of truth.
-- Files: `app/models/user.rb:80–82`, `test/models/user_test.rb`
-- Priority: Low (admin functionality is minimally used in controllers)
+- What's tested: `User#admin?` maps to `users.admin` (`test/models/user_test.rb`); admin controller access-control tests exist.
+- What's not tested: Every future admin route must remember `Admin::BaseController` inheritance — no repo-wide static check.
+- Priority: Low
 
 ### [LOW] Missing Translation Detection Not Enforced in Tests
 
@@ -217,19 +210,13 @@
 
 ### [LOW] Single-User Architecture Assumptions Baked Into Tests and Model Logic
 
-- `User#admin?` uses `User.first`. The Cucumber `user` helper uses `User.first`. The fixture assumes `id: 1`.
+- Cucumber `user` helper uses `User.first`. Primary fixture user is `id: 1` with `admin: true`.
 - Current capacity: Works for personal use with a single primary user.
 - Scaling path: Not applicable for current use case, but limits operability if the app is ever shared.
 
 ---
 
 ## Dependencies at Risk
-
-### [HIGH] `omniauth-twitter` (1.4.0) — Unmaintained, Twitter v1.1 API
-
-- Risk: Gem last released 2019; depends on `omniauth-oauth` which uses Twitter API v1.1. X Corp deprecation of v1.1 endpoints could break Twitter/X sign-in without notice.
-- Impact: Twitter OAuth login broken.
-- Migration plan: Evaluate `omniauth-twitter2` (OAuth 2.0) or remove Twitter login and migrate existing Twitter users to email auth.
 
 ### [HIGH] `faraday` (1.10.5) — Major Version Behind
 
@@ -270,4 +257,4 @@
 
 ---
 
-*Concerns audit: 2026-05-18*
+*Concerns audit: 2026-05-23 (OAuth2 stack; removed resolved omniauth-twitter / OAuth1 items)*

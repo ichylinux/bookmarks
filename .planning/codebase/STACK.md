@@ -1,6 +1,6 @@
 # Technology Stack
 
-**Analysis Date:** 2026-05-18
+**Analysis Date:** 2026-05-23
 
 ## Languages
 
@@ -31,14 +31,14 @@
   - ActionMailer with SMTP delivery (production)
   - ActionCable (async adapter dev/test; Redis adapter production)
   - ActiveStorage (local disk service in all environments)
-  - ActiveRecord Encryption (used for `otp_secret` on User model)
+  - ActiveRecord Encryption (`otp_secret`, `oauth2_token`, `oauth2_refresh_token` on User)
 
 **Authentication:**
-- Devise 5.0.4 — core auth (database_authenticatable, registerable, recoverable, rememberable, trackable, validatable, confirmable, omniauthable)
+- Devise 5.0.4 — core auth (two_factor_authenticatable, registerable, recoverable, rememberable, trackable, validatable, omniauthable)
 - devise-two-factor ~> 6.0 — TOTP two-factor auth
 - omniauth 2.1.4 — OmniAuth base
 - omniauth-google-oauth2 — Google OAuth2 provider
-- omniauth-twitter — Twitter/X OAuth 1.0a provider
+- omniauth-twitter2 — X OAuth 2.0 provider
 - omniauth-rails_csrf_protection — CSRF protection for OmniAuth POST routes
 
 **Testing:**
@@ -60,8 +60,8 @@
 - `puma 8.0.1` — application server (multi-threaded, default 3 threads via `RAILS_MAX_THREADS`)
 - `devise 5.0.4` — authentication backbone
 - `nokogiri 1.19.3` — HTML/XML parsing (used by feedjira, i18n-js, rails-erd)
-- `faraday 1.10.5` — HTTP client for external API calls (`app/services/mastodon_client.rb`, `app/services/x_client.rb`)
-- `faraday-oauth1` — OAuth 1.0a signing for X/Twitter API calls
+- `faraday 1.10.5` — HTTP client for external API calls (`app/services/mastodon_client.rb`, `app/services/x_client.rb`, OAuth2 token refresh)
+- `faraday_middleware` — `:follow_redirects` for bookmark title fetch
 - `feedjira 4.0.2` — RSS/Atom feed parsing (`app/models/feed.rb`)
 
 **Infrastructure:**
@@ -118,4 +118,4 @@
 
 ---
 
-*Stack analysis: 2026-05-18*
+*Stack analysis: 2026-05-23*

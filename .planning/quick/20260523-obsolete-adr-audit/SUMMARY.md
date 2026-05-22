@@ -40,9 +40,9 @@ These still describe **OAuth 1.0a**, `token`/`token_secret`, `faraday-oauth1`, o
 ## Recommendation
 
 1. **Do not delete** non-existent ADRs.
-2. If refreshing docs: run `/gsd-docs-update` or a focused quick task on `.planning/codebase/*.md` only.
+2. ~~If refreshing docs~~ **Done (2026-05-23):** `.planning/codebase/{CONCERNS,ARCHITECTURE,INTEGRATIONS,STACK,TESTING}.md` updated for OAuth 2.0.
 3. Optionally add a short ADR (or PROJECT.md decision row) stating "X API auth = OAuth 2.0 user Bearer only" and link `drop-oauth1-x-api` SUMMARY — closes the 2026-05-19 todo gap.
-4. Mark or archive `2026-05-19-investigate-x-api-bearer-token-auth.md` as superseded (optional).
+4. **Done:** `2026-05-19-investigate-x-api-bearer-token-auth.md` marked superseded.
 
 ## Verification
 

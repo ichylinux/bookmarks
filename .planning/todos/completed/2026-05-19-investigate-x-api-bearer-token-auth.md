@@ -2,9 +2,13 @@
 created: 2026-05-19T09:50:09Z
 title: Investigate X API Bearer Token vs OAuth 1.0a
 area: api
+status: superseded
+superseded_by: .planning/quick/20260521-drop-oauth1-x-api/SUMMARY.md
 files:
-  - app/services/x_client.rb:88-97
+  - app/services/x_client.rb
 ---
+
+> **Superseded (2026-05-21):** OAuth 1.0a removed; app uses OAuth 2.0 user Bearer only. No standalone ADR file was added — see quick task SUMMARY and refreshed `.planning/codebase/*` docs (2026-05-23).
 
 ## Problem
 

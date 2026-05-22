@@ -1,6 +1,6 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-05-18
+**Analysis Date:** 2026-05-23
 
 ## Test Frameworks
 
@@ -125,10 +125,10 @@ Fixtures use YAML with explicit `id:` values for fixtures that need stable IDs (
 
 twitter_user:
   email: dummy_00000000-0000-0000-0000-000000000001@example.com
-  provider: twitter
+  x_user_name: twitter_test_user
+  provider: twitter2
   uid: fixture_twitter_uid
-  token: fixture_plain_token          # plain text — support_unencrypted_data: true in test.rb
-  token_secret: fixture_plain_secret
+  oauth2_token: fixture_oauth2_token  # plain text — support_unencrypted_data: true in test.rb
 ```
 
 **Important:** Fixtures bypass ActiveRecord callbacks and encryption. `config/environments/test.rb` sets `config.active_record.encryption.support_unencrypted_data = true` so fixture plain-text values are readable alongside encrypted values.

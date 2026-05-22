@@ -1,6 +1,6 @@
 # External Integrations
 
-**Analysis Date:** 2026-05-18
+**Analysis Date:** 2026-05-23
 
 ## APIs & External Services
 
@@ -9,17 +9,21 @@
 - SDK/Client: `omniauth-google-oauth2` gem
 - Scope: `['email']` (email only)
 - Auth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` env vars (configured in `config/app_config.yml`)
-- API key also stored: `GOOGLE_API_KEY` (present in app_config but not actively wired to a feature in current code)
+- No separate Google API key in `config/app_config.yml` (removed; sign-in uses client id/secret only)
 - Flow: OmniAuth callback → `User.from_omniauth` in `app/models/user.rb`
 
 **X (Twitter) API v2:**
-- Purpose: OAuth 1.0a sign-in; fetch user's following list; fetch recent tweets for X gadget
-- SDK/Client: `omniauth-twitter` (sign-in), `faraday` + `faraday-oauth1` (API calls)
-- Auth: `TWITTER_CLIENT_ID`, `TWITTER_CLIENT_SECRET` env vars; per-user `token` + `token_secret` stored on `x_account` records
+- Purpose: OAuth 2.0 sign-in (`omniauth-twitter2`); fetch following list; fetch recent tweets; lookup user by handle (manual add)
+- SDK/Client: `omniauth-twitter2` (sign-in), `faraday` with per-user Bearer token (API calls)
+- Auth: `TWITTER2_CLIENT_ID`, `TWITTER2_CLIENT_SECRET` env vars → `config/app_config.yml`; per-user `oauth2_token` + `oauth2_refresh_token` on `users` (encrypted at rest)
 - Implementation: `app/services/x_client.rb`
-  - `fetch_following` — `GET /2/users/:id/following` (OAuth 1.0a User Context)
+  - `fetch_following` — `GET /2/users/:uid/following`
   - `fetch_recent_tweets` — `GET /2/users/:id/tweets` (excludes retweets and replies)
+  - `lookup_user_by_username` — `GET /2/users/by/username/:handle`
+  - Refreshes expired tokens via `POST https://api.x.com/2/oauth2/token` when `oauth2_token_expires_at` is near expiry
+- Gate: `TwitterLinkRequirement` requires `uid` + `oauth2_token` (not legacy OAuth1 columns)
 - Rate limiting: returns `{ success: false, error: :rate_limited }` on HTTP 429
+- Tests: WebMock stubs + Faraday `:test` adapter injection (no class-level stub accessors)
 
 **Mastodon REST API:**
 - Purpose: Fetch recent status previews for Mastodon gadget (read-only, no OAuth)
@@ -64,7 +68,7 @@
 **Primary Auth:**
 - Devise 5.0.4 with `database_authenticatable` (bcrypt, 11 stretches in production)
 - Password length: 8–128 characters
-- Email confirmation required (`confirmable`), reconfirmation on email change
+- Email confirmation not enabled (`:confirmable` commented out on `User`); password reset and remember-me supported
 - Password reset token valid for 6 hours
 - Remember-me supported; all tokens invalidated on sign-out
 
@@ -79,12 +83,12 @@
 
 **Social Sign-In:**
 - Google OAuth2: `omniauth-google-oauth2`
-- Twitter/X OAuth 1.0a: `omniauth-twitter`
+- X OAuth 2.0: `omniauth-twitter2` (scopes include `users.email`, `offline.access`)
 - CSRF protection: `omniauth-rails_csrf_protection`
-- User lookup/creation: `User.from_omniauth(access_token)` in `app/models/user.rb`
+- User lookup/creation: `User.from_omniauth(access_token)` in `app/models/user.rb` (`twitter2` branch persists OAuth2 tokens and optional real email)
 
 **ActiveRecord Encryption:**
-- Used for: `otp_secret` on `User`
+- Used for: `otp_secret`, `oauth2_token`, `oauth2_refresh_token` on `User`
 - Keys (ENV with dev fallback in `config/application.rb`):
   - `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`
   - `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`
@@ -158,8 +162,8 @@
 | `MYSQL_PASSWORD` | Database password |
 | `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
-| `TWITTER_CLIENT_ID` | Twitter OAuth client ID |
-| `TWITTER_CLIENT_SECRET` | Twitter OAuth client secret |
+| `TWITTER2_CLIENT_ID` | X OAuth 2.0 client ID |
+| `TWITTER2_CLIENT_SECRET` | X OAuth 2.0 client secret |
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | AR encryption primary key |
 | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | AR encryption deterministic key |
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | AR encryption salt |
@@ -176,4 +180,4 @@
 
 ---
 
-*Integration audit: 2026-05-18*
+*Integration audit: 2026-05-23*
