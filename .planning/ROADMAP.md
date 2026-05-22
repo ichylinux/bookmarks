@@ -39,10 +39,10 @@
 ### v1.31 — X Account Manual Add (Non-Following)
 
 - [x] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
-- [ ] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
+- [x] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
 - [x] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
 - [x] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
-- [ ] **Phase 108: Full Test Coverage & Tri-suite Gate** — Minitest + Cucumber E2E + green gate
+- [x] **Phase 108: Full Test Coverage & Tri-suite Gate** — Minitest + Cucumber E2E + green gate
 
 ---
 
