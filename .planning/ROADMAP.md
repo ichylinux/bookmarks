@@ -167,7 +167,9 @@ Plans:
   2. A successful 200 response returns `{ success: true, item: { ... } }` with the API-returned canonical `username` (not the raw user input)
   3. HTTP 404 or 400 maps to `{ success: false, error: :not_found }`; HTTP 403 maps to `:suspended`; HTTP 429 maps to `:rate_limited`; all other errors map to `:api_error`
   4. Minitest service tests covering all response codes (200, 404, 400, 403, 429, timeout, network error) pass using Faraday `:test` adapter stubs
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 105-01-PLAN.md — lookup_user_by_username + parse_lookup_response + 8 Minitest cases
 
 ### Phase 106: Controller Action, Routes & Locales
 **Goal**: Users can POST a handle to `/x_accounts/lookup_and_add` and receive a localized flash response for every success and error state
@@ -217,4 +219,4 @@ Plans:
 | 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
 | 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
 
-*Last updated: 2026-05-22 — Phase 104 planned (2 plans, 2 waves)*
+*Last updated: 2026-05-22 — Phase 105 planned (1 plan, 1 wave)*
