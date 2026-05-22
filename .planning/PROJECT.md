@@ -4,6 +4,18 @@
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
+## Current Milestone: v1.32 Admin Account Purge
+
+**Goal:** Admin can permanently purge soft-deleted accounts from the `/admin/users` screen, deleting the user row and all associated records.
+
+**Target features:**
+- Purge button on `/admin/users` list for eligible soft-deleted accounts (deleted_at ≥ 90 days ago)
+- Confirmation step before purge executes
+- Hard-delete user row + all associated records (bookmarks, notes, todos, feeds, mastodon_accounts, x_accounts, visited_links, x_api_calls, etc.)
+- Bilingual ja/en labels and flash messages
+- Minitest coverage (model purge logic, controller access control, eligibility)
+- Cucumber E2E scenario for admin purge flow
+
 ## Core Value
 
 Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
@@ -436,4 +448,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-22 — after v1.31 milestone (X Account Manual Add)*
+*Last updated: 2026-05-22 — after v1.32 milestone start (Admin Account Purge)*
