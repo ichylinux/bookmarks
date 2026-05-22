@@ -71,29 +71,6 @@ class XClientTest < ActiveSupport::TestCase
     u.update_columns(uid: nil, oauth2_token: nil, oauth2_token_expires_at: nil)
   end
 
-  def test_bearer_header_sent_by_xclient
-    stubs = Faraday::Adapter::Test::Stubs.new
-    stubs.get(%r{/2/users/\w+/following}) do |env|
-      assert_match(/\ABearer my-bearer-token\z/, env[:request_headers]['Authorization'].to_s)
-      assert_no_match(/oauth_consumer_key/, env[:request_headers]['Authorization'].to_s)
-      [200, { 'Content-Type' => 'application/json' }, { data: [], meta: {} }.to_json]
-    end
-
-    u = users(:twitter_user)
-    u.update_columns(oauth2_token: 'my-bearer-token', oauth2_token_expires_at: 1.hour.from_now)
-
-    conn = Faraday.new do |f|
-      f.headers['Authorization'] = "Bearer #{u.oauth2_token}"
-      f.adapter :test, stubs
-      f.options.timeout = 5
-      f.options.open_timeout = 3
-    end
-
-    r = XClient.new(connection: conn).fetch_following(user: u)
-    assert r[:success]
-  ensure
-    users(:twitter_user).update_columns(oauth2_token: nil, oauth2_token_expires_at: nil)
-  end
 
   def test_fetch_following_uses_bearer_when_oauth2_token_present
     stubs = Faraday::Adapter::Test::Stubs.new
