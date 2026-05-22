@@ -4,9 +4,10 @@ require 'uri'
   Note.where(user_id: user.id).delete_all
   sign_in user
   visit '/preferences'
-  select 'シンプル', from: 'テーマ'
-  check 'ノートを表示する'
-  click_on '保存'
+  assert has_selector?('form.preferences-form')
+  select_option_value "#{PreferencesReset::PREF}[theme]", 'simple'
+  check "#{PreferencesReset::PREF}[use_note]"
+  find('form.preferences-form input[type="submit"]', match: :first).click
   assert has_text?('設定を保存しました。')
 end
 
@@ -14,9 +15,10 @@ end
   Note.where(user_id: user.id).delete_all
   sign_in user
   visit '/preferences'
-  select 'モダン', from: 'テーマ'
-  check 'ノートを表示する'
-  click_on '保存'
+  assert has_selector?('form.preferences-form')
+  select_option_value "#{PreferencesReset::PREF}[theme]", 'modern'
+  check "#{PreferencesReset::PREF}[use_note]"
+  find('form.preferences-form input[type="submit"]', match: :first).click
   assert has_text?('設定を保存しました。')
 end
 

@@ -6,6 +6,7 @@ module Login
     if current_user and current_user.email != user.email
       Capybara.reset_sessions!
       @_current_user = nil
+      @_preferences_reset_for = nil
     end
     
     visit '/users/sign_in'
@@ -20,8 +21,14 @@ module Login
       find('input[type="submit"], button[type="submit"]', match: :first).click
     end
 
+    assert has_no_selector?('form[action*="sign_in"]'), 'サインイン後もサインインフォームが表示されています'
+
+    if @_preferences_reset_for != user.id
+      reset_preferences_via_browser!
+      @_preferences_reset_for = user.id
+    end
+
     @_current_user = user
-    reset_preferences_via_browser!
   end
 
   def current_user

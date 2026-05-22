@@ -94,6 +94,7 @@ end
 end
 
 もし /^ルートページを開きます。$/ do
+  ensure_mobile_viewport!
   visit root_path
   capture
 end
@@ -104,6 +105,7 @@ end
 end
 
 もし /^localStorageの列状態を不正値に設定します。$/ do
+  ensure_mobile_viewport!
   visit root_path
   page.execute_script("window.localStorage.setItem('portalMobileActiveColumn', '999')")
   capture

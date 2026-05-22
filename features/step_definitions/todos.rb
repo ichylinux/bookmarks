@@ -1,19 +1,21 @@
 もし /^設定画面で タスクを表示する にチェックを入れます。$/ do
   sign_in user
   visit '/preferences'
-  check 'タスクを表示する'
+  assert has_selector?('form.preferences-form')
+  check "#{PreferencesReset::PREF}[use_todo]"
   capture
-  click_on '保存'
+  find('form.preferences-form input[type="submit"]', match: :first).click
   assert has_text?('設定を保存しました。')
 end
 
 もし /^設定画面で タスク追加時の初期優先度 を選択します。$/ do
   sign_in user
   visit '/preferences'
-  check 'タスクを表示する'
-  select Todo::PRIORITIES[Todo::PRIORITY_HIGH], from: 'タスク追加時の初期優先度'
+  assert has_selector?('form.preferences-form')
+  check "#{PreferencesReset::PREF}[use_todo]"
+  select_option_value "#{PreferencesReset::PREF}[default_priority]", Todo::PRIORITY_HIGH.to_s
   capture
-  click_on '保存'
+  find('form.preferences-form input[type="submit"]', match: :first).click
   assert has_text?('設定を保存しました。')
 end
 

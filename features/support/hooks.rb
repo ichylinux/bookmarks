@@ -2,15 +2,14 @@ Before do |scenario|
   # Ensure browser/session artifacts never leak across scenarios.
   Capybara.reset_sessions!
   instance_variable_set(:@_current_user, nil)
+  instance_variable_set(:@_preferences_reset_for, nil)
 
   MastodonAccount.delete_all
   XAccount.delete_all
   XApiCall.delete_all
   VisitedLink.delete_all
 
-  unless scenario.source_tag_names.include?('@mobile_portal')
-    resize_browser_window(1280, 800)
-  end
+  resize_browser_window(1280, 800)
 end
 
 Before('@mastodon_gadget') do

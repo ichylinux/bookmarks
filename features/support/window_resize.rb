@@ -10,10 +10,17 @@ rescue StandardError
 end
 
 Before('@mobile_portal') do
+  @mobile_portal_scenario = true
+end
+
+def ensure_mobile_viewport!
+  return unless @mobile_portal_scenario
+
   resize_browser_window(390, 844)
 end
 
 # Reset viewport after mobile portal scenarios (avoids leaking window size across Cucumber scenarios).
 After('@mobile_portal') do
+  @mobile_portal_scenario = false
   resize_browser_window(1280, 800)
 end
