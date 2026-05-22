@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🔄 **v1.32 — Admin Account Purge** — Phases 109–111 (in progress)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
@@ -142,6 +143,14 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 </details>
 
+---
+
+**v1.32 — Admin Account Purge (Phases 109–111)**
+
+- [ ] **Phase 109: Model Layer — Purge Predicate & Cascade** - `User#purgeable?` + `User#purge!` with 11-table delete_all transaction + Minitest
+- [ ] **Phase 110: Controller + Views + Locale** - Confirmation flow, admin UI purge button, bilingual labels, controller access control tests
+- [ ] **Phase 111: Cucumber E2E + Tri-suite Gate** - End-to-end admin purge scenario with non-fixture user; all three suites green
+
 ## Phase Details
 
 ### Phase 104: Schema, Model & Refresh Guard
@@ -184,7 +193,7 @@ Plans:
   5. Controller integration tests for all 7 flash states (1 success + 6 errors) pass
 **Plans**: 1 plan
 Plans:
-- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
+- [x] 106-01-PLAN.md — lookup_and_add action + routes + locale keys + 7 integration tests
 **UI hint**: yes
 
 ### Phase 107: View Form & Manually-Added Badge
@@ -199,7 +208,7 @@ Plans:
   5. All new locale keys for form labels, button text, and the badge pass the i18n parity test (ja/en key sets match)
 **Plans**: 1 plan
 Plans:
-- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
+- [x] 107-01-PLAN.md — handle input form + manually-added badge + i18n parity
 **UI hint**: yes
 
 ### Phase 108: Full Test Coverage & Tri-suite Gate
@@ -214,16 +223,60 @@ Plans:
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
 **Plans**: 1 plan
 Plans:
-- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
+- [x] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
+
+---
+
+### Phase 109: Model Layer — Purge Predicate & Cascade
+**Goal**: Admin can check purge eligibility and permanently hard-delete a soft-deleted user and all associated records in a single transaction
+**Depends on**: Nothing (first phase of v1.32; v1.28 soft-delete layer already exists)
+**Requirements**: PURGE-01, PURGE-02, TEST-01
+**Success Criteria** (what must be TRUE):
+  1. `User#purgeable?` returns `false` for active users, returns `false` for soft-deleted users where `deleted_at` is nil or fewer than 90 days ago, and returns `true` only when `deleted? && deleted_at.present? && deleted_at <= 90.days.ago`
+  2. `User#purge!` raises `User::NotPurgeableError` when called on a non-purgeable user, preventing any deletion from occurring
+  3. `User#purge!` on an eligible user deletes rows from all 11 associated tables (bookmarks, notes, todos, feeds, mastodon_accounts, x_accounts, visited_links, x_api_calls, preferences, portal_layouts, x_accounts) and then destroys the user row — all inside a single transaction
+  4. `portal_layouts` rows are explicitly deleted via `PortalLayout.where(user_id: id).delete_all` (no `has_many` exists on User for this table)
+  5. Minitest boundary cases all pass: `purgeable?` with `deleted_at` nil (no crash), `deleted_at` 89 days ago (false), `deleted_at` exactly 90 days ago (true), and a full-cascade `purge!` test asserting every table has zero rows for the purged user
+**Plans**: TBD
+
+### Phase 110: Controller + Views + Locale
+**Goal**: Admin can navigate to a confirmation page and execute the purge via a server-rendered two-step flow, guarded at both view and controller layers, with bilingual labels and flash messages
+**Depends on**: Phase 109
+**Requirements**: ADMIN-01, ADMIN-02, ADMIN-03, LOCALE-01, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. The `/admin/users` list shows a "Purge" button only on rows where `user.purgeable?` is true — active users and recently-soft-deleted users have no purge button
+  2. Clicking the Purge button navigates to a `GET /admin/users/:id/confirm_purge` confirmation page with the user's email and a DELETE-method form; no JavaScript confirmation dialog is used
+  3. Submitting the confirmation form executes `DELETE /admin/users/:id`, which calls `user.purge!` and redirects to `/admin/users` with a success flash; if the user is no longer purgeable (race condition), the controller redirects with an error flash without raising
+  4. Attempting `DELETE /admin/users/:id` directly for a non-purgeable user (bypassing the UI) is rejected by the controller's `purgeable?` guard — the purge does not execute
+  5. All new locale keys (purge button label, confirmation page text, success flash, ineligibility flash) exist in both `ja.yml` and `en.yml`; the i18n parity test passes
+  6. Minitest controller tests cover: guest redirect, non-admin 404, admin purge success, and admin attempt on ineligible user
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 111: Cucumber E2E + Tri-suite Gate
+**Goal**: The full admin purge flow is verified end-to-end by an automated browser scenario and all three test suites pass
+**Depends on**: Phase 110
+**Requirements**: TEST-03
+**Success Criteria** (what must be TRUE):
+  1. A `Before` hook for `@admin_purge` creates a non-fixture soft-deleted user (not user1/user2/user3 fixture ids) with `deleted_at` set to 91 days ago; an `After` guard cleans up via `User.where(email: ...).delete_all`
+  2. The Cucumber happy-path scenario signs in as admin, visits `/admin/users`, sees the Purge button on the test user's row, clicks through the confirmation page, and asserts the user no longer appears in the list
+  3. The Cucumber scenario does not break the `@account_deletion` or any other existing scenario that references fixture user ids
+  4. `yarn run lint` exits 0 with no ESLint errors
+  5. `bin/rails test` exits 0 with all Minitest cases passing (including Phase 109 and 110 additions)
+  6. `bundle exec rake dad:test` exits 0 with 0 failed Cucumber scenarios
+**Plans**: TBD
 
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 104. Schema, Model & Refresh Guard | 2/2 | Complete | 2026-05-22 |
-| 105. XClient Lookup Service | 1/1 | Complete    | 2026-05-22 |
+| 105. XClient Lookup Service | 1/1 | Complete | 2026-05-22 |
 | 106. Controller Action, Routes & Locales | 1/1 | Complete | 2026-05-22 |
 | 107. View Form & Manually-Added Badge | 1/1 | Complete | 2026-05-22 |
-| 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
+| 108. Full Test Coverage & Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
+| 109. Model Layer — Purge Predicate & Cascade | 0/? | Not started | - |
+| 110. Controller + Views + Locale | 0/? | Not started | - |
+| 111. Cucumber E2E + Tri-suite Gate | 0/? | Not started | - |
 
-*Last updated: 2026-05-22 — Phase 108 planned (1 plan, 1 wave)*
+*Last updated: 2026-05-22 — v1.32 roadmap created (Phases 109–111)*

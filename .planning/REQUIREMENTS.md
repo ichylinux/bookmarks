@@ -50,11 +50,11 @@
 |-------------|-------|--------|
 | PURGE-01 | Phase 109 | Pending |
 | PURGE-02 | Phase 109 | Pending |
+| TEST-01 | Phase 109 | Pending |
 | ADMIN-01 | Phase 110 | Pending |
 | ADMIN-02 | Phase 110 | Pending |
 | ADMIN-03 | Phase 110 | Pending |
 | LOCALE-01 | Phase 110 | Pending |
-| TEST-01 | Phase 109 | Pending |
 | TEST-02 | Phase 110 | Pending |
 | TEST-03 | Phase 111 | Pending |
 
@@ -65,4 +65,4 @@
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after initial definition*
+*Last updated: 2026-05-22 after roadmap creation (traceability confirmed)*
