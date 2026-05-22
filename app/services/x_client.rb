@@ -81,6 +81,8 @@ class XClient
   def lookup_user_by_username(user:, username:)
     handle = username.to_s.sub(/\A@/, '').presence
     return { success: false, error: :not_found } if handle.blank?
+    # X usernames: 1–15 alphanumeric or underscore characters only
+    return { success: false, error: :not_found } unless handle.match?(/\A\w{1,15}\z/)
 
     res = following_connection(user).get("/2/users/by/username/#{handle}") do |req|
       req.params['user.fields'] = 'id,name,username,profile_image_url,protected'
