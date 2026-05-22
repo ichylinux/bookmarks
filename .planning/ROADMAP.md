@@ -169,7 +169,7 @@ Plans:
   4. Minitest service tests covering all response codes (200, 404, 400, 403, 429, timeout, network error) pass using Faraday `:test` adapter stubs
 **Plans**: 1 plan
 Plans:
-- [ ] 105-01-PLAN.md — lookup_user_by_username + parse_lookup_response + 8 Minitest cases
+- [x] 105-01-PLAN.md — lookup_user_by_username + parse_lookup_response + 8 Minitest cases
 
 ### Phase 106: Controller Action, Routes & Locales
 **Goal**: Users can POST a handle to `/x_accounts/lookup_and_add` and receive a localized flash response for every success and error state
@@ -214,7 +214,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 104. Schema, Model & Refresh Guard | 2/2 | Complete | 2026-05-22 |
-| 105. XClient Lookup Service | 0/1 | Not started | - |
+| 105. XClient Lookup Service | 1/1 | Complete   | 2026-05-22 |
 | 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
 | 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
 | 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
