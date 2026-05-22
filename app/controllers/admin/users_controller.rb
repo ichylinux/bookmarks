@@ -5,7 +5,10 @@ module Admin
     before_action :set_user, only: %i[confirm_purge destroy]
 
     def index
-      @users = User.all.includes(:x_accounts).order(:id)
+      scope = User.all.order(:id)
+      page = [params[:page].to_i, 1].max
+
+      @users = scope.page(page)
     end
 
     def confirm_purge

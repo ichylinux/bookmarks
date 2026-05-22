@@ -14,6 +14,10 @@ class AdminUsersI18nTest < ActiveSupport::TestCase
     admin.users.index.col_updated_at
     admin.users.index.col_actions
     admin.users.index.purge_button
+    admin.users.index.pagination_label
+    admin.users.index.pagination_prev
+    admin.users.index.pagination_next
+    admin.users.index.pagination_status
     admin.users.confirm_purge.title
     admin.users.confirm_purge.body
     admin.users.confirm_purge.submit

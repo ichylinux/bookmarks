@@ -1,4 +1,16 @@
 .admin-users {
+  &__pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-top: 1rem;
+  }
+
+  &__pagination-status {
+    font-size: 0.9rem;
+  }
+
   &__table {
     th:nth-child(1),
     td:nth-child(1),
@@ -9,7 +21,9 @@
     th:nth-child(6),
     td:nth-child(6),
     th:nth-child(7),
-    td:nth-child(7) {
+    td:nth-child(7),
+    th:nth-child(8),
+    td:nth-child(8) {
       text-align: center;
     }
   }

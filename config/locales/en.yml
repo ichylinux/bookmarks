@@ -164,6 +164,10 @@ en:
         col_updated_at: Updated at
         col_actions: Actions
         purge_button: Purge
+        pagination_label: Users list pagination
+        pagination_prev: Previous
+        pagination_next: Next
+        pagination_status: 'Page %{page} of %{total_pages} (%{total_count} users)'
       confirm_purge:
         title: Permanently delete user
         body: 'Permanently delete all data for "%{email}". This cannot be undone.'

@@ -19,7 +19,7 @@
 | フレームワーク | Rails 8.1 |
 | DB | MySQL (`utf8mb4`) |
 | フロントエンド | Sprockets + jQuery 4 + SCSS（SPA フレームワークなし） |
-| Web サーバー | Puma（開発）/ Passenger（本番） |
+| Web サーバー | Puma |
 | 認証 | Devise + devise-two-factor + OmniAuth |
 | フィード解析 | Feedjira + Nokogiri |
 | テスト | Minitest / Cucumber + Capybara + Selenium |

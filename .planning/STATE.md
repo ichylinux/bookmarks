@@ -60,6 +60,12 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 
 - None
 
+### Quick Tasks Completed
+
+| # | Description | Date | Directory |
+|---|-------------|------|-----------|
+| 20260523-001 | Admin users index pagination (50 per page) | 2026-05-23 | [20260523-001-admin-users-pagination](./quick/20260523-001-admin-users-pagination/) |
+
 ## Operator Next Steps
 
 - Run `/gsd-new-milestone` when ready to plan v1.33
