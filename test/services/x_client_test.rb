@@ -161,4 +161,81 @@ class XClientTest < ActiveSupport::TestCase
     u = users(:twitter_user)
     u.update_columns(oauth2_token: nil, oauth2_refresh_token: nil, oauth2_token_expires_at: nil)
   end
+
+  # lookup_user_by_username tests
+
+  def test_lookup_user_returns_item_on_200
+    body_json = { data: { id: '123', username: 'foobar', name: 'Foo Bar',
+                          profile_image_url: nil, protected: false } }.to_json
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) do
+      [200, { 'Content-Type' => 'application/json' }, body_json]
+    end
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'foobar')
+    assert r[:success]
+    assert_equal 'foobar', r[:item][:username]
+    assert_equal '123', r[:item][:id]
+  end
+
+  def test_lookup_user_strips_at_prefix
+    body_json = { data: { id: '456', username: 'foobar', name: 'Foo Bar',
+                          profile_image_url: nil, protected: false } }.to_json
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/foobar}) do
+      [200, { 'Content-Type' => 'application/json' }, body_json]
+    end
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: '@foobar')
+    assert r[:success], "Expected success but got #{r.inspect}"
+  end
+
+  def test_lookup_user_404_returns_not_found
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { [404, {}, ''] }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'gone')
+    assert_not r[:success]
+    assert_equal :not_found, r[:error]
+  end
+
+  def test_lookup_user_400_returns_not_found
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { [400, {}, ''] }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'bad_handle')
+    assert_equal :not_found, r[:error]
+  end
+
+  def test_lookup_user_403_returns_suspended
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { [403, {}, ''] }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'suspended_user')
+    assert_equal :suspended, r[:error]
+  end
+
+  def test_lookup_user_429_returns_rate_limited
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { [429, {}, ''] }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'anyone')
+    assert_equal :rate_limited, r[:error]
+  end
+
+  def test_lookup_user_timeout_returns_api_error
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { raise Faraday::TimeoutError }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'slow_user')
+    assert_equal :api_error, r[:error]
+  end
+
+  def test_lookup_user_connection_failed_returns_api_error
+    stubs = Faraday::Adapter::Test::Stubs.new
+    stubs.get(%r{/2/users/by/username/}) { raise Faraday::ConnectionFailed, 'refused' }
+    conn = Faraday.new { |f| f.adapter :test, stubs }
+    r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'unreachable')
+    assert_equal :api_error, r[:error]
+  end
 end

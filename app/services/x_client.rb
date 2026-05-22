@@ -75,6 +75,24 @@ class XClient
     { success: false, error: :parse_error }
   end
 
+  # Returns { success: true, item: { id:, username:, name:, profile_image_url:, protected: } }
+  # or { success: false, error: Symbol }
+  # Error symbols: :not_found, :suspended, :rate_limited, :api_error
+  def lookup_user_by_username(user:, username:)
+    handle = username.to_s.sub(/\A@/, '').presence
+    return { success: false, error: :not_found } if handle.blank?
+
+    res = following_connection(user).get("/2/users/by/username/#{handle}") do |req|
+      req.params['user.fields'] = 'id,name,username,profile_image_url,protected'
+    end
+
+    parse_lookup_response(res)
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed
+    { success: false, error: :api_error }
+  rescue Faraday::Error
+    { success: false, error: :api_error }
+  end
+
   private
 
   def following_connection(user)
@@ -167,6 +185,27 @@ class XClient
       { success: false, error: :unauthorized }
     when 404
       { success: false, error: :not_found }
+    when 429
+      { success: false, error: :rate_limited }
+    else
+      { success: false, error: :api_error }
+    end
+  end
+
+  def parse_lookup_response(res)
+    case res.status
+    when 200
+      body = parse_json_safe(res.body)
+      return { success: false, error: :parse_error } unless body.is_a?(Hash)
+
+      row = body['data']
+      return { success: false, error: :not_found } unless row.is_a?(Hash)
+
+      { success: true, item: normalize_following_row(row) }
+    when 400, 404
+      { success: false, error: :not_found }
+    when 403
+      { success: false, error: :suspended }
     when 429
       { success: false, error: :rate_limited }
     else
