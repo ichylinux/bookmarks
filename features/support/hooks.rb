@@ -71,6 +71,38 @@ After('@x_gadget') do
   user.update_columns(provider: nil, uid: nil, oauth2_token: nil)
 end
 
+Before('@x_manual_add') do
+  u = user
+  u.update_columns(provider: 'twitter2', uid: 'x_manual_uid_host', oauth2_token: 'manual_add_token')
+
+  @_x_manual_stub_lookup_ok = WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/by\/username\/testhandle/)
+    .to_return(
+      status: 200,
+      body: { 'data' => { 'id' => 'x_manual_uid', 'username' => 'testhandle', 'name' => 'Test Handle' } }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
+  @_x_manual_stub_lookup_404 = WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/by\/username\/ghost_user/)
+    .to_return(
+      status: 404,
+      body: { 'errors' => [{ 'detail' => 'Could not find user with username: ghost_user' }] }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
+  @_x_manual_stub_following = WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/x_manual_uid_host\/following/)
+    .to_return(
+      status: 200,
+      body: { 'data' => [] }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
+end
+
+After('@x_manual_add') do
+  WebMock.remove_request_stub(@_x_manual_stub_lookup_ok) if @_x_manual_stub_lookup_ok
+  WebMock.remove_request_stub(@_x_manual_stub_lookup_404) if @_x_manual_stub_lookup_404
+  WebMock.remove_request_stub(@_x_manual_stub_following) if @_x_manual_stub_following
+  XAccount.where(user_id: user.id).delete_all
+  user.update_columns(provider: nil, uid: nil, oauth2_token: nil)
+end
+
 Before('@feed_visited_links') do
   @_feed_article_url = 'https://example.com/stub-article'
 
