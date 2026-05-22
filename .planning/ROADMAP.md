@@ -40,8 +40,8 @@
 
 - [x] **Phase 104: Schema, Model & Refresh Guard** — `manually_added` migration + `upsert_manual!` + refresh soft-delete protection
 - [ ] **Phase 105: XClient Lookup Service** — `XClient#lookup_user_by_username` with full error-symbol coverage
-- [ ] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
-- [ ] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
+- [x] **Phase 106: Controller Action, Routes & Locales** — `POST /x_accounts/lookup_and_add` with all 7 flash states in ja/en
+- [x] **Phase 107: View Form & Manually-Added Badge** — inline handle input form + account card indicator
 - [ ] **Phase 108: Full Test Coverage & Tri-suite Gate** — Minitest + Cucumber E2E + green gate
 
 ---
@@ -215,8 +215,8 @@ Plans:
 |-------|----------------|--------|-----------|
 | 104. Schema, Model & Refresh Guard | 2/2 | Complete | 2026-05-22 |
 | 105. XClient Lookup Service | 1/1 | Complete    | 2026-05-22 |
-| 106. Controller Action, Routes & Locales | 0/1 | Not started | - |
-| 107. View Form & Manually-Added Badge | 0/1 | Not started | - |
+| 106. Controller Action, Routes & Locales | 1/1 | Complete | 2026-05-22 |
+| 107. View Form & Manually-Added Badge | 1/1 | Complete | 2026-05-22 |
 | 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
 
 *Last updated: 2026-05-22 — Phase 105 planned (1 plan, 1 wave)*
