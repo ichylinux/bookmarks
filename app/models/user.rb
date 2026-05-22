@@ -27,13 +27,30 @@ class User < ApplicationRecord
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
 
-  # No dependent: :destroy — disabling an account is the normal lifecycle; a rare
-  # hard-delete of User must not synchronously load/destroy unbounded notes (see ROADMAP).
+  has_many :bookmarks
+  has_many :feeds
+  has_many :mastodon_accounts
   has_many :notes
+  has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
+  has_many :portal_layouts
+  has_many :todos
+  has_many :visited_links
+  has_many :x_accounts, dependent: :destroy
   has_many :x_api_calls, dependent: :delete_all
 
-  has_many :portals, -> { where(deleted: false) }, inverse_of: 'user'
-  has_many :x_accounts, dependent: :destroy
+  PURGE_ASSOCIATIONS = %i[
+    bookmarks
+    feeds
+    mastodon_accounts
+    notes
+    portal_layouts
+    portals
+    preference
+    todos
+    visited_links
+    x_accounts
+    x_api_calls
+  ].freeze
   after_save :create_default_portal
 
   def self.from_omniauth(access_token)
@@ -111,19 +128,10 @@ class User < ApplicationRecord
   def purge!
     raise NotPurgeableError unless purgeable?
 
-    user_id = id
     transaction do
-      Bookmark.where(user_id: user_id).delete_all
-      Feed.where(user_id: user_id).delete_all
-      MastodonAccount.where(user_id: user_id).delete_all
-      Note.where(user_id: user_id).delete_all
-      PortalLayout.where(user_id: user_id).delete_all
-      Portal.where(user_id: user_id).delete_all
-      Preference.where(user_id: user_id).delete_all
-      Todo.where(user_id: user_id).delete_all
-      VisitedLink.where(user_id: user_id).delete_all
-      XAccount.where(user_id: user_id).delete_all
-      XApiCall.where(user_id: user_id).delete_all
+      PURGE_ASSOCIATIONS.each do |assoc|
+        association(assoc).scope.delete_all
+      end
       delete
     end
   end
