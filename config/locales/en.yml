@@ -321,6 +321,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-22"
+          headline: Add X accounts by username
+          tag: new
+          description: You can now manually add any public X (Twitter) account to your following list by entering their username directly, without needing to sign in with X OAuth.
         - date: "2026-05-20"
           headline: Delete your account from preferences
           tag: new

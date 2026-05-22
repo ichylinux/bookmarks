@@ -321,6 +321,10 @@ ja:
         performance: パフォーマンス
         new: 新機能
       entries:
+        - date: "2026-05-22"
+          headline: ユーザー名でXアカウントを追加できるようになりました
+          tag: new
+          description: XのOAuth認証なしに、ユーザー名を直接入力してXアカウントをフォローリストに追加できるようになりました。
         - date: "2026-05-20"
           headline: 設定画面からアカウントを削除できるようになりました
           tag: new
