@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   resources :x_accounts, only: %i[index show update] do
     collection do
       post :refresh
+      post :lookup_and_add
     end
   end
 

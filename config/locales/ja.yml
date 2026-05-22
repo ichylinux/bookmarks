@@ -240,6 +240,7 @@ ja:
       parse_error: 応答を解釈できませんでした。
       unauthorized: Xとの連携が無効です。再認可が必要です。
       rate_limited: レート制限に達しました。しばらくしてから再度お試しください。
+      suspended: このアカウントは凍結されています。
 
   notes:
     gadget:
@@ -434,6 +435,10 @@ ja:
     oauth2_upgrade:
       prompt: "セキュリティ向上のため、X連携をOAuth 2.0にアップグレードしてください。"
       button: X連携をアップグレード
+    lookup_and_add:
+      success: アカウントを追加しました。
+      already_active: このアカウントはすでに追加されています。
+      blank_input: ユーザー名を入力してください。
     refresh:
       success: フォロー一覧を更新しました。
     update:

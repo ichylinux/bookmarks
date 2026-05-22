@@ -245,6 +245,100 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
     acc&.destroy
   end
 
+  # --- lookup_and_add ---
+
+  LOOKUP_URL = /api\.twitter\.com\/2\/users\/by\/username\/testhandle/
+
+  def test_lookup_and_add_成功するとnoticeでリダイレクトされる
+    WebMock.stub_request(:get, LOOKUP_URL)
+      .to_return(
+        status: 200,
+        body: { data: { id: 'uid_test', username: 'testhandle', name: 'Test Handle', profile_image_url: nil, protected: false } }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+    sign_in twitter_user
+    assert_difference -> { XAccount.where(user_id: twitter_user.id).count }, 1 do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('x_accounts.lookup_and_add.success')
+    row = XApiCall.order(:id).last
+    assert_equal 'lookup_user_by_username', row.endpoint
+    assert row.success
+  end
+
+  def test_lookup_and_add_空入力はAPIを呼ばずalertでリダイレクト
+    sign_in twitter_user
+    assert_no_difference -> { XApiCall.count } do
+      post lookup_and_add_x_accounts_path, params: { username: '' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('x_accounts.lookup_and_add.blank_input')
+  end
+
+  def test_lookup_and_add_not_foundでalertリダイレクト
+    WebMock.stub_request(:get, LOOKUP_URL).to_return(status: 404)
+    sign_in twitter_user
+    assert_difference -> { XApiCall.count }, 1 do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('errors.x_client.not_found')
+  end
+
+  def test_lookup_and_add_suspendedでalertリダイレクト
+    WebMock.stub_request(:get, LOOKUP_URL).to_return(status: 403)
+    sign_in twitter_user
+    assert_difference -> { XApiCall.count }, 1 do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('errors.x_client.suspended')
+  end
+
+  def test_lookup_and_add_rate_limitedでalertリダイレクト
+    WebMock.stub_request(:get, LOOKUP_URL).to_return(status: 429)
+    sign_in twitter_user
+    assert_difference -> { XApiCall.count }, 1 do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('errors.x_client.rate_limited')
+  end
+
+  def test_lookup_and_add_networkエラーでalertリダイレクト
+    WebMock.stub_request(:get, LOOKUP_URL).to_raise(Faraday::SSLError.new('ssl error'))
+    sign_in twitter_user
+    assert_difference -> { XApiCall.count }, 1 do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('errors.x_client.network')
+  end
+
+  def test_lookup_and_add_already_activeでnoticeリダイレクト
+    WebMock.stub_request(:get, LOOKUP_URL)
+      .to_return(
+        status: 200,
+        body: { data: { id: 'uid_existing', username: 'testhandle', name: 'Test Handle', profile_image_url: nil, protected: false } }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+    XAccount.create!(user: twitter_user, x_user_id: 'uid_existing', username: 'testhandle', display_name: 'Test Handle', manually_added: true)
+    sign_in twitter_user
+    assert_no_difference -> { XAccount.where(user_id: twitter_user.id).count } do
+      post lookup_and_add_x_accounts_path, params: { username: 'testhandle' }
+    end
+    assert_redirected_to x_accounts_path
+    follow_redirect!
+    assert_select 'span.flash-message__body', text: I18n.t('x_accounts.lookup_and_add.already_active')
+  end
+
   private
 
   def twitter_user

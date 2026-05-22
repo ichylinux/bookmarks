@@ -23,6 +23,41 @@ class XAccountsController < ApplicationController
     redirect_to x_accounts_path
   end
 
+  def lookup_and_add
+    username = params[:username].to_s.strip
+    if username.blank?
+      flash[:alert] = t('x_accounts.lookup_and_add.blank_input')
+      redirect_to x_accounts_path and return
+    end
+
+    result = XClient.new.lookup_user_by_username(user: current_user, username: username)
+    record_x_api_call(endpoint: 'lookup_user_by_username', result: result)
+
+    unless result[:success]
+      flash[:alert] = t("errors.x_client.#{result[:error]}")
+      redirect_to x_accounts_path and return
+    end
+
+    item = result[:item]
+    existing = XAccount.where(user_id: current_user.id, x_user_id: item[:id]).first
+    already_active = existing && !existing.deleted?
+
+    XAccount.upsert_manual!(
+      user: current_user,
+      x_user_id: item[:id],
+      username: item[:username],
+      display_name: item[:name],
+      avatar_url: item[:profile_image_url]
+    )
+
+    if already_active
+      flash[:notice] = t('x_accounts.lookup_and_add.already_active')
+    else
+      flash[:notice] = t('x_accounts.lookup_and_add.success')
+    end
+    redirect_to x_accounts_path
+  end
+
   def show
     result = XClient.new.fetch_recent_tweets(
       user: current_user,

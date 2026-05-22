@@ -240,6 +240,7 @@ en:
       parse_error: The response could not be parsed.
       unauthorized: Your X connection is invalid. Please re-authorize.
       rate_limited: Rate limit reached. Try again later.
+      suspended: This account has been suspended.
 
   notes:
     gadget:
@@ -434,6 +435,10 @@ en:
     oauth2_upgrade:
       prompt: "Upgrade your X connection to OAuth 2.0 for improved security."
       button: Upgrade X connection
+    lookup_and_add:
+      success: Account added.
+      already_active: This account is already added.
+      blank_input: Please enter a username.
     refresh:
       success: Following list updated.
     update:
