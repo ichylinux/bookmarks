@@ -224,19 +224,19 @@ class XClientTest < ActiveSupport::TestCase
     assert_equal :rate_limited, r[:error]
   end
 
-  def test_lookup_user_timeout_returns_api_error
+  def test_lookup_user_timeout_returns_timeout
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get(%r{/2/users/by/username/}) { raise Faraday::TimeoutError }
     conn = Faraday.new { |f| f.adapter :test, stubs }
     r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'slow_user')
-    assert_equal :api_error, r[:error]
+    assert_equal :timeout, r[:error]
   end
 
-  def test_lookup_user_connection_failed_returns_api_error
+  def test_lookup_user_connection_failed_returns_timeout
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get(%r{/2/users/by/username/}) { raise Faraday::ConnectionFailed, 'refused' }
     conn = Faraday.new { |f| f.adapter :test, stubs }
     r = XClient.new(connection: conn).lookup_user_by_username(user: users(:twitter_user), username: 'unreachable')
-    assert_equal :api_error, r[:error]
+    assert_equal :timeout, r[:error]
   end
 end

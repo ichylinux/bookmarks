@@ -77,7 +77,7 @@ class XClient
 
   # Returns { success: true, item: { id:, username:, name:, profile_image_url:, protected: } }
   # or { success: false, error: Symbol }
-  # Error symbols: :not_found, :suspended, :rate_limited, :api_error
+  # Error symbols: :not_found, :suspended, :unauthorized, :rate_limited, :api_error, :timeout, :network
   def lookup_user_by_username(user:, username:)
     handle = username.to_s.sub(/\A@/, '').presence
     return { success: false, error: :not_found } if handle.blank?
@@ -90,9 +90,9 @@ class XClient
 
     parse_lookup_response(res)
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed
-    { success: false, error: :api_error }
+    { success: false, error: :timeout }
   rescue Faraday::Error
-    { success: false, error: :api_error }
+    { success: false, error: :network }
   end
 
   private
