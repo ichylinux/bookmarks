@@ -162,6 +162,16 @@ ja:
         col_last_sign_in_at: 最終サインイン
         col_created_at: 登録日時
         col_updated_at: 更新日時
+        col_actions: 操作
+        purge_button: 完全削除
+      confirm_purge:
+        title: ユーザーの完全削除
+        body: '「%{email}」と紐づくデータをすべて完全に削除します。この操作は取り消せません。'
+        submit: 完全削除を実行
+        cancel: キャンセル
+      purge:
+        success: ユーザーを完全に削除しました。
+        not_purgeable: このユーザーは完全削除の対象ではありません。
     x_api_usages:
       index:
         title: X API 利用状況

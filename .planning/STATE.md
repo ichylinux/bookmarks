@@ -1,40 +1,39 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.32
-milestone_name: milestone
-status: Not started
-stopped_at: context exhaustion at 83% (2026-05-22)
-last_updated: "2026-05-22T13:57:22.659Z"
-last_activity: 2026-05-22 — Roadmap created for v1.32 (Phases 109–111)
+milestone_name: Admin Account Purge
+status: Complete
+last_updated: "2026-05-22"
+last_activity: 2026-05-22 — v1.32 shipped (Phases 109–111 via gsd-autonomous)
 progress:
-  total_phases: 8
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 109 — Model Layer — Purge Predicate & Cascade
+Phase: —
 Plan: —
-Status: Not started
-Last activity: 2026-05-22 — Roadmap created for v1.32 (Phases 109–111)
+Status: Milestone v1.32 complete
+Last activity: 2026-05-22 — Autonomous execution finished; tri-suite green
 
-Progress: [__________] 0% (0/3 phases)
+Progress: [██████████] 100% (3/3 phases)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.32 Admin Account Purge — Phase 109 next
+**Current focus:** v1.32 shipped — ready for next milestone planning
 
 ## Performance Metrics
 
-- v1.31 close: `yarn run lint` ✓ · `bin/rails test` 546/546 ✓ · `dad:test` 33/33 ✓
+- v1.32 close: `yarn run lint` ✓ · `bin/rails test` 559/559 ✓ · `dad:test` 34/34 ✓
 
 ## Deferred Items
 
@@ -51,43 +50,17 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 
 ### Decisions
 
-- (v1.32 planning) `purge!` must use explicit `delete_all` per table — not `dependent: :destroy` cascade; no FK constraints in schema so ordering is logical not enforced
-- (v1.32 planning) `portal_layouts` has no `has_many` on User; must be included explicitly as `PortalLayout.where(user_id: id).delete_all`
-- (v1.32 planning) `purgeable?` must nil-guard `deleted_at` before the `<= 90.days.ago` comparison; nullable column
-- (v1.32 planning) Cucumber `@admin_purge` hook must create a non-fixture user (not fixture ids 1/2/3) to avoid breaking `@account_deletion` scenario
-- (v1.32 planning) Controller confirmation flow mirrors `Users::AccountDeletionsController` from v1.28: GET renders confirm page, DELETE executes, `data: { turbo: false }` on form
-- (v1.31) No cap on manually-added accounts for v1.31 — personal app, low volume; deferred as XMAN-FUT-01
-- (v1.31) `upsert_manual!` uses `first_or_initialize` on `(user_id, x_user_id)`; always sets `manually_added: true, deleted: false` unconditionally regardless of new_record? state
-- (v1.31) `refresh_cache_from_items!` soft-delete loop gains `next if acc.manually_added?`; `assign_attributes` call must NOT include `manually_added` field to preserve flag on overlap rows
-- (v1.29) Instrumentation at controller after XClient returns; `record_x_api_call` helper
-- (v1.29) Admin gate 404 for non-admins; drawer link `current_user.admin?`
+- (v1.32) `purge!` uses explicit `delete_all` per table; final `user.delete` (not `destroy!`)
+- (v1.32) `portal_layouts` deleted via `PortalLayout.where(user_id: id).delete_all`
+- (v1.32) Cucumber `@admin_purge` uses `purge_e2e_test@example.com` — avoids fixture id 1/2/3
+- (v1.31) `upsert_manual!` + refresh guard for manually-added X accounts
+- (v1.30) Admin users list at `/admin/users` with `require_admin` gate
 
 ### Blockers/Concerns
 
 - None
 
-### Quick Tasks Completed
-
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 260521-001 | シンプルテーマの時に X API 使用状況へのメニュー項目がありません。 | 2026-05-21 | 3f51073 | [260521-001-simple-theme-x-api-menu](./quick/20260521-simple-theme-x-api-menu/) |
-| 260521-002 | Add unique index on users.uid; nullify uid on soft-delete | 2026-05-21 | 8889a6c | [add-index-users-uid](./quick/20260521-add-index-users-uid/) |
-| 260521-003 | X API 使用状況を管理メニューとしてドロワー内でセパレータを使ってセクションを分離する | 2026-05-21 | 15142d0 | [admin-section-separator](./quick/20260521-admin-section-separator/) |
-| 260521-004 | Drop OAuth 1.0a support from X API completely | 2026-05-21 | 3113e32 | [drop-oauth1-x-api](./quick/20260521-drop-oauth1-x-api/) |
-
-## Session Continuity
-
-Last session: 2026-05-22T13:57:22.652Z
-Stopped at: context exhaustion at 83% (2026-05-22)
-Resume file: None
-
-## Accumulated Context
-
-### Roadmap Evolution
-
-- v1.32 Phases 109–111 defined (2026-05-22): Model-first order mirrors v1.31 — purge logic correct before UI exists; controller before views; Cucumber last as full-stack gate
-
 ## Operator Next Steps
 
-- Run `/gsd:plan-phase 109` to plan Phase 109 (Model Layer — Purge Predicate & Cascade).
-- Critical: Phase 109 MUST include the `portal_layouts` delete_all assertion and nil-guard test for `purgeable?` — these are the two highest-risk correctness gaps.
+- Run `/gsd-new-milestone` when ready to plan v1.33
+- Commit implementation when satisfied with the diff

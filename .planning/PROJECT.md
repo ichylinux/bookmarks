@@ -4,17 +4,19 @@
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
-## Current Milestone: v1.32 Admin Account Purge
+## Current Milestone
 
-**Goal:** Admin can permanently purge soft-deleted accounts from the `/admin/users` screen, deleting the user row and all associated records.
+None active — v1.32 shipped 2026-05-22. Run `/gsd-new-milestone` to start the next cycle.
 
-**Target features:**
-- Purge button on `/admin/users` list for eligible soft-deleted accounts (deleted_at ≥ 90 days ago)
-- Confirmation step before purge executes
-- Hard-delete user row + all associated records (bookmarks, notes, todos, feeds, mastodon_accounts, x_accounts, visited_links, x_api_calls, etc.)
-- Bilingual ja/en labels and flash messages
-- Minitest coverage (model purge logic, controller access control, eligibility)
-- Cucumber E2E scenario for admin purge flow
+<details>
+<summary>Shipped: v1.32 Admin Account Purge (2026-05-22)</summary>
+
+**Delivered (phases 109–111):**
+- `User#purgeable?`, `User.purgeable`, `User::NotPurgeableError`, `User#purge!` — 11-table hard-delete cascade in one transaction; `portal_layouts` explicit; Minitest boundary + cascade tests
+- Admin purge UI: button on `/admin/users` when eligible; `GET confirm_purge` + `DELETE destroy`; ja/en locale keys; controller access-control tests
+- Cucumber `@admin_purge` E2E with non-fixture user; tri-suite green: lint ✓ · 559 Minitest · 34 Cucumber
+
+</details>
 
 ## Core Value
 

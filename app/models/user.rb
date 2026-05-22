@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  PURGE_AFTER_DAYS = 90
+
+  class NotPurgeableError < StandardError; end
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
@@ -14,6 +18,11 @@ class User < ApplicationRecord
   before_create :generate_otp_secret_if_missing
 
   scope :active, -> { where(deleted: false) }
+  scope :purgeable, lambda {
+    where(deleted: true)
+      .where.not(deleted_at: nil)
+      .where('deleted_at <= ?', PURGE_AFTER_DAYS.days.ago)
+  }
 
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
@@ -93,6 +102,30 @@ class User < ApplicationRecord
     now = Time.current
     # Skip validations: X-only users may still have a dummy email, which is valid at create time.
     update_columns(deleted: true, deleted_at: now, updated_at: now)
+  end
+
+  def purgeable?
+    deleted? && deleted_at.present? && deleted_at <= PURGE_AFTER_DAYS.days.ago
+  end
+
+  def purge!
+    raise NotPurgeableError unless purgeable?
+
+    user_id = id
+    transaction do
+      Bookmark.where(user_id: user_id).delete_all
+      Feed.where(user_id: user_id).delete_all
+      MastodonAccount.where(user_id: user_id).delete_all
+      Note.where(user_id: user_id).delete_all
+      PortalLayout.where(user_id: user_id).delete_all
+      Portal.where(user_id: user_id).delete_all
+      Preference.where(user_id: user_id).delete_all
+      Todo.where(user_id: user_id).delete_all
+      VisitedLink.where(user_id: user_id).delete_all
+      XAccount.where(user_id: user_id).delete_all
+      XApiCall.where(user_id: user_id).delete_all
+      delete
+    end
   end
 
   def active_for_authentication?

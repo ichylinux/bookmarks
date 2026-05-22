@@ -138,6 +138,20 @@ After('@admin_x_api_report_rack') do
   Capybara.current_driver = @admin_report_prev_driver if @admin_report_prev_driver
 end
 
+Before('@admin_purge') do
+  User.where(email: 'purge_e2e_test@example.com').delete_all
+
+  u = User.create!(
+    email: 'purge_e2e_test@example.com',
+    password: Devise.friendly_token[0, 20]
+  )
+  u.update_columns(deleted: true, deleted_at: 91.days.ago)
+end
+
+After('@admin_purge') do
+  User.where(email: 'purge_e2e_test@example.com').delete_all
+end
+
 Before('@account_deletion') do
   @account_deletion_previous_driver = Capybara.current_driver
   Capybara.current_driver = :rack_test

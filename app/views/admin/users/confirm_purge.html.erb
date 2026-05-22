@@ -1,0 +1,12 @@
+<section class="admin-users admin-users--confirm-purge" aria-labelledby="admin-users-confirm-purge-heading">
+  <h1 id="admin-users-confirm-purge-heading"><%= t('.title') %></h1>
+
+  <p><%= t('.body', email: @user.email) %></p>
+
+  <%= form_tag admin_user_path(@user), method: :delete, class: 'admin-users__purge-form', data: { turbo: false } do %>
+    <p>
+      <%= submit_tag t('.submit'), class: 'admin-users__purge-submit' %>
+      <%= link_to t('.cancel'), admin_users_path %>
+    </p>
+  <% end %>
+</section>

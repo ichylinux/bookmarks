@@ -162,6 +162,16 @@ en:
         col_last_sign_in_at: Last sign-in
         col_created_at: Created at
         col_updated_at: Updated at
+        col_actions: Actions
+        purge_button: Purge
+      confirm_purge:
+        title: Permanently delete user
+        body: 'Permanently delete all data for "%{email}". This cannot be undone.'
+        submit: Permanently delete
+        cancel: Cancel
+      purge:
+        success: User permanently deleted.
+        not_purgeable: This user is not eligible for permanent deletion.
     x_api_usages:
       index:
         title: X API Usage

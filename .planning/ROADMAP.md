@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🔄 **v1.32 — Admin Account Purge** — Phases 109–111 (in progress)
+- ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
 - ✅ **v1.29 — Admin X API Usage Report** — Phases 96–100 (shipped 2026-05-21) — [archived](milestones/v1.29-ROADMAP.md)
@@ -145,11 +145,14 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ---
 
-**v1.32 — Admin Account Purge (Phases 109–111)**
+<details>
+<summary>✅ v1.32 — Admin Account Purge (Phases 109–111) — SHIPPED 2026-05-22</summary>
 
-- [ ] **Phase 109: Model Layer — Purge Predicate & Cascade** - `User#purgeable?` + `User#purge!` with 11-table delete_all transaction + Minitest
-- [ ] **Phase 110: Controller + Views + Locale** - Confirmation flow, admin UI purge button, bilingual labels, controller access control tests
-- [ ] **Phase 111: Cucumber E2E + Tri-suite Gate** - End-to-end admin purge scenario with non-fixture user; all three suites green
+- [x] Phase 109: Model Layer — Purge Predicate & Cascade (1/1 plan) — 2026-05-22
+- [x] Phase 110: Controller + Views + Locale (1/1 plan) — 2026-05-22
+- [x] Phase 111: Cucumber E2E + Tri-suite Gate (1/1 plan) — 2026-05-22
+
+</details>
 
 ## Phase Details
 
@@ -237,7 +240,9 @@ Plans:
   3. `User#purge!` on an eligible user deletes rows from all 11 associated tables (bookmarks, notes, todos, feeds, mastodon_accounts, x_accounts, visited_links, x_api_calls, preferences, portal_layouts, x_accounts) and then destroys the user row — all inside a single transaction
   4. `portal_layouts` rows are explicitly deleted via `PortalLayout.where(user_id: id).delete_all` (no `has_many` exists on User for this table)
   5. Minitest boundary cases all pass: `purgeable?` with `deleted_at` nil (no crash), `deleted_at` 89 days ago (false), `deleted_at` exactly 90 days ago (true), and a full-cascade `purge!` test asserting every table has zero rows for the purged user
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [x] 109-01-PLAN.md — purgeable?, purge!, scope, Minitest (2026-05-22)
 
 ### Phase 110: Controller + Views + Locale
 **Goal**: Admin can navigate to a confirmation page and execute the purge via a server-rendered two-step flow, guarded at both view and controller layers, with bilingual labels and flash messages
@@ -250,7 +255,7 @@ Plans:
   4. Attempting `DELETE /admin/users/:id` directly for a non-purgeable user (bypassing the UI) is rejected by the controller's `purgeable?` guard — the purge does not execute
   5. All new locale keys (purge button label, confirmation page text, success flash, ineligibility flash) exist in both `ja.yml` and `en.yml`; the i18n parity test passes
   6. Minitest controller tests cover: guest redirect, non-admin 404, admin purge success, and admin attempt on ineligible user
-**Plans**: TBD
+**Plans**: 1 plan (inline autonomous execute)
 **UI hint**: yes
 
 ### Phase 111: Cucumber E2E + Tri-suite Gate
@@ -264,7 +269,7 @@ Plans:
   4. `yarn run lint` exits 0 with no ESLint errors
   5. `bin/rails test` exits 0 with all Minitest cases passing (including Phase 109 and 110 additions)
   6. `bundle exec rake dad:test` exits 0 with 0 failed Cucumber scenarios
-**Plans**: TBD
+**Plans**: 1 plan (inline autonomous execute)
 
 ## Progress Table
 
@@ -275,8 +280,8 @@ Plans:
 | 106. Controller Action, Routes & Locales | 1/1 | Complete | 2026-05-22 |
 | 107. View Form & Manually-Added Badge | 1/1 | Complete | 2026-05-22 |
 | 108. Full Test Coverage & Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
-| 109. Model Layer — Purge Predicate & Cascade | 0/? | Not started | - |
-| 110. Controller + Views + Locale | 0/? | Not started | - |
-| 111. Cucumber E2E + Tri-suite Gate | 0/? | Not started | - |
+| 109. Model Layer — Purge Predicate & Cascade | 1/1 | Complete | 2026-05-22 |
+| 110. Controller + Views + Locale | 1/1 | Complete | 2026-05-22 |
+| 111. Cucumber E2E + Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
 
-*Last updated: 2026-05-22 — v1.32 roadmap created (Phases 109–111)*
+*Last updated: 2026-05-22 — v1.32 shipped (Phases 109–111)*

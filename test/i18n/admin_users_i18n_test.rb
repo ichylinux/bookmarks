@@ -12,6 +12,14 @@ class AdminUsersI18nTest < ActiveSupport::TestCase
     admin.users.index.col_last_sign_in_at
     admin.users.index.col_created_at
     admin.users.index.col_updated_at
+    admin.users.index.col_actions
+    admin.users.index.purge_button
+    admin.users.confirm_purge.title
+    admin.users.confirm_purge.body
+    admin.users.confirm_purge.submit
+    admin.users.confirm_purge.cancel
+    admin.users.purge.success
+    admin.users.purge.not_purgeable
     nav.users
   ].freeze
 

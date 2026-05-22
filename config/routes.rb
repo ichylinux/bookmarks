@@ -72,7 +72,11 @@ Rails.application.routes.draw do
   end
 
   namespace :admin do
-    resources :users, only: [:index]
+    resources :users, only: %i[index destroy] do
+      member do
+        get :confirm_purge
+      end
+    end
     resources :x_api_usages, only: [:index]
   end
 

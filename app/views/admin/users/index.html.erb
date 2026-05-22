@@ -11,6 +11,7 @@
           <th scope="col"><%= t('.col_last_sign_in_at') %></th>
           <th scope="col"><%= t('.col_created_at') %></th>
           <th scope="col"><%= t('.col_updated_at') %></th>
+          <th scope="col"><%= t('.col_actions') %></th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,13 @@
             <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :admin_datetime) : '—' %></td>
             <td><%= l(user.created_at, format: :admin_datetime) %></td>
             <td><%= l(user.updated_at, format: :admin_datetime) %></td>
+            <td>
+              <% if user.purgeable? %>
+                <%= link_to t('.purge_button'), confirm_purge_admin_user_path(user) %>
+              <% else %>
+                —
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
