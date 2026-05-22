@@ -5,22 +5,6 @@ class PreferencesController < ApplicationController
     @user.build_preference unless @user.preference.present?
   end
 
-  def create
-    @user = User.find(current_user.id)
-    attrs = user_params
-    if attrs[:preference_attributes].respond_to?(:key?) && attrs[:preference_attributes].key?(:locale)
-      attrs[:preference_attributes][:locale] = attrs[:preference_attributes][:locale].presence
-    end
-    @user.attributes = attrs
-
-    @user.transaction do
-      @user.save!
-    end
-
-    flash[:notice] = saved_notice
-    redirect_to preferences_path
-  end
-
   def update
     @user = User.find(current_user.id)
     attrs = user_params

@@ -38,7 +38,6 @@ ja:
         priority: 優先度
         title: タイトル
       user:
-        name: ユーザー名
         email: メールアドレス
     errors:
       models:

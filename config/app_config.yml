@@ -2,7 +2,6 @@ default: &default
   otp_length: <%= ENV["BOOKMARKS_OTP_LENGTH"] || 6 %>
   omniauth_google_oauth2_client_id: <%= ENV["GOOGLE_CLIENT_ID"] %>
   omniauth_google_oauth2_client_secret: <%= ENV["GOOGLE_CLIENT_SECRET"] %>
-  omniauth_google_api_key: <%= ENV['GOOGLE_API_KEY'] %>
   omniauth_twitter2_client_id: <%= ENV["TWITTER2_CLIENT_ID"] %>
   omniauth_twitter2_client_secret: <%= ENV["TWITTER2_CLIENT_SECRET"] %>
 

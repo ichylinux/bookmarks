@@ -1,11 +1,6 @@
 <%= form_with model: @user, url: preference_path(@user), html: { class: 'preferences-form' } do |f| %>
   <table class="preferences-table">
-    <% if @user.has_valid_email? %>
-      <tr>
-        <th><%= f.label :name %></th>
-        <td><%= f.text_field :name %></td>
-      </tr>
-    <% else %>
+    <% unless @user.has_valid_email? %>
       <tr>
         <th><%= t('preferences.index.email_registration_section_title') %></th>
         <td><%= link_to t('preferences.index.email_registration_link'), users_email_registration_path %></td>

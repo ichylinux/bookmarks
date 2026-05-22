@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :preferences, only: ['index', 'create', 'update']
+  resources :preferences, only: %i[index update]
 
   resources :todos do
     collection do

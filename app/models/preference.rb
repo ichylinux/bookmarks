@@ -57,14 +57,6 @@ class Preference < ApplicationRecord
     font_size
   end
 
-  def self.migrate_legacy_font_sizes!
-    where(font_size: [nil, FONT_SIZE_MEDIUM]).update_all(
-      font_size: FONT_SIZE_SMALL,
-      font_size_notice_pending: true,
-      updated_at: Time.current
-    )
-  end
-
   def normalized_font_size
     self.class.normalize_font_size(font_size)
   end
