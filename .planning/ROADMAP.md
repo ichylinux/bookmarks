@@ -181,7 +181,9 @@ Plans:
   3. Each of the 6 error states (not found, already active, rate limited, suspended, blank input, network error) redirects with a distinct localized flash alert in both ja and en
   4. Every API call from this action is instrumented via `record_x_api_call`
   5. Controller integration tests for all 7 flash states (1 success + 6 errors) pass
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
 **UI hint**: yes
 
 ### Phase 107: View Form & Manually-Added Badge
@@ -194,7 +196,9 @@ Plans:
   3. Each account card for a `manually_added: true` account shows a visible badge or label; the label is rendered in Japanese when the UI locale is `ja` and in English when `en`
   4. Follow-synced account cards do not show the manually-added badge
   5. All new locale keys for form labels, button text, and the badge pass the i18n parity test (ja/en key sets match)
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
 **UI hint**: yes
 
 ### Phase 108: Full Test Coverage & Tri-suite Gate
@@ -207,7 +211,9 @@ Plans:
   3. A Cucumber not-found error scenario (enter a nonexistent handle → not-found flash appears) passes
   4. The WebMock stub for `/2/users/by/username/` is registered in the relevant Cucumber `Before` hook so no `NetConnectNotAllowedError` occurs
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
 
 ## Progress Table
 
@@ -219,4 +225,4 @@ Plans:
 | 107. View Form & Manually-Added Badge | 1/1 | Complete | 2026-05-22 |
 | 108. Full Test Coverage & Tri-suite Gate | 0/1 | Not started | - |
 
-*Last updated: 2026-05-22 — Phase 105 planned (1 plan, 1 wave)*
+*Last updated: 2026-05-22 — Phase 108 planned (1 plan, 1 wave)*
