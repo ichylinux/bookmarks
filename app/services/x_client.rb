@@ -206,6 +206,8 @@ class XClient
       { success: true, item: normalize_following_row(row) }
     when 400, 404
       { success: false, error: :not_found }
+    when 401
+      { success: false, error: :unauthorized }
     when 403
       { success: false, error: :suspended }
     when 429
