@@ -112,15 +112,6 @@ module Admin
       end
     end
 
-    private
-
-    def purgeable_user!
-      User.create!(
-        email: "admin-purge-#{SecureRandom.hex(4)}@example.com",
-        password: Devise.friendly_token[0, 20]
-      ).tap { |user| user.update_columns(deleted: true, deleted_at: 91.days.ago) }
-    end
-
     def test_削除済みユーザーも一覧に表示される
       sign_in users(:one)
       u = User.create!(email: 'deleted_test@example.com', password: 'passwordpass',
@@ -148,6 +139,15 @@ module Admin
       assert_response :success
       assert response.body.include?('✓')
       assert response.body.include?('—')
+    end
+
+    private
+
+    def purgeable_user!
+      User.create!(
+        email: "admin-purge-#{SecureRandom.hex(4)}@example.com",
+        password: Devise.friendly_token[0, 20]
+      ).tap { |user| user.update_columns(deleted: true, deleted_at: 91.days.ago) }
     end
   end
 end
