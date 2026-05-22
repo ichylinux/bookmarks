@@ -1,17 +1,17 @@
 # Project Research Summary
 
-**Project:** Bookmarks v1.31 — X Account Manual Add (Non-Following)
-**Domain:** Incremental feature on existing Rails X accounts management screen
+**Project:** Bookmarks v1.32 — Admin Account Purge
+**Domain:** Admin hard-delete of soft-deleted user accounts in a Rails app
 **Researched:** 2026-05-22
 **Confidence:** HIGH
 
 ## Executive Summary
 
-v1.31 is a focused, low-risk feature addition to an existing, well-understood system. The goal is to let users type an X handle and add that account to their management screen even if they do not follow it on X. All infrastructure required — Faraday HTTP client, OAuth2 Bearer token auth, upsert patterns, flash error handling, API call instrumentation — already exists. The milestone requires one new XClient method, one migration, one controller action, one view form, and a targeted fix to the refresh soft-delete loop. No new gems, no new authentication flows, no background jobs.
+v1.32 adds a single, well-scoped capability: allow an admin to permanently delete user accounts that have been soft-deleted for 90 or more days. The v1.28 soft-delete foundation (`users.deleted`, `users.deleted_at`, `User#destroy_account!`) is already in place, and the admin controller and route namespace (`Admin::BaseController`, `Admin::UsersController`, `/admin/users`) were established in v1.29–v1.30. This milestone closes the loop by adding `User#purgeable?`, `User#purge!`, a two-step confirmation flow, and the corresponding view, locale, and test coverage. No new gems, no migrations, no background job infrastructure.
 
-The single highest-risk item is the `refresh_cache_from_items!` soft-delete loop. Without a one-line guard (`next if acc.manually_added?`), every Refresh click silently destroys manually-added accounts. This fix is load-bearing and must ship in the same phase as the migration — nothing else should be built until this behavior is covered by a passing Minitest. A second related risk is that the `assign_attributes` call inside the same refresh method must never include `manually_added: false`, or accounts that the user both follows and manually-added will lose their flag the next time refresh runs.
+The recommended implementation puts all deletion logic in a `User#purge!` instance method — consistent with the existing `destroy_account!` pattern — that runs 11 explicit `delete_all` calls (one per associated table) inside a single transaction and finishes with `destroy!` on the user row. This approach is synchronous, fully testable, and correct: there are no FK constraints in the schema, row counts are bounded (personal app), and no job infrastructure exists to make an async approach practical. The controller stays thin, calling `user.purge!` and redirecting with a flash.
 
-Beyond the refresh interaction, all remaining work follows established patterns already present in the codebase: `first_or_initialize` for upsert, existing error symbols for API failures, `record_x_api_call` for instrumentation, and locale keys in both `ja.yml` and `en.yml`. The milestone is estimated at 4-5 phases of work, smaller than v1.29.
+The critical risks are all guarded at the model layer. An unguarded purge action would allow any admin to hard-delete an active user by direct HTTP request — the UI-only guard is never sufficient. Additionally, `portal_layouts` has no `has_many` declared on `User` and will be silently orphaned if not explicitly deleted. Both risks are caught by writing the eligibility guard and association-coverage tests before any controller or view work.
 
 ---
 
@@ -19,111 +19,138 @@ Beyond the refresh interaction, all remaining work follows established patterns 
 
 ### Recommended Stack
 
-Zero new gems required. The existing `XClient` Faraday service already authenticates with `user.oauth2_token` (OAuth2 User Context Bearer token), which is confirmed as sufficient for `GET /2/users/by/username/{username}`. The new method is approximately 25 lines following the identical pattern as `fetch_following` and `fetch_recent_tweets`. WebMock and the Faraday `:test` adapter already in place cover test stubbing with no additions.
+No changes to `Gemfile`. The purge feature is fully achievable with Rails 8.1 ActiveRecord, a `User#purge!` model method, and a new action on `Admin::UsersController`. The existing columns (`users.deleted`, `users.deleted_at`) and the admin authentication gate (`require_admin`) are already present. No migration is required.
 
-**Core technologies:**
-- `XClient` (Faraday, existing): New `lookup_user_by_username` method — mirrors `fetch_following` structure, reuses `normalize_following_row` and `connection_for`
-- `users.oauth2_token` Bearer auth (existing): Confirmed sufficient for the user lookup endpoint; no new OAuth scopes required
-- `x_accounts` migration: Add `manually_added boolean NOT NULL DEFAULT false` — safe backfill-free column; existing rows default to `false`
-- WebMock + Faraday `:test` adapter (existing): No changes needed to test infrastructure; new stubs follow `stub_request(:get, /users\/by\/username/)` pattern
+Background job frameworks (Sidekiq, GoodJob, Solid Queue) are explicitly ruled out: the app has no job infrastructure, row counts are bounded, and a synchronous transactional `delete_all` per table completes in milliseconds.
+
+**Core technologies (unchanged for v1.32):**
+- Rails 8.1 / Ruby 3.4 — application framework
+- MySQL (mysql2) — no FK constraints defined; `delete_all` ordering is logical, not enforced
+- Devise — authentication; `require_admin` gate inherited by all admin controllers
+- Minitest — unit and controller tests
+- Cucumber + Capybara + Selenium — E2E gate; `bundle exec rake dad:test`
 
 ### Expected Features
 
 **Must have (table stakes):**
-- Handle input form on `/x_accounts` index page — inline, no modal, no JS required
-- Strip leading `@` before API call — users type `@handle`; the X API rejects it
-- API lookup before insert — reject nonexistent/suspended handles with a flash error
-- "Already in your list" guard — `first_or_initialize` prevents `RecordNotUnique` 500s; handles both active and soft-deleted existing rows
-- `refresh_cache_from_items!` protection — manually-added rows must survive every Refresh click
-- `manually_added` migration — prerequisite for all of the above
-- `protected` field stored on add — existing acknowledgement gate handles selection gate
-- Success and error flash messages in `ja.yml` and `en.yml`
-- `record_x_api_call` instrumentation on the new action
+- `User#purgeable?` predicate: `deleted? && deleted_at.present? && deleted_at <= 90.days.ago` — guards both view and model
+- `User#purge!` with full 11-table cascade inside a transaction — the core deletion method
+- `User::NotPurgeableError` (or equivalent raise) inside `purge!` — forces controller to handle ineligibility explicitly
+- Eligibility guard at the server side (controller) — view-only guard is insufficient; direct HTTP requests bypass it
+- Two-step confirmation flow (GET confirm page, then DELETE) — mirrors `AccountDeletionsController` pattern; no JS `confirm()` dialog
+- Admin-only gate — inherited from `Admin::BaseController#require_admin`
+- Flash messages on success and on ineligibility — bilingual ja + en
+- Minitest coverage: `purgeable?` boundary conditions, `purge!` cascade over all 11 tables, transaction rollback, controller access control
+- Cucumber E2E scenario: admin purges eligible user, user disappears from list
 
-**Should have (not required for v1.31):**
-- Case-insensitive handle normalization (downcase before lookup) — prevents duplicate rows from casing variants
-- Browser `pattern` attribute on input — reduces round-trips for obviously invalid handles; one HTML attribute
+**Should have (differentiators):**
+- `deleted_at` column in `/admin/users` table — makes the 90-day window visible at a glance
+- Visual row distinction (CSS class) for soft-deleted-ineligible vs purgeable rows
+- Distinct ineligibility sub-cases in flash ("not deleted" vs "too recent")
 
-**Defer to v2+:**
-- Two-step preview before confirming add — not needed for correctness
-- Remove/soft-delete for manually-added accounts — add-only is correct for v1.31
-- Visual badge distinguishing manually-added vs follow-synced — origin is metadata, not a v1.31 display concern
-- Bulk add or CSV import — single handle at a time is sufficient
+**Defer (v2+):**
+- Async background job for purge
+- Audit log table for admin actions
+- Bulk purge (multi-select)
+- Email notification to purged account
+- Typed-token confirmation ("type DELETE to confirm")
+- Column sorting and pagination on admin users list (already deferred in PROJECT.md)
 
 ### Architecture Approach
 
-The feature is layered strictly on top of the existing `XAccountsController` / `XClient` / `XAccount` triptych without modifying any existing public interfaces. A new collection route `POST /x_accounts/lookup_and_add` dispatches to a new controller action that normalizes input, calls `XClient#lookup_user_by_username`, records the API call, then delegates to `XAccount.upsert_manual!` (new class method) which uses `first_or_initialize` to handle create/resurrect idempotently. The existing redirect-after-POST pattern, flash conventions, and `require_twitter_linked` before_action all apply unchanged.
+All purge logic lives in `User#purge!` as an instance method, consistent with the existing `destroy_account!` lifecycle method. No service object is introduced — `app/services/` contains only HTTP clients and this codebase has no service-object convention for data mutations. The controller action (`Admin::UsersController#destroy`) is thin: find user, guard on `purgeable?`, call `purge!`, capture email before destroy, redirect with flash. The confirmation flow mirrors `Users::AccountDeletionsController` from v1.28: a GET renders the confirmation page, the DELETE executes the action, both using `data: { turbo: false }` to prevent Turbo interception.
 
 **Major components:**
-1. `XClient#lookup_user_by_username` — calls `GET /2/users/by/username/{username}`, returns `{ success: true, item: {...} }` or `{ success: false, error: Symbol }`; reuses `normalize_following_row`, `connection_for`, and the existing error symbol contract
-2. `XAccount.upsert_manual!` — new class method; `first_or_initialize` on `(user_id, x_user_id)`; unconditionally sets `manually_added: true, deleted: false`; raises `RecordInvalid` for invalid state (controller rescues)
-3. `refresh_cache_from_items!` (modified) — soft-delete loop gains `next if acc.manually_added?`; the `assign_attributes` call is left unchanged (must NOT include `manually_added`)
-4. `XAccountsController#lookup_and_add` — new action; handle format validation; calls XClient, calls `record_x_api_call`, calls `upsert_manual!`, redirects with flash
-5. Index view form — `form_with url: lookup_and_add_x_accounts_path`, text input, submit; synchronous POST, no JS
+
+1. `User#purgeable?` + `User#purge!` (`app/models/user.rb`) — eligibility predicate and transactional hard-delete of all 11 associated tables plus the user row
+2. `Admin::UsersController#destroy` + `#confirm_purge` (`app/controllers/admin/users_controller.rb`) — thin controller actions gated by inherited `require_admin`
+3. `confirm_purge.html.erb` (`app/views/admin/users/`) — server-rendered confirmation page with DELETE form; no JS required
+4. Route extension (`config/routes.rb`) — `resources :users, only: [:index, :destroy]` + `member { get :confirm_purge }`
+5. Locale keys — `admin.users.{destroy,confirm_purge,index}.*` in both `ja.yml` and `en.yml`
+6. Cucumber feature + hooks (`features/12.管理者パージ.feature`) — non-fixture purge target created in `Before` hook
 
 ### Critical Pitfalls
 
-1. **`refresh_cache_from_items!` silently deletes manually-added accounts on every Refresh** — Add `next if acc.manually_added?` to the soft-delete loop. Write the Minitest case before any controller work. This is the single most important change in the milestone.
-2. **`assign_attributes` in refresh must never include `manually_added: false`** — The following payload has no `manually_added` field; do not add it to the attributes hash. Test that a `manually_added: true` row that also appears in the following payload retains its flag after refresh runs.
-3. **`RecordNotUnique` on duplicate add raises a 500** — Use `first_or_initialize` on `(user_id, x_user_id)`; detect active vs. soft-deleted rows and respond with a flash. Rescue `ActiveRecord::RecordNotUnique` as a safety net.
-4. **Resurrection path must unconditionally set `manually_added: true`** — Do not branch on `new_record?`; always assign `manually_added: true, deleted: false` in `upsert_manual!` regardless of whether the row is new or existing.
-5. **WebMock does not cover `/2/users/by/username/` in Cucumber** — Register `WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/by\/username\//)` in the relevant Cucumber `Before` hook; without it scenarios fail with an opaque `NetConnectNotAllowedError`.
+1. **No server-side eligibility guard** — any admin can hard-delete an active user via direct HTTP. Implement `purgeable?` check in both `purge!` (raises) and the controller (redirects). Write the ineligibility test before the happy-path test.
+
+2. **`portal_layouts` silently orphaned** — `User` has no `has_many :portal_layouts`, so no `dependent:` catches it. Must explicitly include `PortalLayout.where(user_id: id).delete_all` in `purge!`. Catch this with a per-table assertion in the association-coverage Minitest.
+
+3. **`nil deleted_at` causes crash in `purgeable?` check** — the column is nullable; accounts soft-deleted before v1.28 or via direct `update_columns(deleted: true)` without `deleted_at` will raise `ArgumentError` on the `<=` comparison. Guard with `deleted_at.present?` before the comparison.
+
+4. **Cucumber scenario must use a non-fixture user** — the `@admin_purge` `Before` hook must create a fresh user (not user id 3). Hard-deleting a fixture user breaks subsequent scenarios that call `User.find(3)` (e.g., `@account_deletion` hook). Use `User.create!(...)` in the hook and `User.where(email: ...).delete_all` in `After` as a cleanup guard.
+
+5. **`ensure` blocks in Minitest must use `User.where(id:).delete_all`, not `u.destroy`** — after `purge!` the row is gone; `u.destroy` on a missing record raises or silently fails depending on Rails version. Use the SQL path unconditionally in purge-related test teardown.
 
 ---
 
 ## Implications for Roadmap
 
-Based on research, suggested phase structure:
+### Phase 1: Model Layer — `User#purgeable?` + `User#purge!`
 
-### Phase 1: Schema + Model (Migration and Refresh Fix)
+**Rationale:** All other phases depend on these two methods existing and being correct. The hardest correctness surface (all 11 table deletions, transaction boundary, eligibility guard) is isolated here with no UI risk. Write the ineligibility and association-coverage tests before the happy path.
 
-**Rationale:** The `manually_added` column is a hard prerequisite for every other change. The `refresh_cache_from_items!` fix is load-bearing correctness work that must ship before any manually-added row can be created safely.
-**Delivers:** `x_accounts.manually_added` column; `XAccount.upsert_manual!` class method; `refresh_cache_from_items!` guarded soft-delete loop; model validations
-**Addresses:** Migration and refresh diff protection (FEATURES.md table stakes items)
-**Avoids:** Pitfalls 1, 2, 7 (the three refresh-interaction bugs)
+**Delivers:** `User#purgeable?`, `User#purge!`, `User::NotPurgeableError`, `User.purgeable` scope; full Minitest coverage including boundary conditions, nil `deleted_at` guard, every table cleared, transaction rollback.
 
-### Phase 2: XClient Service Method
+**Addresses:** Table stakes — eligibility predicate, atomic hard-delete cascade, eligibility guard inside model.
 
-**Rationale:** The controller action depends on `XClient#lookup_user_by_username` existing. Build and fully test the service method in isolation before wiring it into the controller.
-**Delivers:** `XClient#lookup_user_by_username` public method; `parse_lookup_response` private method; full Minitest coverage (200, 404, 401, 429, 403, timeout, network, parse error)
-**Uses:** Existing `connection_for`, `bearer_faraday`, `normalize_following_row`
-**Avoids:** Pitfalls 4 (`@` stripping before URL path), 5 (exhaustive HTTP status handling including 403 for suspended accounts), 6 (store API-returned canonical username not raw input)
+**Avoids:** Pitfall 1 (unguarded purge), Pitfall 2 (association ordering), Pitfall 3 (nil deleted_at), Pitfall 5 (portal_layouts orphan), Pitfall 6 (Preference unsaved default).
 
-### Phase 3: Controller Action + Route + Locales
+**No migration required.**
 
-**Rationale:** Controller wires the service method to the web layer. Locale strings are included here because controller flash messages directly depend on them.
-**Delivers:** `POST /x_accounts/lookup_and_add` route and action; all flash error/success states; `record_x_api_call` instrumentation; `ja.yml` and `en.yml` keys; controller integration tests covering all error states
-**Implements:** `XAccountsController#lookup_and_add`
-**Avoids:** Pitfalls 3 (duplicate add rescue), 7 (unconditional `manually_added: true` in upsert path), 8 (missing API call instrumentation)
+---
 
-### Phase 4: View Form
+### Phase 2: Routes + Controller + Locale
 
-**Rationale:** The inline form is purely additive to the existing index view. Kept separate from Phase 3 so controller tests run independently of view rendering.
-**Delivers:** Handle input form on `x_accounts/index.html.erb`; HTML `pattern` attribute for client-side UX; no JS; locale keys from Phase 3 rendered in the view
-**Implements:** Architecture view component
+**Rationale:** Depends on Phase 1 (`purgeable?` must exist for controller guard). Routes must exist before views can reference route helpers. Locale keys must be added simultaneously in both `ja.yml` and `en.yml` to satisfy the i18n parity test.
 
-### Phase 5: Cucumber E2E + Tri-suite Gate
+**Delivers:** `DELETE /admin/users/:id` and `GET /admin/users/:id/confirm_purge` routes; `Admin::UsersController#destroy` and `#confirm_purge` actions; all new locale keys in both locales; Minitest controller access-control tests.
 
-**Rationale:** E2E scenarios depend on all previous phases. WebMock stub registration must be in place before the scenario runs.
-**Delivers:** Happy-path Cucumber scenario (submit handle, account appears in list); "not found" error-state scenario; tri-suite green gate (lint + Minitest + Cucumber)
-**Avoids:** Pitfall 9 (WebMock gap for new URL path)
+**Implements:** Admin::UsersController extension, `require_admin` gate (inherited), `find_by` + nil guard for race condition, CSRF-safe `form_with method: :delete`.
+
+**Avoids:** Pitfall 1 (server-side guard in controller), Pitfall 4 (CSRF — use `form_with`, not `link_to`), Pitfall 7 (RecordNotFound — use `find_by`), Pitfall 9 (ensure cleanup in Minitest), Pitfall 10 (i18n parity — edit both locale files together), Pitfall 11 (confirmation step design — mirror AccountDeletionsController).
+
+---
+
+### Phase 3: Views + CSS
+
+**Rationale:** Depends on Phase 2 (route helpers must exist). Pure presentation layer — conditional purge button, `deleted_at` column, row CSS classes, confirmation page form.
+
+**Delivers:** Updated `index.html.erb` with conditional purge button and `deleted_at` column; `confirm_purge.html.erb` with DELETE form and cancel link; danger-style CSS for purge button; i18n parity test updated for new keys.
+
+**Implements:** Three-layer purgeable guard (model + controller + view), server-rendered confirmation flow with `data: { turbo: false }`, visual row distinction for purgeable vs soft-deleted rows.
+
+**Avoids:** Pitfall 4 (CSRF — `form_tag`/`form_with` with embedded authenticity token, not `link_to method: :delete`), Pitfall 11 (two-page flow, not JS `confirm()`).
+
+---
+
+### Phase 4: Cucumber E2E + Tri-Suite Gate
+
+**Rationale:** Depends on all prior phases. Final verification that the full flow works end-to-end under the same conditions as production (browser, Devise session, form submission).
+
+**Delivers:** `features/12.管理者パージ.feature` with two scenarios (eligible user purged, ineligible user has no button); `Before`/`After` hooks using non-fixture purge target; all three test suites green.
+
+**Avoids:** Pitfall 8 (fixture isolation — `Before` hook creates fresh non-fixture user; `After` guard with `delete_all`).
+
+**Driver note:** Standard Selenium is preferred; fall back to `:rack_test` only if DELETE form submission proves unreliable.
+
+---
 
 ### Phase Ordering Rationale
 
-- Schema first: both the model class method and the refresh fix reference `manually_added?` — Rails raises `NoMethodError` if the column does not exist
-- Service before controller: controller integration tests stub `XClient`; having the real method prevents stub drift
-- View after controller: controller can be tested headlessly; the view adds the entry point
-- Cucumber last: exercises the full stack end-to-end and catches any integration gaps from prior phases
+- Model first because all phases depend on `purgeable?` existing.
+- Controller second because views need route helpers that only exist after routes are declared.
+- Views third because they are pure rendering of already-verified logic.
+- Cucumber last because it exercises the full stack assembled in phases 1–3.
+- This is the same order used in v1.31 and follows the dependency chain identified in ARCHITECTURE.md.
 
 ### Research Flags
 
-All phases use well-documented, established patterns. No phase requires additional research during planning.
+All phases use well-documented Rails patterns with HIGH-confidence findings grounded in direct codebase inspection. No phase requires additional research during planning.
 
-- **Phase 1:** Standard Rails migration + `first_or_initialize` upsert; pattern already in codebase
-- **Phase 2:** `XClient` method pattern established by `fetch_following`; Faraday `:test` adapter pattern established by existing service tests
-- **Phase 3:** Controller action follows existing `refresh` action pattern exactly; all error symbols already have locale keys
-- **Phase 4:** Standard `form_with` inline form; no JS; existing view structure is clear
-- **Phase 5:** Cucumber Before hook stub pattern already exists for other X API paths
+- **Phase 1 (model):** Standard ActiveRecord transaction + `delete_all` pattern — no research needed.
+- **Phase 2 (controller + locale):** Standard Rails admin controller + i18n — no research needed.
+- **Phase 3 (views):** Existing `AccountDeletionsController` view is a direct template — no research needed.
+- **Phase 4 (Cucumber):** Existing hook patterns from `features/support/hooks.rb` are the guide — no research needed.
 
 ---
 
@@ -131,33 +158,43 @@ All phases use well-documented, established patterns. No phase requires addition
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | Endpoint URL verified from official X docs; user OAuth2 token confirmed sufficient; zero new gems confirmed by codebase inspection |
-| Features | HIGH | Must-haves derived from direct codebase read and X API v2 docs; no speculative features |
-| Architecture | HIGH | Direct inspection of all modified files: `x_client.rb`, `x_account.rb`, `x_accounts_controller.rb`, `schema.rb`, routes, views, tests |
-| Pitfalls | HIGH (critical 3) / MEDIUM (403 suspended accounts) | Refresh interaction pitfalls confirmed by direct code inspection; HTTP 403 for suspended accounts from community sources, not official API reference |
+| Stack | HIGH | All findings from direct codebase inspection; Gemfile, schema.rb, and config confirmed no job infrastructure exists |
+| Features | HIGH | Feature set derived from PROJECT.md decisions, existing admin infrastructure, and privacy-policy 90-day window established in v1.28 |
+| Architecture | HIGH | All components identified from direct file reads: user.rb, base_controller.rb, routes.rb, account_deletions_controller.rb as precedent |
+| Pitfalls | HIGH | All 12 pitfalls grounded in concrete code paths (nullable column, no FK constraints, no has_many on portal_layouts, fixture ids); not speculative |
 
-**Overall confidence:** HIGH
+**Overall confidence:** HIGH — this is a well-scoped feature on a fully-inspected codebase with clear precedents.
 
 ### Gaps to Address
 
-- **HTTP 403 for suspended accounts:** Confirmed from X Developer Community forum threads, not the official API reference. Safe mitigation: map 403 to `:forbidden` in `parse_lookup_response` and add a locale key. If 403 is never returned in practice, the branch is harmless.
-- **Rate limit figure (300 vs 900/15 min):** FEATURES.md cites 300; STACK.md cites 900. Both are secondary sources. At personal-use scale the exact figure is irrelevant — the `:rate_limited` path handles it regardless. No action needed during planning.
-- **Total `x_accounts` row cap:** PITFALLS.md raises whether a per-user row cap is needed. Recommendation: no cap for v1.31 (personal app, low volume). Decide explicitly during Phase 1 planning and document the decision.
+- **`x_accounts dependent: :destroy` callback behavior:** Current `XAccount` callbacks are `before_save` only (no `before_destroy`). The purge method pre-deletes via `delete_all` making this moot, but any future `before_destroy` added to `XAccount` would be silently skipped. Not a gap for v1.32 — noted for future awareness.
+- **`Preference` unsaved default:** `User#preference` returns an in-memory default when no DB row exists. The `purge!` implementation must use `Preference.where(user_id: id).delete_all` (not `user.preference.destroy`) to avoid `RecordNotSaved`. Validate the approach in Phase 1 tests.
 
 ---
 
 ## Sources
 
-### Primary (HIGH confidence)
-- Direct codebase inspection: `app/services/x_client.rb`, `app/models/x_account.rb`, `app/controllers/x_accounts_controller.rb`, `db/schema.rb`, `config/routes.rb`, `test/` suite
-- [X API v2: GET /2/users/by/username/{username}](https://docs.x.com/x-api/users/get-user-by-username) — endpoint URL, fields, auth types, response shape confirmed
-- [X API v2: Rate Limits](https://docs.x.com/x-api/fundamentals/rate-limits) — user lookup rate limit window confirmed
+### Primary (HIGH confidence — direct codebase inspection)
+
+- `/home/ichy/workspace/bookmarks/app/models/user.rb` — association declarations, `destroy_account!`, intentional no-`dependent:` comment, `User#preference` override
+- `/home/ichy/workspace/bookmarks/db/schema.rb` — all tables with `user_id` columns, absence of FK constraints
+- `/home/ichy/workspace/bookmarks/app/controllers/admin/base_controller.rb` — `require_admin` implementation
+- `/home/ichy/workspace/bookmarks/app/controllers/admin/users_controller.rb` — current `#index` action
+- `/home/ichy/workspace/bookmarks/app/controllers/users/account_deletions_controller.rb` — two-page confirmation precedent
+- `/home/ichy/workspace/bookmarks/config/routes.rb` — current admin namespace structure
+- `/home/ichy/workspace/bookmarks/Gemfile` — confirmed no job framework
+- `/home/ichy/workspace/bookmarks/.planning/PROJECT.md` — v1.28 soft-delete rationale, deferred purge job (ACCT-FUT-01), out-of-scope items
+- `/home/ichy/workspace/bookmarks/features/support/hooks.rb` — existing hook patterns and fixture user ids
 
 ### Secondary (MEDIUM confidence)
-- [9meters.com X API rate limits reference](https://9meters.com/entertainment/social-media/x-api-rate-limits-formerly-twitter) — rate limit figure (900/15 min per STACK.md); independent source
-- X Developer Community forum threads — HTTP 403 behavior for suspended accounts; not in official API reference excerpt retrieved
+
+- [Handling Has-Many Through Cascading Deletes in Rails](https://dustingoodman.dev/blog/20240608-handling-has-many-through-cascading-deletes-in-rails/) — `delete_all` vs `destroy_all` strategy, verified against schema
+- [ActiveRecord models: GDPR-compliant data removal](https://www.globalapptesting.com/engineering/activerecord-models-how-to-remove-data-in-gdpr-compliant-way) — general pattern guidance
+
+### Tertiary (LOW confidence)
+
+- [Rails ActiveRecord dependent: strategies](https://dev.to/nemwelboniface/what-happens-when-a-user-deletes-their-account-a-guide-to-rails-activerecord-dependent-strategies-1279) — community post; specific decisions derived from codebase inspection, not this source
 
 ---
-
 *Research completed: 2026-05-22*
 *Ready for roadmap: yes*
