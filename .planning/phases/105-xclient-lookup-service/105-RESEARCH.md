@@ -478,7 +478,7 @@ None — `test/services/x_client_test.rb` already exists with the correct test i
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **`following_connection` naming vs. using `connection_for` directly**
    - What we know: `following_connection` was created for `fetch_following` and checks `@forced_connection`; `connection_for` builds real connections only
