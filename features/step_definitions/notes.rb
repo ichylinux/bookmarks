@@ -1,6 +1,6 @@
 require 'uri'
 
-もし /^シンプルテーマでサインインします。$/ do
+もし /^シンプルテーマでノートを有効にしてサインインします。$/ do
   Note.where(user_id: user.id).delete_all
   sign_in user
   visit '/preferences'
@@ -14,6 +14,7 @@ end
   Note.where(user_id: user.id).delete_all
   sign_in user
   visit '/preferences'
+  select 'モダン', from: 'テーマ'
   check 'ノートを表示する'
   click_on '保存'
   assert has_text?('設定を保存しました。')

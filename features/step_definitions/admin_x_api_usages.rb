@@ -7,14 +7,12 @@ end
 
 もし /^管理者としてサインインします。$/ do
   admin = User.find_by!(email: 'user@example.com')
-  admin.preference.update!(theme: 'modern')
   sign_in admin
 end
 
 もし /^一般ユーザーとしてサインインします。$/ do
   u = User.find_by!(email: 'user2@example.com')
   u.update_columns(admin: false)
-  u.preference.update!(theme: 'modern')
   sign_in u
 end
 

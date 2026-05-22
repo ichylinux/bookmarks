@@ -21,6 +21,7 @@ module Login
     end
 
     @_current_user = user
+    reset_preferences_via_browser!
   end
 
   def current_user

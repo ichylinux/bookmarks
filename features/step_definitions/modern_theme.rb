@@ -1,16 +1,13 @@
 もし /^モダンテーマでサインインします。$/ do
-  user.preference.update!(theme: 'modern')
-  sign_in user
+  sign_in user unless current_user&.id == user.id
 end
 
 もし /^クラシックテーマでサインインします。$/ do
-  user.preference.update!(theme: 'classic')
   sign_in user unless current_user&.id == user.id
-end
-
-もし /^検証用シンプルテーマでサインインします。$/ do
-  user.preference.update!(theme: 'simple')
-  sign_in user unless current_user&.id == user.id
+  visit '/preferences'
+  select_option_value 'user[preference_attributes][theme]', 'classic'
+  find('form.preferences-form input[type="submit"]', match: :first).click
+  assert has_text?(/設定を保存しました。|Settings saved\./)
 end
 
 もし /^ルートページを開くと、ドロワーは閉じています。$/ do

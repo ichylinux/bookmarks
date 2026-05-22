@@ -8,19 +8,6 @@ Before do |scenario|
   XApiCall.delete_all
   VisitedLink.delete_all
 
-  pref = user.preference
-  pref.update!(
-    theme: "modern",
-    use_note: false,
-    use_todo: false,
-    use_calendar: true,
-    locale: "ja",
-    default_priority: Todo::PRIORITY_NORMAL,
-    open_links_in_new_tab: false,
-    portal_column_count: 3,
-    portal_column_widths: Preference.equal_portal_column_widths(3)
-  )
-
   unless scenario.source_tag_names.include?('@mobile_portal')
     resize_browser_window(1280, 800)
   end
