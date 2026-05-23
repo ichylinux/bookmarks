@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.33 — Facebook Login** — Phases 112–113 (in progress)
+- ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
@@ -157,8 +157,8 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ### v1.33 — Facebook Login (Phases 112–113)
 
-- [ ] **Phase 112: Backend — Gem, Config, Model & Controller** - Wire Facebook OAuth provider end-to-end: gem, Devise config, `User.from_omniauth`, callback action, and Minitest coverage
-- [ ] **Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber** - Facebook sign-in button visible and styled on sign-in/sign-up pages with bilingual labels; tri-suite gate green
+- [x] **Phase 112: Backend — Gem, Config, Model & Controller** — 2026-05-24
+- [x] **Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber** — 2026-05-24
 
 ## Phase Details
 
@@ -317,7 +317,7 @@ Plans:
 | 109. Model Layer — Purge Predicate & Cascade | 1/1 | Complete | 2026-05-22 |
 | 110. Controller + Views + Locale | 1/1 | Complete | 2026-05-22 |
 | 111. Cucumber E2E + Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
-| 112. Backend — Gem, Config, Model & Controller | 0/? | Not started | - |
-| 113. Frontend & E2E — Button UI, CSS, Locale & Cucumber | 0/? | Not started | - |
+| 112. Backend — Gem, Config, Model & Controller | 2/2 | Complete | 2026-05-24 |
+| 113. Frontend & E2E — Button UI, CSS, Locale & Cucumber | 1/1 | Complete | 2026-05-24 |
 
-*Last updated: 2026-05-24 — v1.33 roadmap created (Phases 112–113)*
+*Last updated: 2026-05-24 — v1.33 shipped (Phases 112–113 complete)*
