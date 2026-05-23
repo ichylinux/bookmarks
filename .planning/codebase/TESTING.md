@@ -315,4 +315,4 @@ After('@mobile_portal')  { resize_browser_window(1280, 800) }
 
 ---
 
-*Testing analysis: 2026-05-18*
+*Testing analysis: 2026-05-23*
