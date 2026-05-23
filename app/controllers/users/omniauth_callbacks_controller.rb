@@ -8,6 +8,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_callback('Twitter')
   end
 
+  def facebook
+    handle_callback('Facebook')
+  end
+
   private
 
   def handle_callback(kind)

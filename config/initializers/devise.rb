@@ -262,6 +262,11 @@ Devise.setup do |config|
       Rails.application.config.app_config.omniauth_twitter2_client_secret,
       scope: 'tweet.read users.read follows.read users.email offline.access'
 
+  config.omniauth :facebook,
+      Rails.application.config.app_config.omniauth_facebook_app_id,
+      Rails.application.config.app_config.omniauth_facebook_app_secret,
+      scope: 'email'
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

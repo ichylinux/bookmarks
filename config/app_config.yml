@@ -4,6 +4,8 @@ default: &default
   omniauth_google_oauth2_client_secret: <%= ENV["GOOGLE_CLIENT_SECRET"] %>
   omniauth_twitter2_client_id: <%= ENV["TWITTER2_CLIENT_ID"] %>
   omniauth_twitter2_client_secret: <%= ENV["TWITTER2_CLIENT_SECRET"] %>
+  omniauth_facebook_app_id: <%= ENV["FACEBOOK_APP_ID"] %>
+  omniauth_facebook_app_secret: <%= ENV["FACEBOOK_APP_SECRET"] %>
 
 development:
   <<: *default

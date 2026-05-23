@@ -241,4 +241,41 @@ class UserTest < ActiveSupport::TestCase
       User.from_omniauth(auth)
     end
   end
+
+  def test_facebook_from_omniauth_finds_existing_user_by_email
+    u = users(:one)
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'facebook',
+      'uid' => 'fb-uid-existing',
+      'info' => { 'email' => u.email, 'name' => 'FB User' }
+    )
+    result = User.from_omniauth(auth)
+    assert_equal u.id, result.id
+  end
+
+  def test_facebook_from_omniauth_creates_new_user_when_email_unknown
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'facebook',
+      'uid' => 'fb-uid-new',
+      'info' => { 'email' => 'fb-new@example.com', 'name' => 'New FB User' }
+    )
+    assert_difference 'User.count', 1 do
+      result = User.from_omniauth(auth)
+      assert_equal 'fb-new@example.com', result.email
+    end
+  end
+
+  def test_facebook_from_omniauth_does_not_match_deleted_user
+    u = User.create!(email: 'fb-deleted@example.com', password: Devise.friendly_token[0, 20])
+    u.destroy_account!
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'facebook',
+      'uid' => 'fb-uid-deleted',
+      'info' => { 'email' => 'fb-deleted@example.com', 'name' => 'Deleted FB User' }
+    )
+    result = User.from_omniauth(auth)
+    assert_not_equal u.id, result.id
+    assert_equal 'fb-deleted@example.com', result.email
+  end
 end

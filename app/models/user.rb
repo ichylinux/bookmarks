@@ -7,7 +7,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
-         omniauth_providers: [:google_oauth2, :twitter2]
+         omniauth_providers: [:google_oauth2, :twitter2, :facebook]
 
   encrypts :oauth2_token, :oauth2_refresh_token
 
@@ -79,6 +79,10 @@ class User < ApplicationRecord
           password: Devise.friendly_token[0, 20]
         )
       end
+    when :facebook
+      user = User.active.where(email: data['email']).first
+      user ||= User.create(email: data['email'], password: Devise.friendly_token[0, 20])
+      user
     else
       user = User.active.where(email: data['email']).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
