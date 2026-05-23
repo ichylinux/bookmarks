@@ -1,35 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.32
-milestone_name: Admin Account Purge
-status: Complete
-last_updated: "2026-05-22"
-last_activity: 2026-05-22 — v1.32 shipped (Phases 109–111 via gsd-autonomous)
+milestone: v1.33
+milestone_name: Facebook Login
+status: planning
+last_updated: "2026-05-24"
+last_activity: 2026-05-24 — Milestone v1.33 started
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: —
+Phase: Not started (defining requirements)
 Plan: —
-Status: Milestone v1.32 complete
-Last activity: 2026-05-22 — Autonomous execution finished; tri-suite green
-
-Progress: [██████████] 100% (3/3 phases)
+Status: Defining requirements
+Last activity: 2026-05-24 — Milestone v1.33 started
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-22)
+See: .planning/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.32 shipped — ready for next milestone planning
+**Current focus:** v1.33 Facebook Login — adding Facebook as a third OAuth provider
 
 ## Performance Metrics
 
@@ -66,8 +64,8 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 |---|-------------|------|-----------|
 | 20260523-obsolete-adr-audit | Audit for obsolete ADRs / stale decision docs | 2026-05-23 | [20260523-obsolete-adr-audit](./quick/20260523-obsolete-adr-audit/) |
 | 20260523-001 | Admin users index pagination (50 per page) | 2026-05-23 | [20260523-001-admin-users-pagination](./quick/20260523-001-admin-users-pagination/) |
+| 20260524-oauth-promote | Promote Google/X OAuth buttons above email form | 2026-05-24 | [20260524-oauth-promote](./quick/20260524-oauth-promote/) |
 
 ## Operator Next Steps
 
-- Run `/gsd-new-milestone` when ready to plan v1.33
-- Commit implementation when satisfied with the diff
+- `/gsd:plan-phase 112` to start Phase 112

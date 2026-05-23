@@ -4,9 +4,17 @@
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
-## Current Milestone
+## Current Milestone: v1.33 Facebook Login
 
-None active — v1.32 shipped 2026-05-22. Run `/gsd-new-milestone` to start the next cycle.
+**Goal:** Add Facebook as a third OAuth provider alongside Google and X, with email-only scope and email-based account linking.
+
+**Target features:**
+- User can sign in with Facebook (omniauth-facebook, email scope only)
+- User can sign up via Facebook (new account created from Facebook identity)
+- Existing account matched by email and linked automatically
+- Facebook button appears in the OAuth section on sign-in/sign-up pages
+- Bilingual UI labels (ja/en)
+- Deleted-account guard (same as Google/X)
 
 <details>
 <summary>Shipped: v1.32 Admin Account Purge (2026-05-22)</summary>
