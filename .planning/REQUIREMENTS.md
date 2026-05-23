@@ -1,68 +1,65 @@
-# Requirements: Bookmarks v1.32
+# Requirements: Bookmarks v1.33
 
-**Defined:** 2026-05-22
+**Defined:** 2026-05-24
 **Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## v1.32 Requirements
+## v1.33 Requirements
 
-### Model
+### Gem & Config
 
-- [ ] **PURGE-01**: Admin can check if a soft-deleted user is eligible for purge (deleted_at ≥ 90 days ago, nil-safe)
-- [ ] **PURGE-02**: `User#purge!` permanently deletes the user row and all associated records across 11 tables in a single transaction
+- [ ] **FB-01**: `omniauth-facebook` gem added and `bundle install` succeeds
+- [ ] **FB-02**: Devise initializer configures Facebook provider with `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` ENV vars and `scope: 'email'` only
+- [ ] **FB-03**: `app_config.yml` references `ENV["FACEBOOK_APP_ID"]` and `ENV["FACEBOOK_APP_SECRET"]` for all environments
 
-### Admin UI
+### Authentication
 
-- [ ] **ADMIN-01**: Admin sees a "Purge" action on `/admin/users` only for purgeable accounts (not active or recently-deleted users)
-- [ ] **ADMIN-02**: Admin is shown a confirmation page before purge executes
-- [ ] **ADMIN-03**: Purge action is server-side guarded by `purgeable?` — cannot be bypassed by direct HTTP request
+- [ ] **FB-04**: User can sign in with Facebook — existing account matched by email and signed in
+- [ ] **FB-05**: User can sign up with Facebook — new account created with email from Facebook identity
+- [ ] **FB-06**: Deleted account cannot sign in via Facebook — `User.active` scope blocks soft-deleted users
+- [ ] **FB-07**: `User.from_omniauth` handles `:facebook` provider explicitly (email-based find-or-create, same pattern as google_oauth2)
+- [ ] **FB-08**: `Users::OmniauthCallbacksController#facebook` action added; delegates to `handle_callback`
+
+### UI
+
+- [ ] **FB-09**: Facebook button appears in the OAuth section on sign-in and sign-up pages, after Google and X buttons
+- [ ] **FB-10**: Facebook button has branded styling (Facebook blue `#1877F2`) consistent with Google/X button visual style
 
 ### Locale
 
-- [ ] **LOCALE-01**: All new purge labels and flash messages have bilingual ja/en strings; i18n parity test passes
+- [ ] **FB-11**: `t('devise.shared.omniauth.facebook')` key exists in both ja.yml and en.yml; i18n parity test passes
 
-### Tests
+### Testing
 
-- [ ] **TEST-01**: Minitest covers `purgeable?` edge cases (not deleted, deleted_at nil, < 90 days, ≥ 90 days) and `purge!` verifies all 11 tables are empty after execution
-- [ ] **TEST-02**: Minitest covers controller access control (guest redirect, non-admin 404, admin-only purge)
-- [ ] **TEST-03**: Cucumber E2E scenario for the admin purge flow using a non-fixture soft-deleted user; tri-suite gate green
+- [ ] **FB-12**: Minitest covers `User.from_omniauth` for `:facebook` provider — sign-in (existing email), sign-up (new user), deleted-account guard
+- [ ] **FB-13**: Minitest covers `OmniauthCallbacksController#facebook` — persisted user signed in, failed create redirects to registration
+- [ ] **FB-14**: Cucumber E2E scenario verifies Facebook button is present on the sign-in page (static render check; no live OAuth round-trip in test); tri-suite gate green
 
-## Future Requirements
+## Future Requirements (deferred)
 
-### v2+
-
-- **ACCT-FUT-01b**: Scheduled background job purges all eligible accounts automatically after 90 days
-- **ACCT-FUT-03**: Data export before purge (user can request their data)
-- **PURGE-FUT-01**: Bulk purge of all eligible accounts from admin screen
+- FBFUT-01: Disconnect Facebook from account settings (link removal)
+- FBFUT-02: Show connected providers in preferences page
 
 ## Out of Scope
 
-| Feature | Reason |
-|---------|--------|
-| Scheduled/automatic purge job | No job infrastructure in app; manual admin-triggered purge is sufficient for personal app volume |
-| Typed-token confirmation ("type DELETE") | Admin context makes this overkill; `data-confirm` is proportionate friction |
-| Audit log of purge actions | Complexity without benefit for single-admin personal app |
-| Undo/restore after purge | Hard-delete is intentionally irreversible |
-| Bulk purge UI | Single-account purge is sufficient for current volume |
+- Fetching name/avatar from Facebook (`public_profile` scope) — email only, minimal footprint
+- Live Facebook OAuth round-trip in Cucumber (requires Facebook sandbox; static presence check is sufficient)
+- Facebook Login on mobile/native clients
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| PURGE-01 | Phase 109 | Pending |
-| PURGE-02 | Phase 109 | Pending |
-| TEST-01 | Phase 109 | Pending |
-| ADMIN-01 | Phase 110 | Pending |
-| ADMIN-02 | Phase 110 | Pending |
-| ADMIN-03 | Phase 110 | Pending |
-| LOCALE-01 | Phase 110 | Pending |
-| TEST-02 | Phase 110 | Pending |
-| TEST-03 | Phase 111 | Pending |
-
-**Coverage:**
-- v1.32 requirements: 9 total
-- Mapped to phases: 9
-- Unmapped: 0 ✓
-
----
-*Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after roadmap creation (traceability confirmed)*
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| FB-01  | —     | open   |
+| FB-02  | —     | open   |
+| FB-03  | —     | open   |
+| FB-04  | —     | open   |
+| FB-05  | —     | open   |
+| FB-06  | —     | open   |
+| FB-07  | —     | open   |
+| FB-08  | —     | open   |
+| FB-09  | —     | open   |
+| FB-10  | —     | open   |
+| FB-11  | —     | open   |
+| FB-12  | —     | open   |
+| FB-13  | —     | open   |
+| FB-14  | —     | open   |
