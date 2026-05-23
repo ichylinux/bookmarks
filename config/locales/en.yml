@@ -471,6 +471,7 @@ en:
       omniauth:
         google: Sign in with Google
         twitter: Sign in with Twitter
+        facebook: Sign in with Facebook
     failure:
       deleted_account: This account has been deleted.
     sessions:

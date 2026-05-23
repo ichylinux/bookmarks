@@ -310,6 +310,23 @@
   }
 }
 
+.auth-oauth-btn--facebook {
+  background: #1877F2;
+  border-color: #1877F2;
+  box-shadow: 0 2px 6px rgba(24, 119, 242, 0.3);
+  color: #fff;
+
+  .auth-oauth-btn__icon {
+    color: #fff;
+  }
+
+  &:hover {
+    background: #1465d0;
+    border-color: #1465d0;
+    box-shadow: 0 4px 16px rgba(24, 119, 242, 0.4);
+  }
+}
+
 .auth-oauth-btn--twitter {
   background: #0f1419;
   border-color: #0f1419;

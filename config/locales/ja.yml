@@ -471,6 +471,7 @@ ja:
       omniauth:
         google: Googleでサインイン
         twitter: Twitterでサインイン
+        facebook: Facebookでサインイン
     failure:
       deleted_account: このアカウントは削除されています。
     sessions:
