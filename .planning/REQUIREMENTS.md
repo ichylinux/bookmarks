@@ -49,17 +49,17 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| FB-01  | —     | open   |
-| FB-02  | —     | open   |
-| FB-03  | —     | open   |
-| FB-04  | —     | open   |
-| FB-05  | —     | open   |
-| FB-06  | —     | open   |
-| FB-07  | —     | open   |
-| FB-08  | —     | open   |
-| FB-09  | —     | open   |
-| FB-10  | —     | open   |
-| FB-11  | —     | open   |
-| FB-12  | —     | open   |
-| FB-13  | —     | open   |
-| FB-14  | —     | open   |
+| FB-01  | 112   | open   |
+| FB-02  | 112   | open   |
+| FB-03  | 112   | open   |
+| FB-04  | 112   | open   |
+| FB-05  | 112   | open   |
+| FB-06  | 112   | open   |
+| FB-07  | 112   | open   |
+| FB-08  | 112   | open   |
+| FB-09  | 113   | open   |
+| FB-10  | 113   | open   |
+| FB-11  | 113   | open   |
+| FB-12  | 112   | open   |
+| FB-13  | 112   | open   |
+| FB-14  | 113   | open   |

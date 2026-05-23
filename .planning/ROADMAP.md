@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.33 — Facebook Login** — Phases 112–113 (in progress)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
 - ✅ **v1.30 — Admin User Management Screen** — Phases 101–103.1 (shipped 2026-05-22) — [archived](milestones/v1.30-ROADMAP.md)
@@ -36,6 +37,15 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+<details>
+<summary>✅ v1.32 — Admin Account Purge (Phases 109–111) — SHIPPED 2026-05-22</summary>
+
+- [x] Phase 109: Model Layer — Purge Predicate & Cascade (1/1 plan) — 2026-05-22
+- [x] Phase 110: Controller + Views + Locale (1/1 plan) — 2026-05-22
+- [x] Phase 111: Cucumber E2E + Tri-suite Gate (1/1 plan) — 2026-05-22
+
+</details>
 
 <details>
 <summary>✅ v1.31 — X Account Manual Add (Non-Following) (Phases 104–108) — SHIPPED 2026-05-22</summary>
@@ -145,14 +155,10 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ---
 
-<details>
-<summary>✅ v1.32 — Admin Account Purge (Phases 109–111) — SHIPPED 2026-05-22</summary>
+### v1.33 — Facebook Login (Phases 112–113)
 
-- [x] Phase 109: Model Layer — Purge Predicate & Cascade (1/1 plan) — 2026-05-22
-- [x] Phase 110: Controller + Views + Locale (1/1 plan) — 2026-05-22
-- [x] Phase 111: Cucumber E2E + Tri-suite Gate (1/1 plan) — 2026-05-22
-
-</details>
+- [ ] **Phase 112: Backend — Gem, Config, Model & Controller** - Wire Facebook OAuth provider end-to-end: gem, Devise config, `User.from_omniauth`, callback action, and Minitest coverage
+- [ ] **Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber** - Facebook sign-in button visible and styled on sign-in/sign-up pages with bilingual labels; tri-suite gate green
 
 ## Phase Details
 
@@ -271,6 +277,34 @@ Plans:
   6. `bundle exec rake dad:test` exits 0 with 0 failed Cucumber scenarios
 **Plans**: 1 plan (inline autonomous execute)
 
+---
+
+### Phase 112: Backend — Gem, Config, Model & Controller
+**Goal**: Facebook OAuth is wired end-to-end on the server side — the gem is installed, Devise is configured with the Facebook provider, `User.from_omniauth` handles `:facebook` with email-based find-or-create, the callback controller action exists, and Minitest covers all authentication paths
+**Depends on**: Nothing (first phase of v1.33; existing OmniAuth infrastructure for Google and X already in place)
+**Requirements**: FB-01, FB-02, FB-03, FB-04, FB-05, FB-06, FB-07, FB-08, FB-12, FB-13
+**Success Criteria** (what must be TRUE):
+  1. `bundle install` succeeds with `omniauth-facebook` in the Gemfile; `Gemfile.lock` updated; `bundle exec rails runner 'puts OmniAuth::Strategies::Facebook'` exits without error
+  2. `config/initializers/devise.rb` configures the `:facebook` provider with `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` ENV vars and `scope: 'email'`; `config/app_config.yml` references those same ENV keys for all environments
+  3. `User.from_omniauth` for provider `:facebook` finds an existing user by email from `auth.info.email` and signs them in, or creates a new user when no match is found — same pattern as `:google_oauth2`
+  4. A soft-deleted user whose email matches the Facebook identity cannot sign in — `User.active` scope blocks re-authentication
+  5. `Users::OmniauthCallbacksController#facebook` action exists, delegates to `handle_callback`, and redirects correctly for both the persisted-user and failed-create paths
+  6. Minitest covers `User.from_omniauth` for `:facebook`: existing-email sign-in, new-user sign-up, and deleted-account guard (3 cases); Minitest covers the controller action for persisted user and failed create (2 cases); all pass
+**Plans**: TBD
+
+### Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber
+**Goal**: Users see a Facebook sign-in button on the sign-in and sign-up pages, styled with Facebook blue and positioned after Google and X buttons, with bilingual labels and a green tri-suite gate
+**Depends on**: Phase 112
+**Requirements**: FB-09, FB-10, FB-11, FB-14
+**Success Criteria** (what must be TRUE):
+  1. The `_oauth_buttons.html.erb` partial renders a Facebook button after the existing Google and X buttons on both the sign-in and sign-up pages
+  2. The Facebook button applies a branded CSS rule using `#1877F2` (Facebook blue), visually consistent with the Google and X button style conventions
+  3. `t('devise.shared.omniauth.facebook')` key exists in both `ja.yml` and `en.yml`; the i18n parity test passes
+  4. A Cucumber scenario visits the sign-in page and asserts the Facebook OAuth button is present (static render check — no live OAuth round-trip)
+  5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -283,5 +317,7 @@ Plans:
 | 109. Model Layer — Purge Predicate & Cascade | 1/1 | Complete | 2026-05-22 |
 | 110. Controller + Views + Locale | 1/1 | Complete | 2026-05-22 |
 | 111. Cucumber E2E + Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
+| 112. Backend — Gem, Config, Model & Controller | 0/? | Not started | - |
+| 113. Frontend & E2E — Button UI, CSS, Locale & Cucumber | 0/? | Not started | - |
 
-*Last updated: 2026-05-22 — v1.32 shipped (Phases 109–111)*
+*Last updated: 2026-05-24 — v1.33 roadmap created (Phases 112–113)*

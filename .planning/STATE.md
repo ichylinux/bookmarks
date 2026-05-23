@@ -4,9 +4,9 @@ milestone: v1.33
 milestone_name: Facebook Login
 status: planning
 last_updated: "2026-05-24"
-last_activity: 2026-05-24 — Milestone v1.33 started
+last_activity: 2026-05-24 — Roadmap created (Phases 112–113)
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,17 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 112 (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-24 — Milestone v1.33 started
+Status: Roadmap created; ready to plan Phase 112
+Last activity: 2026-05-24 — Roadmap created (Phases 112–113)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.33 Facebook Login — adding Facebook as a third OAuth provider
+**Current focus:** v1.33 Facebook Login — adding Facebook as a third OAuth provider alongside Google and X
 
 ## Performance Metrics
 
@@ -43,11 +43,15 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | v2 | XMAN-FUT-01 total cap on manually-added accounts | open |
 | v2 | XMAN-FUT-02 bulk add by handle list | open |
 | v2 | XMAN-FUT-03 dedicated remove action for manually-added accounts | open |
+| v2 | FBFUT-01 Disconnect Facebook from account settings | open |
+| v2 | FBFUT-02 Show connected providers in preferences page | open |
 
 ## Accumulated Context
 
 ### Decisions
 
+- (v1.33) Facebook uses email-based find-or-create in `User.from_omniauth`, same pattern as `:google_oauth2`; `scope: 'email'` only — no `public_profile`
+- (v1.33) No live Facebook OAuth round-trip in Cucumber — static presence check is sufficient for CI
 - (v1.32) `purge!` uses explicit `delete_all` per table; final `user.delete` (not `destroy!`)
 - (v1.32) `portal_layouts` deleted via `PortalLayout.where(user_id: id).delete_all`
 - (v1.32) Cucumber `@admin_purge` uses `purge_e2e_test@example.com` — avoids fixture id 1/2/3
