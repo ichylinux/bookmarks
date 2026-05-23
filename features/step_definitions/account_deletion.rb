@@ -32,7 +32,7 @@ end
   visit '/users/sign_in'
   fill_in 'user[email]', with: 'user3@example.com'
   fill_in 'user[password]', with: 'testtest'
-  find('input[type="submit"], button[type="submit"]', match: :first).click
+  find('form.auth-form').find('input[type="submit"], button[type="submit"]').click
 
   visit '/preferences'
   assert_equal new_user_session_path, current_path

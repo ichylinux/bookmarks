@@ -6,6 +6,12 @@
            } do %>
   <h1 id="auth-sign-in-heading" class="auth-card__title"><%= t('devise.sessions.new.sign_in') %></h1>
 
+  <%= render 'devise/shared/oauth_buttons' %>
+
+  <div class="auth-divider">
+    <span><%= t('landing.auth.or_with_email') %></span>
+  </div>
+
   <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'auth-form' }) do |f| %>
     <div class="auth-field">
       <%= f.label :email, class: 'auth-label' %>
@@ -25,7 +31,7 @@
     <% end %>
 
     <div class="auth-actions">
-      <%= f.submit t('devise.sessions.new.sign_in'), class: 'auth-submit' %>
+      <%= f.submit t('devise.sessions.new.sign_in'), class: 'auth-submit auth-submit--secondary' %>
     </div>
   <% end %>
 

@@ -259,6 +259,123 @@
   }
 }
 
+.auth-oauth-primary {
+  margin-bottom: 4px;
+  margin-top: 20px;
+}
+
+.auth-oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-oauth-btn {
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid #c5d0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(47, 79, 119, 0.07);
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  gap: 12px;
+  justify-content: center;
+  margin: 0;
+  padding: 13px 18px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  width: 100%;
+
+  &:hover {
+    border-color: #93b4f0;
+    box-shadow: 0 4px 16px rgba(47, 111, 235, 0.18);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.auth-oauth-btn--google {
+  border-color: #dadce0;
+
+  &:hover {
+    background: #f8faff;
+    border-color: #4285F4;
+    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.2);
+  }
+}
+
+.auth-oauth-btn--twitter {
+  background: #0f1419;
+  border-color: #0f1419;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  color: #fff;
+
+  .auth-oauth-btn__icon {
+    color: #fff;
+  }
+
+  &:hover {
+    background: #1d2733;
+    border-color: #1d2733;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.auth-oauth-btn__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 22px;
+  line-height: 0;
+  width: 22px;
+
+  svg {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.auth-divider {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin: 20px 0 4px;
+
+  &::before,
+  &::after {
+    background: #d8e1ef;
+    content: '';
+    flex: 1;
+    height: 1px;
+  }
+
+  span {
+    color: #8a99b5;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+}
+
+.auth-submit--secondary {
+  background: #f1f5fb;
+  border: 1.5px solid #c5d0e0;
+  color: #334155;
+
+  &:hover {
+    background: #e6edf8;
+    border-color: #93b4f0;
+  }
+}
+
+// Legacy: kept for other auth pages that may still use the old structure
 .auth-oauth {
   margin-top: 22px;
 }
@@ -271,66 +388,6 @@
   margin: 0 0 10px;
   text-align: center;
   text-transform: uppercase;
-}
-
-.auth-oauth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.auth-oauth-btn {
-  align-items: center;
-  background: #fff;
-  border: 1px solid #c5d0e0;
-  border-radius: 8px;
-  color: #1e293b;
-  cursor: pointer;
-  display: flex;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  gap: 10px;
-  justify-content: center;
-  margin: 0;
-  padding: 10px 14px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  width: 100%;
-
-  &:hover {
-    border-color: #2f6feb;
-    box-shadow: 0 4px 14px rgba(47, 111, 235, 0.12);
-  }
-}
-
-.auth-oauth-btn--twitter {
-  background: #0f1419;
-  border-color: #0f1419;
-  color: #fff;
-
-  .auth-oauth-btn__icon {
-    color: #fff;
-  }
-
-  &:hover {
-    background: #1a2028;
-    border-color: #1a2028;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-  }
-}
-
-.auth-oauth-btn__icon {
-  display: inline-flex;
-  flex-shrink: 0;
-  height: 20px;
-  line-height: 0;
-  width: 20px;
-
-  svg {
-    display: block;
-    height: 100%;
-    width: 100%;
-  }
 }
 
 .auth-footer {
