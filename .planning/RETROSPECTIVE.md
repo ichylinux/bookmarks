@@ -2,6 +2,47 @@
 
 *Living document updated at milestone boundaries.*
 
+## Milestone: v1.34 — Connected OAuth Providers
+
+**Shipped:** 2026-05-24
+**Phases:** 5 (114–118) | **Plans:** 5 (1 per phase)
+
+### What Was Built
+
+- `oauth_identities(user_id, provider, uid)` table with unique index; `OauthIdentity.upsert_for!`; all three provider branches in `User.from_omniauth` wired; backfill migration for existing X-linked users
+- `password_auth_enabled boolean NOT NULL DEFAULT false` on `users`; `before_save :after_password_reset` callback; `disconnect_form_auth!` via `update_columns`
+- `OauthIdentitiesController#destroy` at `DELETE /oauth_identities/:provider` with last-auth-method safety guard; form auth `provider='form'` path
+- `_connected_accounts.html.erb` partial — 4 auth method rows (Google, X, Facebook, Email & Password) with icons, linked/unlinked badges, disconnect buttons; 9 locale keys × 2 languages
+- `features/14.連携アカウント.feature` with 3 `@connected_accounts` scenarios; tri-suite at close: lint ✓ · 587/587 Minitest · 38/38 Cucumber
+
+### What Worked
+
+- Dedicated `oauth_identities` table cleanly separated linked-provider state from legacy `users.provider`/`users.uid` columns — single authoritative source for disconnect UI
+- Symmetric safety guard for OAuth and form auth (`remaining_oauth == 0 && !password_auth_enabled?`) prevented account lockout edge cases
+- Retroactive SECURITY + VALIDATION artifact closure brought all 5 phases to Nyquist COMPLIANT before milestone audit re-run
+- `@connected_accounts` Cucumber hook pattern (seed Google+X identities in Before, cleanup in After) isolated E2E state without fixture pollution
+
+### What Was Inefficient
+
+- Phases 115–118 shipped before formal GSD artifacts existed — retroactive VERIFICATION/VALIDATION/SECURITY closure required a second audit pass
+- First `dad:test` run reported 37/38 (order-dependent flake); second run green — documented rerun policy but adds friction at milestone close
+- `password_auth_enabled` defaults to `false` for all existing users — correct for safety but means form auth shows "Not connected" until user completes password reset flow
+
+### Patterns Established
+
+- `OauthIdentity.upsert_for!` with `find_or_initialize_by` + `save!` as the canonical sign-in upsert pattern for all providers
+- Connected Accounts partial receives `oauth_identities:` local from preferences index — view stays decoupled from controller query logic
+- Disconnect controller handles both OAuth providers and `provider='form'` in one action — symmetric UX for all 4 auth rows
+- Feature file naming: `14.連携アカウント.feature` follows numeric-prefix + Japanese filename convention
+
+### Key Lessons
+
+- Last-auth-method guard must consider both OAuth count and `password_auth_enabled?` — OAuth-only users with no password set cannot disconnect their sole provider
+- Milestone audit should wait until retroactive artifacts (VALIDATION.md, SECURITY.md) are complete — initial audit flagged Nyquist gaps that a re-audit resolved
+- Dedicated Minitest for Connected Accounts rendering (`test_connected_accounts_section_renders_four_auth_rows`) closes the gap between implicit controller coverage and explicit UI assertion
+
+---
+
 ## Milestone: v1.31 — X Account Manual Add (Non-Following)
 
 **Shipped:** 2026-05-22
@@ -818,6 +859,7 @@
 | v1.22 | 3 (70–72) | Routing simplification milestone; `LandingController` deleted, guest path inlined into `WelcomeController#index`; deferred uid bug fixed in parallel phase |
 | v1.26 | 5 (84–88) | Visited link persistence + gadget wiring + delegated JS; Phase 88 planning/trace harness (`v1_26_closure_planning_contract_test.rb`); milestone audit passed before archive |
 | v1.30 | 4 (101–103.1) | Admin user list reusing v1.29 admin infra; retroactive artifact closure pattern now mature (Phase 103.1 mirrors v1.28 Phase 95); audit run promptly and resolved before archive |
+| v1.34 | 5 (114–118) | OAuth identity data layer + Connected Accounts preferences UI; retroactive SECURITY/VALIDATION closure required re-audit; symmetric last-auth-method guard for OAuth + form auth |
 
 ### Cumulative quality
 
@@ -838,6 +880,7 @@
 | v1.22 | Minitest 384/384 + Cucumber 25 scenarios green | Routing simplification; `LandingController` deleted; `from_omniauth` uid fix; no new test infrastructure needed |
 | v1.26 | Minitest 458 + Cucumber 27 scenarios green | Feed-path Cucumber E2E; planning closure locked traceability; pre-close `audit-open` quick-task scanner drift acknowledged in STATE |
 | v1.30 | Minitest 528/528 + Cucumber 31/31 green | Admin user list + retroactive artifacts; milestone audit `passed` before archive; 7-column view with N+1 prevention via `includes(:x_accounts)` |
+| v1.34 | Minitest 587/587 + Cucumber 38/38 green | OAuth identity tracking + disconnect UI; re-audit after retroactive Nyquist/SECURITY artifacts; documented `dad:test` one-rerun flake at close |
 
 ### Top lessons (carry forward)
 
@@ -856,3 +899,5 @@
 13. For auth-state-aware root routes, a single controller with a `user_signed_in?` branch is simpler than two controllers + redirect — fewer routes, unambiguous test contracts (v1.22).
 14. Update the REQUIREMENTS traceability table in the same commit that marks phases complete — "Pending" rows at archive time are a documentation miss that creates confusion during milestone close (v1.22).
 15. After `gsd-sdk query milestone.complete`, scan `MILESTONES.md` for placeholder accomplishment bullets — repair from SUMMARY one-liners before tagging (v1.26).
+16. Run milestone audit only after retroactive VALIDATION.md and SECURITY.md artifacts are complete — initial audit may flag Nyquist gaps that a re-audit resolves (v1.34).
+17. Last-auth-method disconnect guard must check both OAuth identity count and `password_auth_enabled?` — OAuth-only users without a set password cannot disconnect their sole provider (v1.34).
