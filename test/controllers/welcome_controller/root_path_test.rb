@@ -28,6 +28,21 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Simplify your daily information flow'
   end
 
+  def test_rootに4つのサインイン連携カードが表示される
+    get root_path
+    assert_response :success
+    assert_select 'section.landing-integrations .landing-integration-card', count: 4
+    assert_includes response.body, I18n.t('landing.integrations.google.title', locale: :ja)
+    assert_includes response.body, I18n.t('landing.integrations.facebook.title', locale: :ja)
+  end
+
+  def test_rootのヒーローにブランド表示がある
+    get root_path
+    assert_response :success
+    assert_select '.landing-brand-lockup img.landing-brand-icon[alt=?]', 'Bookmarks'
+    assert_includes response.body, I18n.t('landing.header.subtitle', locale: :ja)
+  end
+
   def test_未ログインでrootへ英語優先でアクセスすると英語ランディングが表示される
     get root_path, headers: { 'Accept-Language' => 'en-US,en;q=0.9,ja;q=0.8' }
     assert_response :success

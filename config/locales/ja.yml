@@ -325,6 +325,7 @@ ja:
       sign_in: アカウントをお持ちの方
       continue_to_app: アプリを開く
     values:
+      section_aria: 主な機能
       capture:
         title: 思いついたらすぐ保存
         body: 気になったページ、メモ、アイデアをその瞬間に残せます。探し直す手間も、忘れる心配もありません。
@@ -342,10 +343,16 @@ ja:
     footer:
       legal_nav_aria: 法的情報
     integrations:
-      heading: 連携サービス
+      heading: サインイン方法
+      google:
+        title: Google
+        body: Googleアカウントでワンステップ登録・サインインできます。このサービスにパスワードを覚える必要はありません。
       x:
         title: X（旧Twitter）
         body: Xアカウントでサインインしてフォロー中のアカウントを取り込み、ダッシュボードで最新ツイートを確認できます。
+      facebook:
+        title: Facebook
+        body: Facebookのメールアドレスでサインインできます。Googleと同様に、余分なプロフィール権限は要求しません。
       mastodon:
         title: Mastodon
         body: Mastodonアカウントを登録して、ダッシュボードに最新トゥートを表示できます。
@@ -357,6 +364,18 @@ ja:
         performance: パフォーマンス
         new: 新機能
       entries:
+        - date: "2026-05-25"
+          headline: ランディングページを刷新しました
+          tag: ux
+          description: 訪問者向けページのヒーロー表示を整理し、サインイン方法と最新のお知らせを分かりやすく掲載しました。
+        - date: "2026-05-24"
+          headline: 連携アカウントを設定画面で管理できるようになりました
+          tag: new
+          description: 設定画面に Google・X・Facebook・メールの各サインイン方法の連携状態と解除操作を表示するようになりました。
+        - date: "2026-05-24"
+          headline: Facebookでサインインできるようになりました
+          tag: new
+          description: GoogleやXに加え、Facebookアカウントでも新規登録・サインインできるようになりました。
         - date: "2026-05-22"
           headline: ユーザー名でXアカウントを追加できるようになりました
           tag: new

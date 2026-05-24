@@ -325,6 +325,7 @@ en:
       sign_in: I already have an account
       continue_to_app: Open the app
     values:
+      section_aria: Key features
       capture:
         title: Save anything, instantly
         body: Clip bookmarks, jot notes, and capture ideas the moment they strike — no friction, no forgetting.
@@ -342,10 +343,16 @@ en:
     footer:
       legal_nav_aria: Legal information
     integrations:
-      heading: Integrations
+      heading: Sign in your way
+      google:
+        title: Google
+        body: Sign in with Google to create an account in one step — no password to remember on this service.
       x:
         title: X (formerly Twitter)
         body: Sign in with X to import the accounts you follow and view their latest tweets in a dashboard gadget.
+      facebook:
+        title: Facebook
+        body: Sign in with Facebook using your email address — the same quick start as Google, with no extra profile permissions.
       mastodon:
         title: Mastodon
         body: Connect your Mastodon account and display recent toots directly on your dashboard.
@@ -357,6 +364,18 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-05-25"
+          headline: Refreshed the landing page
+          tag: ux
+          description: Updated the visitor page with a clearer hero, all sign-in options, and recent product news.
+        - date: "2026-05-24"
+          headline: Manage connected sign-in providers
+          tag: new
+          description: The preferences page now lists Google, X, Facebook, and email sign-in with link status and disconnect controls.
+        - date: "2026-05-24"
+          headline: Sign in with Facebook
+          tag: new
+          description: You can now create and sign in to your account with Facebook, alongside Google and X.
         - date: "2026-05-22"
           headline: Add X accounts by username
           tag: new

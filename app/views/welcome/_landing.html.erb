@@ -1,20 +1,29 @@
 <main class="landing-page">
   <%= render 'welcome/landing_lang_switcher', path_helper: :root_path %>
   <section class="landing-hero">
-    <p class="landing-eyebrow"><%= t('landing.hero.eyebrow') %></p>
-    <h1><%= t('landing.hero.title') %></h1>
-    <p class="landing-description"><%= t('landing.hero.description') %></p>
-    <div class="landing-cta-group">
-      <% if user_signed_in? %>
-        <%= link_to t('landing.cta.continue_to_app'), root_path, class: 'landing-cta landing-cta--primary' %>
-      <% else %>
-        <%= link_to t('landing.cta.sign_up'), new_user_registration_path, class: 'landing-cta landing-cta--primary' %>
-        <%= link_to t('landing.cta.sign_in'), new_user_session_path, class: 'landing-cta landing-cta--secondary' %>
-      <% end %>
+    <div class="landing-hero__inner">
+      <div class="landing-brand-lockup">
+        <%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'landing-brand-icon' %>
+        <div>
+          <p class="landing-brand-name">Bookmarks</p>
+          <p class="landing-brand-subtitle"><%= t('landing.header.subtitle') %></p>
+        </div>
+      </div>
+      <p class="landing-eyebrow"><%= t('landing.hero.eyebrow') %></p>
+      <h1 class="landing-hero-title"><%= t('landing.hero.title') %></h1>
+      <p class="landing-description"><%= t('landing.hero.description') %></p>
+      <div class="landing-cta-group">
+        <% if user_signed_in? %>
+          <%= link_to t('landing.cta.continue_to_app'), root_path, class: 'landing-cta landing-cta--primary' %>
+        <% else %>
+          <%= link_to t('landing.cta.sign_up'), new_user_registration_path, class: 'landing-cta landing-cta--primary' %>
+          <%= link_to t('landing.cta.sign_in'), new_user_session_path, class: 'landing-cta landing-cta--secondary' %>
+        <% end %>
+      </div>
     </div>
   </section>
 
-  <section class="landing-value-grid">
+  <section class="landing-value-grid" aria-label="<%= t('landing.values.section_aria') %>">
     <article class="landing-value-card">
       <h2 class="landing-value-card-heading">
         <span class="landing-value-icon" aria-hidden="true">
@@ -48,8 +57,16 @@
     <h2 class="landing-integrations-heading"><%= t('landing.integrations.heading') %></h2>
     <div class="landing-integration-list">
       <article class="landing-integration-card">
+        <h3><%= t('landing.integrations.google.title') %></h3>
+        <p><%= t('landing.integrations.google.body') %></p>
+      </article>
+      <article class="landing-integration-card">
         <h3><%= t('landing.integrations.x.title') %></h3>
         <p><%= t('landing.integrations.x.body') %></p>
+      </article>
+      <article class="landing-integration-card">
+        <h3><%= t('landing.integrations.facebook.title') %></h3>
+        <p><%= t('landing.integrations.facebook.body') %></p>
       </article>
       <article class="landing-integration-card">
         <h3><%= t('landing.integrations.mastodon.title') %></h3>
