@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
-last_updated: "2026-05-24T14:15:41.430Z"
-last_activity: 2026-05-24 — v1.34 Connected OAuth Providers shipped
+last_updated: "2026-05-25T00:00:00.000Z"
+last_activity: 2026-05-25 — Completed quick task 20260525-add-lock-version-users: add lock_version to users table
 progress:
   total_phases: 15
   completed_phases: 5
@@ -75,6 +75,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260523-obsolete-adr-audit | Audit for obsolete ADRs / stale decision docs | 2026-05-23 | [20260523-obsolete-adr-audit](./quick/20260523-obsolete-adr-audit/) |
 | 20260523-001 | Admin users index pagination (50 per page) | 2026-05-23 | [20260523-001-admin-users-pagination](./quick/20260523-001-admin-users-pagination/) |
 | 20260524-oauth-promote | Promote Google/X OAuth buttons above email form | 2026-05-24 | [20260524-oauth-promote](./quick/20260524-oauth-promote/) |
+| 20260525-add-lock-version-users | Add lock_version to users table | 2026-05-25 | [20260525-add-lock-version-users](./quick/20260525-add-lock-version-users/) |
 
 ## Operator Next Steps
 
