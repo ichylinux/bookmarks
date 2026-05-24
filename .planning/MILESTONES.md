@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.34 — Connected OAuth Providers (shipped 2026-05-24)
+
+**Scope:** Phases 114–118 (5 phases, 5 plans) — `oauth_identities` data layer, `password_auth_enabled` form auth flag, `OauthIdentitiesController#destroy` with safety guard, "Connected Accounts" preferences UI, Cucumber E2E tri-suite gate. 53 files changed, 2,256 insertions(+), 68 deletions(-).
+
+**Key accomplishments:**
+
+- `oauth_identities(user_id, provider, uid)` table with unique index on `(user_id, provider)`, FK to `users`; `OauthIdentity.upsert_for!` class method with race-safe `rescue RecordNotUnique; retry`; `from_omniauth` wired for all 3 providers (google_oauth2, twitter2, facebook); backfill migration for existing X-linked users; 10 Minitest cases (IDNT-01, IDNT-02, IDNT-03).
+- `password_auth_enabled boolean NOT NULL DEFAULT false` on `users`; `before_save :after_password_reset` fires only during Devise password reset flow (sets flag `true`); `disconnect_form_auth!` atomically clears flag and randomizes encrypted password via `update_columns`; 5 Minitest cases (FORM-01, FORM-02, FORM-03).
+- `OauthIdentitiesController#destroy` at `DELETE /oauth_identities/:provider`; safety guard blocks disconnect when `remaining_oauth == 0 && !password_auth_enabled?`; graceful not_connected no-op; form auth `provider='form'` handled; `has_many :oauth_identities, dependent: :destroy` on User; 5 controller integration tests; 6 locale keys × 2 languages (CTRL-01, CTRL-02).
+- `app/views/preferences/_connected_accounts.html.erb` (97 lines) — Google, X, Facebook, and Email & Password rows with provider icons, linked/unlinked badges, disconnect buttons; rendered unconditionally from `preferences/index.html.erb`; 9 locale keys × 2 languages; i18n parity test passes (VIEW-01, VIEW-02, VIEW-03).
+- `features/14.連携アカウント.feature` with 3 `@connected_accounts` scenarios (view, disconnect, last-auth guard); step defs + Before/After hooks; tri-suite gate green: `yarn run lint` ✓ · `bin/rails test` 587/587 · `bundle exec rake dad:test` 38/38 (TEST-01, TEST-02).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.34-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.34-REQUIREMENTS.md) · [Audit](milestones/v1.34-MILESTONE-AUDIT.md) (passed, 13/13)
+
+---
+
 ## v1.31 — X Account Manual Add (Non-Following) (shipped 2026-05-22)
 
 **Scope:** Phases 104–108 (5 phases, 6 plans) — `manually_added` schema column + `upsert_manual!` model method + refresh guard, `XClient#lookup_user_by_username` with 7-symbol error contract, `POST /x_accounts/lookup_and_add` controller with all flash states, handle input form + manually-added badge view, Cucumber E2E tri-suite gate. 80 files changed, 4,630 insertions(+), 1,033 deletions(-).

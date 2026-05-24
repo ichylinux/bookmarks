@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🔄 **v1.34 — Connected OAuth Providers** — Phases 114–118 (active)
+- ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
@@ -156,18 +156,24 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 
 ---
 
-### v1.33 — Facebook Login (Phases 112–113)
+<details>
+<summary>✅ v1.33 — Facebook Login (Phases 112–113) — SHIPPED 2026-05-24</summary>
 
-- [x] **Phase 112: Backend — Gem, Config, Model & Controller** — 2026-05-24
-- [x] **Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber** — 2026-05-24
+- [x] Phase 112: Backend — Gem, Config, Model & Controller — 2026-05-24
+- [x] Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber — 2026-05-24
 
-### v1.34 — Connected OAuth Providers (Phases 114–118)
+</details>
 
-- [x] **Phase 114: OAuth Identity Data Layer** — `oauth_identities` table, `OauthIdentity` model, `from_omniauth` wiring, backfill migration — 2026-05-24
-- [x] **Phase 115: Form Auth Data Layer** — `password_auth_enabled` column, `after_password_reset` callback, form-auth disconnect support — 2026-05-24
-- [x] **Phase 116: Disconnect Controller & Routes** — `DELETE /oauth_identities/:provider`, safety guard, locale strings — 2026-05-24
-- [x] **Phase 117: Preferences View — Connected Accounts** — Connected Accounts section UI, icons, linked/unlinked status, disconnect buttons — 2026-05-24
-- [x] **Phase 118: Tests & Tri-suite Gate** — Minitest + Cucumber E2E + tri-suite verification — 2026-05-24
+<details>
+<summary>✅ v1.34 — Connected OAuth Providers (Phases 114–118) — SHIPPED 2026-05-24</summary>
+
+- [x] Phase 114: OAuth Identity Data Layer (1/1 plan) — 2026-05-24
+- [x] Phase 115: Form Auth Data Layer (1/1 plan) — 2026-05-24
+- [x] Phase 116: Disconnect Controller & Routes (1/1 plan) — 2026-05-24
+- [x] Phase 117: Preferences View — Connected Accounts (1/1 plan) — 2026-05-24
+- [x] Phase 118: Tests & Tri-suite Gate (1/1 plan) — 2026-05-24
+
+</details>
 
 ## Phase Details
 

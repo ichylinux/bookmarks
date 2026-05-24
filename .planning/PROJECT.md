@@ -4,15 +4,17 @@
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
-## Current Milestone: v1.34 Connected OAuth Providers
+<details>
+<summary>Shipped: v1.34 Connected OAuth Providers (2026-05-24)</summary>
 
-**Goal:** Let users see which OAuth providers are linked to their account and disconnect individual ones from the preferences page.
+**Delivered (phases 114–118):**
+- `oauth_identities(user_id, provider, uid)` table; `OauthIdentity.upsert_for!`; `from_omniauth` wired for all 3 providers; backfill migration for existing X-linked users; 10 Minitest cases
+- `password_auth_enabled boolean NOT NULL DEFAULT false` on `users`; `after_password_reset` callback; `disconnect_form_auth!` via `update_columns`; 5 Minitest cases
+- `OauthIdentitiesController#destroy` at `DELETE /oauth_identities/:provider`; safety guard (blocks last auth method removal); graceful not_connected no-op; form auth `provider='form'` path; 5 controller tests; 6 locale keys × 2 languages
+- `_connected_accounts.html.erb` partial: 4 auth method rows (Google, X, Facebook, Email & Password) with icons, linked/unlinked badges, disconnect buttons; 9 locale keys × 2 languages
+- 3 Cucumber scenarios (`@connected_accounts`): view, disconnect, safety guard; tri-suite green: lint ✓ · 587 Minitest · 38 Cucumber
 
-**Target features:**
-- "Connected Accounts" section on preferences page listing Google, X, and Facebook with icons and bilingual labels (ja/en)
-- Disconnect button per provider
-- Safety guard: disconnect blocked if it would leave the user with no remaining auth method
-- No "connect new provider" from preferences — sign-in pages remain the only linking surface
+</details>
 
 <details>
 <summary>Shipped: v1.32 Admin Account Purge (2026-05-22)</summary>
@@ -258,6 +260,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.34 (2026-05-24):** Connected OAuth Providers — `oauth_identities` table + `OauthIdentity.upsert_for!` for all 3 providers + backfill; `password_auth_enabled` flag + `after_password_reset` callback + `disconnect_form_auth!`; `OauthIdentitiesController#destroy` with safety guard; "Connected Accounts" preferences section (4 rows, icons, bilingual); 3 Cucumber E2E scenarios. Tri-suite: lint ✓ · 587 Minitest · 38 Cucumber. Audit: `.planning/milestones/v1.34-MILESTONE-AUDIT.md` (passed, 13/13).
 - **Shipped v1.31 (2026-05-22):** X account manual add — `manually_added` schema column + `upsert_manual!` + refresh guard, `XClient#lookup_user_by_username` (7-symbol error contract), `POST /x_accounts/lookup_and_add` (7 flash states), handle input form + manually-added badge, Cucumber E2E `@x_manual_add` hook + 2 Japanese scenarios. Tri-suite: lint ✓ · 546 Minitest 0 failures · 33/33 Cucumber. Details: `.planning/milestones/v1.31-ROADMAP.md`. No formal audit file (tri-suite gate and SUMMARY.md presence accepted as evidence).
 - **Shipped v1.30 (2026-05-22):** Admin user management screen — `/admin/users` route + controller (reuses `require_admin`), 7-column user list with soft-deleted visibility + N+1 prevention, drawer nav link, bilingual ja/en locale keys + i18n parity test, Cucumber E2E. Tri-suite: lint ✓ · 528 Minitest 0 failures · 31/31 Cucumber. Details: `.planning/milestones/v1.30-ROADMAP.md`. Audit: `.planning/milestones/v1.30-MILESTONE-AUDIT.md` (passed; Phase 103.1 closed process debt).
 - **Shipped v1.29 (2026-05-21):** Admin X API usage report — `x_api_calls` logging, controller instrumentation, admin gate, per-user report with filter/sort/locale, tri-suite gate. Tri-suite: lint ✓ · 515 Minitest 0 failures · 30/30 Cucumber. Details: `.planning/milestones/v1.29-ROADMAP.md`. No milestone audit file at close (process debt).
@@ -456,4 +459,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-24 — after v1.34 milestone start (Connected OAuth Providers)*
+*Last updated: 2026-05-24 — after v1.34 milestone completion (Connected OAuth Providers shipped)*

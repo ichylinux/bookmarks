@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.34
 milestone_name: — Connected OAuth Providers
-status: complete
-last_updated: "2026-05-24T12:00:00.000Z"
-last_activity: 2026-05-24 — Phase 118 complete (Tests & Tri-suite Gate) — all phases done
+status: shipped
+last_updated: "2026-05-24T23:30:00.000Z"
+last_activity: 2026-05-24 — v1.34 milestone archived and tagged
 progress:
   total_phases: 5
   completed_phases: 5
@@ -17,17 +17,17 @@ progress:
 
 ## Current Position
 
-Phase: — (all complete)
+Phase: — (milestone complete)
 Plan: —
-Status: All 5 phases complete — milestone ready for lifecycle (audit → complete → cleanup)
-Last activity: 2026-05-24 — Phase 118 complete (Tests & Tri-suite Gate)
+Status: v1.34 shipped — run /gsd:new-milestone to start next milestone
+Last activity: 2026-05-24 — v1.34 Connected OAuth Providers shipped
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.34 Connected OAuth Providers
+**Current focus:** Planning next milestone (v1.35)
 
 ## Performance Metrics
 
