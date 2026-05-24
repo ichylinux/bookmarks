@@ -11,7 +11,9 @@ module Admin
         '(SELECT COUNT(*) FROM feeds WHERE feeds.user_id = users.id) AS feeds_count',
         '(SELECT COUNT(*) FROM notes WHERE notes.user_id = users.id) AS notes_count',
         '(SELECT COUNT(*) FROM todos WHERE todos.user_id = users.id) AS todos_count',
-        '(SELECT COUNT(*) FROM portals WHERE portals.user_id = users.id AND portals.deleted = false) AS portals_count'
+        '(SELECT COUNT(*) FROM portals WHERE portals.user_id = users.id AND portals.deleted = false) AS portals_count',
+        '(SELECT COUNT(*) FROM x_accounts WHERE x_accounts.user_id = users.id AND x_accounts.deleted = false) AS x_accounts_count',
+        '(SELECT COUNT(*) FROM mastodon_accounts WHERE mastodon_accounts.user_id = users.id AND mastodon_accounts.deleted = false) AS mastodon_accounts_count'
       ).order(:id)
       page = [params[:page].to_i, 1].max
 

@@ -169,6 +169,8 @@ en:
         col_notes_count: Notes
         col_todos_count: Todos
         col_portals_count: Portals
+        col_x_accounts_count: Tweets
+        col_mastodon_accounts_count: Toots
         col_last_sign_in_at: Last sign-in
         col_created_at: Created at
         col_updated_at: Updated at

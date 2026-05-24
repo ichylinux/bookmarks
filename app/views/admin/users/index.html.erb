@@ -13,6 +13,8 @@
           <th scope="col"><%= t('.col_notes_count') %></th>
           <th scope="col"><%= t('.col_todos_count') %></th>
           <th scope="col"><%= t('.col_portals_count') %></th>
+          <th scope="col"><%= t('.col_x_accounts_count') %></th>
+          <th scope="col"><%= t('.col_mastodon_accounts_count') %></th>
           <th scope="col"><%= t('.col_last_sign_in_at') %></th>
           <th scope="col"><%= t('.col_created_at') %></th>
           <th scope="col"><%= t('.col_updated_at') %></th>
@@ -31,6 +33,8 @@
             <td><%= user.notes_count %></td>
             <td><%= user.todos_count %></td>
             <td><%= user.portals_count %></td>
+            <td><%= user.x_accounts_count %></td>
+            <td><%= user.mastodon_accounts_count %></td>
             <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :admin_datetime) : '—' %></td>
             <td><%= l(user.created_at, format: :admin_datetime) %></td>
             <td><%= l(user.updated_at, format: :admin_datetime) %></td>

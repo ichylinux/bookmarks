@@ -22,11 +22,27 @@ module Admin
       assert_select 'h1', text: I18n.t('admin.users.index.title', locale: :ja)
     end
 
-    def test_テーブルに8カラムのヘッダーが表示される
+    def test_テーブルに15カラムのヘッダーが表示される
       sign_in users(:one)
       get admin_users_path
       assert_response :success
-      assert_select 'table.admin-users__table thead th', count: 13
+      assert_select 'table.admin-users__table thead th', count: 15
+    end
+
+    def test_ツイート数とツート数が表示される
+      sign_in users(:one)
+      u = users(:one)
+      XAccount.create!(user: u, x_user_id: '99', username: 'testuser', selected: false)
+
+      get admin_users_path
+      assert_response :success
+      assert_select 'table.admin-users__table thead th', text: I18n.t('admin.users.index.col_x_accounts_count', locale: :ja)
+      assert_select 'table.admin-users__table thead th', text: I18n.t('admin.users.index.col_mastodon_accounts_count', locale: :ja)
+
+      row = css_select('table.admin-users__table tbody tr').find { |tr| tr.text.include?(u.email) }
+      cells = row.css('td').map { |td| td.text.strip }
+      assert_equal '1', cells[9]
+      assert_equal '1', cells[10]
     end
 
     def test_purgeable_user_shows_purge_link
