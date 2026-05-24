@@ -4,17 +4,15 @@
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
 
-## Current Milestone: v1.33 Facebook Login
+## Current Milestone: v1.34 Connected OAuth Providers
 
-**Goal:** Add Facebook as a third OAuth provider alongside Google and X, with email-only scope and email-based account linking.
+**Goal:** Let users see which OAuth providers are linked to their account and disconnect individual ones from the preferences page.
 
 **Target features:**
-- User can sign in with Facebook (omniauth-facebook, email scope only)
-- User can sign up via Facebook (new account created from Facebook identity)
-- Existing account matched by email and linked automatically
-- Facebook button appears in the OAuth section on sign-in/sign-up pages
-- Bilingual UI labels (ja/en)
-- Deleted-account guard (same as Google/X)
+- "Connected Accounts" section on preferences page listing Google, X, and Facebook with icons and bilingual labels (ja/en)
+- Disconnect button per provider
+- Safety guard: disconnect blocked if it would leave the user with no remaining auth method
+- No "connect new provider" from preferences — sign-in pages remain the only linking surface
 
 <details>
 <summary>Shipped: v1.32 Admin Account Purge (2026-05-22)</summary>
@@ -458,4 +456,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-22 — after v1.32 milestone start (Admin Account Purge)*
+*Last updated: 2026-05-24 — after v1.34 milestone start (Connected OAuth Providers)*

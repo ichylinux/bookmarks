@@ -1,33 +1,33 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.33
-milestone_name: Facebook Login
-status: complete
+milestone: v1.34
+milestone_name: Connected OAuth Providers
+status: planning
 last_updated: "2026-05-24"
-last_activity: 2026-05-24 — Phase 113 complete; all phases done; tri-suite gate green
+last_activity: 2026-05-24 — Milestone v1.34 started
 progress:
-  total_phases: 2
-  completed_phases: 2
+  total_phases: 0
+  completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 100
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 113 (complete)
+Phase: Not started (defining requirements)
 Plan: —
-Status: All phases complete — ready for milestone audit/completion
-Last activity: 2026-05-24 — Phase 113 complete; tri-suite gate green (lint ✓ Minitest 567/567 ✓ Cucumber 35/35 ✓)
+Status: Defining requirements
+Last activity: 2026-05-24 — Milestone v1.34 started
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.33 Facebook Login — COMPLETE
+**Current focus:** v1.34 Connected OAuth Providers
 
 ## Performance Metrics
 
@@ -73,6 +73,6 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 
 ## Operator Next Steps
 
-- Run `/gsd:complete-milestone` to archive v1.33 and prepare for next version
+- Run `/gsd:plan-phase 114` to start Phase 114
 </content>
 </invoke>
