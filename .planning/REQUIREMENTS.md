@@ -1,65 +1,80 @@
-# Requirements: Bookmarks v1.33
+# Requirements: Bookmarks v1.34
 
 **Defined:** 2026-05-24
 **Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## v1.33 Requirements
+## v1 Requirements
 
-### Gem & Config
+### Identity
 
-- [x] **FB-01**: `omniauth-facebook` gem added and `bundle install` succeeds
-- [x] **FB-02**: Devise initializer configures Facebook provider with `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` ENV vars and `scope: 'email'` only
-- [x] **FB-03**: `app_config.yml` references `ENV["FACEBOOK_APP_ID"]` and `ENV["FACEBOOK_APP_SECRET"]` for all environments
+- [ ] **IDNT-01**: `oauth_identities(user_id, provider, uid)` table stores one row per linked OAuth provider per user
+- [ ] **IDNT-02**: `from_omniauth` creates or updates an `OauthIdentity` row on each successful sign-in (all 3 providers: google_oauth2, twitter2, facebook)
+- [ ] **IDNT-03**: Existing X-linked accounts backfilled from `users.provider` / `users.uid` via migration
 
-### Authentication
+### Form Auth
 
-- [x] **FB-04**: User can sign in with Facebook — existing account matched by email and signed in
-- [x] **FB-05**: User can sign up with Facebook — new account created with email from Facebook identity
-- [x] **FB-06**: Deleted account cannot sign in via Facebook — `User.active` scope blocks soft-deleted users
-- [x] **FB-07**: `User.from_omniauth` handles `:facebook` provider explicitly (email-based find-or-create, same pattern as google_oauth2)
-- [x] **FB-08**: `Users::OmniauthCallbacksController#facebook` action added; delegates to `handle_callback`
+- [ ] **FORM-01**: `password_auth_enabled boolean NOT NULL DEFAULT false` column on `users` tracks whether the user has set a real password
+- [ ] **FORM-02**: `password_auth_enabled` set to `true` after user completes Devise password reset flow (via `after_password_reset` callback)
+- [ ] **FORM-03**: User can disconnect form auth from Connected Accounts (sets `password_auth_enabled: false`, randomizes password)
 
-### UI
+### View
 
-- [x] **FB-09**: Facebook button appears in the OAuth section on sign-in and sign-up pages, after Google and X buttons
-- [x] **FB-10**: Facebook button has branded styling (Facebook blue `#1877F2`) consistent with Google/X button visual style
+- [ ] **VIEW-01**: Preferences page shows "Connected Accounts" section listing all 4 auth methods (Google, X, Facebook, Email & Password) with icons and linked/unlinked status
+- [ ] **VIEW-02**: Linked providers show a Disconnect button; unlinked providers show a "Not connected" state
+- [ ] **VIEW-03**: Bilingual (ja/en) labels for section heading, provider names, disconnect button, and status text
 
-### Locale
+### Controller
 
-- [x] **FB-11**: `t('devise.shared.omniauth.facebook')` key exists in both ja.yml and en.yml; i18n parity test passes
+- [ ] **CTRL-01**: `DELETE /oauth_identities/:provider` unlinks the named OAuth provider from the current user's account
+- [ ] **CTRL-02**: Disconnect blocked with a localized error flash if it would leave the user with no remaining auth method (no other OAuth provider linked and `password_auth_enabled: false`)
 
-### Testing
+### Test
 
-- [x] **FB-12**: Minitest covers `User.from_omniauth` for `:facebook` provider — sign-in (existing email), sign-up (new user), deleted-account guard
-- [x] **FB-13**: Minitest covers `OmniauthCallbacksController#facebook` — persisted user signed in, failed create redirects to registration
-- [x] **FB-14**: Cucumber E2E scenario verifies Facebook button is present on the sign-in page (static render check; no live OAuth round-trip in test); tri-suite gate green
+- [ ] **TEST-01**: Minitest covers `OauthIdentity` model, `password_auth_enabled` tracking, disconnect controller (success + guard block), and preferences page Connected Accounts rendering
+- [ ] **TEST-02**: Cucumber E2E covers connected accounts view in preferences, OAuth provider disconnect success, and last-auth-method guard
 
-## Future Requirements (deferred)
+## v2 Requirements
 
-- FBFUT-01: Disconnect Facebook from account settings (link removal)
-- FBFUT-02: Show connected providers in preferences page
+### Identity
+
+- **IDNT-FUT-01**: User can connect a new OAuth provider directly from the preferences page (currently only possible via sign-in)
+
+### Form Auth
+
+- **FORM-FUT-01**: User can change their password from preferences without going through the reset flow
 
 ## Out of Scope
 
-- Fetching name/avatar from Facebook (`public_profile` scope) — email only, minimal footprint
-- Live Facebook OAuth round-trip in Cucumber (requires Facebook sandbox; static presence check is sufficient)
-- Facebook Login on mobile/native clients
+| Feature | Reason |
+|---------|--------|
+| Connect new provider from preferences | Sign-in pages are the only linking surface for this milestone |
+| Multiple linked accounts from the same provider | Schema constraint: one row per (user_id, provider) |
+| Token refresh / credential update for connected providers | Out of scope; providers manage their own token lifecycle |
+| Password strength meter on reset form | Devise default is sufficient |
 
 ## Traceability
 
-| REQ-ID | Phase | Status |
-|--------|-------|--------|
-| FB-01  | 112   | open   |
-| FB-02  | 112   | open   |
-| FB-03  | 112   | open   |
-| FB-04  | 112   | open   |
-| FB-05  | 112   | open   |
-| FB-06  | 112   | open   |
-| FB-07  | 112   | open   |
-| FB-08  | 112   | open   |
-| FB-09  | 113   | open   |
-| FB-10  | 113   | open   |
-| FB-11  | 113   | open   |
-| FB-12  | 112   | open   |
-| FB-13  | 112   | open   |
-| FB-14  | 113   | open   |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| IDNT-01 | — | Pending |
+| IDNT-02 | — | Pending |
+| IDNT-03 | — | Pending |
+| FORM-01 | — | Pending |
+| FORM-02 | — | Pending |
+| FORM-03 | — | Pending |
+| VIEW-01 | — | Pending |
+| VIEW-02 | — | Pending |
+| VIEW-03 | — | Pending |
+| CTRL-01 | — | Pending |
+| CTRL-02 | — | Pending |
+| TEST-01 | — | Pending |
+| TEST-02 | — | Pending |
+
+**Coverage:**
+- v1 requirements: 13 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 13 ⚠
+
+---
+*Requirements defined: 2026-05-24*
+*Last updated: 2026-05-24 after initial definition*
