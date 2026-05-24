@@ -18,7 +18,7 @@ class PortalGadgetSortJsContractTest < ActiveSupport::TestCase
     assert_includes @source, 'window.portalGadgetSort.init'
     assert_includes @source, "const MOBILE_MEDIA = '(max-width: 767px)'"
     assert_includes @source, 'window.matchMedia(MOBILE_MEDIA).matches'
-    assert_includes @source, 'LONG_PRESS_MS = 450'
+    assert_includes @source, 'LONG_PRESS_MS = 2000'
     assert_includes @source, 'sortableOptions.delay = LONG_PRESS_MS'
     assert_includes @source, "handle: 'div.title'"
   end

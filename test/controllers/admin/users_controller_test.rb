@@ -26,7 +26,7 @@ module Admin
       sign_in users(:one)
       get admin_users_path
       assert_response :success
-      assert_select 'table.admin-users__table thead th', count: 8
+      assert_select 'table.admin-users__table thead th', count: 13
     end
 
     def test_purgeable_user_shows_purge_link
