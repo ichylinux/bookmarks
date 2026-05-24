@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_22_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_24_000002) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -50,6 +50,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000001) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id", "created_at"], name: "index_notes_on_user_id_and_created_at"
+  end
+
+  create_table "oauth_identities", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "provider"], name: "index_oauth_identities_on_user_id_and_provider", unique: true
+    t.index ["user_id"], name: "index_oauth_identities_on_user_id"
   end
 
   create_table "portal_layouts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -164,4 +174,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_22_000001) do
     t.integer "user_id", null: false
     t.index ["user_id", "called_at"], name: "index_x_api_calls_on_user_id_and_called_at"
   end
+
+  add_foreign_key "oauth_identities", "users"
 end

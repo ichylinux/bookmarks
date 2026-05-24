@@ -65,9 +65,10 @@ class User < ApplicationRecord
         attrs[:email] = data['email'] if data['email'].present? && !user.has_valid_email?
         user.assign_attributes(attrs)
         user.save(validate: false)
+        OauthIdentity.upsert_for!(user: user, provider: 'twitter2', uid: uid) if user.persisted?
         user
       else
-        User.create!(
+        new_user = User.create!(
           provider: 'twitter2',
           uid: uid,
           oauth2_token: creds['token'],
@@ -78,14 +79,18 @@ class User < ApplicationRecord
           email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
           password: Devise.friendly_token[0, 20]
         )
+        OauthIdentity.upsert_for!(user: new_user, provider: 'twitter2', uid: uid)
+        new_user
       end
     when :facebook
       user = User.active.where(email: data['email']).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0, 20])
+      OauthIdentity.upsert_for!(user: user, provider: 'facebook', uid: access_token.uid.to_s) if user.persisted?
       user
     else
       user = User.active.where(email: data['email']).first
       user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
+      OauthIdentity.upsert_for!(user: user, provider: access_token['provider'], uid: access_token.uid.to_s) if user.persisted?
       user
     end
   end
