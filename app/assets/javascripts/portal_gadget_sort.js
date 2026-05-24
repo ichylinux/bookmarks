@@ -4,7 +4,7 @@
   window.portalGadgetSort = window.portalGadgetSort || {};
 
   const MOBILE_MEDIA = '(max-width: 767px)';
-  const LONG_PRESS_MS = 450;
+  const LONG_PRESS_MS = 2000;
   const DRAG_DISTANCE_PX = 12;
 
   const isMobileViewport = function() {
