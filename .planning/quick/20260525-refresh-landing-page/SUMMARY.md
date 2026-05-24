@@ -1,7 +1,7 @@
 ---
 status: complete
 date: "2026-05-25"
-commit: pending
+commit: 8934472
 ---
 
 # Quick Task Summary: Refresh landing page
