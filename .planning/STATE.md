@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.34
-milestone_name: — Connected OAuth Providers
-status: shipped
-last_updated: "2026-05-24T23:30:00.000Z"
-last_activity: 2026-05-24 — v1.34 milestone archived and tagged
+milestone_name: milestone
+status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
+last_updated: "2026-05-24T14:15:41.430Z"
+last_activity: 2026-05-24 — v1.34 Connected OAuth Providers shipped
 progress:
-  total_phases: 5
+  total_phases: 15
   completed_phases: 5
   total_plans: 5
   completed_plans: 5
-  percent: 100
+  percent: 33
 ---
 
 # State
