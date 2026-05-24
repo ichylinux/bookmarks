@@ -363,6 +363,21 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', users_email_registration_path, count: 0
   end
 
+  def test_connected_accounts_section_renders_four_auth_rows
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'section.connected-accounts h2',
+                  text: I18n.t('preferences.index.connected_accounts_section_title', locale: :ja)
+    assert_select 'section.connected-accounts .connected-accounts__row', count: 4
+    %w[google twitter facebook email_password].each do |key|
+      assert_select 'section.connected-accounts th',
+                    text: I18n.t("preferences.index.connected_accounts.#{key}", locale: :ja)
+    end
+  end
+
   def test_portal_column_countを4に保存する
     user.preference.update!(portal_column_count: 3)
     sign_in user

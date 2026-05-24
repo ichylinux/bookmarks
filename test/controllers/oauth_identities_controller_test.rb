@@ -60,4 +60,39 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to preferences_path
     assert_equal I18n.t('oauth_identities.destroy.not_connected', locale: :ja), flash[:notice]
   end
+
+  def test_destroy_form_auth_disconnects_when_oauth_linked
+    sign_in @user
+    @user.update_column(:password_auth_enabled, true)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+
+    delete oauth_identity_path('form')
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.success', provider: 'form', locale: :ja), flash[:notice]
+    @user.reload
+    refute @user.password_auth_enabled?
+  end
+
+  def test_destroy_form_auth_blocks_when_last_auth_method
+    sign_in @user
+    @user.update_column(:password_auth_enabled, true)
+
+    delete oauth_identity_path('form')
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.last_auth_method', locale: :ja), flash[:alert]
+    assert @user.reload.password_auth_enabled?
+  end
+
+  def test_destroy_form_auth_handles_already_disabled
+    sign_in @user
+    @user.update_column(:password_auth_enabled, false)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+
+    delete oauth_identity_path('form')
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.not_connected', locale: :ja), flash[:notice]
+  end
 end
