@@ -1,0 +1,22 @@
+{
+  "canonical_queue": [
+    { "type": "readme", "resolved_path": "README.md", "mode": "supplement", "wave": 1, "status": "completed" },
+    { "type": "architecture", "resolved_path": "docs/ARCHITECTURE.md", "mode": "create", "wave": 1, "status": "completed" },
+    { "type": "configuration", "resolved_path": "docs/CONFIGURATION.md", "mode": "create", "wave": 1, "status": "completed" },
+    { "type": "getting_started", "resolved_path": "docs/GETTING-STARTED.md", "mode": "create", "wave": 2, "status": "completed" },
+    { "type": "development", "resolved_path": "docs/DEVELOPMENT.md", "mode": "create", "wave": 2, "status": "completed" },
+    { "type": "testing", "resolved_path": "docs/TESTING.md", "mode": "create", "wave": 2, "status": "completed" },
+    { "type": "api", "resolved_path": "docs/API.md", "mode": "create", "wave": 2, "status": "completed" },
+    { "type": "contributing", "resolved_path": "CONTRIBUTING.md", "mode": "create", "wave": 2, "status": "completed" }
+  ],
+  "review_queue": [
+    { "path": "CLAUDE.md", "type": "hand-written", "status": "verified" },
+    { "path": ".planning/codebase/ARCHITECTURE.md", "type": "hand-written", "status": "verified" },
+    { "path": ".planning/codebase/TESTING.md", "type": "hand-written", "status": "verified" },
+    { "path": ".planning/codebase/CONVENTIONS.md", "type": "hand-written", "status": "verified" }
+  ],
+  "gap_queue": [],
+  "project_type": "generic",
+  "conditional_docs": ["API", "CONTRIBUTING"],
+  "created_at": "2026-05-25T00:00:00Z"
+}

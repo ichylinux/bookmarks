@@ -99,3 +99,16 @@ ESLint 9（flat config）と Prettier を採用。設定は `eslint.config.mjs` 
 | 本番 | `bookmarks_pro` |
 
 接続は環境変数（`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`）で設定します。
+
+## ドキュメント
+
+| ドキュメント | 内容 |
+|-------------|------|
+| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) | 初回セットアップ |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 開発ワークフロー |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | アーキテクチャ概要 |
+| [docs/API.md](docs/API.md) | 主要ルート一覧 |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | 環境変数・設定 |
+| [docs/TESTING.md](docs/TESTING.md) | テスト（tri-suite） |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | コントリビューション |
+| [CLAUDE.md](CLAUDE.md) | AI エージェント向けテスト方針 |
