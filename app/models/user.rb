@@ -16,6 +16,8 @@ class User < ApplicationRecord
             on: :update
 
   before_create :generate_otp_secret_if_missing
+  before_save :after_password_reset,
+    if: -> { encrypted_password_changed? && reset_password_token_was.present? }
 
   scope :active, -> { where(deleted: false) }
   scope :purgeable, lambda {
@@ -161,6 +163,13 @@ class User < ApplicationRecord
     update!(otp_required_for_login: true)
   end
 
+  def disconnect_form_auth!
+    update_columns(
+      password_auth_enabled: false,
+      encrypted_password: Devise::Encryptor.digest(self.class, SecureRandom.hex)
+    )
+  end
+
   def disable_two_factor!
     update!(otp_required_for_login: false)
     regenerate_otp_secret!
@@ -177,6 +186,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def after_password_reset
+    self.password_auth_enabled = true
+  end
 
   def generate_otp_secret_if_missing
     self.otp_secret ||= self.class.generate_otp_secret
