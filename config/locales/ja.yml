@@ -224,6 +224,15 @@ ja:
       email_registration_link: 実メールアドレスを登録する
       x_accounts_section_title: X（Twitter）
       x_accounts_link: フォロー中アカウントの表示設定
+      connected_accounts_section_title: 連携アカウント
+      connected_accounts:
+        google: Google
+        twitter: X（Twitter）
+        facebook: Facebook
+        email_password: メールアドレス＆パスワード
+        connected: 連携済み
+        not_connected: 未連携
+        disconnect: 連携解除
       account_deletion_section_title: アカウント削除
       account_deletion_warning: アカウントと紐づくデータは、削除申請から90日以内に完全に削除されます。
       account_deletion_link: アカウントを削除する

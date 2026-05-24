@@ -86,6 +86,8 @@
   <%= f.submit t('.submit') %>
 <% end %>
 
+<%= render 'connected_accounts', user: @user, oauth_identities: @user.oauth_identities %>
+
 <section class="preferences-danger-zone">
   <h2 class="preferences-danger-zone-heading"><%= t('preferences.index.account_deletion_section_title') %></h2>
   <p><%= t('preferences.index.account_deletion_warning') %></p>

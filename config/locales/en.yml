@@ -224,6 +224,15 @@ en:
       email_registration_link: Register a real email address
       x_accounts_section_title: X (Twitter)
       x_accounts_link: Manage followed accounts for the welcome page
+      connected_accounts_section_title: Connected Accounts
+      connected_accounts:
+        google: Google
+        twitter: X (Twitter)
+        facebook: Facebook
+        email_password: Email & Password
+        connected: Connected
+        not_connected: Not connected
+        disconnect: Disconnect
       account_deletion_section_title: Delete account
       account_deletion_warning: Data associated with your account is permanently removed within 90 days of your deletion request.
       account_deletion_link: Delete account
