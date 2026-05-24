@@ -1,0 +1,63 @@
+require 'test_helper'
+
+class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
+  def setup
+    @user = users(:one)
+  end
+
+  def test_destroy_requires_authentication
+    delete oauth_identity_path('google_oauth2')
+    assert_redirected_to new_user_session_path
+  end
+
+  def test_destroy_disconnects_provider_and_redirects
+    sign_in @user
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+    OauthIdentity.create!(user: @user, provider: 'twitter2', uid: 't456')
+
+    assert_difference 'OauthIdentity.count', -1 do
+      delete oauth_identity_path('google_oauth2')
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.success', provider: 'google_oauth2', locale: :ja),
+                 flash[:notice]
+    assert_nil OauthIdentity.find_by(user: @user, provider: 'google_oauth2')
+  end
+
+  def test_destroy_blocks_disconnect_of_last_auth_method
+    sign_in @user
+    @user.update_column(:password_auth_enabled, false)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+
+    assert_no_difference 'OauthIdentity.count' do
+      delete oauth_identity_path('google_oauth2')
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.last_auth_method', locale: :ja), flash[:alert]
+  end
+
+  def test_destroy_allows_disconnect_when_password_auth_enabled
+    sign_in @user
+    @user.update_column(:password_auth_enabled, true)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+
+    assert_difference 'OauthIdentity.count', -1 do
+      delete oauth_identity_path('google_oauth2')
+    end
+
+    assert_redirected_to preferences_path
+  end
+
+  def test_destroy_handles_unlinked_provider_gracefully
+    sign_in @user
+
+    assert_no_difference 'OauthIdentity.count' do
+      delete oauth_identity_path('facebook')
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.not_connected', locale: :ja), flash[:notice]
+  end
+end

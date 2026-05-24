@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   end
 
   resources :preferences, only: %i[index update]
+  delete 'oauth_identities/:provider', to: 'oauth_identities#destroy', as: :oauth_identity
 
   resources :todos do
     collection do

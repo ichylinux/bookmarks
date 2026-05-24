@@ -138,6 +138,12 @@ ja:
     status_disabled: 二段階認証は無効です。
     invalid_code: 認証コードが正しくありません。
 
+  oauth_identities:
+    destroy:
+      success: "%{provider} の連携を解除しました。"
+      not_connected: そのプロバイダーは連携されていません。
+      last_auth_method: 最後のログイン方法は解除できません。別の連携を追加してから解除してください。
+
   account_deletions:
     destroy:
       success: アカウントを削除しました。ご利用ありがとうございました。

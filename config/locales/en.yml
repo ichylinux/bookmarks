@@ -138,6 +138,12 @@ en:
     status_disabled: Two-factor authentication is disabled.
     invalid_code: The verification code is invalid.
 
+  oauth_identities:
+    destroy:
+      success: "Disconnected %{provider}."
+      not_connected: That provider is not connected.
+      last_auth_method: You cannot disconnect your last sign-in method. Add another before disconnecting.
+
   account_deletions:
     destroy:
       success: Your account has been deleted. Thank you for using Bookmarks.
