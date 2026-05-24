@@ -25,7 +25,7 @@ class Users::OmniauthCallbacksControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_facebook_callback_redirects_to_registration_when_create_fails
-    # Use an email already taken by a soft-deleted user to force User.create failure
+    # Use an email already taken by a soft-deleted user to force User.create! failure
     u = users(:one)
     u.update_columns(deleted: true)
     OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new(

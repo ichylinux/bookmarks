@@ -69,7 +69,7 @@ class User < ApplicationRecord
         attrs[:email] = data['email'] if data['email'].present? && !user.has_valid_email?
         user.assign_attributes(attrs)
         user.save(validate: false)
-        OauthIdentity.upsert_for!(user: user, provider: 'twitter2', uid: uid) if user.persisted?
+        OauthIdentity.upsert_for!(user: user, provider: 'twitter2', uid: uid)
         user
       else
         new_user = User.create!(
@@ -88,13 +88,13 @@ class User < ApplicationRecord
       end
     when :facebook
       user = User.active.where(email: data['email']).first
-      user ||= User.create(email: data['email'], password: Devise.friendly_token[0, 20])
-      OauthIdentity.upsert_for!(user: user, provider: 'facebook', uid: access_token.uid.to_s) if user.persisted?
+      user ||= User.create!(email: data['email'], password: Devise.friendly_token[0, 20])
+      OauthIdentity.upsert_for!(user: user, provider: 'facebook', uid: access_token.uid.to_s)
       user
     else
       user = User.active.where(email: data['email']).first
-      user ||= User.create(email: data['email'], password: Devise.friendly_token[0,20])
-      OauthIdentity.upsert_for!(user: user, provider: access_token['provider'], uid: access_token.uid.to_s) if user.persisted?
+      user ||= User.create!(email: data['email'], password: Devise.friendly_token[0, 20])
+      OauthIdentity.upsert_for!(user: user, provider: access_token['provider'], uid: access_token.uid.to_s)
       user
     end
   end

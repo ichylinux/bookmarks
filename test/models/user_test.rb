@@ -265,7 +265,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  def test_facebook_from_omniauth_does_not_match_deleted_user
+  def test_facebook_from_omniauth_raises_when_email_taken_by_deleted_user
     u = User.create!(email: 'fb-deleted@example.com', password: Devise.friendly_token[0, 20])
     u.destroy_account!
 
@@ -274,8 +274,8 @@ class UserTest < ActiveSupport::TestCase
       'uid' => 'fb-uid-deleted',
       'info' => { 'email' => 'fb-deleted@example.com', 'name' => 'Deleted FB User' }
     )
-    result = User.from_omniauth(auth)
-    assert_not_equal u.id, result.id
-    assert_equal 'fb-deleted@example.com', result.email
+    assert_raise ActiveRecord::RecordInvalid do
+      User.from_omniauth(auth)
+    end
   end
 end
