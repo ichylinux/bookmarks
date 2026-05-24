@@ -10,11 +10,15 @@ files_reviewed_list:
   - test/models/oauth_identity_test.rb
   - app/models/user.rb
 findings:
-  critical: 2
-  warning: 4
+  critical: 0
+  warning: 1
   info: 2
-  total: 8
-status: issues_found
+  total: 3
+findings_fixed:
+  critical: 2
+  warning: 3
+status: clean
+fix_notes: "CR-01/WR-04 fixed (inline AR classes + IrreversibleMigration); CR-02 fixed (new migration 000005 adds provider+uid unique index); WR-01 fixed (rescue/retry); WR-03 fixed (dependent: :destroy). WR-02 intentionally skipped — create+persisted? guard is correct design for graceful OAuth failure handling."
 ---
 
 # Phase 114: Code Review Report
