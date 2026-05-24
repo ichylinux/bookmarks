@@ -152,6 +152,20 @@ After('@admin_purge') do
   User.where(email: 'purge_e2e_test@example.com').delete_all
 end
 
+Before('@connected_accounts') do
+  u = user
+  u.update_column(:password_auth_enabled, false)
+  OauthIdentity.where(user_id: u.id).delete_all
+  # Two providers linked: google and twitter2 (twitter alone will be the "last" in scenario 3)
+  OauthIdentity.create!(user_id: u.id, provider: 'google_oauth2', uid: 'ca_google_uid')
+  OauthIdentity.create!(user_id: u.id, provider: 'twitter2', uid: 'ca_twitter_uid')
+end
+
+After('@connected_accounts') do
+  OauthIdentity.where(user_id: user.id).delete_all
+  user.update_column(:password_auth_enabled, false)
+end
+
 Before('@account_deletion') do
   @account_deletion_previous_driver = Capybara.current_driver
   Capybara.current_driver = :rack_test

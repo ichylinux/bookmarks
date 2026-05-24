@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.34
-milestone_name: Connected OAuth Providers
+milestone_name: — Connected OAuth Providers
 status: planning
-last_updated: "2026-05-24"
+last_updated: "2026-05-24T01:51:11.429Z"
 last_activity: 2026-05-24 — Roadmap created for v1.34 (Phases 114–118)
 progress:
-  total_phases: 5
+  total_phases: 15
   completed_phases: 0
-  total_plans: 0
+  total_plans: 1
   completed_plans: 0
   percent: 0
 ---
