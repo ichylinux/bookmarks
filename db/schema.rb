@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_24_000005) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.string "uid", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["provider", "uid"], name: "index_oauth_identities_on_provider_and_uid", unique: true
     t.index ["user_id", "provider"], name: "index_oauth_identities_on_user_id_and_provider", unique: true
     t.index ["user_id"], name: "index_oauth_identities_on_user_id"
   end
