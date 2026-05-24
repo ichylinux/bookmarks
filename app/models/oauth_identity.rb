@@ -10,5 +10,7 @@ class OauthIdentity < ApplicationRecord
     identity.uid = uid.to_s
     identity.save!
     identity
+  rescue ActiveRecord::RecordNotUnique
+    retry
   end
 end
