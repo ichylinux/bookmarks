@@ -164,10 +164,10 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 ### v1.34 — Connected OAuth Providers (Phases 114–118)
 
 - [x] **Phase 114: OAuth Identity Data Layer** — `oauth_identities` table, `OauthIdentity` model, `from_omniauth` wiring, backfill migration — 2026-05-24
-- [ ] **Phase 115: Form Auth Data Layer** — `password_auth_enabled` column, `after_password_reset` callback, form-auth disconnect support
-- [ ] **Phase 116: Disconnect Controller & Routes** — `DELETE /oauth_identities/:provider`, safety guard, locale strings
-- [ ] **Phase 117: Preferences View — Connected Accounts** — Connected Accounts section UI, icons, linked/unlinked status, disconnect buttons
-- [ ] **Phase 118: Tests & Tri-suite Gate** — Minitest + Cucumber E2E + tri-suite verification
+- [x] **Phase 115: Form Auth Data Layer** — `password_auth_enabled` column, `after_password_reset` callback, form-auth disconnect support — 2026-05-24
+- [x] **Phase 116: Disconnect Controller & Routes** — `DELETE /oauth_identities/:provider`, safety guard, locale strings — 2026-05-24
+- [x] **Phase 117: Preferences View — Connected Accounts** — Connected Accounts section UI, icons, linked/unlinked status, disconnect buttons — 2026-05-24
+- [x] **Phase 118: Tests & Tri-suite Gate** — Minitest + Cucumber E2E + tri-suite verification — 2026-05-24
 
 ## Phase Details
 
@@ -390,9 +390,9 @@ Plans:
 | 112. Backend — Gem, Config, Model & Controller | 2/2 | Complete | 2026-05-24 |
 | 113. Frontend & E2E — Button UI, CSS, Locale & Cucumber | 1/1 | Complete | 2026-05-24 |
 | 114. OAuth Identity Data Layer | 1/1 | Complete | 2026-05-24 |
-| 115. Form Auth Data Layer | 0/? | Not started | - |
-| 116. Disconnect Controller & Routes | 0/? | Not started | - |
-| 117. Preferences View — Connected Accounts | 0/? | Not started | - |
-| 118. Tests & Tri-suite Gate | 0/? | Not started | - |
+| 115. Form Auth Data Layer | 1/1 | Complete | 2026-05-24 |
+| 116. Disconnect Controller & Routes | 1/1 | Complete | 2026-05-24 |
+| 117. Preferences View — Connected Accounts | 1/1 | Complete | 2026-05-24 |
+| 118. Tests & Tri-suite Gate | 1/1 | Complete | 2026-05-24 |
 
-*Last updated: 2026-05-24 — v1.34 roadmap created (Phases 114–118)*
+*Last updated: 2026-05-24 — v1.34 all phases complete (lint ✓ · 587 Minitest · 38 Cucumber)*
