@@ -7,31 +7,31 @@
 
 ### Identity
 
-- [ ] **IDNT-01**: `oauth_identities(user_id, provider, uid)` table stores one row per linked OAuth provider per user
-- [ ] **IDNT-02**: `from_omniauth` creates or updates an `OauthIdentity` row on each successful sign-in (all 3 providers: google_oauth2, twitter2, facebook)
-- [ ] **IDNT-03**: Existing X-linked accounts backfilled from `users.provider` / `users.uid` via migration
+- [x] **IDNT-01**: `oauth_identities(user_id, provider, uid)` table stores one row per linked OAuth provider per user
+- [x] **IDNT-02**: `from_omniauth` creates or updates an `OauthIdentity` row on each successful sign-in (all 3 providers: google_oauth2, twitter2, facebook)
+- [x] **IDNT-03**: Existing X-linked accounts backfilled from `users.provider` / `users.uid` via migration
 
 ### Form Auth
 
-- [ ] **FORM-01**: `password_auth_enabled boolean NOT NULL DEFAULT false` column on `users` tracks whether the user has set a real password
-- [ ] **FORM-02**: `password_auth_enabled` set to `true` after user completes Devise password reset flow (via `after_password_reset` callback)
-- [ ] **FORM-03**: User can disconnect form auth from Connected Accounts (sets `password_auth_enabled: false`, randomizes password)
+- [x] **FORM-01**: `password_auth_enabled boolean NOT NULL DEFAULT false` column on `users` tracks whether the user has set a real password
+- [x] **FORM-02**: `password_auth_enabled` set to `true` after user completes Devise password reset flow (via `after_password_reset` callback)
+- [x] **FORM-03**: User can disconnect form auth from Connected Accounts (sets `password_auth_enabled: false`, randomizes password)
 
 ### View
 
-- [ ] **VIEW-01**: Preferences page shows "Connected Accounts" section listing all 4 auth methods (Google, X, Facebook, Email & Password) with icons and linked/unlinked status
-- [ ] **VIEW-02**: Linked providers show a Disconnect button; unlinked providers show a "Not connected" state
-- [ ] **VIEW-03**: Bilingual (ja/en) labels for section heading, provider names, disconnect button, and status text
+- [x] **VIEW-01**: Preferences page shows "Connected Accounts" section listing all 4 auth methods (Google, X, Facebook, Email & Password) with icons and linked/unlinked status
+- [x] **VIEW-02**: Linked providers show a Disconnect button; unlinked providers show a "Not connected" state
+- [x] **VIEW-03**: Bilingual (ja/en) labels for section heading, provider names, disconnect button, and status text
 
 ### Controller
 
-- [ ] **CTRL-01**: `DELETE /oauth_identities/:provider` unlinks the named OAuth provider from the current user's account
-- [ ] **CTRL-02**: Disconnect blocked with a localized error flash if it would leave the user with no remaining auth method (no other OAuth provider linked and `password_auth_enabled: false`)
+- [x] **CTRL-01**: `DELETE /oauth_identities/:provider` unlinks the named OAuth provider from the current user's account
+- [x] **CTRL-02**: Disconnect blocked with a localized error flash if it would leave the user with no remaining auth method (no other OAuth provider linked and `password_auth_enabled: false`)
 
 ### Test
 
-- [ ] **TEST-01**: Minitest covers `OauthIdentity` model, `password_auth_enabled` tracking, disconnect controller (success + guard block), and preferences page Connected Accounts rendering
-- [ ] **TEST-02**: Cucumber E2E covers connected accounts view in preferences, OAuth provider disconnect success, and last-auth-method guard
+- [x] **TEST-01**: Minitest covers `OauthIdentity` model, `password_auth_enabled` tracking, disconnect controller (success + guard block), and preferences page Connected Accounts rendering
+- [x] **TEST-02**: Cucumber E2E covers connected accounts view in preferences, OAuth provider disconnect success, and last-auth-method guard
 
 ## v2 Requirements
 
@@ -56,19 +56,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IDNT-01 | Phase 114 | Pending |
-| IDNT-02 | Phase 114 | Pending |
-| IDNT-03 | Phase 114 | Pending |
-| FORM-01 | Phase 115 | Pending |
-| FORM-02 | Phase 115 | Pending |
-| FORM-03 | Phase 115 | Pending |
-| CTRL-01 | Phase 116 | Pending |
-| CTRL-02 | Phase 116 | Pending |
-| VIEW-01 | Phase 117 | Pending |
-| VIEW-02 | Phase 117 | Pending |
-| VIEW-03 | Phase 117 | Pending |
-| TEST-01 | Phase 118 | Pending |
-| TEST-02 | Phase 118 | Pending |
+| IDNT-01 | Phase 114 | Complete |
+| IDNT-02 | Phase 114 | Complete |
+| IDNT-03 | Phase 114 | Complete |
+| FORM-01 | Phase 115 | Complete |
+| FORM-02 | Phase 115 | Complete |
+| FORM-03 | Phase 115 | Complete |
+| CTRL-01 | Phase 116 | Complete |
+| CTRL-02 | Phase 116 | Complete |
+| VIEW-01 | Phase 117 | Complete |
+| VIEW-02 | Phase 117 | Complete |
+| VIEW-03 | Phase 117 | Complete |
+| TEST-01 | Phase 118 | Complete |
+| TEST-02 | Phase 118 | Complete |
 
 **Coverage:**
 - v1 requirements: 13 total
