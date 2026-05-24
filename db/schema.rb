@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_24_000005) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_25_000001) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -126,6 +126,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000005) do
     t.string "encrypted_password", default: "", null: false
     t.datetime "last_sign_in_at"
     t.string "last_sign_in_ip"
+    t.integer "lock_version", default: 0, null: false
     t.string "oauth2_refresh_token"
     t.string "oauth2_token"
     t.datetime "oauth2_token_expires_at"

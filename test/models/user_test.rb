@@ -278,4 +278,13 @@ class UserTest < ActiveSupport::TestCase
       User.from_omniauth(auth)
     end
   end
+
+  def test_stale_lock_version_raises_on_update
+    u = users(:one)
+    stale = User.find(u.id)
+    u.update!(x_user_name: 'updated-once')
+    assert_raises(ActiveRecord::StaleObjectError) do
+      stale.update!(x_user_name: 'updated-twice')
+    end
+  end
 end
