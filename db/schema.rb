@@ -18,7 +18,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.string "title", null: false
     t.datetime "updated_at"
     t.string "url"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_c1ff6fa4ac"
   end
 
   create_table "feeds", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -28,7 +29,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.string "feed_url", null: false
     t.string "title", null: false
     t.datetime "updated_at"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_36f9216dc2"
   end
 
   create_table "mastodon_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -38,7 +40,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.string "instance", null: false
     t.string "profile_url", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "username", null: false
     t.index ["user_id"], name: "index_mastodon_accounts_on_user_id"
   end
@@ -48,7 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.datetime "created_at", null: false
     t.boolean "deleted", default: false, null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "created_at"], name: "index_notes_on_user_id_and_created_at"
   end
 
@@ -68,7 +70,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.integer "display_order", default: 0, null: false
     t.string "gadget_id", null: false
     t.datetime "updated_at"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_50b0a233d8"
   end
 
   create_table "portals", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -76,7 +79,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.boolean "deleted", default: false, null: false
     t.string "name", null: false
     t.datetime "updated_at"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_dbbca7988d"
   end
 
   create_table "preferences", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -95,7 +99,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.boolean "use_calendar", default: false, null: false
     t.boolean "use_note", default: false, null: false
     t.boolean "use_todo", default: false, null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_87f1c9c7bd"
   end
 
   create_table "todos", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -104,7 +109,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.integer "priority", null: false
     t.string "title", null: false
     t.datetime "updated_at"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "fk_rails_d94154aa95"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -143,9 +149,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "url", limit: 2083, null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "visited_at", null: false
-    t.index ["user_id", "url"], name: "index_visited_links_on_user_id_and_url", unique: true, length: { url: 767 }
+    t.index ["user_id", "url"], name: "index_visited_links_on_user_id_and_url", unique: true, length: { url: 766 }
   end
 
   create_table "x_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -159,7 +165,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.boolean "protected_acknowledged", default: false, null: false
     t.boolean "selected", default: false, null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.string "username", null: false
     t.string "x_user_id", null: false
     t.index ["user_id", "x_user_id"], name: "index_x_accounts_on_user_id_and_x_user_id", unique: true
@@ -172,7 +178,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
     t.string "error_code", limit: 32
     t.integer "rate_limit_remaining"
     t.boolean "success", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "called_at"], name: "index_x_api_calls_on_user_id_and_called_at"
   end
 
