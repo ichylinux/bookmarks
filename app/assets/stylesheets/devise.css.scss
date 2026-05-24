@@ -282,10 +282,10 @@
   font: inherit;
   font-size: 15px;
   font-weight: 600;
-  gap: 12px;
   justify-content: center;
   margin: 0;
   padding: 13px 18px;
+  position: relative;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
   width: 100%;
 
@@ -348,7 +348,11 @@
   display: inline-flex;
   flex-shrink: 0;
   height: 22px;
+  left: 18px;
   line-height: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 22px;
 
   svg {
