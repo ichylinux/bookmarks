@@ -4,9 +4,9 @@ milestone: v1.34
 milestone_name: Connected OAuth Providers
 status: planning
 last_updated: "2026-05-24"
-last_activity: 2026-05-24 — Milestone v1.34 started
+last_activity: 2026-05-24 — Roadmap created for v1.34 (Phases 114–118)
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,10 +17,10 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Not started (roadmap defined, Phase 114 next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-24 — Milestone v1.34 started
+Status: Ready to plan Phase 114
+Last activity: 2026-05-24 — Roadmap created for v1.34 (Phases 114–118)
 
 ## Project Reference
 
@@ -44,13 +44,17 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | v2 | XMAN-FUT-01 total cap on manually-added accounts | open |
 | v2 | XMAN-FUT-02 bulk add by handle list | open |
 | v2 | XMAN-FUT-03 dedicated remove action for manually-added accounts | open |
-| v2 | FBFUT-01 Disconnect Facebook from account settings | open |
-| v2 | FBFUT-02 Show connected providers in preferences page | open |
+| v2 | IDNT-FUT-01 connect new OAuth provider from preferences page | open |
+| v2 | FORM-FUT-01 change password from preferences without reset flow | open |
 
 ## Accumulated Context
 
 ### Decisions
 
+- (v1.34) `oauth_identities` table uses unique index on `(user_id, provider)` — one row per provider per user
+- (v1.34) `password_auth_enabled` defaults to `false` — no existing users have set passwords via the reset flow
+- (v1.34) Disconnect safety guard: blocked if no other linked provider AND `password_auth_enabled: false`
+- (v1.34) No "connect new provider" from preferences — sign-in pages remain the only linking surface
 - (v1.33) Facebook uses email-based find-or-create in `User.from_omniauth`, same pattern as `:google_oauth2`; `scope: 'email'` only — no `public_profile`
 - (v1.33) No live Facebook OAuth round-trip in Cucumber — static presence check is sufficient for CI
 - (v1.32) `purge!` uses explicit `delete_all` per table; final `user.delete` (not `destroy!`)
@@ -74,5 +78,3 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 ## Operator Next Steps
 
 - Run `/gsd:plan-phase 114` to start Phase 114
-</content>
-</invoke>

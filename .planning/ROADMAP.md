@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🔄 **v1.34 — Connected OAuth Providers** — Phases 114–118 (active)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
 - ✅ **v1.31 — X Account Manual Add (Non-Following)** — Phases 104–108 (shipped 2026-05-22) — [archived](milestones/v1.31-ROADMAP.md)
@@ -160,6 +161,14 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 - [x] **Phase 112: Backend — Gem, Config, Model & Controller** — 2026-05-24
 - [x] **Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber** — 2026-05-24
 
+### v1.34 — Connected OAuth Providers (Phases 114–118)
+
+- [ ] **Phase 114: OAuth Identity Data Layer** — `oauth_identities` table, `OauthIdentity` model, `from_omniauth` wiring, backfill migration
+- [ ] **Phase 115: Form Auth Data Layer** — `password_auth_enabled` column, `after_password_reset` callback, form-auth disconnect support
+- [ ] **Phase 116: Disconnect Controller & Routes** — `DELETE /oauth_identities/:provider`, safety guard, locale strings
+- [ ] **Phase 117: Preferences View — Connected Accounts** — Connected Accounts section UI, icons, linked/unlinked status, disconnect buttons
+- [ ] **Phase 118: Tests & Tri-suite Gate** — Minitest + Cucumber E2E + tri-suite verification
+
 ## Phase Details
 
 ### Phase 104: Schema, Model & Refresh Guard
@@ -305,6 +314,67 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
+---
+
+### Phase 114: OAuth Identity Data Layer
+**Goal**: Every successful OAuth sign-in is durably recorded in a dedicated `oauth_identities` table, all three providers are wired, and existing X-linked accounts are backfilled — giving the app a single authoritative source for linked provider state
+**Depends on**: Nothing (first phase of v1.34; v1.33 Facebook OAuth backend already exists)
+**Requirements**: IDNT-01, IDNT-02, IDNT-03
+**Success Criteria** (what must be TRUE):
+  1. A migration creates `oauth_identities(id, user_id, provider, uid, created_at, updated_at)` with a unique index on `(user_id, provider)` and a foreign key to `users`
+  2. `OauthIdentity` model exists with `belongs_to :user`, validates presence of `provider` and `uid`, and validates uniqueness of `provider` scoped to `user_id`
+  3. `User.from_omniauth` upserts an `OauthIdentity` row on every successful sign-in for all three providers (`:google_oauth2`, `:twitter2`, `:facebook`)
+  4. A backfill migration copies `users.provider` / `users.uid` to `oauth_identities` for all existing rows where `provider` and `uid` are present, producing one `OauthIdentity` row per affected user with no duplicates
+  5. Minitest covers: `OauthIdentity` model validations, `from_omniauth` upsert for each provider (new user + existing user paths), and backfill idempotency
+**Plans**: TBD
+
+### Phase 115: Form Auth Data Layer
+**Goal**: The app can reliably determine whether a user has set a real password and can revoke it — enabling the disconnect safety guard to treat email/password as a distinct auth method alongside OAuth providers
+**Depends on**: Phase 114
+**Requirements**: FORM-01, FORM-02, FORM-03
+**Success Criteria** (what must be TRUE):
+  1. A migration adds `password_auth_enabled boolean NOT NULL DEFAULT false` to `users`; existing rows default to `false` with no data loss
+  2. `User#after_password_reset` callback sets `password_auth_enabled: true` after a successful Devise password reset flow completes
+  3. Calling a disconnect method for form auth sets `password_auth_enabled: false` and randomizes the user's encrypted password, preventing email/password sign-in
+  4. Minitest covers: `after_password_reset` sets the flag, form-auth disconnect clears the flag and prevents sign-in with the old password
+**Plans**: TBD
+
+### Phase 116: Disconnect Controller & Routes
+**Goal**: Users can remove an individual OAuth provider from their account via a single DELETE request, and the controller enforces the safety rule that leaves users with at least one remaining auth method
+**Depends on**: Phase 115
+**Requirements**: CTRL-01, CTRL-02
+**Success Criteria** (what must be TRUE):
+  1. `DELETE /oauth_identities/:provider` is routed to `OauthIdentitiesController#destroy` and requires authentication
+  2. A successful disconnect deletes the `OauthIdentity` row for the named provider and redirects to the preferences page with a localized success flash
+  3. If disconnecting the named provider would leave the user with no remaining auth method (no other linked provider and `password_auth_enabled: false`), the controller redirects back with a localized error flash and performs no deletion
+  4. Non-existent provider names (e.g. an already-unlinked provider) are handled gracefully — no 500 error
+  5. Minitest controller tests cover: success path, safety guard block, unlinked provider (no-op), and unauthenticated access
+**Plans**: TBD
+
+### Phase 117: Preferences View — Connected Accounts
+**Goal**: Users can see at a glance which auth methods are linked to their account and initiate a disconnect from the preferences page
+**Depends on**: Phase 116
+**Requirements**: VIEW-01, VIEW-02, VIEW-03
+**Success Criteria** (what must be TRUE):
+  1. The preferences page renders a "Connected Accounts" section listing all 4 auth methods: Google, X, Facebook, and Email & Password — each with an icon and a linked/unlinked status
+  2. For each linked provider, a Disconnect button submits `DELETE /oauth_identities/:provider` (or the form-auth equivalent); for each unlinked provider, a "Not connected" indicator appears in place of the button
+  3. All section heading, provider name, button, and status text keys exist in both `ja.yml` and `en.yml`; the i18n parity test passes
+  4. The section renders correctly in both Japanese and English locales
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 118: Tests & Tri-suite Gate
+**Goal**: All v1.34 behavior is verified end-to-end across unit, integration, and browser test layers, and the tri-suite gate is green
+**Depends on**: Phase 117
+**Requirements**: TEST-01, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. Minitest covers: `OauthIdentity` model validations, `password_auth_enabled` tracking, disconnect controller success path, safety guard block, and preferences page Connected Accounts rendering
+  2. A Cucumber E2E scenario visits the preferences Connected Accounts section and asserts all 4 auth method rows are visible
+  3. A Cucumber scenario disconnects an OAuth provider (with another method still linked) and asserts the provider row transitions to "Not connected"
+  4. A Cucumber scenario attempts to disconnect the last remaining auth method and asserts the error flash appears and the provider row remains linked
+  5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+**Plans**: TBD
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -319,5 +389,10 @@ Plans:
 | 111. Cucumber E2E + Tri-suite Gate | 1/1 | Complete | 2026-05-22 |
 | 112. Backend — Gem, Config, Model & Controller | 2/2 | Complete | 2026-05-24 |
 | 113. Frontend & E2E — Button UI, CSS, Locale & Cucumber | 1/1 | Complete | 2026-05-24 |
+| 114. OAuth Identity Data Layer | 0/? | Not started | - |
+| 115. Form Auth Data Layer | 0/? | Not started | - |
+| 116. Disconnect Controller & Routes | 0/? | Not started | - |
+| 117. Preferences View — Connected Accounts | 0/? | Not started | - |
+| 118. Tests & Tri-suite Gate | 0/? | Not started | - |
 
-*Last updated: 2026-05-24 — v1.33 shipped (Phases 112–113 complete)*
+*Last updated: 2026-05-24 — v1.34 roadmap created (Phases 114–118)*

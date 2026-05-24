@@ -56,25 +56,25 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IDNT-01 | — | Pending |
-| IDNT-02 | — | Pending |
-| IDNT-03 | — | Pending |
-| FORM-01 | — | Pending |
-| FORM-02 | — | Pending |
-| FORM-03 | — | Pending |
-| VIEW-01 | — | Pending |
-| VIEW-02 | — | Pending |
-| VIEW-03 | — | Pending |
-| CTRL-01 | — | Pending |
-| CTRL-02 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
+| IDNT-01 | Phase 114 | Pending |
+| IDNT-02 | Phase 114 | Pending |
+| IDNT-03 | Phase 114 | Pending |
+| FORM-01 | Phase 115 | Pending |
+| FORM-02 | Phase 115 | Pending |
+| FORM-03 | Phase 115 | Pending |
+| CTRL-01 | Phase 116 | Pending |
+| CTRL-02 | Phase 116 | Pending |
+| VIEW-01 | Phase 117 | Pending |
+| VIEW-02 | Phase 117 | Pending |
+| VIEW-03 | Phase 117 | Pending |
+| TEST-01 | Phase 118 | Pending |
+| TEST-02 | Phase 118 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 13 ⚠
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-24*
-*Last updated: 2026-05-24 after initial definition*
+*Last updated: 2026-05-24 after roadmap creation (all 13 requirements mapped)*
