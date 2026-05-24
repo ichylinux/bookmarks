@@ -164,6 +164,11 @@ ja:
         col_email: メールアドレス
         col_x_user_name: X ユーザー名
         col_admin_flag: 管理者
+        col_bookmarks_count: ブックマーク数
+        col_feeds_count: フィード数
+        col_notes_count: ノート数
+        col_todos_count: タスク数
+        col_portals_count: ポータル数
         col_last_sign_in_at: 最終サインイン
         col_created_at: 登録日時
         col_updated_at: 更新日時

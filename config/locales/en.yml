@@ -164,6 +164,11 @@ en:
         col_email: Email
         col_x_user_name: X Username
         col_admin_flag: Admin
+        col_bookmarks_count: Bookmarks
+        col_feeds_count: Feeds
+        col_notes_count: Notes
+        col_todos_count: Todos
+        col_portals_count: Portals
         col_last_sign_in_at: Last sign-in
         col_created_at: Created at
         col_updated_at: Updated at

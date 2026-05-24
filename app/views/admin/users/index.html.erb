@@ -8,6 +8,11 @@
           <th scope="col"><%= t('.col_email') %></th>
           <th scope="col"><%= t('.col_x_user_name') %></th>
           <th scope="col"><%= t('.col_admin_flag') %></th>
+          <th scope="col"><%= t('.col_bookmarks_count') %></th>
+          <th scope="col"><%= t('.col_feeds_count') %></th>
+          <th scope="col"><%= t('.col_notes_count') %></th>
+          <th scope="col"><%= t('.col_todos_count') %></th>
+          <th scope="col"><%= t('.col_portals_count') %></th>
           <th scope="col"><%= t('.col_last_sign_in_at') %></th>
           <th scope="col"><%= t('.col_created_at') %></th>
           <th scope="col"><%= t('.col_updated_at') %></th>
@@ -21,6 +26,11 @@
             <td><%= user.email %></td>
             <td><%= user.x_user_name %></td>
             <td><%= user.admin? ? '✓' : '—' %></td>
+            <td><%= user.bookmarks_count %></td>
+            <td><%= user.feeds_count %></td>
+            <td><%= user.notes_count %></td>
+            <td><%= user.todos_count %></td>
+            <td><%= user.portals_count %></td>
             <td><%= user.last_sign_in_at ? l(user.last_sign_in_at, format: :admin_datetime) : '—' %></td>
             <td><%= l(user.created_at, format: :admin_datetime) %></td>
             <td><%= l(user.updated_at, format: :admin_datetime) %></td>
