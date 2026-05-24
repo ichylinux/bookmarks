@@ -26,7 +26,7 @@ class User < ApplicationRecord
       .where('deleted_at <= ?', PURGE_AFTER_DAYS.days.ago)
   }
 
-  has_many :oauth_identities, dependent: :destroy
+  has_many :oauth_identities
 
   has_one :preference, inverse_of: 'user'
   accepts_nested_attributes_for :preference
