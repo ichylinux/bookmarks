@@ -8,7 +8,9 @@
 - **フィード** — RSS/Atom フィードの購読と記事一覧表示
 - **ToDo** — タスク管理
 - **カレンダー** — 日本の祝日を考慮したカレンダー UI
-- **認証** — Devise によるユーザー認証・2 要素認証（TOTP）・OmniAuth 連携
+- **認証** — Devise によるユーザー認証・2 要素認証（TOTP）・OmniAuth 連携（Google / X / Facebook）
+- **連携アカウント** — 設定画面で OAuth プロバイダとメール認証の接続状態を確認し、個別に解除可能
+- **アカウント削除** — 設定から自主退会（ソフト削除）。90 日経過後は管理者が完全削除（`purge!`）
 - **テーマ** — モダン・クラシック・シンプルの 3 テーマを提供。設定画面から切り替え可能（デフォルト: モダン）
 
 ## 技術スタック
@@ -61,12 +63,19 @@ bin/rails s
 ## テスト
 
 ```bash
-# Minitest（ユニット・結合テスト）
-bin/rails test
-
-# Cucumber（受け入れテスト）
-bundle exec rake dad:test
+# ローカル品質ゲート（lint + Minitest + Cucumber）
+yarn run lint && bin/rails test && bundle exec rake dad:test
 ```
+
+個別実行:
+
+```bash
+bin/rails test              # Minitest
+bundle exec rake dad:test   # Cucumber（サーバー起動込み。bundle exec cucumber は使わない）
+yarn run lint               # ESLint
+```
+
+詳細は [docs/TESTING.md](docs/TESTING.md)。
 
 ## JavaScript / リンター
 
@@ -84,7 +93,7 @@ yarn run lint:fix
 yarn run format
 ```
 
-ESLint 9（flat config）と Prettier を採用。設定は `eslint.config.mjs` / `.prettierrc`、規約は `.planning/codebase/CONVENTIONS.md` を参照。
+ESLint 9（flat config）と Prettier を採用。設定は `eslint.config.mjs` / `.prettierrc.json`、規約は `.planning/codebase/CONVENTIONS.md` を参照。
 
 ## Docker
 

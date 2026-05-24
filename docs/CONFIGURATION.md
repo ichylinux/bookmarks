@@ -26,7 +26,7 @@ Database names: `bookmarks_dev`, `bookmarks_test`, `bookmarks_pro` (development,
 
 ### Active Record encryption
 
-Required in production for encrypted columns (`otp_secret`, OAuth tokens on `users`):
+Required in production for encrypted OAuth token columns on `users` (`oauth2_token`, `oauth2_refresh_token` via `encrypts`):
 
 | Variable | Notes |
 |----------|-------|
@@ -52,13 +52,13 @@ Loaded from `config/app_config.yml` (ERB over ENV):
 | `BOOKMARKS_OTP_LENGTH` | `6` | TOTP code length |
 | `SMTP_FROM` | `from@example.com` | Devise mailer sender |
 
-### AWS (production mail — optional)
+### AWS (production mail via SES)
+
+Production sends mail through Amazon SES using `smtp_settings` in `config/app_config.yml`:
 
 | Variable | Purpose |
 |----------|---------|
-| `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | SMTP via SES (`config/app_config.yml` production block) |
-
-<!-- VERIFY: Confirm production mail still uses SES and these env names match your deployed environment. -->
+| `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | SES SMTP credentials |
 
 ## Key config files
 
@@ -76,4 +76,4 @@ Loaded from `config/app_config.yml` (ERB over ENV):
 - Docker: `Dockerfile.app`, `Dockerfile.base`, `Dockerfile.test` at repo root.
 - CI: `Jenkinsfile`.
 
-<!-- VERIFY: Document actual deployment hostnames and secret management for your environment if not using the defaults above. -->
+Production hostnames and secrets are supplied via environment variables at deploy time (`APP_HOST`, database credentials, OAuth keys, encryption keys, and AWS/SES variables above).

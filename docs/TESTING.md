@@ -38,7 +38,7 @@ HTTP calls in tests use WebMock (`test/support/webmock.rb`). X API tests may use
 
 ## Cucumber
 
-Features are under `features/` with Japanese scenarios (`# language: ja`). Step definitions in `features/step_definitions/`.
+Features are under `features/` with Japanese scenarios (`# language: ja`). Step definitions in `features/step_definitions/`. Notable feature files include `14.連携アカウント.feature` (OAuth disconnect), `09.アカウント削除.feature`, and `12.管理者アカウント完全削除.feature` (admin purge).
 
 `features/support/hooks.rb` resets session and shared DB state between scenarios (preferences via UI, `VisitedLink.delete_all`, etc.).
 

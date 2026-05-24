@@ -37,7 +37,8 @@ Devise routes under `/users/*` (sessions, registration, passwords, OmniAuth call
 | GET/POST | `/users/two_factor_authentication` | 2FA challenge |
 | GET/POST/DELETE | `/users/two_factor_setup` | Enable/disable TOTP |
 | GET/POST | `/users/email_registration` | X users: register real email |
-| GET/DELETE | `/account_deletion` | Soft-delete account flow |
+| GET | `/account_deletion/new` | Account deletion confirmation form |
+| DELETE | `/account_deletion` | Soft-delete account (`users/account_deletions#destroy`) |
 | DELETE | `/oauth_identities/:provider` | Disconnect OAuth or form auth |
 
 ## Admin (`current_user.admin?`)

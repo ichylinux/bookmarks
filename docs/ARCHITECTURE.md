@@ -36,6 +36,7 @@ MySQL (utf8mb4)
 | Bookmarks / feeds / todos / notes | CRUD with per-user scoping | `app/controllers/*_controller.rb`, `Crud::ByUser` |
 | X / Mastodon gadgets | External API fetch, cached accounts | `app/services/x_client.rb`, `app/services/mastodon_client.rb` |
 | Auth | Devise, 2FA (TOTP), OmniAuth (Google, X, Facebook) | `app/controllers/users/`, `app/models/user.rb` |
+| Connected accounts | `oauth_identities` per provider; disconnect + last-auth guard | `app/models/oauth_identity.rb`, `app/controllers/oauth_identities_controller.rb` |
 | Admin | User list, hard purge, X API usage report | `app/controllers/admin/` |
 | Account lifecycle | Soft delete (`destroy_account!`), 90-day hard purge (`purge!`) | `app/models/user.rb` |
 
