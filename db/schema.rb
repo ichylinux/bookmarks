@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_24_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_24_000004) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -176,5 +176,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_24_000003) do
     t.index ["user_id", "called_at"], name: "index_x_api_calls_on_user_id_and_called_at"
   end
 
-  add_foreign_key "oauth_identities", "users"
+  add_foreign_key "bookmarks", "users", on_delete: :cascade
+  add_foreign_key "feeds", "users", on_delete: :cascade
+  add_foreign_key "mastodon_accounts", "users", on_delete: :cascade
+  add_foreign_key "notes", "users", on_delete: :cascade
+  add_foreign_key "oauth_identities", "users", on_delete: :cascade
+  add_foreign_key "portal_layouts", "users", on_delete: :cascade
+  add_foreign_key "portals", "users", on_delete: :cascade
+  add_foreign_key "preferences", "users", on_delete: :cascade
+  add_foreign_key "todos", "users", on_delete: :cascade
+  add_foreign_key "visited_links", "users", on_delete: :cascade
+  add_foreign_key "x_accounts", "users", on_delete: :cascade
+  add_foreign_key "x_api_calls", "users", on_delete: :cascade
 end

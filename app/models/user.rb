@@ -134,6 +134,7 @@ class User < ApplicationRecord
       Feed.where(user_id: user_id).delete_all
       MastodonAccount.where(user_id: user_id).delete_all
       Note.where(user_id: user_id).delete_all
+      OauthIdentity.where(user_id: user_id).delete_all
       PortalLayout.where(user_id: user_id).delete_all
       Portal.where(user_id: user_id).delete_all
       Preference.where(user_id: user_id).delete_all
