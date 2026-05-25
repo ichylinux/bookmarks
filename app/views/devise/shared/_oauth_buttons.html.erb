@@ -28,6 +28,7 @@
             <span class="auth-oauth-btn__label"><%= t('devise.shared.omniauth.twitter') %></span>
           <% end %>
         <%- end %>
+        <% unless Rails.env.production %>
         <%- if oauth_providers.include?(:facebook) %>
           <%= button_to omniauth_authorize_path(resource_name, :facebook),
                 class: 'auth-oauth-btn auth-oauth-btn--facebook',
@@ -37,6 +38,7 @@
             </span>
             <span class="auth-oauth-btn__label"><%= t('devise.shared.omniauth.facebook') %></span>
           <% end %>
+        <%- end %>
         <%- end %>
       </div>
     </div>
