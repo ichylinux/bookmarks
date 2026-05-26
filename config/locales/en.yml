@@ -31,6 +31,7 @@ en:
         show_column_nav_buttons: (mobile) Show column navigation buttons
         show_icons: Show icons
         theme: Theme
+        use_bookmark: Show bookmarks
         use_note: Show notes
         use_todo: Show tasks
         use_calendar: Show calendar

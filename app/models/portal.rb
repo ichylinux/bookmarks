@@ -53,8 +53,8 @@ class Portal < ApplicationRecord
   def get_gadgets
     ret = {}
     
-    gadget = BookmarkGadget.new(user)
-    if gadget.visible?
+    if user.preference.use_bookmark?
+      gadget = BookmarkGadget.new(user)
       ret[gadget.gadget_id] = gadget
     end
 
