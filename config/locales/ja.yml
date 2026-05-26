@@ -31,6 +31,7 @@ ja:
         show_column_nav_buttons: （モバイル）列切り替えボタンを表示する
         show_icons: アイコンを表示する
         theme: テーマ
+        use_bookmark: ブックマークを表示する
         use_note: ノートを表示する
         use_todo: タスクを表示する
         use_calendar: カレンダーを表示する

@@ -32,6 +32,7 @@ module PreferencesReset
     select_option_value "#{PREF}[theme]", 'modern'
     select_option_value "#{PREF}[portal_column_count]", '3'
     select_option_value "#{PREF}[default_priority]", Todo::PRIORITY_NORMAL.to_s
+    check "#{PREF}[use_bookmark]" unless find_field("#{PREF}[use_bookmark]", visible: :all).checked?
     uncheck_if_checked "#{PREF}[use_note]"
     uncheck_if_checked "#{PREF}[use_todo]"
     check "#{PREF}[use_calendar]" unless find_field("#{PREF}[use_calendar]", visible: :all).checked?

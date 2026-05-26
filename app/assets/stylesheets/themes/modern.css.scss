@@ -117,6 +117,10 @@
   background: rgba(59, 130, 246, 0.06);
 }
 
+.modern .connected-accounts__row:hover {
+  background: rgba(59, 130, 246, 0.06);
+}
+
 // カレンダーガジェット: 上記の width:auto / セル padding が列幅の % 指定を壊すため、ガジェット幅いっぱいに戻す
 .modern table.calendar {
   width: 100%;

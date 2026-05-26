@@ -44,6 +44,7 @@ class Preference < ApplicationRecord
     ret = self.new(user: user)
     ret.default_priority = Todo::PRIORITY_NORMAL
     ret.theme = "modern"
+    ret.use_bookmark = true
     ret.use_todo = true
     ret.use_calendar = true
     ret.portal_column_count = PORTAL_COLUMN_COUNTS.first
