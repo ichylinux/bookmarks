@@ -143,6 +143,7 @@ en:
       success: "Disconnected %{provider}."
       not_connected: That provider is not connected.
       last_auth_method: You cannot disconnect your last sign-in method. Add another before disconnecting.
+      stale: A concurrent operation conflicted with yours. Please reload the page and try again.
 
   account_deletions:
     destroy:
