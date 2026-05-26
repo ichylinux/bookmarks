@@ -53,8 +53,8 @@ $(function() {
     });
 
     const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
-    const LONGPRESS_MS = 500;
-    const MOVE_THRESHOLD_PX = 10;
+    const DOUBLE_TAP_MS = 350;
+    const TAP_MOVE_THRESHOLD_PX = 20;
 
     // Use event delegation on the gadget container for all dynamic interactions
     $gadget.off('.noteGadget')
@@ -87,46 +87,38 @@ $(function() {
         hideEditControls($(this).closest('.note-item'));
       });
 
-    // Longpress handling using delegation
+    // Double-tap on mobile to enter edit mode (desktop already uses dblclick)
     $gadget
       .on('touchstart.noteGadget', '.note-item-display', function(e) {
         if (!MOBILE_MQ.matches) return;
         const $display = $(this);
         const t = e.originalEvent.touches[0];
-        const timer = setTimeout(function() {
-          $display.data('longPressTimer', null);
-          $display.data('longPressTriggered', true);
-          showEditControls($display.closest('.note-item'));
-        }, LONGPRESS_MS);
-        $display.data('longPressTimer', timer);
-        $display.data('longPressStartX', t.clientX);
-        $display.data('longPressStartY', t.clientY);
-        $display.data('longPressTriggered', false);
+        $display.data('tapStartX', t.clientX);
+        $display.data('tapStartY', t.clientY);
       })
-      .on('touchmove.noteGadget', '.note-item-display', function(e) {
+      .on('touchend.noteGadget', '.note-item-display', function(e) {
         if (!MOBILE_MQ.matches) return;
         const $display = $(this);
-        const timer = $display.data('longPressTimer');
-        if (!timer) return;
-        const t = e.originalEvent.touches[0];
-        const startX = $display.data('longPressStartX');
-        const startY = $display.data('longPressStartY');
-        if (Math.abs(t.clientX - startX) > MOVE_THRESHOLD_PX || Math.abs(t.clientY - startY) > MOVE_THRESHOLD_PX) {
-          clearTimeout(timer);
-          $display.data('longPressTimer', null);
+        const changed = (e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) || null;
+        if (!changed) return;
+
+        const startX = $display.data('tapStartX');
+        const startY = $display.data('tapStartY');
+        if (typeof startX === 'number' && typeof startY === 'number') {
+          if (Math.abs(changed.clientX - startX) > TAP_MOVE_THRESHOLD_PX || Math.abs(changed.clientY - startY) > TAP_MOVE_THRESHOLD_PX) {
+            return;
+          }
         }
-      })
-      .on('touchend.noteGadget touchcancel.noteGadget', '.note-item-display', function(e) {
-        const $display = $(this);
-        const timer = $display.data('longPressTimer');
-        if (timer) {
-          clearTimeout(timer);
-          $display.data('longPressTimer', null);
-        }
-        if ($display.data('longPressTriggered')) {
+
+        const now = Date.now();
+        const lastTapAt = $display.data('lastTapAt');
+        if (lastTapAt && (now - lastTapAt) <= DOUBLE_TAP_MS) {
+          $display.data('lastTapAt', null);
           e.preventDefault();
-          $display.data('longPressTriggered', false);
+          showEditControls($display.closest('.note-item'));
+          return;
         }
+        $display.data('lastTapAt', now);
       })
       .on('contextmenu.noteGadget', '.note-item-display', function(e) {
         if (MOBILE_MQ.matches) {
