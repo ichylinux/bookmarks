@@ -15,3 +15,126 @@
   -webkit-appearance: none;
   appearance: none;
 }
+
+.connected-accounts {
+  margin: 20px;
+
+  &__heading {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  &__table {
+    width: 100%;
+    max-width: 640px;
+    margin: 0;
+    border-collapse: collapse;
+  }
+
+  &__table > tbody > tr > th.connected-accounts__provider {
+    text-align: left;
+    font-weight: normal;
+  }
+
+  &__provider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    line-height: 0;
+  }
+
+  &__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    white-space: nowrap;
+
+    .button_to {
+      display: inline;
+      margin: 0;
+    }
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    padding: 2px 8px;
+    border-radius: 999px;
+
+    &--connected {
+      color: #3c763d;
+      background: #dff0d8;
+    }
+
+    &--unlinked {
+      color: #737373;
+      background: #f5f5f5;
+    }
+  }
+
+  &__disconnect-btn {
+    vertical-align: middle;
+    border: solid 1px #595757;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.2;
+    text-decoration: none;
+    color: #595757;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+
+    &:hover {
+      color: white;
+      background: #A9A9A9;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .connected-accounts__table {
+    display: block;
+
+    tbody {
+      display: block;
+    }
+
+    tr {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    th,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    th.connected-accounts__provider {
+      padding-bottom: 2px;
+    }
+
+    td.connected-accounts__status {
+      padding-top: 0;
+    }
+  }
+}
