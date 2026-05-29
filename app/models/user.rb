@@ -167,30 +167,30 @@ class User < ApplicationRecord
     update!(otp_required_for_login: true)
   end
 
-  def disconnect_oauth!(provider)
+  def disconnect_oauth!(provider, lock_version: self.lock_version)
     transaction do
       snapshot = self.class.find(id)
       remaining = snapshot.oauth_identities.where.not(provider: provider).count
       raise LastAuthMethodError if remaining == 0 && !snapshot.password_auth_enabled?
 
-      rows = self.class.where(id: id, lock_version: snapshot.lock_version)
+      rows = self.class.where(id: id, lock_version: lock_version)
                        .update_all("lock_version = lock_version + 1")
-      raise ActiveRecord::StaleObjectError.new(snapshot, "disconnect_oauth!") if rows == 0
+      raise ActiveRecord::StaleObjectError.new(self, "disconnect_oauth!") if rows == 0
 
       snapshot.oauth_identities.where(provider: provider).destroy_all
     end
   end
 
-  def disconnect_form_auth!
+  def disconnect_form_auth!(lock_version: self.lock_version)
     transaction do
       snapshot = self.class.find(id)
       raise LastAuthMethodError if snapshot.oauth_identities.count == 0
 
-      rows = self.class.where(id: id, lock_version: snapshot.lock_version)
+      rows = self.class.where(id: id, lock_version: lock_version)
                        .update_all("lock_version = lock_version + 1")
-      raise ActiveRecord::StaleObjectError.new(snapshot, "disconnect_form_auth!") if rows == 0
+      raise ActiveRecord::StaleObjectError.new(self, "disconnect_form_auth!") if rows == 0
 
-      self.lock_version = snapshot.lock_version + 1
+      self.lock_version = lock_version + 1
       update_columns(
         password_auth_enabled: false,
         encrypted_password: Devise::Encryptor.digest(self.class, SecureRandom.hex)

@@ -21,6 +21,7 @@
           <%= button_to t('preferences.index.connected_accounts.disconnect'),
                 oauth_identity_path('google_oauth2'),
                 method: :delete,
+                params: { lock_version: user.lock_version },
                 class: 'connected-accounts__disconnect-btn' %>
         <% else %>
           <span class="connected-accounts__badge connected-accounts__badge--unlinked"><%= t('preferences.index.connected_accounts.not_connected') %></span>
@@ -43,6 +44,7 @@
           <%= button_to t('preferences.index.connected_accounts.disconnect'),
                 oauth_identity_path('twitter2'),
                 method: :delete,
+                params: { lock_version: user.lock_version },
                 class: 'connected-accounts__disconnect-btn' %>
         <% else %>
           <span class="connected-accounts__badge connected-accounts__badge--unlinked"><%= t('preferences.index.connected_accounts.not_connected') %></span>
@@ -65,6 +67,7 @@
           <%= button_to t('preferences.index.connected_accounts.disconnect'),
                 oauth_identity_path('facebook'),
                 method: :delete,
+                params: { lock_version: user.lock_version },
                 class: 'connected-accounts__disconnect-btn' %>
         <% else %>
           <span class="connected-accounts__badge connected-accounts__badge--unlinked"><%= t('preferences.index.connected_accounts.not_connected') %></span>
@@ -87,6 +90,7 @@
           <%= button_to t('preferences.index.connected_accounts.disconnect'),
                 oauth_identity_path('form'),
                 method: :delete,
+                params: { lock_version: user.lock_version },
                 class: 'connected-accounts__disconnect-btn' %>
         <% else %>
           <span class="connected-accounts__badge connected-accounts__badge--unlinked"><%= t('preferences.index.connected_accounts.not_connected') %></span>

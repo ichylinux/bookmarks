@@ -41,13 +41,11 @@ class UserDisconnectAuthTest < ActiveSupport::TestCase
     OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g1')
     OauthIdentity.create!(user: @user, provider: 'twitter2', uid: 't1')
 
-    stale_snapshot = User.find(@user.id)
+    stale_lock_version = @user.lock_version
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
 
-    User.stub(:find, stale_snapshot) do
-      assert_raises(ActiveRecord::StaleObjectError) do
-        @user.disconnect_oauth!('google_oauth2')
-      end
+    assert_raises(ActiveRecord::StaleObjectError) do
+      @user.disconnect_oauth!('google_oauth2', lock_version: stale_lock_version)
     end
 
     assert OauthIdentity.exists?(user: @user, provider: 'google_oauth2'),
@@ -79,13 +77,11 @@ class UserDisconnectAuthTest < ActiveSupport::TestCase
     @user.update_column(:password_auth_enabled, true)
     OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g1')
 
-    stale_snapshot = User.find(@user.id)
+    stale_lock_version = @user.lock_version
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
 
-    User.stub(:find, stale_snapshot) do
-      assert_raises(ActiveRecord::StaleObjectError) do
-        @user.disconnect_form_auth!
-      end
+    assert_raises(ActiveRecord::StaleObjectError) do
+      @user.disconnect_form_auth!(lock_version: stale_lock_version)
     end
 
     assert @user.reload.password_auth_enabled?, "password auth should not be disabled when stale"

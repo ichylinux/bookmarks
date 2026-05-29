@@ -102,14 +102,12 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
     OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
     OauthIdentity.create!(user: @user, provider: 'twitter2', uid: 't456')
 
-    stale_snapshot = User.find(@user.id)
+    stale_lock_version = @user.lock_version
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
     @user.reload
 
-    User.stub(:find, stale_snapshot) do
-      assert_no_difference 'OauthIdentity.count' do
-        delete oauth_identity_path('google_oauth2')
-      end
+    assert_no_difference 'OauthIdentity.count' do
+      delete oauth_identity_path('google_oauth2'), params: { lock_version: stale_lock_version }
     end
 
     assert_redirected_to preferences_path
@@ -121,13 +119,11 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
     @user.update_column(:password_auth_enabled, true)
     OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
 
-    stale_snapshot = User.find(@user.id)
+    stale_lock_version = @user.lock_version
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
     @user.reload
 
-    User.stub(:find, stale_snapshot) do
-      delete oauth_identity_path('form')
-    end
+    delete oauth_identity_path('form'), params: { lock_version: stale_lock_version }
 
     assert_redirected_to preferences_path
     assert_equal I18n.t('oauth_identities.destroy.stale', locale: :ja), flash[:alert]
