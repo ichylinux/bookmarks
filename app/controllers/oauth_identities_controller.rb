@@ -17,8 +17,7 @@ class OauthIdentitiesController < ApplicationController
       return
     end
 
-    lock_version = params[:lock_version].present? ? params[:lock_version].to_i : current_user.lock_version
-    current_user.disconnect_oauth!(provider, lock_version: lock_version)
+    current_user.disconnect_oauth!(provider, lock_version: params.require(:lock_version).to_i)
     redirect_to preferences_path, notice: t('oauth_identities.destroy.success', provider: provider)
   rescue User::LastAuthMethodError
     redirect_to preferences_path, alert: t('oauth_identities.destroy.last_auth_method')
@@ -32,8 +31,7 @@ class OauthIdentitiesController < ApplicationController
       return
     end
 
-    lock_version = params[:lock_version].present? ? params[:lock_version].to_i : current_user.lock_version
-    current_user.disconnect_form_auth!(lock_version: lock_version)
+    current_user.disconnect_form_auth!(lock_version: params.require(:lock_version).to_i)
     redirect_to preferences_path, notice: t('oauth_identities.destroy.success', provider: 'form')
   rescue User::LastAuthMethodError
     redirect_to preferences_path, alert: t('oauth_identities.destroy.last_auth_method')
