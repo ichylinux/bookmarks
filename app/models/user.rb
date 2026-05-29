@@ -190,6 +190,7 @@ class User < ApplicationRecord
                        .update_all("lock_version = lock_version + 1")
       raise ActiveRecord::StaleObjectError.new(snapshot, "disconnect_form_auth!") if rows == 0
 
+      self.lock_version = snapshot.lock_version + 1
       update_columns(
         password_auth_enabled: false,
         encrypted_password: Devise::Encryptor.digest(self.class, SecureRandom.hex)

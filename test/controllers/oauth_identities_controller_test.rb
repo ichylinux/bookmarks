@@ -104,6 +104,7 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
 
     stale_snapshot = User.find(@user.id)
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
+    @user.reload
 
     User.stub(:find, stale_snapshot) do
       assert_no_difference 'OauthIdentity.count' do
@@ -122,6 +123,7 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
 
     stale_snapshot = User.find(@user.id)
     User.where(id: @user.id).update_all("lock_version = lock_version + 1")
+    @user.reload
 
     User.stub(:find, stale_snapshot) do
       delete oauth_identity_path('form')

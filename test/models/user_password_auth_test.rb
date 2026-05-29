@@ -38,6 +38,7 @@ class UserPasswordAuthTest < ActiveSupport::TestCase
   test "disconnect_form_auth! sets password_auth_enabled to false" do
     u = users(:one)
     u.update_column(:password_auth_enabled, true)
+    OauthIdentity.upsert_for!(user: u, provider: "twitter2", uid: "test_uid_1")
 
     u.disconnect_form_auth!
 
@@ -48,6 +49,7 @@ class UserPasswordAuthTest < ActiveSupport::TestCase
   test "disconnect_form_auth! prevents sign-in with old password" do
     u = users(:one)
     old_encrypted = u.encrypted_password
+    OauthIdentity.upsert_for!(user: u, provider: "twitter2", uid: "test_uid_2")
 
     u.disconnect_form_auth!
 
