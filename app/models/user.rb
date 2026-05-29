@@ -2,6 +2,7 @@ class User < ApplicationRecord
   PURGE_AFTER_DAYS = 90
 
   class NotPurgeableError < StandardError; end
+  class LastAuthMethodError < StandardError; end
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -166,11 +167,34 @@ class User < ApplicationRecord
     update!(otp_required_for_login: true)
   end
 
+  def disconnect_oauth!(provider)
+    transaction do
+      snapshot = self.class.find(id)
+      remaining = snapshot.oauth_identities.where.not(provider: provider).count
+      raise LastAuthMethodError if remaining == 0 && !snapshot.password_auth_enabled?
+
+      rows = self.class.where(id: id, lock_version: snapshot.lock_version)
+                       .update_all("lock_version = lock_version + 1")
+      raise ActiveRecord::StaleObjectError.new(snapshot, "disconnect_oauth!") if rows == 0
+
+      snapshot.oauth_identities.where(provider: provider).destroy_all
+    end
+  end
+
   def disconnect_form_auth!
-    update_columns(
-      password_auth_enabled: false,
-      encrypted_password: Devise::Encryptor.digest(self.class, SecureRandom.hex)
-    )
+    transaction do
+      snapshot = self.class.find(id)
+      raise LastAuthMethodError if snapshot.oauth_identities.count == 0
+
+      rows = self.class.where(id: id, lock_version: snapshot.lock_version)
+                       .update_all("lock_version = lock_version + 1")
+      raise ActiveRecord::StaleObjectError.new(snapshot, "disconnect_form_auth!") if rows == 0
+
+      update_columns(
+        password_auth_enabled: false,
+        encrypted_password: Devise::Encryptor.digest(self.class, SecureRandom.hex)
+      )
+    end
   end
 
   def disable_two_factor!

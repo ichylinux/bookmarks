@@ -95,4 +95,40 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to preferences_path
     assert_equal I18n.t('oauth_identities.destroy.not_connected', locale: :ja), flash[:notice]
   end
+
+  def test_destroy_shows_stale_alert_on_concurrent_modification
+    sign_in @user
+    @user.update_column(:password_auth_enabled, false)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+    OauthIdentity.create!(user: @user, provider: 'twitter2', uid: 't456')
+
+    stale_snapshot = User.find(@user.id)
+    User.where(id: @user.id).update_all("lock_version = lock_version + 1")
+
+    User.stub(:find, stale_snapshot) do
+      assert_no_difference 'OauthIdentity.count' do
+        delete oauth_identity_path('google_oauth2')
+      end
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.stale', locale: :ja), flash[:alert]
+  end
+
+  def test_destroy_form_auth_shows_stale_alert_on_concurrent_modification
+    sign_in @user
+    @user.update_column(:password_auth_enabled, true)
+    OauthIdentity.create!(user: @user, provider: 'google_oauth2', uid: 'g123')
+
+    stale_snapshot = User.find(@user.id)
+    User.where(id: @user.id).update_all("lock_version = lock_version + 1")
+
+    User.stub(:find, stale_snapshot) do
+      delete oauth_identity_path('form')
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.stale', locale: :ja), flash[:alert]
+    assert @user.reload.password_auth_enabled?
+  end
 end

@@ -144,6 +144,7 @@ ja:
       success: "%{provider} の連携を解除しました。"
       not_connected: そのプロバイダーは連携されていません。
       last_auth_method: 最後のログイン方法は解除できません。別の連携を追加してから解除してください。
+      stale: 別の操作と競合しました。ページを再読み込みしてやり直してください。
 
   account_deletions:
     destroy:
