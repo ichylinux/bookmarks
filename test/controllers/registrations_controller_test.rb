@@ -17,6 +17,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'html[lang=?]', 'en'
     assert_select '.auth-intro', text: I18n.t('landing.auth.sign_up_intro', locale: :en)
     assert_select 'input[type=submit][value=?]', I18n.t('devise.registrations.new.sign_up', locale: :en)
+    assert_select 'input[type=email][autofocus]', count: 0
   end
 
   def test_新規登録完了フラッシュが日本語トーンで表示される
