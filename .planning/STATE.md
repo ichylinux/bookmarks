@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
-last_updated: "2026-05-25T12:00:00.000Z"
-last_activity: 2026-05-25 — Completed quick task 20260525-refresh-landing-page: refresh landing page
+last_updated: "2026-06-02T11:46:57.000Z"
+last_activity: 2026-06-02 — Completed quick task 20260602-suppress-email-autofocus-on-signup: suppress email autofocus on sign up
 progress:
   total_phases: 15
   completed_phases: 5
@@ -77,6 +77,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260524-oauth-promote | Promote Google/X OAuth buttons above email form | 2026-05-24 | [20260524-oauth-promote](./quick/20260524-oauth-promote/) |
 | 20260525-add-lock-version-users | Add lock_version to users table | 2026-05-25 | [20260525-add-lock-version-users](./quick/20260525-add-lock-version-users/) |
 | 20260525-refresh-landing-page | Refresh landing page | 2026-05-25 | [20260525-refresh-landing-page](./quick/20260525-refresh-landing-page/) |
+| 20260602-suppress-email-autofocus-on-signup | Suppress autofocus on sign-up email field | 2026-06-02 | [20260602-suppress-email-autofocus-on-signup](./quick/20260602-suppress-email-autofocus-on-signup/) |
 
 ## Operator Next Steps
 

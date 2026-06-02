@@ -8,6 +8,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'body.auth-flow'
     assert_select '.auth-intro', text: I18n.t('landing.auth.sign_up_intro', locale: :ja)
     assert_select 'input[type=submit][value=?]', I18n.t('devise.registrations.new.sign_up', locale: :ja)
+    assert_select 'input[type=email][autofocus]', count: 0
   end
 
   def test_新規登録ページが英語で補助文言を表示する
