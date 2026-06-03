@@ -190,8 +190,6 @@ $bookmark-folder-toggle-width: 1.1em;
 $bookmark-folder-toggle-gap: 0.25em;
 $bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-name text start
 $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
-// Row spacing matches common.css ol li margin (0.5em) for feed/X gadget parity.
-$bookmark-gadget-row-gap: 0.5em;
 
 #bookmark_gadget .folder-header {
   display: flex;
@@ -259,10 +257,11 @@ $bookmark-gadget-row-gap: 0.5em;
   min-width: 0;
 }
 
+// .folder-header is not ol>li — flex gap mirrors common.css ol li spacing (0.5em).
 #bookmark_gadget .bookmark-folders {
   display: flex;
   flex-direction: column;
-  gap: $bookmark-gadget-row-gap;
+  gap: 0.5em;
 }
 
 #bookmark_gadget .bookmark-list {
@@ -270,11 +269,6 @@ $bookmark-gadget-row-gap: 0.5em;
   padding: 0;
   padding-inline-start: 0;
   margin: 0;
-
-  li {
-    margin: $bookmark-gadget-row-gap;
-    padding: 0;
-  }
 
   &.folder-bookmarks li {
     padding-left: $bookmark-folder-child-indent;
