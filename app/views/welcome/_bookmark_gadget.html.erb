@@ -16,17 +16,15 @@
     <div class="bookmark-folders">
       <% gadget.entries.each do |item| %>
         <% next unless item.folder? %>
-        <div class="bookmark-folder">
-          <div class="folder-header" data-folder-id="<%= item.id %>">
-            <span class="folder-toggle" aria-hidden="true"></span>
-            <span class="folder-name"><%= item.title %></span>
-          </div>
-          <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
-            <% item.children.where(deleted: false).order(:title).each do |bookmark| %>
-              <li><%= link_to bookmark.title, bookmark.url, bookmark_link_html_options %></li>
-            <% end %>
-          </ol>
+        <div class="folder-header" data-folder-id="<%= item.id %>">
+          <span class="folder-toggle" aria-hidden="true"></span>
+          <span class="folder-name"><%= item.title %></span>
         </div>
+        <ol class="bookmark-list folder-bookmarks" id="folder-<%= item.id %>" style="display: none;">
+          <% item.children.where(deleted: false).order(:title).each do |bookmark| %>
+            <li><%= link_to bookmark.title, bookmark.url, bookmark_link_html_options %></li>
+          <% end %>
+        </ol>
       <% end %>
       <% if root_bookmarks.any? %>
         <ol class="bookmark-list root-bookmarks">

@@ -186,7 +186,17 @@ div.gadgets {
   }
 }
 
+$bookmark-folder-toggle-width: 1.1em;
+$bookmark-folder-toggle-gap: 0.25em;
+$bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-name text start
+$bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
+// Row spacing scales with body font-size (14px desktop / 16px mobile + user scale).
+$bookmark-gadget-row-gap: 0.25em;
+
 #bookmark_gadget .folder-header {
+  display: flex;
+  align-items: center;
+  gap: $bookmark-folder-toggle-gap;
   cursor: pointer;
   user-select: none;
   padding: 0 6px 0 0;
@@ -209,20 +219,13 @@ div.gadgets {
   }
 }
 
-$bookmark-folder-toggle-width: 1.1em;
-$bookmark-folder-toggle-gap: 0.25em;
-$bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-name text start
-// Row spacing scales with body font-size (14px desktop / 16px mobile + user scale).
-$bookmark-gadget-row-gap: 0.25em;
-
 #bookmark_gadget .folder-toggle {
-  display: inline-block;
+  display: block;
   position: relative;
   width: $bookmark-folder-toggle-width;
   height: 1.1em;
-  margin: 0 $bookmark-folder-toggle-gap 0 0;
+  margin: 0;
   padding: 0;
-  vertical-align: -0.05em;
   flex-shrink: 0;
 
   &::before {
@@ -251,8 +254,9 @@ $bookmark-gadget-row-gap: 0.25em;
   }
 }
 
-.folder-name {
+#bookmark_gadget .folder-name {
   font-weight: bold;
+  min-width: 0;
 }
 
 #bookmark_gadget .bookmark-folders {
@@ -261,20 +265,11 @@ $bookmark-gadget-row-gap: 0.25em;
   gap: $bookmark-gadget-row-gap;
 }
 
-.bookmark-folder {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: $bookmark-gadget-row-gap;
-}
-
 #bookmark_gadget .bookmark-list {
+  list-style: none;
   padding: 0;
+  padding-inline-start: 0;
   margin: 0;
-
-  &.folder-bookmarks {
-    margin-left: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
-  }
 
   &.folder-bookmarks,
   &.root-bookmarks {
@@ -286,6 +281,10 @@ $bookmark-gadget-row-gap: 0.25em;
   li {
     margin: 0;
     padding: 0;
+  }
+
+  &.folder-bookmarks li {
+    padding-left: $bookmark-folder-child-indent;
   }
 }
 
