@@ -4,7 +4,7 @@ milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
 last_updated: "2026-06-02T11:46:57.000Z"
-last_activity: 2026-06-02 — Completed quick task 20260602-suppress-email-autofocus-on-signup: suppress email autofocus on sign up
+last_activity: 2026-06-04 — documented mobile scroll stickiness root cause
 progress:
   total_phases: 15
   completed_phases: 5
@@ -20,7 +20,7 @@ progress:
 Phase: — (milestone complete)
 Plan: —
 Status: v1.34 shipped — run /gsd:new-milestone to start next milestone
-Last activity: 2026-05-24 — v1.34 Connected OAuth Providers shipped
+Last activity: 2026-06-04 — identified mobile gadget drag duration
 
 ## Project Reference
 
@@ -66,7 +66,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 
 ### Blockers/Concerns
 
-- None
+- Mobile scroll stickiness: `e.preventDefault()` in `portal_mobile_tabs.js` hijacks native scroll if initial touch is slightly horizontal. (Identified 2026-06-04)
 
 ### Quick Tasks Completed
 
@@ -78,6 +78,9 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260525-add-lock-version-users | Add lock_version to users table | 2026-05-25 | [20260525-add-lock-version-users](./quick/20260525-add-lock-version-users/) |
 | 20260525-refresh-landing-page | Refresh landing page | 2026-05-25 | [20260525-refresh-landing-page](./quick/20260525-refresh-landing-page/) |
 | 20260602-suppress-email-autofocus-on-signup | Suppress autofocus on sign-up email field | 2026-06-02 | [20260602-suppress-email-autofocus-on-signup](./quick/20260602-suppress-email-autofocus-on-signup/) |
+| 20260604-check-mobile-drag-duration | Identify mobile gadget drag duration | 2026-06-04 | [20260604-check-mobile-drag-duration](./quick/20260604-check-mobile-drag-duration/) |
+| 20260604-check-mobile-swipe-thresholds | Identify mobile swipe thresholds | 2026-06-04 | [20260604-check-mobile-swipe-thresholds](./quick/20260604-check-mobile-swipe-thresholds/) |
+| 20260604-investigate-mobile-scroll-stickiness | Document mobile scroll stickiness root cause | 2026-06-04 | [20260604-investigate-mobile-scroll-stickiness](./quick/20260604-investigate-mobile-scroll-stickiness/) |
 
 ## Operator Next Steps
 
