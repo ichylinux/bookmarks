@@ -4,7 +4,7 @@ milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
 last_updated: "2026-06-02T11:46:57.000Z"
-last_activity: 2026-06-04 — documented mobile scroll stickiness root cause
+last_activity: 2026-06-05 - Completed quick task 260606-188: ブックマークガジェット部分リロード
 progress:
   total_phases: 15
   completed_phases: 5
@@ -81,6 +81,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260604-check-mobile-drag-duration | Identify mobile gadget drag duration | 2026-06-04 | [20260604-check-mobile-drag-duration](./quick/20260604-check-mobile-drag-duration/) |
 | 20260604-check-mobile-swipe-thresholds | Identify mobile swipe thresholds | 2026-06-04 | [20260604-check-mobile-swipe-thresholds](./quick/20260604-check-mobile-swipe-thresholds/) |
 | 20260604-investigate-mobile-scroll-stickiness | Document mobile scroll stickiness root cause | 2026-06-04 | [20260604-investigate-mobile-scroll-stickiness](./quick/20260604-investigate-mobile-scroll-stickiness/) |
+| 260606-188 | ブックマークガジェット部分リロード | 2026-06-05 | [260606-188-bookmark-gadget-partial-reload](./quick/260606-188-bookmark-gadget-partial-reload/) |
 
 ## Operator Next Steps
 
