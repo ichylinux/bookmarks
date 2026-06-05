@@ -1,7 +1,4 @@
 // ブックマークガジェットのフォルダ開閉機能 + 新規追加ダイアログ
-window.bookmarks = window.bookmarks || {};
-const bookmarks = window.bookmarks;
-
 $(document).ready(() => {
   const STORAGE_KEY = 'bookmark_expanded_folders';
 
@@ -37,7 +34,7 @@ $(document).ready(() => {
     });
   }
 
-  bookmarks.reload_gadget = function(gadgetUrl, parentId) {
+  function reloadGadget(gadgetUrl, parentId) {
     $.get(gadgetUrl, { format: 'html' }, function(html) {
       const $fragment = $('<div>').html(html);
       $('#bookmark_gadget').replaceWith($fragment.find('#bookmark_gadget'));
@@ -45,7 +42,7 @@ $(document).ready(() => {
       restoreExpandedFolders();
       if (parentId) expandFolder(parentId);
     });
-  };
+  }
 
   // 新規ブックマークダイアログ
   $(document).on('mousedown', '.bookmark-gadget-new-link', function(e) {
@@ -78,7 +75,7 @@ $(document).ready(() => {
     if (dialog) dialog.close();
     $form[0].reset();
 
-    if (gadgetUrl) bookmarks.reload_gadget(gadgetUrl, parentId || null);
+    if (gadgetUrl) reloadGadget(gadgetUrl, parentId || null);
   });
 
   $(document).on('ajax:error', '.bookmark-new-dialog__form', function(e) {
