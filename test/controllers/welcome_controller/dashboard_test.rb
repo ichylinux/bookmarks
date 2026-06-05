@@ -43,6 +43,15 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_select '#calendar', count: 0
   end
 
+  def test_ブックマーク追加ダイアログフォームがAJAX送信とガジェットURLを持つ
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'form.bookmark-new-dialog__form[action=?][data-remote=?][data-gadget-url=?]',
+                  bookmarks_path, 'true', gadget_bookmarks_path,
+                  count: 1
+  end
+
   def test_ダッシュボードが日本語ロケールで固定ガジェット名を翻訳しレコード名は変えない
     feed = feed_of(user)
     feed.update!(title: '日本語フィード 17-05')

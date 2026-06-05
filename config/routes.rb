@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :bookmarks do
     collection do
       get 'fetch_title'
+      get 'gadget'
     end
   end
 

@@ -328,6 +328,44 @@ class BookmarksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'table.bookmarks-table', minimum: 1
   end
 
+  def test_gadget_returns_bookmark_gadget_html
+    sign_in user
+    get gadget_bookmarks_path
+    assert_response :success
+    assert_not_includes response.body, '<html'
+    assert_select '#bookmark_gadget', count: 1
+    assert_select '#bookmark-new-dialog', count: 1
+  end
+
+  def test_gadget_returns_not_found_when_use_bookmark_off
+    user.preference.update!(use_bookmark: false)
+    sign_in user
+    get gadget_bookmarks_path
+    assert_response :not_found
+  end
+
+  def test_create_from_dashboard_xhr_returns_ok_without_redirect
+    sign_in user
+    post bookmarks_path,
+         params: { bookmark: bookmark_params(user), return_to: 'dashboard' },
+         xhr: true
+    assert_response :success
+    assert_equal '', response.body
+  end
+
+  def test_create_from_dashboard_xhr_validation_error_returns_unprocessable_entity
+    sign_in user
+    post bookmarks_path,
+         params: { bookmark: { title: '', url: 'https://example.com' }, return_to: 'dashboard' },
+         xhr: true
+    assert_response :unprocessable_entity
+    assert_includes response.body, 'タイトル'
+  end
+
+  def test_routing_get_gadget_bookmarks_to_gadget
+    assert_routing({ path: '/bookmarks/gadget', method: :get }, { controller: 'bookmarks', action: 'gadget' })
+  end
+
   private
 
   def with_faraday_new(fake_conn)

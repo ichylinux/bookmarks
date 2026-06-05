@@ -1,8 +1,55 @@
 // ブックマークガジェットのフォルダ開閉機能 + 新規追加ダイアログ
+window.bookmarks = window.bookmarks || {};
+const bookmarks = window.bookmarks;
+
 $(document).ready(() => {
+  const STORAGE_KEY = 'bookmark_expanded_folders';
+
+  function getExpandedFolders() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return [];
+    try {
+      const parsed = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveExpandedFolders(folderIds) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(folderIds));
+  }
+
+  function expandFolder(folderId) {
+    const $bookmarks = $('#folder-' + folderId);
+    const $header = $('.folder-header[data-folder-id="' + folderId + '"]');
+    const $toggle = $header.find('.folder-toggle');
+
+    if (!$bookmarks.is(':visible')) {
+      $bookmarks.show();
+      $toggle.addClass('is-expanded');
+    }
+  }
+
+  function restoreExpandedFolders() {
+    getExpandedFolders().forEach(function(folderId) {
+      expandFolder(folderId);
+    });
+  }
+
+  bookmarks.reload_gadget = function(gadgetUrl, parentId) {
+    $.get(gadgetUrl, { format: 'html' }, function(html) {
+      const $fragment = $('<div>').html(html);
+      $('#bookmark_gadget').replaceWith($fragment.find('#bookmark_gadget'));
+      $('#bookmark-new-dialog').replaceWith($fragment.find('#bookmark-new-dialog'));
+      restoreExpandedFolders();
+      if (parentId) expandFolder(parentId);
+    });
+  };
+
   // 新規ブックマークダイアログ
   $(document).on('mousedown', '.bookmark-gadget-new-link', function(e) {
-    e.stopPropagation(); // ガジェットのドラッグ開始を防ぐ
+    e.stopPropagation();
   });
 
   $(document).on('click', '.bookmark-gadget-new-link', function(e) {
@@ -18,63 +65,41 @@ $(document).ready(() => {
     if (dialog) dialog.close();
   });
 
-  // ダイアログ外クリックで閉じる
   $(document).on('click', '.bookmark-new-dialog', function(e) {
     if (e.target === this) this.close();
   });
 
+  $(document).on('ajax:success', '.bookmark-new-dialog__form', function() {
+    const $form = $(this);
+    const dialog = document.getElementById('bookmark-new-dialog');
+    const parentId = $form.find('[name="bookmark[parent_id]"]').val();
+    const gadgetUrl = $form.data('gadgetUrl');
 
-  const STORAGE_KEY = 'bookmark_expanded_folders';
-  
-  // localStorageから展開状態を取得
-  function getExpandedFolders() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    try {
-      const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-  
-  // localStorageに展開状態を保存
-  function saveExpandedFolders(folderIds) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(folderIds));
-  }
-  
-  // フォルダを展開
-  function expandFolder(folderId) {
-    const $bookmarks = $('#folder-' + folderId);
-    const $header = $('.folder-header[data-folder-id="' + folderId + '"]');
-    const $toggle = $header.find('.folder-toggle');
-    
-    if (!$bookmarks.is(':visible')) {
-      $bookmarks.show();
-      $toggle.addClass('is-expanded');
-    }
-  }
-  
-  // ページ読み込み時に保存された展開状態を復元
-  const expandedFolders = getExpandedFolders();
-  expandedFolders.forEach(function(folderId) {
-    expandFolder(folderId);
+    if (dialog) dialog.close();
+    $form[0].reset();
+
+    if (gadgetUrl) bookmarks.reload_gadget(gadgetUrl, parentId || null);
   });
-  
-  // フォルダヘッダーのクリックイベント
-  $('.folder-header').on('click', function() {
+
+  $(document).on('ajax:error', '.bookmark-new-dialog__form', function(e) {
+    const xhr = (e.originalEvent || e).detail[2];
+    alert((xhr && xhr.responseText) || 'エラーが発生しました');
+  });
+
+  restoreExpandedFolders();
+
+  $(document).on('click', '.folder-header', function() {
     const $header = $(this);
     const folderId = $header.data('folder-id');
     const $bookmarks = $('#folder-' + folderId);
     const $toggle = $header.find('.folder-toggle');
-    
+
     const expandedFolders = getExpandedFolders();
     const index = expandedFolders.indexOf(folderId.toString());
-    
+
     if ($bookmarks.is(':visible')) {
       $bookmarks.slideUp();
       $toggle.removeClass('is-expanded');
-      // localStorageから削除
       if (index > -1) {
         expandedFolders.splice(index, 1);
         saveExpandedFolders(expandedFolders);
@@ -82,7 +107,6 @@ $(document).ready(() => {
     } else {
       $bookmarks.slideDown();
       $toggle.addClass('is-expanded');
-      // localStorageに追加
       if (index === -1) {
         expandedFolders.push(folderId.toString());
         saveExpandedFolders(expandedFolders);

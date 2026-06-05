@@ -23,17 +23,34 @@ class BookmarksController < ApplicationController
     @available_folders = Bookmark.where(user_id: current_user.id, deleted: false).folders.order(:title)
   end
 
+  def gadget
+    head :not_found and return unless current_user.preference.use_bookmark?
+
+    @gadget = BookmarkGadget.new(current_user)
+    render layout: false
+  end
+
   def create
     @bookmark = Bookmark.new(bookmark_params)
-    
+
     @bookmark.transaction do
       @bookmark.save!
     end
-    
+
     if params[:return_to] == 'dashboard'
-      redirect_to root_path
+      if request.xhr?
+        head :ok
+      else
+        redirect_to root_path
+      end
     else
       redirect_to action: 'index', parent_id: @bookmark.parent_id
+    end
+  rescue ActiveRecord::RecordInvalid
+    if params[:return_to] == 'dashboard' && request.xhr?
+      render plain: @bookmark.errors.full_messages.to_sentence, status: :unprocessable_entity
+    else
+      raise
     end
   end
 

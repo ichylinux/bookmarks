@@ -43,7 +43,7 @@
       <span class="bookmark-new-dialog__title"><%= t('welcome.bookmark_gadget.dialog_title') %></span>
       <button type="button" class="bookmark-new-dialog__close" aria-label="<%= t('welcome.bookmark_gadget.dialog_close_aria_label') %>" data-dialog-close="bookmark-new-dialog">&#x2715;</button>
     </div>
-    <%= form_tag bookmarks_path, method: :post, class: 'bookmark-new-dialog__form' do %>
+    <%= form_tag bookmarks_path, method: :post, class: 'bookmark-new-dialog__form', remote: true, data: { gadget_url: gadget_bookmarks_path } do %>
       <%= hidden_field_tag :return_to, 'dashboard' %>
       <% if available_folders.any? %>
         <div class="bookmark-new-dialog__field">
