@@ -192,9 +192,7 @@ $bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-na
 $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
 
 #bookmark_gadget .folder-header {
-  display: flex;
-  align-items: center;
-  gap: $bookmark-folder-toggle-gap;
+  line-height: 1.3em; // match common.css ol li
   cursor: pointer;
   user-select: none;
   padding: 0 6px 0 0;
@@ -218,13 +216,13 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 }
 
 #bookmark_gadget .folder-toggle {
-  display: block;
+  display: inline-block;
   position: relative;
   width: $bookmark-folder-toggle-width;
   height: 1.1em;
-  margin: 0;
+  margin: 0 $bookmark-folder-toggle-gap 0 0;
   padding: 0;
-  flex-shrink: 0;
+  vertical-align: -0.05em;
 
   &::before {
     content: '';
@@ -262,6 +260,7 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+  margin-top: 0.5em;
 }
 
 #bookmark_gadget .bookmark-list {
@@ -272,6 +271,15 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 
   &.folder-bookmarks li {
     padding-left: $bookmark-folder-child-indent;
+  }
+
+  // flex gap (0.5em) already spaces folder-header ↔ list boundaries
+  > li:first-child {
+    margin-top: 0;
+  }
+
+  > li:last-child {
+    margin-bottom: 0;
   }
 }
 
