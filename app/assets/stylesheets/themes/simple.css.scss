@@ -111,6 +111,21 @@
     line-height: 1.4;
     color: #777;
   }
+
+  .menu {
+    .menu-section div {
+      margin: 0;
+
+      a {
+        display: block;
+        padding: 10px 8px;
+      }
+    }
+
+    .menu-divider {
+      margin: 2px 8px;
+    }
+  }
 }
 
 .simple .preferences-form input[type="submit"] {
