@@ -23,6 +23,20 @@
       color: #92400e;
       font-weight: bold;
     }
+
+    form.todo {
+      padding-left: 6px;
+      box-sizing: border-box;
+    }
+
+    &:not(.todo_actions):not(:has(form.todo)) {
+      display: flex;
+      align-items: center;
+
+      span {
+        display: block;
+      }
+    }
   }
 
   li:hover {
@@ -50,18 +64,57 @@
     white-space: nowrap;
   }
 
-  li:not(.todo_actions):hover .todo-highlight-btn {
+  li:not(.todo_actions):hover .todo-highlight-btn:not(.todo-highlight-btn--form) {
     display: inline-block;
   }
 
   @media (max-width: 767px) {
-    li:not(.todo_actions) .todo-highlight-btn {
-      display: inline-block;
+    li:not(.todo_actions) {
+      padding-right: 0;
+    }
+
+    li.highlighted:not(.todo_actions):has(form.todo) {
+      padding-right: 10px;
+      padding-bottom: 10px;
+    }
+
+    li.highlighted:not(.todo_actions):not(:has(form.todo)) {
+      padding-right: 10px;
+    }
+
+    li:not(.todo_actions) .todo-highlight-btn:not(.todo-highlight-btn--form) {
+      display: none;
     }
   }
 
-  .todo-highlight-btn:hover {
+  .todo-highlight-btn:not(.todo-highlight-btn--form):hover {
     background: #f3f4f6;
+  }
+
+  form.todo table.todo-form td:last-child {
+    input[type="submit"],
+    .todo-highlight-btn--form {
+      position: static;
+      transform: none;
+      display: inline-block;
+      margin: 0;
+      padding: revert;
+      font: inherit;
+      font-size: inherit;
+      line-height: normal;
+      border: revert;
+      border-radius: revert;
+      background: revert;
+      color: revert;
+      cursor: pointer;
+      white-space: nowrap;
+      vertical-align: middle;
+      appearance: auto;
+    }
+
+    .todo-highlight-btn--form {
+      margin-left: 0.25em;
+    }
   }
   
   span.selected {
@@ -95,8 +148,8 @@
       }
 
       &:last-child {
-        width: 4.5em;
         white-space: nowrap;
+        width: auto;
       }
 
       input[type="text"],
@@ -104,6 +157,46 @@
         box-sizing: border-box;
         width: 100%;
         max-width: 100%;
+      }
+    }
+
+    @media (max-width: 767px) {
+      display: block;
+      table-layout: auto;
+
+      tbody {
+        display: block;
+      }
+
+      tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      td {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      td:first-child {
+        flex: 0 0 auto;
+        width: auto;
+      }
+
+      td:nth-child(2) {
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+      }
+
+      td:last-child {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: 100%;
+        text-align: right;
+        padding: 6px 0 0;
+        white-space: normal;
       }
     }
   }
@@ -143,5 +236,11 @@ html:lang(en) .todo {
   form.todo table.todo-form td:first-child {
     // Longest label is "Normal"; needs room beyond list-item priority spans (4.5em).
     width: 7em;
+  }
+
+  @media (max-width: 767px) {
+    form.todo table.todo-form td:first-child {
+      width: auto;
+    }
   }
 }

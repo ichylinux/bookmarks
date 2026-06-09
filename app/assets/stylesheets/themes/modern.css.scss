@@ -171,6 +171,12 @@
   padding: 4px 6px;
 }
 
+@media (max-width: 767px) {
+  .modern .todo li.highlighted form.todo table.todo-form td:last-child {
+    padding: 6px 0 0;
+  }
+}
+
 .modern .todo li.highlighted {
   background: #eff6ff;
   box-shadow: inset 3px 0 0 var(--modern-color-primary);
@@ -185,12 +191,12 @@
   background: #dbeafe;
 }
 
-.modern .todo .todo-highlight-btn {
+.modern .todo .todo-highlight-btn:not(.todo-highlight-btn--form) {
   border-color: var(--modern-border);
   color: var(--modern-text);
 }
 
-.modern .todo .todo-highlight-btn:hover {
+.modern .todo .todo-highlight-btn:not(.todo-highlight-btn--form):hover {
   background: var(--modern-surface-alt);
 }
 
