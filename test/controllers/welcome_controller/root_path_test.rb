@@ -70,6 +70,12 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_includes response.body, '新着情報'
   end
 
+  def test_日本語ロケールで最新changelog見出しが表示される
+    get root_path
+    assert_response :success
+    assert_includes response.body, 'タスクを強調表示できるようになりました'
+  end
+
   def test_英語ロケールでchangelog見出しがWhatsNewになる
     get root_path, headers: { 'Accept-Language' => 'en-US,en;q=0.9,ja;q=0.8' }
     assert_response :success
