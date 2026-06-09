@@ -1,8 +1,5 @@
 .todo {
   li {
-    position: relative;
-    padding-right: 5.5em;
-
     span {
       display: table-cell;
       padding: 0;
@@ -13,13 +10,18 @@
     }
   }
 
+  li:not(.todo_actions) {
+    position: relative;
+    padding-right: 5.5em;
+  }
+
   li.highlighted {
     background: #fff8e1;
-    border-left: 3px solid #f59e0b;
-    font-weight: bold;
+    box-shadow: inset 3px 0 0 #f59e0b;
 
     .todo-title {
       color: #92400e;
+      font-weight: bold;
     }
   }
 
@@ -48,7 +50,7 @@
     white-space: nowrap;
   }
 
-  li:hover .todo-highlight-btn {
+  li:not(.todo_actions):hover .todo-highlight-btn {
     display: inline-block;
   }
 

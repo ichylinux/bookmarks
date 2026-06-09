@@ -173,10 +173,11 @@
 
 .modern .todo li.highlighted {
   background: #eff6ff;
-  border-left: 3px solid var(--modern-color-primary);
+  box-shadow: inset 3px 0 0 var(--modern-color-primary);
 
   .todo-title {
     color: var(--modern-text);
+    font-weight: bold;
   }
 }
 
