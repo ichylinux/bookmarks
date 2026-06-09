@@ -74,8 +74,9 @@
     }
 
     li.highlighted:not(.todo_actions):has(form.todo) {
-      padding-right: 10px;
-      padding-bottom: 10px;
+      padding-right: 4px;
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
 
     li.highlighted:not(.todo_actions):not(:has(form.todo)) {
