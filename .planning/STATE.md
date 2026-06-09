@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
-last_updated: "2026-06-02T11:46:57.000Z"
-last_activity: 2026-06-05 - Completed quick task 260606-188: ブックマークガジェット部分リロード
+last_updated: "2026-06-09T09:17:36.000Z"
+last_activity: 2026-06-09 - Completed quick task 260609-peo: TODO強調表示
 progress:
   total_phases: 15
   completed_phases: 5
@@ -20,7 +20,7 @@ progress:
 Phase: — (milestone complete)
 Plan: —
 Status: v1.34 shipped — run /gsd:new-milestone to start next milestone
-Last activity: 2026-06-04 — identified mobile gadget drag duration
+Last activity: 2026-06-09 — Completed quick task 260609-peo: TODO強調表示
 
 ## Project Reference
 
@@ -82,6 +82,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260604-check-mobile-swipe-thresholds | Identify mobile swipe thresholds | 2026-06-04 | [20260604-check-mobile-swipe-thresholds](./quick/20260604-check-mobile-swipe-thresholds/) |
 | 20260604-investigate-mobile-scroll-stickiness | Document mobile scroll stickiness root cause | 2026-06-04 | [20260604-investigate-mobile-scroll-stickiness](./quick/20260604-investigate-mobile-scroll-stickiness/) |
 | 260606-188 | ブックマークガジェット部分リロード | 2026-06-05 | [260606-188-bookmark-gadget-partial-reload](./quick/260606-188-bookmark-gadget-partial-reload/) |
+| 260609-peo | TODO強調表示 | 2026-06-09 | [260609-peo-todo](./quick/260609-peo-todo/) |
 
 ## Operator Next Steps
 
