@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.34
 milestone_name: milestone
 status: "v1.34 shipped — run /gsd:new-milestone to start next milestone"
-last_updated: "2026-06-09T09:28:20.338Z"
-last_activity: 2026-06-09 - Completed quick task 260609-pnm: refresh landing page
+last_updated: "2026-06-09T09:38:09.000Z"
+last_activity: 2026-06-09 - Completed quick task 260609-pvs: モバイルでのTODO強調表示
 progress:
   total_phases: 15
   completed_phases: 5
@@ -20,7 +20,7 @@ progress:
 Phase: — (milestone complete)
 Plan: —
 Status: v1.34 shipped — run /gsd:new-milestone to start next milestone
-Last activity: 2026-06-09 — Completed quick task 260609-pnm: refresh landing page
+Last activity: 2026-06-09 — Completed quick task 260609-pvs: モバイルでのTODO強調表示
 
 ## Project Reference
 
@@ -83,6 +83,7 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | 20260604-investigate-mobile-scroll-stickiness | Document mobile scroll stickiness root cause | 2026-06-04 | [20260604-investigate-mobile-scroll-stickiness](./quick/20260604-investigate-mobile-scroll-stickiness/) |
 | 260606-188 | ブックマークガジェット部分リロード | 2026-06-05 | [260606-188-bookmark-gadget-partial-reload](./quick/260606-188-bookmark-gadget-partial-reload/) |
 | 260609-peo | TODO強調表示 | 2026-06-09 | [260609-peo-todo](./quick/260609-peo-todo/) |
+| 260609-pvs | モバイルでのTODO強調表示 | 2026-06-09 | [260609-pvs-todo-mobile-highlight](./quick/260609-pvs-todo-mobile-highlight/) |
 | 260609-pnm | refresh landing page | 2026-06-09 | [260609-pnm-refresh-landing-page](./quick/260609-pnm-refresh-landing-page/) |
 
 ## Operator Next Steps
