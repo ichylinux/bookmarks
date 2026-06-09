@@ -54,6 +54,12 @@
     display: inline-block;
   }
 
+  @media (max-width: 767px) {
+    li:not(.todo_actions) .todo-highlight-btn {
+      display: inline-block;
+    }
+  }
+
   .todo-highlight-btn:hover {
     background: #f3f4f6;
   }
