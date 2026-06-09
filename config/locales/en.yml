@@ -335,7 +335,7 @@ en:
         body: Clip bookmarks, jot notes, and capture ideas the moment they strike — no friction, no forgetting.
       organize:
         title: Everything in one dashboard
-        body: Bookmarks, tasks, feeds, and notes side by side — stop hunting across tabs and apps. Important tasks can be highlighted for at-a-glance visibility.
+        body: Bookmarks, tasks, feeds, and notes side by side — stop hunting across tabs and apps.
       focus:
         title: Your space, your way
         body: Adjust layout, theme, column count, and widths to build the dashboard that fits how you actually work.
@@ -369,17 +369,9 @@ en:
         new: New Feature
       entries:
         - date: "2026-06-09"
-          headline: Updated the landing page
-          tag: ux
-          description: Refreshed the visitor page with the latest product news, including task highlighting and smoother bookmark creation.
-        - date: "2026-06-09"
           headline: Highlight important tasks
           tag: new
           description: Hover a task row to reveal a highlight toggle. Highlighted tasks stand out with a colored border, background, and bold text.
-        - date: "2026-06-06"
-          headline: Bookmark gadget updates without a full page reload
-          tag: ux
-          description: After adding a bookmark from the dashboard dialog, only the bookmark gadget refreshes — no full page reload.
         - date: "2026-05-25"
           headline: Refreshed the landing page
           tag: ux
