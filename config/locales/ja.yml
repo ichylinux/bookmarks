@@ -82,6 +82,8 @@ ja:
     actions:
       complete: 完了
       new_task: タスクを追加
+      highlight: 強調表示
+      unhighlight: 強調解除
     form:
       create: 登録
       update: 更新

@@ -65,6 +65,9 @@ Rails.application.routes.draw do
     collection do
       post 'delete'
     end
+    member do
+      patch 'toggle_highlight'
+    end
   end
 
   resources :welcome, only: [] do

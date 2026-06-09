@@ -1,4 +1,11 @@
-<li data-id="<%= todo.id %>" data-url="<%= edit_todo_path(todo) %>">
+<li class="<%= 'highlighted' if todo.highlighted? %>" data-id="<%= todo.id %>" data-url="<%= edit_todo_path(todo) %>">
   <span class="<%= "priority_#{todo.priority}" %> center"><%= todo.priority_name %></span>
-  <span><%= todo.title %></span>
+  <span class="todo-title"><%= todo.title %></span>
+  <button type="button"
+          class="todo-highlight-btn"
+          data-url="<%= toggle_highlight_todo_path(todo) %>"
+          aria-pressed="<%= todo.highlighted? %>"
+          aria-label="<%= todo.highlighted? ? t('todos.actions.unhighlight') : t('todos.actions.highlight') %>">
+    <%= todo.highlighted? ? t('todos.actions.unhighlight') : t('todos.actions.highlight') %>
+  </button>
 </li>

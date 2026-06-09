@@ -171,6 +171,28 @@
   padding: 4px 6px;
 }
 
+.modern .todo li.highlighted {
+  background: #eff6ff;
+  border-left: 3px solid var(--modern-color-primary);
+
+  .todo-title {
+    color: var(--modern-text);
+  }
+}
+
+.modern .todo li.highlighted:hover {
+  background: #dbeafe;
+}
+
+.modern .todo .todo-highlight-btn {
+  border-color: var(--modern-border);
+  color: var(--modern-text);
+}
+
+.modern .todo .todo-highlight-btn:hover {
+  background: var(--modern-surface-alt);
+}
+
 .modern .preferences-form input[type="submit"] {
   border: none;
   border-radius: 6px;

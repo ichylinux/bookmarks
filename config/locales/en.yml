@@ -82,6 +82,8 @@ en:
     actions:
       complete: Complete
       new_task: Add Task
+      highlight: Highlight
+      unhighlight: Remove highlight
     form:
       create: Create
       update: Update

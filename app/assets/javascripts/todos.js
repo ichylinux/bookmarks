@@ -28,6 +28,21 @@ todos.init = function(selector) {
       $(this).parent().toggleClass('selected');
     }
   });
+
+  $(selector).on('click', '.todo-highlight-btn', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const $btn = $(this);
+    const $li = $btn.closest('li');
+    $.ajax({
+      url: $btn.data('url'),
+      type: 'PATCH',
+      data: { authenticity_token: $('meta[name="csrf-token"]').attr('content') },
+      success: function(html) {
+        $li.replaceWith(html);
+      }
+    });
+  });
 };
 
 todos.new_todo = function(trigger) {

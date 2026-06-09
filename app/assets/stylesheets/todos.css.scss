@@ -1,5 +1,8 @@
 .todo {
   li {
+    position: relative;
+    padding-right: 5.5em;
+
     span {
       display: table-cell;
       padding: 0;
@@ -10,8 +13,47 @@
     }
   }
 
+  li.highlighted {
+    background: #fff8e1;
+    border-left: 3px solid #f59e0b;
+    font-weight: bold;
+
+    .todo-title {
+      color: #92400e;
+    }
+  }
+
   li:hover {
     background: #EEEEEE;
+  }
+
+  li.highlighted:hover {
+    background: #fef3c7;
+  }
+
+  .todo-highlight-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    padding: 0 0.4em;
+    font-size: 0.75em;
+    line-height: 1.4;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  li:hover .todo-highlight-btn {
+    display: inline-block;
+  }
+
+  .todo-highlight-btn:hover {
+    background: #f3f4f6;
   }
   
   span.selected {

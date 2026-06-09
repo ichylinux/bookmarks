@@ -103,4 +103,31 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, title
   end
 
+  def test_強調表示をトグルできる
+    todo = Todo.where(user_id: user.id).first
+    sign_in user
+
+    assert_not todo.highlighted?
+
+    patch toggle_highlight_todo_path(todo), xhr: true
+    assert_response :success
+    assert todo.reload.highlighted?
+    assert_select 'li.highlighted', count: 1
+    assert_select 'button.todo-highlight-btn[aria-pressed=?]', 'true', text: '強調解除', count: 1
+
+    patch toggle_highlight_todo_path(todo), xhr: true
+    assert_response :success
+    assert_not todo.reload.highlighted?
+    assert_select 'li.highlighted', count: 0
+    assert_select 'button.todo-highlight-btn[aria-pressed=?]', 'false', text: '強調表示', count: 1
+  end
+
+  def test_他人のタスクは強調表示をトグルできない
+    sign_in user
+    assert todo = Todo.where('user_id <> ?', user).first
+
+    patch toggle_highlight_todo_path(todo), xhr: true
+    assert_response :not_found
+  end
+
 end
