@@ -84,10 +84,10 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_select 'option[value=?][selected=?]', Todo::PRIORITY_NORMAL.to_s, 'selected', text: 'Normal', count: 1
     assert_select 'input[name=?][value=?]', 'todo[title]', todo.title, count: 1
     assert_select 'input[type=submit][value=?]', 'Update', count: 1
-    assert_select 'button.todo-highlight-btn--form[aria-pressed=?]', 'false', text: 'Highlight', count: 1
+    assert_select 'button.todo-highlight-btn', count: 0
   end
 
-  def test_編集フォームに強調表示ボタンが表示される
+  def test_編集フォームに強調表示ボタンはない
     todo = Todo.where(user_id: user.id).first
     todo.update!(highlighted: true)
     sign_in user
@@ -95,15 +95,15 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'input[type=submit][value=?]', '更新', count: 1
-    assert_select 'button.todo-highlight-btn--form[aria-pressed=?]', 'true', text: '強調解除', count: 1
+    assert_select 'button.todo-highlight-btn', count: 0
   end
 
-  def test_新規フォームには強調表示ボタンがない
+  def test_新規フォームに強調表示ボタンはない
     sign_in user
     get new_todo_path, xhr: true
 
     assert_response :success
-    assert_select 'button.todo-highlight-btn--form', count: 0
+    assert_select 'button.todo-highlight-btn', count: 0
   end
 
   def test_英語ロケールで優先度表示は翻訳されタイトルと数値は変わらない

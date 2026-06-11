@@ -40,6 +40,7 @@ todos.init = function(selector) {
   $(selector).on('touchend', 'li:not(.todo_actions)', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(this).find('form.todo').length) return;
+    if ($(e.target).closest('.todo-highlight-btn').length) return;
     const $li = $(this);
     const changed = (e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) || null;
     if (!changed) return;
@@ -62,6 +63,15 @@ todos.init = function(selector) {
       return;
     }
     $li.data('lastTapAt', now);
+    $li.siblings(':not(.todo_actions)').removeClass('todo-highlight-visible');
+    $li.toggleClass('todo-highlight-visible');
+  });
+
+  $(document).on('touchstart', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if (!$(e.target).closest('.todo li:not(.todo_actions)').length) {
+      $('.todo li.todo-highlight-visible').removeClass('todo-highlight-visible');
+    }
   });
 
   $(selector).on('click', 'li span:first-child', function() {
@@ -71,7 +81,7 @@ todos.init = function(selector) {
     }
   });
 
-  $(selector).on('click', '.todo-highlight-btn:not(.todo-highlight-btn--form)', function(e) {
+  $(selector).on('click', '.todo-highlight-btn', function(e) {
     e.preventDefault();
     e.stopPropagation();
     todos.toggle_highlight($(this));
@@ -80,22 +90,12 @@ todos.init = function(selector) {
 
 todos.toggle_highlight = function($btn) {
   const $li = $btn.closest('li');
-  const inForm = $btn.hasClass('todo-highlight-btn--form');
   $.ajax({
     url: $btn.data('url'),
     type: 'PATCH',
     data: { authenticity_token: $('meta[name="csrf-token"]').attr('content') },
     success: function(html) {
-      if (inForm) {
-        const $updated = $(html);
-        $li.toggleClass('highlighted', $updated.hasClass('highlighted'));
-        const $updatedBtn = $updated.find('.todo-highlight-btn');
-        $btn.attr('aria-pressed', $updatedBtn.attr('aria-pressed'));
-        $btn.attr('aria-label', $updatedBtn.attr('aria-label'));
-        $btn.text($updatedBtn.text());
-      } else {
-        $li.replaceWith(html);
-      }
+      $li.replaceWith(html);
     }
   });
 };
