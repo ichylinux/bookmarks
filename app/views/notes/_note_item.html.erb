@@ -27,5 +27,5 @@
   <%= button_to t('notes.gadget.delete'),
                 note_path(note),
                 method: :delete,
-                form: { class: 'note-item-delete-form', hidden: true } %>
+                form: { class: 'note-item-delete-form', hidden: true, local: false } %>
 </div>

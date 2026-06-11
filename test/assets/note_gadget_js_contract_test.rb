@@ -31,4 +31,10 @@ class NoteGadgetJsContractTest < ActiveSupport::TestCase
     assert_includes @source, 'submit.click();'
   end
 
+  test 'delete form ajax success removes note item from the list' do
+    assert_includes @source, ".on('ajax:success.noteGadget', '.note-item-delete-form'"
+    assert_includes @source, '$item.remove();'
+    assert_includes @source, "data('noteEmptyLabel')"
+  end
+
 end
