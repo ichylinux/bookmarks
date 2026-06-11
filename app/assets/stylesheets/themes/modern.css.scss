@@ -191,12 +191,12 @@
   background: #dbeafe;
 }
 
-.modern .todo .todo-highlight-btn:not(.todo-highlight-btn--form) {
+.modern .todo .todo-highlight-btn {
   border-color: var(--modern-border);
   color: var(--modern-text);
 }
 
-.modern .todo .todo-highlight-btn:not(.todo-highlight-btn--form):hover {
+.modern .todo .todo-highlight-btn:hover {
   background: var(--modern-surface-alt);
 }
 

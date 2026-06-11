@@ -8,14 +8,6 @@
           <%= f.submit t('.create'), onclick: 'todos.create_todo(this); return false;' %>
         <% else %>
           <%= f.submit t('.update'), onclick: 'todos.update_todo(this); return false;' %>
-          <button type="button"
-                  class="todo-highlight-btn todo-highlight-btn--form"
-                  data-url="<%= toggle_highlight_todo_path(@todo) %>"
-                  aria-pressed="<%= @todo.highlighted? %>"
-                  aria-label="<%= @todo.highlighted? ? t('todos.actions.unhighlight') : t('todos.actions.highlight') %>"
-                  onclick="todos.toggle_highlight($(this)); return false;">
-            <%= @todo.highlighted? ? t('todos.actions.unhighlight') : t('todos.actions.highlight') %>
-          </button>
         <% end %>
       </td>
     </tr>
