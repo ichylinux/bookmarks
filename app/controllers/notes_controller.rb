@@ -37,7 +37,11 @@ class NotesController < ApplicationController
 
   def destroy
     @note.destroy_logically!
-    redirect_to root_path(tab: 'notes')
+    if request.xhr?
+      head :no_content
+    else
+      redirect_to root_path(tab: 'notes')
+    end
   end
 
   private

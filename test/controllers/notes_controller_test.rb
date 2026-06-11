@@ -136,6 +136,18 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert note.reload.deleted
   end
 
+  def test_destroy_xhr_returns_no_content
+    sign_in @user
+    note = notes(:one)
+
+    assert_no_difference('Note.count') do
+      delete note_path(note), xhr: true
+    end
+
+    assert_response :no_content
+    assert note.reload.deleted
+  end
+
   def test_other_users_note_cannot_be_updated
     sign_in @user
     note = notes(:two)

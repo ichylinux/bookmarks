@@ -67,6 +67,23 @@ $(function() {
         const xhr = (e.originalEvent || e).detail[2];
         alert((xhr && xhr.responseText) || 'エラーが発生しました');
       })
+      .on('ajax:success.noteGadget', '.note-item-delete-form', function() {
+        const $gadget = $(this).closest('.note-gadget');
+        const $item = $(this).closest('.note-item');
+        $item.remove();
+        if ($gadget.find('.note-list .note-item').length) return;
+        const emptyLabel = $gadget.data('noteEmptyLabel');
+        const $empty = $('<p>', { class: 'note-empty', text: emptyLabel });
+        const $list = $gadget.find('.note-list');
+        if ($list.length) {
+          $list.replaceWith($empty);
+        } else if (!$gadget.find('.note-empty').length) {
+          $gadget.append($empty);
+        }
+      })
+      .on('ajax:error.noteGadget', '.note-item-delete-form', function() {
+        alert('エラーが発生しました');
+      })
       .on('keydown.noteGadget', 'textarea', function(e) {
         if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
         e.preventDefault();
