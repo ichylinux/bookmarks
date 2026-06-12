@@ -78,6 +78,39 @@ class OauthIdentityTest < ActiveSupport::TestCase
     assert_equal 'fb-uid-123', identity.uid
   end
 
+  def test_mastodon_from_omniauth_creates_identity_with_composite_uid
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '12345',
+      'info' => { 'name' => 'Alice', 'instance' => 'mastodon.social' }
+    )
+    assert_difference 'OauthIdentity.count', 1 do
+      User.from_omniauth(auth)
+    end
+    identity = OauthIdentity.find_by(provider: 'mastodon', uid: 'mastodon.social:12345')
+    assert_not_nil identity
+    user = identity.user
+    assert_match(/\Adummy_.+@example\.com\z/, user.email)
+  end
+
+  def test_mastodon_from_omniauth_reauth_finds_existing_user_and_upserts
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '99999',
+      'info' => { 'name' => 'Bob', 'instance' => 'ruby.social' }
+    )
+    user = User.from_omniauth(auth)
+    composite_uid = 'ruby.social:99999'
+
+    assert_no_difference 'User.count' do
+      assert_no_difference 'OauthIdentity.count' do
+        result = User.from_omniauth(auth)
+        assert_equal user.id, result.id
+      end
+    end
+    assert_equal composite_uid, OauthIdentity.find_by(user: user, provider: 'mastodon').uid
+  end
+
   def test_google_from_omniauth_creates_identity
     auth = OmniAuth::AuthHash.new(
       'provider' => 'google_oauth2',

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     get  'users/email_registration', to: 'users/email_registrations#new', as: :users_email_registration
     post 'users/email_registration', to: 'users/email_registrations#create'
 
+    post 'users/mastodon_instance', to: 'users/mastodon_instances#create', as: :user_mastodon_instance
+
     resource :account_deletion, only: %i[new destroy], controller: 'users/account_deletions'
 
     get 'privacy', to: 'pages#privacy'

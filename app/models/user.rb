@@ -92,6 +92,25 @@ class User < ApplicationRecord
       user ||= User.create!(email: data['email'], password: Devise.friendly_token[0, 20])
       OauthIdentity.upsert_for!(user: user, provider: 'facebook', uid: access_token.uid.to_s)
       user
+    when :mastodon
+      instance = data['instance'].to_s
+      account_id = access_token.uid.to_s
+      composite_uid = "#{instance}:#{account_id}"
+
+      user = User.active
+                 .joins(:oauth_identities)
+                 .find_by(oauth_identities: { provider: 'mastodon', uid: composite_uid })
+      if user
+        OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
+        user
+      else
+        new_user = User.create!(
+          email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
+          password: Devise.friendly_token[0, 20]
+        )
+        OauthIdentity.upsert_for!(user: new_user, provider: 'mastodon', uid: composite_uid)
+        new_user
+      end
     else
       user = User.active.where(email: data['email']).first
       user ||= User.create!(email: data['email'], password: Devise.friendly_token[0, 20])

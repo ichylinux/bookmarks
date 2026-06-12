@@ -240,6 +240,7 @@ ja:
         google: Google
         twitter: X（Twitter）
         facebook: Facebook
+        mastodon: Mastodon
         email_password: メールアドレス＆パスワード
         connected: 連携済み
         not_connected: 未連携
@@ -521,6 +522,13 @@ ja:
         google: Googleでサインイン
         twitter: Twitterでサインイン
         facebook: Facebookでサインイン
+        mastodon:
+          instance_label: Mastodonインスタンス
+          instance_placeholder: mastodon.social
+          sign_in: Mastodonでサインイン
+          errors:
+            blank: Mastodonインスタンスのドメインを入力してください。
+            invalid: "有効なインスタンスのドメインを入力してください（例: mastodon.social）。"
     failure:
       deleted_account: このアカウントは削除されています。
     sessions:

@@ -38,6 +38,19 @@ class OauthIdentitiesControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('oauth_identities.destroy.last_auth_method', locale: :ja), flash[:alert]
   end
 
+  def test_destroy_blocks_disconnect_of_last_auth_method_for_mastodon
+    sign_in_and_sync
+    @user.update_column(:password_auth_enabled, false)
+    OauthIdentity.create!(user: @user, provider: 'mastodon', uid: 'mastodon.social:ca_masto_uid')
+
+    assert_no_difference 'OauthIdentity.count' do
+      delete oauth_identity_path('mastodon'), params: { lock_version: @user.lock_version }
+    end
+
+    assert_redirected_to preferences_path
+    assert_equal I18n.t('oauth_identities.destroy.last_auth_method', locale: :ja), flash[:alert]
+  end
+
   def test_destroy_allows_disconnect_when_password_auth_enabled
     sign_in_and_sync
     @user.update_column(:password_auth_enabled, true)

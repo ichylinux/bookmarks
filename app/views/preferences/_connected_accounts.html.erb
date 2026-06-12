@@ -78,6 +78,29 @@
     <li class="connected-accounts__row">
       <div class="connected-accounts__provider">
         <span class="connected-accounts__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#6364FF" class="connected-accounts__svg" role="img">
+            <path d="M23.193 5.482c-.15-1.862-1.65-3.316-3.52-3.316H3.328C1.458 2.166 0 3.62 0 5.482v12.036C0 19.38 1.458 20.834 3.328 20.834h.791c.827 0 1.497-.67 1.497-1.497v-3.772c0-.827-.67-1.497-1.497-1.497H3.942c-1.379 0-2.496-1.117-2.496-2.496V8.966c0-1.379 1.117-2.496 2.496-2.496h16.345c1.379 0 2.496 1.117 2.496 2.496v3.602c0 1.379-1.117 2.496-2.496 2.496h-1.677c-.827 0-1.497.67-1.497 1.497v3.772c0 .827.67 1.497 1.497 1.497h.676c1.87 0 3.37-1.454 3.52-3.316.049-.685.719-1.246 1.407-1.246h.063c.788 0 1.458.561 1.407 1.246z"/>
+          </svg>
+        </span>
+        <%= t('preferences.index.connected_accounts.mastodon') %>
+      </div>
+      <div class="connected-accounts__status">
+        <% if linked_providers.include?('mastodon') %>
+          <span class="connected-accounts__badge connected-accounts__badge--connected"><%= t('preferences.index.connected_accounts.connected') %></span>
+          <%= button_to t('preferences.index.connected_accounts.disconnect'),
+                oauth_identity_path('mastodon'),
+                method: :delete,
+                params: { lock_version: user.lock_version },
+                class: 'connected-accounts__disconnect-btn' %>
+        <% else %>
+          <span class="connected-accounts__badge connected-accounts__badge--unlinked"><%= t('preferences.index.connected_accounts.not_connected') %></span>
+        <% end %>
+      </div>
+    </li>
+
+    <li class="connected-accounts__row">
+      <div class="connected-accounts__provider">
+        <span class="connected-accounts__icon" aria-hidden="true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="connected-accounts__svg">
             <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
           </svg>

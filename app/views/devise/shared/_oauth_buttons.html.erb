@@ -1,7 +1,9 @@
 <%- if devise_mapping.omniauthable? %>
   <%- oauth_providers = resource_class.omniauth_providers & %i[google_oauth2 twitter2 facebook] %>
-  <%- if oauth_providers.any? %>
+  <%- mastodon_enabled = resource_class.omniauth_providers.include?(:mastodon) %>
+  <%- if oauth_providers.any? || mastodon_enabled %>
     <div class="auth-oauth-primary">
+      <%- if oauth_providers.any? %>
       <div class="auth-oauth-buttons">
         <%- if oauth_providers.include?(:google_oauth2) %>
           <%= button_to omniauth_authorize_path(resource_name, :google_oauth2),
@@ -41,6 +43,39 @@
         <%- end %>
         <%- end %>
       </div>
+      <%- end %>
+      <%- if mastodon_enabled %>
+        <div class="auth-oauth-mastodon">
+          <%= form_with url: user_mastodon_instance_path,
+                method: :post,
+                data: { turbo: false },
+                class: 'auth-oauth-mastodon-form' do %>
+            <div class="auth-field">
+              <%= label_tag :instance,
+                    t('devise.shared.omniauth.mastodon.instance_label'),
+                    class: 'auth-label',
+                    for: 'mastodon_instance' %>
+              <%= text_field_tag :instance, nil,
+                    id: 'mastodon_instance',
+                    class: 'auth-input',
+                    placeholder: t('devise.shared.omniauth.mastodon.instance_placeholder'),
+                    autocomplete: 'off',
+                    required: true %>
+            </div>
+            <div class="auth-actions">
+              <%= button_tag type: 'submit',
+                    class: 'auth-oauth-btn auth-oauth-btn--mastodon' do %>
+                <span class="auth-oauth-btn__icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" role="img">
+                    <path d="M23.193 5.482c-.15-1.862-1.65-3.316-3.52-3.316H3.328C1.458 2.166 0 3.62 0 5.482v12.036C0 19.38 1.458 20.834 3.328 20.834h.791c.827 0 1.497-.67 1.497-1.497v-3.772c0-.827-.67-1.497-1.497-1.497H3.942c-1.379 0-2.496-1.117-2.496-2.496V8.966c0-1.379 1.117-2.496 2.496-2.496h16.345c1.379 0 2.496 1.117 2.496 2.496v3.602c0 1.379-1.117 2.496-2.496 2.496h-1.677c-.827 0-1.497.67-1.497 1.497v3.772c0 .827.67 1.497 1.497 1.497h.676c1.87 0 3.37-1.454 3.52-3.316.049-.685.719-1.246 1.407-1.246h.063c.788 0 1.458.561 1.407 1.246z"/>
+                  </svg>
+                </span>
+                <span class="auth-oauth-btn__label"><%= t('devise.shared.omniauth.mastodon.sign_in') %></span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <%- end %>
     </div>
   <%- end %>
 <%- end %>

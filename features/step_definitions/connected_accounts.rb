@@ -5,11 +5,12 @@
   capture
 end
 
-ならば /^Google・X・Facebook・メールアドレスの4行が表示されています。$/ do
+ならば /^Google・X・Facebook・Mastodon・メールアドレスの5行が表示されています。$/ do
   within '.connected-accounts' do
     assert_text I18n.t('preferences.index.connected_accounts.google', locale: :ja)
     assert_text I18n.t('preferences.index.connected_accounts.twitter', locale: :ja)
     assert_text I18n.t('preferences.index.connected_accounts.facebook', locale: :ja)
+    assert_text I18n.t('preferences.index.connected_accounts.mastodon', locale: :ja)
     assert_text I18n.t('preferences.index.connected_accounts.email_password', locale: :ja)
   end
   capture

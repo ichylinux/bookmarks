@@ -67,4 +67,32 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('devise.sessions.signed_out', locale: :en), flash[:notice]
   end
 
+  def test_サインインページにMastodonインスタンス入力が表示される
+    get new_user_session_path
+    assert_response :success
+    assert_select 'form[action=?][method=post]', user_mastodon_instance_path
+    assert_select 'input#mastodon_instance[name=instance][required]'
+    assert_select 'button.auth-oauth-btn--mastodon[type=submit] .auth-oauth-btn__label',
+      text: I18n.t('devise.shared.omniauth.mastodon.sign_in', locale: :ja)
+    assert_select 'button.auth-oauth-btn--mastodon .auth-oauth-btn__icon svg'
+    assert_select 'label[for=mastodon_instance]',
+      text: I18n.t('devise.shared.omniauth.mastodon.instance_label', locale: :ja)
+  end
+
+  def test_サインインページのMastodonインスタンス入力が英語で表示される
+    get new_user_session_path, headers: { 'Accept-Language' => 'en' }
+    assert_response :success
+    assert_select 'button.auth-oauth-btn--mastodon[type=submit] .auth-oauth-btn__label',
+      text: I18n.t('devise.shared.omniauth.mastodon.sign_in', locale: :en)
+    assert_select 'label[for=mastodon_instance]',
+      text: I18n.t('devise.shared.omniauth.mastodon.instance_label', locale: :en)
+  end
+
+  def test_サインアップページにMastodonインスタンス入力が表示される
+    get new_user_registration_path
+    assert_response :success
+    assert_select 'form[action=?][method=post]', user_mastodon_instance_path
+    assert_select 'input#mastodon_instance[name=instance]'
+  end
+
 end

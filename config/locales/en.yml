@@ -240,6 +240,7 @@ en:
         google: Google
         twitter: X (Twitter)
         facebook: Facebook
+        mastodon: Mastodon
         email_password: Email & Password
         connected: Connected
         not_connected: Not connected
@@ -521,6 +522,13 @@ en:
         google: Sign in with Google
         twitter: Sign in with Twitter
         facebook: Sign in with Facebook
+        mastodon:
+          instance_label: Mastodon instance
+          instance_placeholder: mastodon.social
+          sign_in: Sign in with Mastodon
+          errors:
+            blank: Enter your Mastodon instance domain.
+            invalid: Enter a valid instance domain (e.g. mastodon.social).
     failure:
       deleted_account: This account has been deleted.
     sessions:

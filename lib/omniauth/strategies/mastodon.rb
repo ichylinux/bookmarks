@@ -5,7 +5,7 @@ require 'faraday'
 
 module OmniAuth
   module Strategies
-  # Custom Mastodon OAuth 2.0 strategy with dynamic instance targeting and app registration.
+    # Custom Mastodon OAuth 2.0 strategy with dynamic instance targeting and app registration.
     class Mastodon < OmniAuth::Strategies::OAuth2
       option :name, 'mastodon'
 
@@ -19,7 +19,8 @@ module OmniAuth
         {
           name: raw_info['display_name'].presence || raw_info['username'],
           nickname: raw_info['username'],
-          image: raw_info['avatar']
+          image: raw_info['avatar'],
+          instance: session[:mastodon_instance]
         }.compact
       end
 
@@ -72,6 +73,8 @@ module OmniAuth
       end
 
       def register_application!
+        return if oauth_credentials_cached_for_current_instance?
+
         response = Faraday.post("#{mastodon_site}/api/v1/apps") do |req|
           req.headers['Content-Type'] = 'application/json'
           req.body = {
@@ -87,9 +90,28 @@ module OmniAuth
                 StandardError.new("App registration failed (#{response.status}): #{body_snippet}"))
         end
 
-        data = JSON.parse(response.body)
+        data = parse_registration_response!(response.body)
         session[:mastodon_oauth_client_id] = data['client_id']
         session[:mastodon_oauth_client_secret] = data['client_secret']
+        session[:mastodon_oauth_instance] = session[:mastodon_instance]
+      end
+
+      def oauth_credentials_cached_for_current_instance?
+        session[:mastodon_oauth_client_id].present? &&
+          session[:mastodon_oauth_client_secret].present? &&
+          session[:mastodon_oauth_instance] == session[:mastodon_instance]
+      end
+
+      def parse_registration_response!(body)
+        data = JSON.parse(body)
+        if data['client_id'].blank? || data['client_secret'].blank?
+          fail!(:invalid_credentials,
+                StandardError.new('App registration response missing client_id or client_secret'))
+        end
+        data
+      rescue JSON::ParserError => e
+        fail!(:invalid_credentials,
+              StandardError.new("App registration returned invalid JSON: #{e.message}"))
       end
     end
   end

@@ -12,6 +12,10 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_callback('Facebook')
   end
 
+  def mastodon
+    handle_callback('Mastodon')
+  end
+
   private
 
   def handle_callback(kind)
