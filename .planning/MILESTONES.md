@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.35 — Sign in with Mastodon using OAuth2 (shipped 2026-06-12)
+
+**Scope:** Phases 119–123 (5 phases, 7 plans) — custom OmniAuth Mastodon strategy, instance selection UI, composite uid identity wiring, auth UI + Connected Accounts row, tri-suite gate. Tri-suite at close: lint ✓ · 644 Minitest · 38 Cucumber.
+
+**Key accomplishments:**
+
+- `omniauth-oauth2` gem + `OmniAuth::Strategies::Mastodon` autoloaded via Zeitwerk; Devise `:mastodon` provider; dynamic `POST /api/v1/apps` registration; `verify_credentials` identity; WebMock Minitest (STRAT-01–04).
+- `MastodonInstanceNormalizer` + `POST /users/mastodon_instance`; instance form on sign-in/sign-up; invalid hostname rejected with localized flash before OAuth (INST-01, INST-02).
+- `User.from_omniauth` `:mastodon` branch with composite uid `instance:account_id`; `OauthIdentity.upsert_for!`; `#mastodon` callback via `handle_callback` (IDNT-01–03, CTRL-01).
+- Branded Mastodon OAuth button (`#6364ff`); Connected Accounts 5th row with disconnect; ja/en locale keys (VIEW-01–03).
+- Mastodon disconnect last-auth-method guard Minitest; Cucumber `@connected_accounts` 5-row scenario; tri-suite gate green (CTRL-02, TEST-01, TEST-02).
+
+Known deferred items at close: 2 open artifact audit items (see STATE.md Deferred Items).
+
+**Archives:** [ROADMAP snapshot](milestones/v1.35-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.35-REQUIREMENTS.md) · [Audit](milestones/v1.35-MILESTONE-AUDIT.md) (passed, 16/16)
+
+---
+
 ## v1.34 — Connected OAuth Providers (shipped 2026-05-24)
 
 **Scope:** Phases 114–118 (5 phases, 5 plans) — `oauth_identities` data layer, `password_auth_enabled` form auth flag, `OauthIdentitiesController#destroy` with safety guard, "Connected Accounts" preferences UI, Cucumber E2E tri-suite gate. 53 files changed, 2,256 insertions(+), 68 deletions(-).

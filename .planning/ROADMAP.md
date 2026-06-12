@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (in progress)
+- ✅ **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (shipped 2026-06-12) — [archived](milestones/v1.35-ROADMAP.md)
 - ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
@@ -177,13 +177,15 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 </details>
 
 <details>
-<summary>🚧 v1.35 — Sign in with Mastodon using OAuth2 (Phases 119–123) — IN PROGRESS</summary>
+<summary>✅ v1.35 — Sign in with Mastodon using OAuth2 (Phases 119–123) — SHIPPED 2026-06-12</summary>
 
-- [x] Phase 119: Custom OmniAuth Mastodon Strategy (completed 2026-06-12)
-- [ ] Phase 120: Instance Selection UI
-- [ ] Phase 121: Identity Wiring — from_omniauth & Callback
-- [ ] Phase 122: Auth UI & Connected Accounts
-- [ ] Phase 123: Tests & Tri-Suite Gate
+Full goals, success criteria, and notes: [milestones/v1.35-ROADMAP.md](milestones/v1.35-ROADMAP.md).
+
+- [x] Phase 119: Custom OmniAuth Mastodon Strategy (2/2 plans) — 2026-06-12
+- [x] Phase 120: Instance Selection UI (2/2 plans) — 2026-06-12
+- [x] Phase 121: Identity Wiring — from_omniauth & Callback (1/1 plan) — 2026-06-12
+- [x] Phase 122: Auth UI & Connected Accounts (1/1 plan) — 2026-06-12
+- [x] Phase 123: Tests & Tri-Suite Gate (1/1 plan) — 2026-06-12
 
 </details>
 
@@ -495,7 +497,7 @@ Plans:
   4. `Users::OmniauthCallbacksController#mastodon` delegates to `handle_callback`
   5. Minitest: create path, re-auth path, composite uid format, upsert idempotency
 
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 ### Phase 122: Auth UI & Connected Accounts
 
@@ -509,8 +511,7 @@ Plans:
   3. ja/en locale keys for button label, instance placeholder, connected accounts label; i18n parity test passes
   4. Integration test: preferences page renders Mastodon row for signed-in user
 
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 1/1 complete
 
 ### Phase 123: Tests & Tri-Suite Gate
 
@@ -524,7 +525,7 @@ Plans:
   3. Cucumber extends `@connected_accounts` scenarios for Mastodon row (no live OAuth)
   4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
 
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 ## Progress Table
 
@@ -546,9 +547,9 @@ Plans:
 | 117. Preferences View — Connected Accounts | 1/1 | Complete | 2026-05-24 |
 | 118. Tests & Tri-suite Gate | 1/1 | Complete | 2026-05-24 |
 | 119. Custom OmniAuth Mastodon Strategy | 2/2 | Complete    | 2026-06-12 |
-| 120. Instance Selection UI | 0/0 | Pending | — |
-| 121. Identity Wiring — from_omniauth & Callback | 0/0 | Pending | — |
-| 122. Auth UI & Connected Accounts | 0/0 | Pending | — |
-| 123. Tests & Tri-Suite Gate | 0/0 | Pending | — |
+| 120. Instance Selection UI | 2/2 | Complete    | 2026-06-12 |
+| 121. Identity Wiring — from_omniauth & Callback | 1/1 | Complete    | 2026-06-12 |
+| 122. Auth UI & Connected Accounts | 1/1 | Complete    | 2026-06-12 |
+| 123. Tests & Tri-Suite Gate | 1/1 | Complete | 2026-06-12 |
 
-*Last updated: 2026-06-12 — v1.35 milestone started (Phases 119–123)*
+*Last updated: 2026-06-12 — v1.35 milestone shipped (Phases 119–123)*

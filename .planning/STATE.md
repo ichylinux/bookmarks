@@ -2,35 +2,36 @@
 gsd_state_version: 1.0
 milestone: v1.35
 milestone_name: — Sign in with Mastodon using OAuth2
-status: executing
-last_updated: "2026-06-12T09:22:52.388Z"
-last_activity: 2026-06-12
+status: Awaiting next milestone
+last_updated: "2026-06-12T10:07:25.493Z"
+last_activity: 2026-06-12 — Milestone v1.35 completed and archived
 progress:
   total_phases: 20
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 5
+  completed_phases: 5
+  total_plans: 7
+  completed_plans: 7
+  percent: 25
 ---
 
 # State
 
 ## Current Position
 
-Phase: 120
-Plan: Not started
-Status: Executing Phase 119
-Last activity: 2026-06-12
+Phase: Milestone v1.35 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-06-12 — Milestone v1.35 completed and archived
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-24)
+See: .planning/PROJECT.md (updated 2026-06-12)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Phase 119 — custom-omniauth-mastodon-strategy
+**Current focus:** Planning next milestone (`/gsd-new-milestone`)
 
 ## Performance Metrics
 
+- v1.35 close: `yarn run lint` ✓ · `bin/rails test` 644/644 ✓ · `dad:test` 38/38 ✓
 - v1.34 close: `yarn run lint` ✓ · `bin/rails test` 587/587 ✓ · `dad:test` 38/38 ✓
 - v1.33 close: `yarn run lint` ✓ · `bin/rails test` 567/567 ✓ · `dad:test` 35/35 ✓
 - v1.32 close: `yarn run lint` ✓ · `bin/rails test` 559/559 ✓ · `dad:test` 34/34 ✓
@@ -47,6 +48,8 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 | v2 | XMAN-FUT-03 dedicated remove action for manually-added accounts | open |
 | v2 | IDNT-FUT-01 connect new OAuth provider from preferences page | open |
 | v2 | FORM-FUT-01 change password from preferences without reset flow | open |
+| debug | disconnect-form-auth-error [awaiting_human_verify] | deferred at v1.35 close |
+| quick_task | lock-version-oauth-disconnect (20260529) | deferred at v1.35 close |
 
 ## Accumulated Context
 
@@ -63,6 +66,10 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 - (v1.32) Cucumber `@admin_purge` uses `purge_e2e_test@example.com` — avoids fixture id 1/2/3
 - (v1.31) `upsert_manual!` + refresh guard for manually-added X accounts
 - (v1.30) Admin users list at `/admin/users` with `require_admin` gate
+- (v1.35) Custom `OmniAuth::Strategies::Mastodon` on `omniauth-oauth2` — existing gems are OAuth 1.0 only
+- (v1.35) Composite uid `instance_domain:account_id` in `oauth_identities` for provider `mastodon`
+- (v1.35) `MastodonInstanceNormalizer` validates hostname before OAuth; stale session credentials cleared on instance change
+- (v1.35) No live Mastodon OAuth round-trip in Cucumber — static 5-row presence check
 
 ### Blockers/Concerns
 
@@ -88,4 +95,4 @@ See: .planning/PROJECT.md (updated 2026-05-24)
 
 ## Operator Next Steps
 
-- Run `/gsd-discuss-phase 119` to gather context, or `/gsd-plan-phase 119` to plan directly
+- Start the next milestone with /gsd-new-milestone

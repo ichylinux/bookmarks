@@ -1,15 +1,24 @@
 # Bookmarks
 
-## Current Milestone: v1.35 Sign in with Mastodon using OAuth2
+## Current State
 
-**Goal:** Add Mastodon OAuth 2.0 sign-in via a custom OmniAuth strategy, integrated with the existing `oauth_identities` table and Connected Accounts preferences UI.
+**Last shipped:** v1.35 — Sign in with Mastodon using OAuth2 (2026-06-12)
 
-**Target features:**
-- Custom `OmniAuth::Strategies::Mastodon` built on `omniauth-oauth2` (existing Mastodon gems are OAuth 1.0 only — not used)
-- Instance domain input before OAuth redirect; dynamic authorization/token endpoint resolution
-- Composite uid (`instance_domain:account_id`) in `oauth_identities`; `User.from_omniauth` wired for `:mastodon`
-- Mastodon OAuth button on sign-in/sign-up pages; Mastodon row in Connected Accounts preferences
-- Minitest + Cucumber E2E coverage (no live OAuth round-trip in CI, per Facebook pattern)
+Mastodon OAuth 2.0 sign-in is live via a custom OmniAuth strategy with federated instance selection, composite uid identity wiring, Connected Accounts UI, and tri-suite gate (644 Minitest, 38 Cucumber). Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
+
+**Next milestone:** Not yet defined — run `/gsd-new-milestone` to start planning.
+
+<details>
+<summary>Shipped: v1.35 Sign in with Mastodon using OAuth2 (2026-06-12)</summary>
+
+**Delivered (phases 119–123):**
+- Custom `OmniAuth::Strategies::Mastodon` on `omniauth-oauth2`; dynamic `POST /api/v1/apps` registration; `verify_credentials` identity; WebMock Minitest (STRAT-01–04)
+- `MastodonInstanceNormalizer` + `POST /users/mastodon_instance`; instance form on sign-in/sign-up; invalid domain rejected before OAuth (INST-01, INST-02)
+- `User.from_omniauth` `:mastodon` branch with composite uid `instance:account_id`; `OauthIdentity.upsert_for!`; `#mastodon` callback (IDNT-01–03, CTRL-01)
+- Branded Mastodon OAuth button; Connected Accounts 5th row; ja/en locale keys (VIEW-01–03)
+- Mastodon disconnect last-auth guard test; Cucumber 5-row connected-accounts scenario; tri-suite green (CTRL-02, TEST-01, TEST-02)
+
+</details>
 
 ## What This Is
 
@@ -242,6 +251,11 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Bilingual locale strings (ja/en) for all new flash messages and UI labels; i18n parity test passes — **v1.31 Phase 107**
 - ✓ Minitest: 4 model + 8 service + 7 controller tests covering `manually_added` flag, refresh guard, lookup error contract, and all flash paths — **v1.31 Phase 108**
 - ✓ Cucumber E2E: `@x_manual_add` hook (3 WebMock stubs), `features/07.X手動追加.feature` (2 Japanese scenarios), 6 step definitions; tri-suite gate: lint ✓ · 546/546 Minitest · 33/33 Cucumber — **v1.31 Phase 108**
+- ✓ Custom `OmniAuth::Strategies::Mastodon` on `omniauth-oauth2` with dynamic instance targeting and app registration — **v1.35 Phase 119**
+- ✓ Mastodon instance domain input on sign-in/sign-up with hostname validation before OAuth redirect — **v1.35 Phase 120**
+- ✓ Composite uid `instance_domain:account_id` in `oauth_identities`; `from_omniauth` wired for `:mastodon` — **v1.35 Phase 121**
+- ✓ Mastodon OAuth button and Connected Accounts row with ja/en labels — **v1.35 Phase 122**
+- ✓ Mastodon disconnect guard + Cucumber 5-row connected-accounts coverage; tri-suite green (644 Minitest, 38 Cucumber) — **v1.35 Phase 123**
 
 <details>
 <summary>Shipped: v1.31 X Account Manual Add (Non-Following) (2026-05-22)</summary>
@@ -271,7 +285,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
-- **Planning v1.35 (2026-06-12):** Mastodon OAuth 2.0 sign-in — custom OmniAuth strategy with federated instance selection; builds on v1.34 `oauth_identities` + Connected Accounts UI. Reference: `tmp/Mastodon_OAuth_with_Rails_Devise.pdf`.
+- **Shipped v1.35 (2026-06-12):** Mastodon OAuth 2.0 sign-in — custom OmniAuth strategy with federated instance selection, composite uid identity, Connected Accounts 5th row, tri-suite gate. Tri-suite: lint ✓ · 644 Minitest · 38 Cucumber. Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
 - **Shipped v1.34 (2026-05-24):** Connected OAuth Providers — `oauth_identities` table + `OauthIdentity.upsert_for!` for all 3 providers + backfill; `password_auth_enabled` flag + `after_password_reset` callback + `disconnect_form_auth!`; `OauthIdentitiesController#destroy` with safety guard; "Connected Accounts" preferences section (4 rows, icons, bilingual); 3 Cucumber E2E scenarios. Tri-suite: lint ✓ · 587 Minitest · 38 Cucumber. Audit: `.planning/milestones/v1.34-MILESTONE-AUDIT.md` (passed, 13/13).
 - **Shipped v1.31 (2026-05-22):** X account manual add — `manually_added` schema column + `upsert_manual!` + refresh guard, `XClient#lookup_user_by_username` (7-symbol error contract), `POST /x_accounts/lookup_and_add` (7 flash states), handle input form + manually-added badge, Cucumber E2E `@x_manual_add` hook + 2 Japanese scenarios. Tri-suite: lint ✓ · 546 Minitest 0 failures · 33/33 Cucumber. Details: `.planning/milestones/v1.31-ROADMAP.md`. No formal audit file (tri-suite gate and SUMMARY.md presence accepted as evidence).
 - **Shipped v1.30 (2026-05-22):** Admin user management screen — `/admin/users` route + controller (reuses `require_admin`), 7-column user list with soft-deleted visibility + N+1 prevention, drawer nav link, bilingual ja/en locale keys + i18n parity test, Cucumber E2E. Tri-suite: lint ✓ · 528 Minitest 0 failures · 31/31 Cucumber. Details: `.planning/milestones/v1.30-ROADMAP.md`. Audit: `.planning/milestones/v1.30-MILESTONE-AUDIT.md` (passed; Phase 103.1 closed process debt).
@@ -371,6 +385,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Blank input guard in controller before XClient call (v1.31) | Saves an API round-trip; semantically correct — blank handle is a user error, not an API query | ✓ Good — clean separation of concerns; guard tested as a distinct controller case |
 | WebMock stubs use regex (not exact URL strings) for lookup endpoints (v1.31) | `XClient` appends `?user.fields=...` query params; exact strings reject the annotated request | ✓ Good — regex pattern consistent with all other stubs in `hooks.rb`; fixes Phase 108 first-run failure |
 | `lookup_user_by_username` routes via `following_connection(user)` not `connection_for(user)` (v1.31) | Ensures `@forced_connection` injection works for Faraday `:test` adapter in Minitest | ✓ Good — same pattern as `fetch_following`; aligns service test injection with OAuth token path |
+| Custom OmniAuth strategy in `lib/omniauth/strategies/` (v1.35) | Existing Mastodon gems are OAuth 1.0 only; `omniauth-oauth2` base with dynamic instance endpoints | ✓ Good — Zeitwerk `push_dir` + `before_initialize` require for Devise boot |
+| Session-scoped OAuth client credentials (v1.35) | Per-instance `POST /api/v1/apps` registration; stale `mastodon_oauth_client_*` cleared on instance change | ✓ Good — supports federated instances without static ENV config |
+| Composite uid `instance:account_id` for Mastodon (v1.35) | `oauth_identities` unique on `(user_id, provider)` — one Mastodon account per user across instances | ✓ Good — `info[:instance]` from strategy enables assembly in `from_omniauth` |
+| No live Mastodon OAuth in Cucumber CI (v1.35) | Facebook precedent; static 5-row presence check sufficient | ✓ Good — avoids flaky external dependency in `dad:test` |
 
 ## Evolution
 
@@ -471,4 +489,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-12 — milestone v1.35 started (Sign in with Mastodon using OAuth2)*
+*Last updated: 2026-06-12 after v1.35 milestone*
