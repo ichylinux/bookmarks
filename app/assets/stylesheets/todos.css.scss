@@ -13,6 +13,10 @@
   li:not(.todo_actions) {
     position: relative;
     padding-right: 5.5em;
+
+    &:has(form.todo) {
+      padding-right: 0;
+    }
   }
 
   li.highlighted {
@@ -103,30 +107,54 @@
   }
 
   // Scoped above .modern table { width: auto } (same issue as table.calendar).
+  // Flex row keeps the submit button inside the gadget (overflow: hidden on .gadget div).
+  form.todo {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
   form.todo table.todo-form {
     width: 100%;
     max-width: 100%;
-    table-layout: fixed;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    display: block;
+
+    tbody {
+      display: block;
+    }
 
     tr {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
       width: 100%;
     }
 
     td {
+      display: block;
+      box-sizing: border-box;
       padding: 0 1px;
-      text-align: center;
       vertical-align: middle;
 
       &:first-child {
+        flex: 0 0 auto;
         width: 3.5em;
+        text-align: center;
+      }
+
+      &:nth-child(2) {
+        flex: 1 1 0;
+        min-width: 0;
+        text-align: left;
       }
 
       &:last-child {
+        flex: 0 0 auto;
+        text-align: right;
         white-space: nowrap;
-        width: auto;
       }
 
       input[type="text"],
@@ -138,32 +166,15 @@
     }
 
     @media (max-width: 767px) {
-      display: block;
-      table-layout: auto;
-
-      tbody {
-        display: block;
-      }
-
       tr {
-        display: flex;
         flex-wrap: wrap;
-        align-items: center;
-      }
-
-      td {
-        display: block;
-        box-sizing: border-box;
       }
 
       td:first-child {
-        flex: 0 0 auto;
         width: auto;
       }
 
       td:nth-child(2) {
-        flex: 1 1 0;
-        min-width: 0;
         width: auto;
       }
 
@@ -171,7 +182,6 @@
         flex: 0 0 100%;
         width: 100%;
         max-width: 100%;
-        text-align: right;
         padding: 6px 0 0;
         white-space: normal;
       }

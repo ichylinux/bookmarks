@@ -149,7 +149,6 @@
 .modern table.todo-form {
   width: 100%;
   max-width: 100%;
-  table-layout: fixed;
   box-sizing: border-box;
   margin: 0;
 }
@@ -158,8 +157,15 @@
 .modern table.todo-form td {
   padding: 0 1px;
   border-bottom: none;
-  text-align: center;
   vertical-align: middle;
+}
+
+.modern table.todo-form td:first-child {
+  text-align: center;
+}
+
+.modern table.todo-form td:last-child {
+  text-align: right;
 }
 
 .modern table.todo-form tbody tr:nth-child(even),
