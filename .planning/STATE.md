@@ -3,31 +3,31 @@ gsd_state_version: 1.0
 milestone: v1.35
 milestone_name: — Sign in with Mastodon using OAuth2
 status: executing
-last_updated: "2026-06-12T09:08:10.267Z"
-last_activity: 2026-06-12 — Milestone v1.35 started
+last_updated: "2026-06-12T09:22:52.388Z"
+last_activity: 2026-06-12
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 20
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+  percent: 5
 ---
 
 # State
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-06-12 — Milestone v1.35 started
+Phase: 120
+Plan: Not started
+Status: Executing Phase 119
+Last activity: 2026-06-12
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** v1.35 Phase 119 — Custom OmniAuth Mastodon Strategy
+**Current focus:** Phase 119 — custom-omniauth-mastodon-strategy
 
 ## Performance Metrics
 

@@ -7,10 +7,10 @@
 
 ### Strategy
 
-- [ ] **STRAT-01**: `omniauth-oauth2` gem added explicitly; custom `OmniAuth::Strategies::Mastodon` registered in Devise as `:mastodon` provider
-- [ ] **STRAT-02**: Strategy resolves authorization and token endpoints against the user-selected instance domain stored in session
-- [ ] **STRAT-03**: Strategy obtains account info from `/api/v1/accounts/verify_credentials` after token exchange
-- [ ] **STRAT-04**: OAuth client credentials obtained via dynamic app registration (`POST /api/v1/apps`) on the selected instance before authorization redirect
+- [x] **STRAT-01**: `omniauth-oauth2` gem added explicitly; custom `OmniAuth::Strategies::Mastodon` registered in Devise as `:mastodon` provider
+- [x] **STRAT-02**: Strategy resolves authorization and token endpoints against the user-selected instance domain stored in session
+- [x] **STRAT-03**: Strategy obtains account info from `/api/v1/accounts/verify_credentials` after token exchange
+- [x] **STRAT-04**: OAuth client credentials obtained via dynamic app registration (`POST /api/v1/apps`) on the selected instance before authorization redirect
 
 ### Instance Selection
 
@@ -62,10 +62,10 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STRAT-01 | Phase 119 | Pending |
-| STRAT-02 | Phase 119 | Pending |
-| STRAT-03 | Phase 119 | Pending |
-| STRAT-04 | Phase 119 | Pending |
+| STRAT-01 | Phase 119 | Complete |
+| STRAT-02 | Phase 119 | Complete |
+| STRAT-03 | Phase 119 | Complete |
+| STRAT-04 | Phase 119 | Complete |
 | INST-01 | Phase 120 | Pending |
 | INST-02 | Phase 120 | Pending |
 | IDNT-01 | Phase 121 | Pending |
@@ -80,6 +80,7 @@ Deferred to future release.
 | TEST-02 | Phase 123 | Pending |
 
 **Coverage:**
+
 - v1.35 requirements: 16 total
 - Mapped to phases: 16
 - Unmapped: 0 ✓

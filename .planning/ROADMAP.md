@@ -179,7 +179,7 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 <details>
 <summary>🚧 v1.35 — Sign in with Mastodon using OAuth2 (Phases 119–123) — IN PROGRESS</summary>
 
-- [ ] Phase 119: Custom OmniAuth Mastodon Strategy
+- [x] Phase 119: Custom OmniAuth Mastodon Strategy (completed 2026-06-12)
 - [ ] Phase 120: Instance Selection UI
 - [ ] Phase 121: Identity Wiring — from_omniauth & Callback
 - [ ] Phase 122: Auth UI & Connected Accounts
@@ -190,271 +190,340 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 ## Phase Details
 
 ### Phase 104: Schema, Model & Refresh Guard
+
 **Goal**: The data layer correctly stores and protects manually-added accounts — `manually_added` column exists, `upsert_manual!` creates/restores accounts idempotently, and the refresh soft-delete loop never deletes manually-added rows
 **Depends on**: Nothing (first phase of v1.31)
 **Requirements**: XMAN-01, XMAN-02, XMAN-03
 **Success Criteria** (what must be TRUE):
+
   1. A database migration adds `manually_added boolean NOT NULL DEFAULT false` to `x_accounts`; existing rows default to `false` with no data loss
   2. Calling `XAccount.upsert_manual!(user:, x_user_id:, ...)` on a new record creates a row with `manually_added: true, deleted: false`
   3. Calling `upsert_manual!` a second time (or on a soft-deleted row) restores it without creating a duplicate — `manually_added: true` is always set unconditionally
   4. Running `refresh_cache_from_items!` does not soft-delete rows where `manually_added: true`; a Minitest covering this guard passes
   5. Refreshing a follow-synced account that also matches a manually-added row does not flip `manually_added` to `false`
+
 **Plans**: 2 plans
 Plans:
+
 - [x] 104-01-PLAN.md — Add manually_added migration to x_accounts (beebee2, 2026-05-22)
 - [x] 104-02-PLAN.md — upsert_manual! + refresh guard + Minitest (bfacd43, a98b6f0, 2026-05-22)
 
 ### Phase 105: XClient Lookup Service
+
 **Goal**: `XClient` can resolve a public X handle to a user record, returning a structured result or a typed error symbol, fully covered by isolated service tests
 **Depends on**: Phase 104
 **Requirements**: XSVC-01, XSVC-02
 **Success Criteria** (what must be TRUE):
+
   1. `XClient#lookup_user_by_username(username: '@handle')` strips the leading `@` and calls `GET /2/users/by/username/handle` via the existing Bearer auth connection
   2. A successful 200 response returns `{ success: true, item: { ... } }` with the API-returned canonical `username` (not the raw user input)
   3. HTTP 404 or 400 maps to `{ success: false, error: :not_found }`; HTTP 403 maps to `:suspended`; HTTP 429 maps to `:rate_limited`; all other errors map to `:api_error`
   4. Minitest service tests covering all response codes (200, 404, 400, 403, 429, timeout, network error) pass using Faraday `:test` adapter stubs
+
 **Plans**: 1 plan
 Plans:
+
 - [x] 105-01-PLAN.md — lookup_user_by_username + parse_lookup_response + 8 Minitest cases
 
 ### Phase 106: Controller Action, Routes & Locales
+
 **Goal**: Users can POST a handle to `/x_accounts/lookup_and_add` and receive a localized flash response for every success and error state
 **Depends on**: Phase 105
 **Requirements**: XCTL-01, XCTL-02
 **Success Criteria** (what must be TRUE):
+
   1. `POST /x_accounts/lookup_and_add` is routed to `XAccountsController#lookup_and_add` and is gated by `require_twitter_linked`
   2. A successful add redirects to `/x_accounts` with a success flash message in both Japanese and English
   3. Each of the 6 error states (not found, already active, rate limited, suspended, blank input, network error) redirects with a distinct localized flash alert in both ja and en
   4. Every API call from this action is instrumented via `record_x_api_call`
   5. Controller integration tests for all 7 flash states (1 success + 6 errors) pass
+
 **Plans**: 1 plan
 Plans:
+
 - [x] 106-01-PLAN.md — lookup_and_add action + routes + locale keys + 7 integration tests
+
 **UI hint**: yes
 
 ### Phase 107: View Form & Manually-Added Badge
+
 **Goal**: The `/x_accounts` index page has a usable handle input form and every manually-added account card displays a visual indicator of its origin
 **Depends on**: Phase 106
 **Requirements**: XVIEW-01, XVIEW-02, XVIEW-03
 **Success Criteria** (what must be TRUE):
+
   1. A `form_with` handle input form appears on the `/x_accounts` index page with a text field and submit button; no new JavaScript is required
   2. Submitting `@handle` (or `handle`) POSTs to `lookup_and_add_x_accounts_path` and the page redirects with a flash
   3. Each account card for a `manually_added: true` account shows a visible badge or label; the label is rendered in Japanese when the UI locale is `ja` and in English when `en`
   4. Follow-synced account cards do not show the manually-added badge
   5. All new locale keys for form labels, button text, and the badge pass the i18n parity test (ja/en key sets match)
+
 **Plans**: 1 plan
 Plans:
+
 - [x] 107-01-PLAN.md — handle input form + manually-added badge + i18n parity
+
 **UI hint**: yes
 
 ### Phase 108: Full Test Coverage & Tri-suite Gate
+
 **Goal**: All v1.31 behavior is verified end-to-end and the tri-suite gate is green
 **Depends on**: Phase 107
 **Requirements**: XTEST-01, XTEST-02
 **Success Criteria** (what must be TRUE):
+
   1. Minitest: model tests for `manually_added` flag behavior + refresh guard, service tests for all `lookup_user_by_username` response codes, and controller integration tests for all error paths all pass
   2. A Cucumber E2E happy-path scenario (enter a handle → account appears in the list → click Refresh → account survives) passes
   3. A Cucumber not-found error scenario (enter a nonexistent handle → not-found flash appears) passes
   4. The WebMock stub for `/2/users/by/username/` is registered in the relevant Cucumber `Before` hook so no `NetConnectNotAllowedError` occurs
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
 **Plans**: 1 plan
 Plans:
+
 - [x] 108-01-PLAN.md — Add @x_manual_add hook + feature file + step definitions + run tri-suite gate
 
 ---
 
 ### Phase 109: Model Layer — Purge Predicate & Cascade
+
 **Goal**: Admin can check purge eligibility and permanently hard-delete a soft-deleted user and all associated records in a single transaction
 **Depends on**: Nothing (first phase of v1.32; v1.28 soft-delete layer already exists)
 **Requirements**: PURGE-01, PURGE-02, TEST-01
 **Success Criteria** (what must be TRUE):
+
   1. `User#purgeable?` returns `false` for active users, returns `false` for soft-deleted users where `deleted_at` is nil or fewer than 90 days ago, and returns `true` only when `deleted? && deleted_at.present? && deleted_at <= 90.days.ago`
   2. `User#purge!` raises `User::NotPurgeableError` when called on a non-purgeable user, preventing any deletion from occurring
   3. `User#purge!` on an eligible user deletes rows from all 11 associated tables (bookmarks, notes, todos, feeds, mastodon_accounts, x_accounts, visited_links, x_api_calls, preferences, portal_layouts, x_accounts) and then destroys the user row — all inside a single transaction
   4. `portal_layouts` rows are explicitly deleted via `PortalLayout.where(user_id: id).delete_all` (no `has_many` exists on User for this table)
   5. Minitest boundary cases all pass: `purgeable?` with `deleted_at` nil (no crash), `deleted_at` 89 days ago (false), `deleted_at` exactly 90 days ago (true), and a full-cascade `purge!` test asserting every table has zero rows for the purged user
+
 **Plans**: 1 plan
 Plans:
+
 - [x] 109-01-PLAN.md — purgeable?, purge!, scope, Minitest (2026-05-22)
 
 ### Phase 110: Controller + Views + Locale
+
 **Goal**: Admin can navigate to a confirmation page and execute the purge via a server-rendered two-step flow, guarded at both view and controller layers, with bilingual labels and flash messages
 **Depends on**: Phase 109
 **Requirements**: ADMIN-01, ADMIN-02, ADMIN-03, LOCALE-01, TEST-02
 **Success Criteria** (what must be TRUE):
+
   1. The `/admin/users` list shows a "Purge" button only on rows where `user.purgeable?` is true — active users and recently-soft-deleted users have no purge button
   2. Clicking the Purge button navigates to a `GET /admin/users/:id/confirm_purge` confirmation page with the user's email and a DELETE-method form; no JavaScript confirmation dialog is used
   3. Submitting the confirmation form executes `DELETE /admin/users/:id`, which calls `user.purge!` and redirects to `/admin/users` with a success flash; if the user is no longer purgeable (race condition), the controller redirects with an error flash without raising
   4. Attempting `DELETE /admin/users/:id` directly for a non-purgeable user (bypassing the UI) is rejected by the controller's `purgeable?` guard — the purge does not execute
   5. All new locale keys (purge button label, confirmation page text, success flash, ineligibility flash) exist in both `ja.yml` and `en.yml`; the i18n parity test passes
   6. Minitest controller tests cover: guest redirect, non-admin 404, admin purge success, and admin attempt on ineligible user
+
 **Plans**: 1 plan (inline autonomous execute)
 **UI hint**: yes
 
 ### Phase 111: Cucumber E2E + Tri-suite Gate
+
 **Goal**: The full admin purge flow is verified end-to-end by an automated browser scenario and all three test suites pass
 **Depends on**: Phase 110
 **Requirements**: TEST-03
 **Success Criteria** (what must be TRUE):
+
   1. A `Before` hook for `@admin_purge` creates a non-fixture soft-deleted user (not user1/user2/user3 fixture ids) with `deleted_at` set to 91 days ago; an `After` guard cleans up via `User.where(email: ...).delete_all`
   2. The Cucumber happy-path scenario signs in as admin, visits `/admin/users`, sees the Purge button on the test user's row, clicks through the confirmation page, and asserts the user no longer appears in the list
   3. The Cucumber scenario does not break the `@account_deletion` or any other existing scenario that references fixture user ids
   4. `yarn run lint` exits 0 with no ESLint errors
   5. `bin/rails test` exits 0 with all Minitest cases passing (including Phase 109 and 110 additions)
   6. `bundle exec rake dad:test` exits 0 with 0 failed Cucumber scenarios
+
 **Plans**: 1 plan (inline autonomous execute)
 
 ---
 
 ### Phase 112: Backend — Gem, Config, Model & Controller
+
 **Goal**: Facebook OAuth is wired end-to-end on the server side — the gem is installed, Devise is configured with the Facebook provider, `User.from_omniauth` handles `:facebook` with email-based find-or-create, the callback controller action exists, and Minitest covers all authentication paths
 **Depends on**: Nothing (first phase of v1.33; existing OmniAuth infrastructure for Google and X already in place)
 **Requirements**: FB-01, FB-02, FB-03, FB-04, FB-05, FB-06, FB-07, FB-08, FB-12, FB-13
 **Success Criteria** (what must be TRUE):
+
   1. `bundle install` succeeds with `omniauth-facebook` in the Gemfile; `Gemfile.lock` updated; `bundle exec rails runner 'puts OmniAuth::Strategies::Facebook'` exits without error
   2. `config/initializers/devise.rb` configures the `:facebook` provider with `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` ENV vars and `scope: 'email'`; `config/app_config.yml` references those same ENV keys for all environments
   3. `User.from_omniauth` for provider `:facebook` finds an existing user by email from `auth.info.email` and signs them in, or creates a new user when no match is found — same pattern as `:google_oauth2`
   4. A soft-deleted user whose email matches the Facebook identity cannot sign in — `User.active` scope blocks re-authentication
   5. `Users::OmniauthCallbacksController#facebook` action exists, delegates to `handle_callback`, and redirects correctly for both the persisted-user and failed-create paths
   6. Minitest covers `User.from_omniauth` for `:facebook`: existing-email sign-in, new-user sign-up, and deleted-account guard (3 cases); Minitest covers the controller action for persisted user and failed create (2 cases); all pass
+
 **Plans**: TBD
 
 ### Phase 113: Frontend & E2E — Button UI, CSS, Locale & Cucumber
+
 **Goal**: Users see a Facebook sign-in button on the sign-in and sign-up pages, styled with Facebook blue and positioned after Google and X buttons, with bilingual labels and a green tri-suite gate
 **Depends on**: Phase 112
 **Requirements**: FB-09, FB-10, FB-11, FB-14
 **Success Criteria** (what must be TRUE):
+
   1. The `_oauth_buttons.html.erb` partial renders a Facebook button after the existing Google and X buttons on both the sign-in and sign-up pages
   2. The Facebook button applies a branded CSS rule using `#1877F2` (Facebook blue), visually consistent with the Google and X button style conventions
   3. `t('devise.shared.omniauth.facebook')` key exists in both `ja.yml` and `en.yml`; the i18n parity test passes
   4. A Cucumber scenario visits the sign-in page and asserts the Facebook OAuth button is present (static render check — no live OAuth round-trip)
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
 **Plans**: TBD
 **UI hint**: yes
 
 ---
 
 ### Phase 114: OAuth Identity Data Layer
+
 **Goal**: Every successful OAuth sign-in is durably recorded in a dedicated `oauth_identities` table, all three providers are wired, and existing X-linked accounts are backfilled — giving the app a single authoritative source for linked provider state
 **Depends on**: Nothing (first phase of v1.34; v1.33 Facebook OAuth backend already exists)
 **Requirements**: IDNT-01, IDNT-02, IDNT-03
 **Success Criteria** (what must be TRUE):
+
   1. A migration creates `oauth_identities(id, user_id, provider, uid, created_at, updated_at)` with a unique index on `(user_id, provider)` and a foreign key to `users`
   2. `OauthIdentity` model exists with `belongs_to :user`, validates presence of `provider` and `uid`, and validates uniqueness of `provider` scoped to `user_id`
   3. `User.from_omniauth` upserts an `OauthIdentity` row on every successful sign-in for all three providers (`:google_oauth2`, `:twitter2`, `:facebook`)
   4. A backfill migration copies `users.provider` / `users.uid` to `oauth_identities` for all existing rows where `provider` and `uid` are present, producing one `OauthIdentity` row per affected user with no duplicates
   5. Minitest covers: `OauthIdentity` model validations, `from_omniauth` upsert for each provider (new user + existing user paths), and backfill idempotency
+
 **Plans**: TBD
 
 ### Phase 115: Form Auth Data Layer
+
 **Goal**: The app can reliably determine whether a user has set a real password and can revoke it — enabling the disconnect safety guard to treat email/password as a distinct auth method alongside OAuth providers
 **Depends on**: Phase 114
 **Requirements**: FORM-01, FORM-02, FORM-03
 **Success Criteria** (what must be TRUE):
+
   1. A migration adds `password_auth_enabled boolean NOT NULL DEFAULT false` to `users`; existing rows default to `false` with no data loss
   2. `User#after_password_reset` callback sets `password_auth_enabled: true` after a successful Devise password reset flow completes
   3. Calling a disconnect method for form auth sets `password_auth_enabled: false` and randomizes the user's encrypted password, preventing email/password sign-in
   4. Minitest covers: `after_password_reset` sets the flag, form-auth disconnect clears the flag and prevents sign-in with the old password
+
 **Plans**: TBD
 
 ### Phase 116: Disconnect Controller & Routes
+
 **Goal**: Users can remove an individual OAuth provider from their account via a single DELETE request, and the controller enforces the safety rule that leaves users with at least one remaining auth method
 **Depends on**: Phase 115
 **Requirements**: CTRL-01, CTRL-02
 **Success Criteria** (what must be TRUE):
+
   1. `DELETE /oauth_identities/:provider` is routed to `OauthIdentitiesController#destroy` and requires authentication
   2. A successful disconnect deletes the `OauthIdentity` row for the named provider and redirects to the preferences page with a localized success flash
   3. If disconnecting the named provider would leave the user with no remaining auth method (no other linked provider and `password_auth_enabled: false`), the controller redirects back with a localized error flash and performs no deletion
   4. Non-existent provider names (e.g. an already-unlinked provider) are handled gracefully — no 500 error
   5. Minitest controller tests cover: success path, safety guard block, unlinked provider (no-op), and unauthenticated access
+
 **Plans**: TBD
 
 ### Phase 117: Preferences View — Connected Accounts
+
 **Goal**: Users can see at a glance which auth methods are linked to their account and initiate a disconnect from the preferences page
 **Depends on**: Phase 116
 **Requirements**: VIEW-01, VIEW-02, VIEW-03
 **Success Criteria** (what must be TRUE):
+
   1. The preferences page renders a "Connected Accounts" section listing all 4 auth methods: Google, X, Facebook, and Email & Password — each with an icon and a linked/unlinked status
   2. For each linked provider, a Disconnect button submits `DELETE /oauth_identities/:provider` (or the form-auth equivalent); for each unlinked provider, a "Not connected" indicator appears in place of the button
   3. All section heading, provider name, button, and status text keys exist in both `ja.yml` and `en.yml`; the i18n parity test passes
   4. The section renders correctly in both Japanese and English locales
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 118: Tests & Tri-suite Gate
+
 **Goal**: All v1.34 behavior is verified end-to-end across unit, integration, and browser test layers, and the tri-suite gate is green
 **Depends on**: Phase 117
 **Requirements**: TEST-01, TEST-02
 **Success Criteria** (what must be TRUE):
+
   1. Minitest covers: `OauthIdentity` model validations, `password_auth_enabled` tracking, disconnect controller success path, safety guard block, and preferences page Connected Accounts rendering
   2. A Cucumber E2E scenario visits the preferences Connected Accounts section and asserts all 4 auth method rows are visible
   3. A Cucumber scenario disconnects an OAuth provider (with another method still linked) and asserts the provider row transitions to "Not connected"
   4. A Cucumber scenario attempts to disconnect the last remaining auth method and asserts the error flash appears and the provider row remains linked
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
 **Plans**: TBD
 
 ---
 
 ### Phase 119: Custom OmniAuth Mastodon Strategy
+
 **Goal**: A working custom OAuth 2.0 strategy that dynamically targets the user's Mastodon instance, registers an OAuth app, and returns a valid OmniAuth auth hash
 **Depends on**: Nothing (first phase of v1.35)
 **Requirements**: STRAT-01, STRAT-02, STRAT-03, STRAT-04
 **Success Criteria** (what must be TRUE):
+
   1. `omniauth-oauth2` in Gemfile; `lib/omniauth/strategies/mastodon.rb` autoloaded; Devise registers `:mastodon`
   2. Strategy reads `session[:mastodon_instance]` and sets `client.site` to `https://{instance}`
   3. Strategy calls `POST /api/v1/apps` for dynamic client registration before authorize redirect
   4. After callback, strategy fetches `/api/v1/accounts/verify_credentials` and populates `uid` + `info`
   5. Minitest with WebMock stubs for app registration, authorize URL construction, and verify_credentials response
+
 **Plans**: 2 plans in 2 waves
 Plans:
-- [ ] 119-01-PLAN.md — Gem + strategy skeleton + Devise/User wiring (STRAT-01)
-- [ ] 119-02-PLAN.md — Dynamic instance targeting, app registration, verify_credentials, WebMock tests (STRAT-02–04) *(blocked on Wave 1)*
+
+- [x] 119-01-PLAN.md — Gem + strategy skeleton + Devise/User wiring (STRAT-01)
+- [x] 119-02-PLAN.md — Dynamic instance targeting, app registration, verify_credentials, WebMock tests (STRAT-02–04) *(blocked on Wave 1)*
 
 ### Phase 120: Instance Selection UI
+
 **Goal**: Users can specify their Mastodon instance domain on auth pages; invalid input is rejected before OAuth starts
 **Depends on**: Phase 119
 **Requirements**: INST-01, INST-02
 **Success Criteria** (what must be TRUE):
+
   1. Instance domain input field on sign-in and sign-up pages (ja/en labels)
   2. Form POST stores normalized domain in `session[:mastodon_instance]` and redirects to `/users/auth/mastodon`
   3. Invalid domain (scheme, path, blank, malformed hostname) rejected with localized flash — no OAuth redirect
   4. Minitest covers valid normalization and rejection paths
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 121: Identity Wiring — from_omniauth & Callback
+
 **Goal**: Successful Mastodon OAuth creates or locates users and persists composite uid in `oauth_identities`
 **Depends on**: Phase 120
 **Requirements**: IDNT-01, IDNT-02, IDNT-03, CTRL-01
 **Success Criteria** (what must be TRUE):
+
   1. `User` adds `:mastodon` to `omniauth_providers`
   2. `from_omniauth` `:mastodon` branch finds user by composite uid `instance:account_id`; creates with dummy email if new
   3. `OauthIdentity.upsert_for!(provider: 'mastodon', uid: composite)` on every successful sign-in
   4. `Users::OmniauthCallbacksController#mastodon` delegates to `handle_callback`
   5. Minitest: create path, re-auth path, composite uid format, upsert idempotency
+
 **Plans**: TBD
 
 ### Phase 122: Auth UI & Connected Accounts
+
 **Goal**: Mastodon appears as a first-class auth method on sign-in/sign-up and in Connected Accounts preferences
 **Depends on**: Phase 121
 **Requirements**: VIEW-01, VIEW-02, VIEW-03
 **Success Criteria** (what must be TRUE):
+
   1. `_oauth_buttons.html.erb` includes Mastodon button with instance form integration
   2. `_connected_accounts.html.erb` adds Mastodon row (icon, linked/unlinked badge, disconnect button)
   3. ja/en locale keys for button label, instance placeholder, connected accounts label; i18n parity test passes
   4. Integration test: preferences page renders Mastodon row for signed-in user
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 123: Tests & Tri-Suite Gate
+
 **Goal**: Full test coverage and green lint + Minitest + Cucumber gate for v1.35
 **Depends on**: Phase 122
 **Requirements**: CTRL-02, TEST-01, TEST-02
 **Success Criteria** (what must be TRUE):
+
   1. Disconnect `DELETE /oauth_identities/mastodon` covered with last-auth-method guard test
   2. Minitest suite covers all STRAT/INST/IDNT/CTRL paths introduced in Phases 119–122
   3. Cucumber extends `@connected_accounts` scenarios for Mastodon row (no live OAuth)
   4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
 **Plans**: TBD
 
 ## Progress Table
@@ -476,7 +545,7 @@ Plans:
 | 116. Disconnect Controller & Routes | 1/1 | Complete | 2026-05-24 |
 | 117. Preferences View — Connected Accounts | 1/1 | Complete | 2026-05-24 |
 | 118. Tests & Tri-suite Gate | 1/1 | Complete | 2026-05-24 |
-| 119. Custom OmniAuth Mastodon Strategy | 0/0 | Pending | — |
+| 119. Custom OmniAuth Mastodon Strategy | 2/2 | Complete    | 2026-06-12 |
 | 120. Instance Selection UI | 0/0 | Pending | — |
 | 121. Identity Wiring — from_omniauth & Callback | 0/0 | Pending | — |
 | 122. Auth UI & Connected Accounts | 0/0 | Pending | — |
