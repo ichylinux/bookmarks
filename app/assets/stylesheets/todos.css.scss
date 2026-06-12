@@ -12,11 +12,6 @@
 
   li:not(.todo_actions) {
     position: relative;
-    padding-right: 5.5em;
-
-    &:has(form.todo) {
-      padding-right: 0;
-    }
   }
 
   li.highlighted {
@@ -56,6 +51,7 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 1;
     display: none;
     padding: 0 0.4em;
     font-size: 0.75em;
@@ -73,20 +69,12 @@
   }
 
   @media (max-width: 767px) {
-    li:not(.todo_actions) {
-      padding-right: 0;
-    }
-
     li.highlighted:not(.todo_actions) {
       padding-right: 10px;
     }
 
     li:not(.todo_actions) .todo-highlight-btn {
       display: none;
-    }
-
-    li:not(.todo_actions).todo-highlight-visible {
-      padding-right: 5.5em;
     }
 
     li:not(.todo_actions).todo-highlight-visible .todo-highlight-btn {
