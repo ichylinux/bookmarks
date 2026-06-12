@@ -267,6 +267,12 @@ Devise.setup do |config|
       Rails.application.config.app_config.omniauth_facebook_app_secret,
       scope: 'email'
 
+  config.omniauth :mastodon,
+      'placeholder_client_id',
+      'placeholder_client_secret',
+      strategy_class: OmniAuth::Strategies::Mastodon,
+      scope: 'read'
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

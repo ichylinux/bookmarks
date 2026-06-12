@@ -8,7 +8,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :two_factor_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable,
-         omniauth_providers: [:google_oauth2, :twitter2, :facebook]
+         omniauth_providers: [:google_oauth2, :twitter2, :facebook, :mastodon]
 
   encrypts :oauth2_token, :oauth2_refresh_token
 
