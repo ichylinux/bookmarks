@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.35
-milestone_name: Sign in with Mastodon using OAuth2
-status: planning
-last_updated: "2026-06-12T08:59:51.407Z"
-last_activity: 2026-06-12
+milestone_name: — Sign in with Mastodon using OAuth2
+status: executing
+last_updated: "2026-06-12T09:08:10.267Z"
+last_activity: 2026-06-12 — Milestone v1.35 started
 progress:
   total_phases: 0
   completed_phases: 0
@@ -19,7 +19,7 @@ progress:
 
 Phase: Not started (defining requirements)
 Plan: —
-Status: Defining requirements
+Status: Ready to execute
 Last activity: 2026-06-12 — Milestone v1.35 started
 
 ## Project Reference
