@@ -37,4 +37,10 @@ class NoteGadgetJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "data('noteEmptyLabel')"
   end
 
+  test 'create form ajax success prepends note item to the list' do
+    assert_includes @source, ".on('ajax:success.noteGadget', '.note-gadget-form'"
+    assert_includes @source, '$list.prepend($newItem);'
+    assert_includes @source, "$textarea.val('');"
+  end
+
 end

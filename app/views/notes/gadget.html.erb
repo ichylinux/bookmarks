@@ -4,7 +4,7 @@
          data-note-action-cancel-label="<%= t('.cancel') %>"
          data-note-empty-label="<%= t('.empty') %>">
   <div class="note-gadget-composer">
-    <%= form_with model: @note, url: notes_path, local: true, html: { class: 'note-gadget-form' } do |f| %>
+    <%= form_with model: @note, url: notes_path, local: false, html: { class: 'note-gadget-form' } do |f| %>
       <%= f.text_area :body, rows: 4, aria: { label: t('.body_label') } %>
       <%= note_gadget_action_button(
             f,

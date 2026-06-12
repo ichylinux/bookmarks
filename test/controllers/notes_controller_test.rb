@@ -77,6 +77,30 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_predicate flash[:alert], :present?
   end
 
+  def test_successful_create_xhr_renders_note_item_partial
+    sign_in @user
+
+    assert_difference('Note.count', 1) do
+      post notes_path, params: { note: { body: 'AJAX新規' } }, xhr: true
+    end
+
+    assert_response :success
+    assert_select '.note-item'
+    assert_match(/AJAX新規/, response.body)
+    assert_equal 'AJAX新規', Note.order(id: :desc).first.body
+  end
+
+  def test_blank_body_create_xhr_returns_error_text
+    sign_in @user
+
+    assert_no_difference('Note.count') do
+      post notes_path, params: { note: { body: '   ' } }, xhr: true
+    end
+
+    assert_response :unprocessable_entity
+    assert_not_empty response.body
+  end
+
   def test_routing_post_notes_to_create
     assert_routing({ path: '/notes', method: :post }, { controller: 'notes', action: 'create' })
   end

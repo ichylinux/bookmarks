@@ -11,10 +11,18 @@ class NotesController < ApplicationController
     @note = Note.new(note_params)
 
     if @note.save
-      redirect_to root_path(tab: 'notes')
+      if request.xhr?
+        render partial: 'note_item', locals: { note: @note }, layout: false
+      else
+        redirect_to root_path(tab: 'notes')
+      end
     else
-      redirect_to root_path(tab: 'notes'),
-                  alert: @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic')
+      error_msg = @note.errors.full_messages.to_sentence.presence || t('flash.errors.generic')
+      if request.xhr?
+        render plain: error_msg, status: :unprocessable_entity
+      else
+        redirect_to root_path(tab: 'notes'), alert: error_msg
+      end
     end
   end
 

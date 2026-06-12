@@ -84,6 +84,32 @@ $(function() {
       .on('ajax:error.noteGadget', '.note-item-delete-form', function() {
         alert('エラーが発生しました');
       })
+      .on('ajax:success.noteGadget', '.note-gadget-form', function(e) {
+        const xhr = (e.originalEvent || e).detail[2];
+        const $gadget = $(this).closest('.note-gadget');
+        const $newItem = $(xhr.responseText);
+        const $list = $gadget.find('.note-list');
+
+        if ($list.length) {
+          $list.prepend($newItem);
+        } else {
+          const $empty = $gadget.find('.note-empty');
+          const $newList = $('<div>', { class: 'note-list' }).append($newItem);
+          if ($empty.length) {
+            $empty.replaceWith($newList);
+          } else {
+            $gadget.find('.note-gadget-composer').after($newList);
+          }
+        }
+
+        const $textarea = $(this).find('textarea');
+        $textarea.val('');
+        $textarea.each(function() { this.style.height = ''; });
+      })
+      .on('ajax:error.noteGadget', '.note-gadget-form', function(e) {
+        const xhr = (e.originalEvent || e).detail[2];
+        alert((xhr && xhr.responseText) || 'エラーが発生しました');
+      })
       .on('keydown.noteGadget', 'textarea', function(e) {
         if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 's') return;
         e.preventDefault();
