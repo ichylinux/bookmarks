@@ -14,7 +14,16 @@ module Bookmarks
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    config.autoload_lib(ignore: %w[assets tasks omniauth])
+
+    config.before_initialize do
+      autoloaders.main.push_dir(
+        Rails.root.join('lib/omniauth/strategies'),
+        namespace: OmniAuth::Strategies
+      )
+      # Devise references OmniAuth::Strategies::Mastodon during load_config_initializers.
+      require Rails.root.join('lib/omniauth/strategies/mastodon')
+    end
 
     # Configuration for the application, engines, and railties goes here.
     #
