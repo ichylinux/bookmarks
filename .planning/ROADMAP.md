@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (in progress)
 - ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
 - ✅ **v1.32 — Admin Account Purge** — Phases 109–111 (shipped 2026-05-22)
@@ -172,6 +173,17 @@ Full goals, success criteria, and notes: [milestones/v1.24-ROADMAP.md](milestone
 - [x] Phase 116: Disconnect Controller & Routes (1/1 plan) — 2026-05-24
 - [x] Phase 117: Preferences View — Connected Accounts (1/1 plan) — 2026-05-24
 - [x] Phase 118: Tests & Tri-suite Gate (1/1 plan) — 2026-05-24
+
+</details>
+
+<details>
+<summary>🚧 v1.35 — Sign in with Mastodon using OAuth2 (Phases 119–123) — IN PROGRESS</summary>
+
+- [ ] Phase 119: Custom OmniAuth Mastodon Strategy
+- [ ] Phase 120: Instance Selection UI
+- [ ] Phase 121: Identity Wiring — from_omniauth & Callback
+- [ ] Phase 122: Auth UI & Connected Accounts
+- [ ] Phase 123: Tests & Tri-Suite Gate
 
 </details>
 
@@ -381,6 +393,67 @@ Plans:
   5. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
 **Plans**: TBD
 
+---
+
+### Phase 119: Custom OmniAuth Mastodon Strategy
+**Goal**: A working custom OAuth 2.0 strategy that dynamically targets the user's Mastodon instance, registers an OAuth app, and returns a valid OmniAuth auth hash
+**Depends on**: Nothing (first phase of v1.35)
+**Requirements**: STRAT-01, STRAT-02, STRAT-03, STRAT-04
+**Success Criteria** (what must be TRUE):
+  1. `omniauth-oauth2` in Gemfile; `lib/omniauth/strategies/mastodon.rb` autoloaded; Devise registers `:mastodon`
+  2. Strategy reads `session[:mastodon_instance]` and sets `client.site` to `https://{instance}`
+  3. Strategy calls `POST /api/v1/apps` for dynamic client registration before authorize redirect
+  4. After callback, strategy fetches `/api/v1/accounts/verify_credentials` and populates `uid` + `info`
+  5. Minitest with WebMock stubs for app registration, authorize URL construction, and verify_credentials response
+**Plans**: TBD
+
+### Phase 120: Instance Selection UI
+**Goal**: Users can specify their Mastodon instance domain on auth pages; invalid input is rejected before OAuth starts
+**Depends on**: Phase 119
+**Requirements**: INST-01, INST-02
+**Success Criteria** (what must be TRUE):
+  1. Instance domain input field on sign-in and sign-up pages (ja/en labels)
+  2. Form POST stores normalized domain in `session[:mastodon_instance]` and redirects to `/users/auth/mastodon`
+  3. Invalid domain (scheme, path, blank, malformed hostname) rejected with localized flash — no OAuth redirect
+  4. Minitest covers valid normalization and rejection paths
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 121: Identity Wiring — from_omniauth & Callback
+**Goal**: Successful Mastodon OAuth creates or locates users and persists composite uid in `oauth_identities`
+**Depends on**: Phase 120
+**Requirements**: IDNT-01, IDNT-02, IDNT-03, CTRL-01
+**Success Criteria** (what must be TRUE):
+  1. `User` adds `:mastodon` to `omniauth_providers`
+  2. `from_omniauth` `:mastodon` branch finds user by composite uid `instance:account_id`; creates with dummy email if new
+  3. `OauthIdentity.upsert_for!(provider: 'mastodon', uid: composite)` on every successful sign-in
+  4. `Users::OmniauthCallbacksController#mastodon` delegates to `handle_callback`
+  5. Minitest: create path, re-auth path, composite uid format, upsert idempotency
+**Plans**: TBD
+
+### Phase 122: Auth UI & Connected Accounts
+**Goal**: Mastodon appears as a first-class auth method on sign-in/sign-up and in Connected Accounts preferences
+**Depends on**: Phase 121
+**Requirements**: VIEW-01, VIEW-02, VIEW-03
+**Success Criteria** (what must be TRUE):
+  1. `_oauth_buttons.html.erb` includes Mastodon button with instance form integration
+  2. `_connected_accounts.html.erb` adds Mastodon row (icon, linked/unlinked badge, disconnect button)
+  3. ja/en locale keys for button label, instance placeholder, connected accounts label; i18n parity test passes
+  4. Integration test: preferences page renders Mastodon row for signed-in user
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 123: Tests & Tri-Suite Gate
+**Goal**: Full test coverage and green lint + Minitest + Cucumber gate for v1.35
+**Depends on**: Phase 122
+**Requirements**: CTRL-02, TEST-01, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. Disconnect `DELETE /oauth_identities/mastodon` covered with last-auth-method guard test
+  2. Minitest suite covers all STRAT/INST/IDNT/CTRL paths introduced in Phases 119–122
+  3. Cucumber extends `@connected_accounts` scenarios for Mastodon row (no live OAuth)
+  4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+**Plans**: TBD
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -400,5 +473,10 @@ Plans:
 | 116. Disconnect Controller & Routes | 1/1 | Complete | 2026-05-24 |
 | 117. Preferences View — Connected Accounts | 1/1 | Complete | 2026-05-24 |
 | 118. Tests & Tri-suite Gate | 1/1 | Complete | 2026-05-24 |
+| 119. Custom OmniAuth Mastodon Strategy | 0/0 | Pending | — |
+| 120. Instance Selection UI | 0/0 | Pending | — |
+| 121. Identity Wiring — from_omniauth & Callback | 0/0 | Pending | — |
+| 122. Auth UI & Connected Accounts | 0/0 | Pending | — |
+| 123. Tests & Tri-Suite Gate | 0/0 | Pending | — |
 
-*Last updated: 2026-05-24 — v1.34 all phases complete (lint ✓ · 587 Minitest · 38 Cucumber)*
+*Last updated: 2026-06-12 — v1.35 milestone started (Phases 119–123)*
