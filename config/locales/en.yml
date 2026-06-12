@@ -83,7 +83,7 @@ en:
       complete: Complete
       new_task: Add Task
       highlight: Highlight
-      unhighlight: Remove highlight
+      unhighlight: Highlight off
     form:
       create: Create
       update: Update
