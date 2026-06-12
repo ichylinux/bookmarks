@@ -590,6 +590,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   omniauth-google-oauth2
+  omniauth-oauth2 (~> 1.9)
   omniauth-rails_csrf_protection
   omniauth-twitter2
   puma

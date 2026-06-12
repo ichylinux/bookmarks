@@ -20,6 +20,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'nokogiri', force_ruby_platform: true
 gem 'omniauth'
+gem 'omniauth-oauth2', '~> 1.9'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-facebook'
 gem 'omniauth-rails_csrf_protection'
