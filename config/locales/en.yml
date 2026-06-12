@@ -526,6 +526,8 @@ en:
           instance_label: Mastodon instance
           instance_placeholder: mastodon.social
           sign_in: Sign in with Mastodon
+          redirecting: Redirecting to Mastodon…
+          continue: Continue to Mastodon
           errors:
             blank: Enter your Mastodon instance domain.
             invalid: Enter a valid instance domain (e.g. mastodon.social).

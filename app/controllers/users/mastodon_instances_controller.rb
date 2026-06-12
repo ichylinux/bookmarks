@@ -7,7 +7,8 @@ class Users::MastodonInstancesController < ApplicationController
     if result.success?
       session[:mastodon_instance] = result.hostname
       clear_stale_oauth_credentials!
-      redirect_to omniauth_authorize_path(:user, :mastodon)
+      # OmniAuth authorize routes accept POST only (omniauth-rails_csrf_protection).
+      render :authorize_redirect, layout: false
     else
       flash[:alert] = t("devise.shared.omniauth.mastodon.errors.#{result.error_key}")
       redirect_back fallback_location: new_user_session_path

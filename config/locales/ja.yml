@@ -526,6 +526,8 @@ ja:
           instance_label: Mastodonインスタンス
           instance_placeholder: mastodon.social
           sign_in: Mastodonでサインイン
+          redirecting: Mastodonへリダイレクトしています…
+          continue: Mastodonへ進む
           errors:
             blank: Mastodonインスタンスのドメインを入力してください。
             invalid: "有効なインスタンスのドメインを入力してください（例: mastodon.social）。"

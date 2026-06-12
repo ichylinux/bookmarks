@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+<head>
+  <meta charset="utf-8">
+  <title><%= t('devise.shared.omniauth.mastodon.redirecting') %></title>
+</head>
+<body>
+  <%= form_with url: user_mastodon_omniauth_authorize_path, method: :post, data: { turbo: false }, id: 'mastodon-oauth-redirect' do %>
+  <% end %>
+  <noscript>
+    <%= button_to t('devise.shared.omniauth.mastodon.continue'), user_mastodon_omniauth_authorize_path, data: { turbo: false } %>
+  </noscript>
+  <script>document.getElementById('mastodon-oauth-redirect').submit();</script>
+</body>
+</html>
