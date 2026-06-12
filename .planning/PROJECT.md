@@ -1,5 +1,16 @@
 # Bookmarks
 
+## Current Milestone: v1.35 Sign in with Mastodon using OAuth2
+
+**Goal:** Add Mastodon OAuth 2.0 sign-in via a custom OmniAuth strategy, integrated with the existing `oauth_identities` table and Connected Accounts preferences UI.
+
+**Target features:**
+- Custom `OmniAuth::Strategies::Mastodon` built on `omniauth-oauth2` (existing Mastodon gems are OAuth 1.0 only — not used)
+- Instance domain input before OAuth redirect; dynamic authorization/token endpoint resolution
+- Composite uid (`instance_domain:account_id`) in `oauth_identities`; `User.from_omniauth` wired for `:mastodon`
+- Mastodon OAuth button on sign-in/sign-up pages; Mastodon row in Connected Accounts preferences
+- Minitest + Cucumber E2E coverage (no live OAuth round-trip in CI, per Facebook pattern)
+
 ## What This Is
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
@@ -260,6 +271,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Planning v1.35 (2026-06-12):** Mastodon OAuth 2.0 sign-in — custom OmniAuth strategy with federated instance selection; builds on v1.34 `oauth_identities` + Connected Accounts UI. Reference: `tmp/Mastodon_OAuth_with_Rails_Devise.pdf`.
 - **Shipped v1.34 (2026-05-24):** Connected OAuth Providers — `oauth_identities` table + `OauthIdentity.upsert_for!` for all 3 providers + backfill; `password_auth_enabled` flag + `after_password_reset` callback + `disconnect_form_auth!`; `OauthIdentitiesController#destroy` with safety guard; "Connected Accounts" preferences section (4 rows, icons, bilingual); 3 Cucumber E2E scenarios. Tri-suite: lint ✓ · 587 Minitest · 38 Cucumber. Audit: `.planning/milestones/v1.34-MILESTONE-AUDIT.md` (passed, 13/13).
 - **Shipped v1.31 (2026-05-22):** X account manual add — `manually_added` schema column + `upsert_manual!` + refresh guard, `XClient#lookup_user_by_username` (7-symbol error contract), `POST /x_accounts/lookup_and_add` (7 flash states), handle input form + manually-added badge, Cucumber E2E `@x_manual_add` hook + 2 Japanese scenarios. Tri-suite: lint ✓ · 546 Minitest 0 failures · 33/33 Cucumber. Details: `.planning/milestones/v1.31-ROADMAP.md`. No formal audit file (tri-suite gate and SUMMARY.md presence accepted as evidence).
 - **Shipped v1.30 (2026-05-22):** Admin user management screen — `/admin/users` route + controller (reuses `require_admin`), 7-column user list with soft-deleted visibility + N+1 prevention, drawer nav link, bilingual ja/en locale keys + i18n parity test, Cucumber E2E. Tri-suite: lint ✓ · 528 Minitest 0 failures · 31/31 Cucumber. Details: `.planning/milestones/v1.30-ROADMAP.md`. Audit: `.planning/milestones/v1.30-MILESTONE-AUDIT.md` (passed; Phase 103.1 closed process debt).
@@ -459,4 +471,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-05-24 — after v1.34 milestone completion (Connected OAuth Providers shipped)*
+*Last updated: 2026-06-12 — milestone v1.35 started (Sign in with Mastodon using OAuth2)*
