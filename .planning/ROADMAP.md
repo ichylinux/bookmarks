@@ -405,7 +405,10 @@ Plans:
   3. Strategy calls `POST /api/v1/apps` for dynamic client registration before authorize redirect
   4. After callback, strategy fetches `/api/v1/accounts/verify_credentials` and populates `uid` + `info`
   5. Minitest with WebMock stubs for app registration, authorize URL construction, and verify_credentials response
-**Plans**: TBD
+**Plans**: 2 plans in 2 waves
+Plans:
+- [ ] 119-01-PLAN.md — Gem + strategy skeleton + Devise/User wiring (STRAT-01)
+- [ ] 119-02-PLAN.md — Dynamic instance targeting, app registration, verify_credentials, WebMock tests (STRAT-02–04) *(blocked on Wave 1)*
 
 ### Phase 120: Instance Selection UI
 **Goal**: Users can specify their Mastodon instance domain on auth pages; invalid input is rejected before OAuth starts
