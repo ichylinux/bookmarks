@@ -14,7 +14,7 @@ Full local check: `yarn run lint && bin/rails test && bundle exec rake dad:test`
 
 ## Phase verification policy
 
-After completing each phase (and before marking it complete in `.planning/STATE.md` / `ROADMAP.md`), all three suites above must pass:
+After completing each phase (and before marking it complete in `.planning/STATE.md` / `.planning/ROADMAP.md`), all three suites above must pass:
 
 1. `yarn run lint` — green
 2. `bin/rails test` — green
