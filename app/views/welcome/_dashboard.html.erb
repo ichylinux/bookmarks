@@ -4,6 +4,8 @@
       if (!window.matchMedia || !window.matchMedia('(max-width: 767px)').matches) return;
       const raw = window.localStorage.getItem('portalMobileActiveColumn');
       const restored = Number.parseInt(raw, 10);
+      // 'note' is also a valid sentinel (portal_mobile_tabs.js circular swipe);
+      // Number.parseInt('note', 10) is NaN so the guard below already no-ops it.
       if (Number.isNaN(restored) || restored < 0) return;
       document.documentElement.style.setProperty('--portal-initial-active-index', String(restored));
     } catch (e) {
@@ -61,18 +63,6 @@
       <div class="note-gadget-loading">
         <span><%= t('notes.gadget.loading') %></span>
       </div>
-      <% if notes_active %>
-        <script>
-          $(document).ready(function() {
-            $.get('<%= gadget_notes_path %>', function(html) {
-              $('#notes-tab-panel').html(html);
-              $(document).trigger('noteGadgetLoaded');
-            }).fail(function(xhr) {
-              console.warn('note gadget load failed', xhr.status);
-            });
-          });
-        </script>
-      <% end %>
     </div>
   <% end %>
 <% end %>
