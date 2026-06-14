@@ -377,18 +377,10 @@ en:
           headline: Sign in with Mastodon
           tag: new
           description: You can now create and sign in to your account with Mastodon, alongside Google, X, and Facebook — and show your recent toots on the dashboard.
-        - date: "2026-06-12"
-          headline: Add notes without a page reload
-          tag: ux
-          description: New notes are now saved in the background and appear at the top of your list instantly, with no page refresh.
         - date: "2026-06-09"
           headline: Highlight important tasks
           tag: new
           description: Hover a task row to reveal a highlight toggle. Highlighted tasks stand out with a colored border, background, and bold text.
-        - date: "2026-05-25"
-          headline: Refreshed the landing page
-          tag: ux
-          description: Updated the visitor page with a clearer hero, all sign-in options, and recent product news.
         - date: "2026-05-24"
           headline: Manage connected sign-in providers
           tag: new
