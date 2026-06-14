@@ -20,7 +20,7 @@ progress:
 Phase: Milestone v1.35 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-06-15 — Completed quick task 260615-0jw: Integrate note into mobile swipe cycle (circular)
+Last activity: 2026-06-15 — Completed quick task 260615-9r6: refresh landing page
 
 ## Project Reference
 
@@ -93,6 +93,7 @@ See: .planning/PROJECT.md (updated 2026-06-12)
 | 260609-pvs | モバイルでのTODO強調表示 | 2026-06-09 | [260609-pvs-todo-mobile-highlight](./quick/260609-pvs-todo-mobile-highlight/) |
 | 260609-pnm | refresh landing page | 2026-06-09 | [260609-pnm-refresh-landing-page](./quick/260609-pnm-refresh-landing-page/) |
 | 260615-0jw | Integrate note into mobile swipe cycle (circular) | 2026-06-15 | [260615-0jw-integrate-note-into-mobile-swipe-cycle-w](./quick/260615-0jw-integrate-note-into-mobile-swipe-cycle-w/) |
+| 260615-9r6 | refresh landing page | 2026-06-15 | [260615-9r6-refresh-landing-page](./quick/260615-9r6-refresh-landing-page/) |
 
 ## Operator Next Steps
 
