@@ -61,18 +61,6 @@
       <div class="note-gadget-loading">
         <span><%= t('notes.gadget.loading') %></span>
       </div>
-      <% if notes_active %>
-        <script>
-          $(document).ready(function() {
-            $.get('<%= gadget_notes_path %>', function(html) {
-              $('#notes-tab-panel').html(html);
-              $(document).trigger('noteGadgetLoaded');
-            }).fail(function(xhr) {
-              console.warn('note gadget load failed', xhr.status);
-            });
-          });
-        </script>
-      <% end %>
     </div>
   <% end %>
 <% end %>
