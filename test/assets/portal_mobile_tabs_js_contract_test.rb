@@ -30,23 +30,26 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
   end
 
   test 'tab click and swipe both use shared activateColumn flow' do
-    assert_includes @source, 'const activateColumn = function($portal, $tabs, index) {'
+    assert_includes @source, 'activateColumn = function ($portal, $tabs, index) {'
     assert_includes @source, "const index = parseInt($btn.attr('data-portal-column-index'), 10);"
     assert_includes @source, "const $tabs = $btn.closest('.portal-column-tabs');"
     assert_includes @source, "const $portal = $tabs.next('.portal');"
     assert_match(/\$root\.on\('click', '\.portal-column-tab'.*activateColumn\(\$portal, \$tabs, index\)/m, @source)
-    assert_match(/if \(newIndex !== currentIndex\) \{\s*activateColumn\(\$portal, \$tabs, newIndex\);/m, @source)
+    # Circular swipe: activateColumn called directly (no newIndex !== currentIndex guard needed
+    # since modular arithmetic guarantees newIndex != currentIndex when cycleLength >= 2)
+    assert_match(/activateColumn\(\$portal, \$tabs, newIndex\);/m, @source)
   end
 
   test 'swipe works when column tab buttons are not in the DOM' do
     assert_includes @source, 'parseActiveColumnIndexFromPortal'
     assert_includes @source, 'portalColumnCount($portal)'
-    assert_includes @source, 'if (colCount < 2) return;'
+    # cycleLength replaces colCount guard: enables swipe when 1 col + note pane
+    assert_includes @source, 'if (cycleLength < 2) return;'
   end
 
   test 'activateColumn keeps tab ui and portal state synchronized' do
     assert_includes @source, 'if ($tabs.length) {'
-    assert_includes @source, "$tabs.find('.portal-column-tab').each(function() {"
+    assert_includes @source, "$tabs.find('.portal-column-tab').each(function () {"
     assert_includes @source, "$t.toggleClass('portal-column-tab--active', active);"
     assert_includes @source, "$t.attr('aria-selected', active ? 'true' : 'false');"
     assert_includes @source, "return c && !/^portal--column-active-\\d+$/.test(c);"
