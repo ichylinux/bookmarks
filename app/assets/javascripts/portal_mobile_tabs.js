@@ -1,35 +1,35 @@
-$(function() {
+$(function () {
   const $root = $(document);
   const STORAGE_KEY = 'portalMobileActiveColumn';
-  const isMobileViewport = function() {
+  const isMobileViewport = function () {
     if (!window.matchMedia) return false;
     return window.matchMedia('(max-width: 767px)').matches;
   };
 
-  const syncPortalClasses = function($portal, index) {
-    const base = ($portal.attr('class') || '').split(/\s+/).filter(function(c) {
+  const syncPortalClasses = function ($portal, index) {
+    const base = ($portal.attr('class') || '').split(/\s+/).filter(function (c) {
       return c && !/^portal--column-active-\d+$/.test(c);
     });
     base.push('portal--column-active-' + index);
     $portal.attr('class', base.join(' ').trim());
   };
 
-  const parseActiveColumnIndexFromPortal = function($portal) {
+  const parseActiveColumnIndexFromPortal = function ($portal) {
     const m = ($portal.attr('class') || '').match(/portal--column-active-(\d+)/);
     if (!m) return 0;
     const n = parseInt(m[1], 10);
     return Number.isNaN(n) ? 0 : n;
   };
 
-  const portalColumnCount = function($portal) {
+  const portalColumnCount = function ($portal) {
     return $portal.find('.portal-column').length;
   };
 
   const columnScrollPositions = {};
 
-  const activateColumn = function($portal, $tabs, index) {
+  const activateColumn = function ($portal, $tabs, index) {
     if ($tabs.length) {
-      $tabs.find('.portal-column-tab').each(function() {
+      $tabs.find('.portal-column-tab').each(function () {
         const $t = $(this);
         const i = parseInt($t.attr('data-portal-column-index'), 10);
         const active = i === index;
@@ -52,7 +52,7 @@ $(function() {
     }
   };
 
-  $root.on('click', '.portal-column-tab', function(e) {
+  $root.on('click', '.portal-column-tab', function (e) {
     e.preventDefault();
     const $btn = $(this);
     const index = parseInt($btn.attr('data-portal-column-index'), 10);
@@ -61,10 +61,12 @@ $(function() {
     const $tabs = $btn.closest('.portal-column-tabs');
     const $portal = $tabs.next('.portal');
     if (!$portal.length) return;
+    // Ensure note pane is hidden when activating a column tab
+    if (typeof window.notePane !== 'undefined') window.notePane.hide();
     activateColumn($portal, $tabs, index);
   });
 
-  document.querySelectorAll('.portal').forEach(function(portalEl) {
+  document.querySelectorAll('.portal').forEach(function (portalEl) {
     let startX = 0;
     let startY = 0;
     let scrollIntent = false;
@@ -72,7 +74,7 @@ $(function() {
 
     portalEl.addEventListener(
       'touchstart',
-      function(e) {
+      function (e) {
         if (portalEl.classList.contains('portal--gadget-sorting')) return;
         const t = e.touches[0];
         if (!t) return;
@@ -86,7 +88,7 @@ $(function() {
 
     portalEl.addEventListener(
       'touchmove',
-      function(e) {
+      function (e) {
         if (portalEl.classList.contains('portal--gadget-sorting')) return;
         if (scrollIntent) return;
         const t = e.touches[0];
@@ -104,17 +106,24 @@ $(function() {
       { passive: false }
     );
 
-    portalEl.addEventListener('touchend', function() {
+    portalEl.addEventListener('touchend', function () {
       if (portalEl.classList.contains('portal--gadget-sorting')) return;
       if (scrollIntent || Math.abs(totalDx) < 50) return;
 
       const $portal = $(portalEl);
       const $tabs = $portal.prev('.portal-column-tabs');
       const colCount = portalColumnCount($portal);
-      if (colCount < 2) return;
+      const noteInCycle =
+        typeof window.notePane !== 'undefined' && window.notePane.available();
+      // cycleLength = columns + note slot (when note is available)
+      const cycleLength = colCount + (noteInCycle ? 1 : 0);
+      // Note sentinel index is colCount (the last slot in the cycle)
+      if (cycleLength < 2) return;
 
       let currentIndex;
-      if ($tabs.length) {
+      if (noteInCycle && window.notePane.isVisible()) {
+        currentIndex = colCount; // currently on note pane
+      } else if ($tabs.length) {
         const $activeTab = $tabs.find('.portal-column-tab--active');
         currentIndex = parseInt($activeTab.attr('data-portal-column-index'), 10);
         if (Number.isNaN(currentIndex)) return;
@@ -123,21 +132,55 @@ $(function() {
       }
 
       const direction = totalDx < 0 ? 1 : -1;
-      const newIndex = Math.min(Math.max(currentIndex + direction, 0), colCount - 1);
-      if (newIndex !== currentIndex) {
+      // Modular wrap-around — replaces Math.min/Math.max clamping
+      const newIndex =
+        ((currentIndex + direction) % cycleLength + cycleLength) % cycleLength;
+
+      if (noteInCycle && newIndex === colCount) {
+        // Swiped to note pane: reveal it and deactivate all column tabs
+        window.notePane.show();
+        if ($tabs.length) {
+          $tabs.find('.portal-column-tab').each(function () {
+            $(this).toggleClass('portal-column-tab--active', false);
+            $(this).attr('aria-selected', 'false');
+          });
+        }
+        // Persist note sentinel so reload restores the note pane
+        window.localStorage.setItem(STORAGE_KEY, 'note');
+      } else {
+        // Swiped to a column: hide note pane first, then activate column
+        if (typeof window.notePane !== 'undefined') window.notePane.hide();
         activateColumn($portal, $tabs, newIndex);
       }
     });
   });
 
   if (isMobileViewport()) {
-    $('.portal').each(function() {
+    $('.portal').each(function () {
       const $portal = $(this);
       const $tabs = $portal.prev('.portal-column-tabs');
       const colCount = portalColumnCount($portal);
       if (colCount < 1) return;
 
+      const noteInCycle =
+        typeof window.notePane !== 'undefined' && window.notePane.available();
       const raw = window.localStorage.getItem(STORAGE_KEY);
+
+      // 'note' is a valid stored sentinel — restore note pane directly.
+      // Number.parseInt('note', 10) is NaN so the NaN guard below would also
+      // catch it, but we check explicitly first to avoid falling back to column 0.
+      if (raw === 'note' && noteInCycle) {
+        window.notePane.show();
+        // Deactivate all column tabs while note pane is active
+        if ($tabs.length) {
+          $tabs.find('.portal-column-tab').each(function () {
+            $(this).toggleClass('portal-column-tab--active', false);
+            $(this).attr('aria-selected', 'false');
+          });
+        }
+        return;
+      }
+
       const restored = parseInt(raw, 10);
       if (Number.isNaN(restored) || restored < 0 || restored >= colCount) {
         activateColumn($portal, $tabs, 0);
