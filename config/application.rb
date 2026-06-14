@@ -17,15 +17,12 @@ module Bookmarks
     config.autoload_lib(ignore: %w[assets tasks omniauth])
 
     config.before_initialize do
-      # don't load omniauth strategies when building docker image (lib/ is not copied yet)
-      unless ARGV.first =~ /^dad:setup(:.+)?/
-        autoloaders.main.push_dir(
-          Rails.root.join('lib/omniauth/strategies'),
-          namespace: OmniAuth::Strategies
-        )
-        # Devise references OmniAuth::Strategies::Mastodon during load_config_initializers.
-        require Rails.root.join('lib/omniauth/strategies/mastodon')
-      end
+      autoloaders.main.push_dir(
+        Rails.root.join('lib/omniauth/strategies'),
+        namespace: OmniAuth::Strategies
+      )
+      # Devise references OmniAuth::Strategies::Mastodon during load_config_initializers.
+      require Rails.root.join('lib/omniauth/strategies/mastodon')
     end
 
     # Configuration for the application, engines, and railties goes here.
