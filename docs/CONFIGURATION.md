@@ -1,79 +1,178 @@
+<!-- generated-by: gsd-doc-writer -->
 # Configuration
-
-<!-- gsd-generated: docs-update 2026-05-25 -->
 
 ## Environment variables
 
-### Database (required for local setup)
+### Database
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `MYSQL_HOST` | `127.0.0.1` | MySQL host (`config/database.yml`) |
-| `MYSQL_PORT` | `3306` | MySQL port |
-| `MYSQL_USERNAME` | `bookmarks` | MySQL user |
-| `MYSQL_PASSWORD` | `bookmarks` | MySQL password |
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `MYSQL_HOST` | Optional | `127.0.0.1` | MySQL server hostname |
+| `MYSQL_PORT` | Optional | `3306` | MySQL server port |
+| `MYSQL_USERNAME` | Optional | `bookmarks` | MySQL username |
+| `MYSQL_PASSWORD` | Optional | `bookmarks` | MySQL password |
+| `RAILS_MAX_THREADS` | Optional | `3` (Puma) / `5` (DB pool) | Puma thread count and database connection pool size |
 
-Database names: `bookmarks_dev`, `bookmarks_test`, `bookmarks_pro` (development, test, production).
+Database names are fixed per environment: `bookmarks_dev` (development), `bookmarks_test` (test), `bookmarks_pro` (production).
 
-### Rails runtime
+### ActiveRecord encryption
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `RAILS_MAX_THREADS` | `5` (DB pool), `3` (Puma) | Thread pool / Puma threads |
-| `PORT` | `3000` | Puma listen port |
-| `RAILS_LOG_LEVEL` | `info` | Production log level |
-| `CI` | — | When set, enables eager load in test |
+Three keys are required in production. In development and test they fall back to the placeholder value `'dev_dummy_key'` defined in `config/application.rb`.
 
-### Active Record encryption
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | **Required (production)** | `dev_dummy_key` | Primary encryption key for ActiveRecord Encryption |
+| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | **Required (production)** | `dev_dummy_key` | Deterministic encryption key |
+| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | **Required (production)** | `dev_dummy_key` | Key derivation salt |
 
-Required in production for encrypted OAuth token columns on `users` (`oauth2_token`, `oauth2_refresh_token` via `encrypts`):
+These keys protect the `oauth2_token`, `oauth2_refresh_token`, and `otp_secret` columns on the `users` table. Do not use the `dev_dummy_key` fallback in production.
 
-| Variable | Notes |
-|----------|-------|
-| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Falls back to dev dummy in `config/application.rb` if unset |
-| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | Same |
-| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Same |
+### OAuth providers (OmniAuth)
 
-### OAuth (OmniAuth)
+Loaded via `config/app_config.yml` using ERB. All are optional for local development (OmniAuth routes remain mounted but sign-in with those providers will fail without credentials).
 
-Loaded from `config/app_config.yml` (ERB over ENV):
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `GOOGLE_CLIENT_ID` | Optional | — | Google OAuth2 client ID |
+| `GOOGLE_CLIENT_SECRET` | Optional | — | Google OAuth2 client secret |
+| `TWITTER2_CLIENT_ID` | Optional | — | X (Twitter) OAuth2 client ID |
+| `TWITTER2_CLIENT_SECRET` | Optional | — | X (Twitter) OAuth2 client secret |
+| `FACEBOOK_APP_ID` | Optional | — | Facebook app ID |
+| `FACEBOOK_APP_SECRET` | Optional | — | Facebook app secret |
 
-| Variable | Provider |
-|----------|----------|
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google |
-| `TWITTER2_CLIENT_ID` / `TWITTER2_CLIENT_SECRET` | X (twitter2) |
-| `FACEBOOK_APP_ID` / `FACEBOOK_APP_SECRET` | Facebook |
+Mastodon provider is configured with placeholder client credentials in `config/initializers/devise.rb` and is dynamically registered per instance.
 
 ### Application
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `APP_HOST` | `localhost` | Mailer / URL host in app config |
-| `BOOKMARKS_OTP_LENGTH` | `6` | TOTP code length |
-| `SMTP_FROM` | `from@example.com` | Devise mailer sender |
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `APP_HOST` | Optional | `localhost` | Host used in mailer URL generation (production `app_config.yml`) |
+| `BOOKMARKS_OTP_LENGTH` | Optional | `6` | Number of digits in TOTP codes |
+| `SMTP_FROM` | Optional | `from@example.com` | Mailer sender address used by Devise and production ActionMailer |
 
-### AWS (production mail via SES)
+### Email / AWS SES (production only)
 
-Production sends mail through Amazon SES using `smtp_settings` in `config/app_config.yml`:
+Production sends transactional mail through SMTP (Amazon SES). These variables have no defaults and are required when `RAILS_ENV=production`.
 
-| Variable | Purpose |
-|----------|---------|
-| `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | SES SMTP credentials |
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `AWS_ADDRESS` | **Required (production)** | — | SMTP server address <!-- VERIFY: exact host depends on AWS region --> |
+| `AWS_DOMAIN` | **Required (production)** | — | SMTP HELO domain |
+| `AWS_ACCESS_KEY_ID` | **Required (production)** | — | SES SMTP username (IAM access key ID) |
+| `AWS_SECRET_ACCESS_KEY` | **Required (production)** | — | SES SMTP password (IAM secret key) |
 
-## Key config files
+### Web server (Puma)
 
-| File | Role |
-|------|------|
-| `config/database.yml` | MySQL connection per environment |
-| `config/app_config.yml` | OAuth keys, OTP length, mail host |
-| `config/initializers/devise.rb` | Devise + OmniAuth provider setup |
-| `config/routes.rb` | HTTP routing |
-| `config/locales/ja.yml`, `en.yml` | UI strings (parity tested) |
-| `eslint.config.mjs`, `.prettierrc.json` | JavaScript lint/format |
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PORT` | Optional | `3000` | TCP port Puma listens on |
+| `RAILS_LOG_LEVEL` | Optional | `info` | Log verbosity in production (`debug`, `info`, `warn`, `error`) |
+| `SOLID_QUEUE_IN_PUMA` | Optional | — | When set, runs Solid Queue supervisor inside the Puma process |
+| `PIDFILE` | Optional | — | Path for Puma PID file |
 
-## Docker / CI
+### CI
 
-- Docker: `Dockerfile.app`, `Dockerfile.base`, `Dockerfile.test` at repo root.
-- CI: `Jenkinsfile`.
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `CI` | Optional | — | When set, enables eager loading in the test environment |
 
-Production hostnames and secrets are supplied via environment variables at deploy time (`APP_HOST`, database credentials, OAuth keys, encryption keys, and AWS/SES variables above).
+## Config file format
+
+### `config/app_config.yml`
+
+Central YAML config loaded as `Rails.application.config.app_config` by `config/initializers/app_config.rb`. Uses ERB to read environment variables at boot time.
+
+```yaml
+default: &default
+  otp_length: 6                    # overridden by BOOKMARKS_OTP_LENGTH
+  omniauth_google_oauth2_client_id:         # GOOGLE_CLIENT_ID
+  omniauth_google_oauth2_client_secret:     # GOOGLE_CLIENT_SECRET
+  omniauth_twitter2_client_id:              # TWITTER2_CLIENT_ID
+  omniauth_twitter2_client_secret:          # TWITTER2_CLIENT_SECRET
+  omniauth_facebook_app_id:                 # FACEBOOK_APP_ID
+  omniauth_facebook_app_secret:             # FACEBOOK_APP_SECRET
+
+production:
+  <<: *default
+  default_url_options:
+    protocol: https
+    host:                          # APP_HOST
+  smtp_settings:
+    address:                       # AWS_ADDRESS
+    port: 587
+    domain:                        # AWS_DOMAIN
+    authentication: login
+    user_name:                     # AWS_ACCESS_KEY_ID
+    password:                      # AWS_SECRET_ACCESS_KEY
+```
+
+Access values in application code via `Rails.application.config.app_config.otp_length`, etc.
+
+### `config/database.yml`
+
+MySQL connection using the `mysql2` adapter, `utf8mb4` encoding, and `utf8mb4_general_ci` collation. The connection pool size is controlled by `RAILS_MAX_THREADS` (default `5`).
+
+### `config/cable.yml`
+
+Action Cable adapter by environment:
+
+| Environment | Adapter | Notes |
+|-------------|---------|-------|
+| development | `async` | In-process, no external dependency |
+| test | `async` | In-process, no external dependency |
+| production | `redis` | URL `redis://localhost:6379/1`, prefix `bookmarks_pro` <!-- VERIFY: Redis host and port may differ per deployment --> |
+
+## Required vs optional settings
+
+Settings that cause application boot or runtime failure if absent in production:
+
+| Setting | Variable | Failure mode |
+|---------|----------|--------------|
+| Encryption primary key | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Decryption errors on `oauth2_token`, `oauth2_refresh_token`, `otp_secret` columns |
+| Encryption deterministic key | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | Decryption errors on encrypted columns |
+| Encryption derivation salt | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Decryption errors on encrypted columns |
+| MySQL password | `MYSQL_PASSWORD` | `Mysql2::Error` if production credentials differ from dev defaults |
+| SES SMTP credentials | `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Mail delivery failures in production |
+
+## Defaults
+
+| Variable | Default value | Defined in |
+|----------|--------------|-----------|
+| `MYSQL_HOST` | `127.0.0.1` | `config/database.yml` |
+| `MYSQL_PORT` | `3306` | `config/database.yml` |
+| `MYSQL_USERNAME` | `bookmarks` | `config/database.yml` |
+| `MYSQL_PASSWORD` | `bookmarks` | `config/database.yml` |
+| `RAILS_MAX_THREADS` | `3` (Puma threads) / `5` (DB pool) | `config/puma.rb`, `config/database.yml` |
+| `PORT` | `3000` | `config/puma.rb` |
+| `RAILS_LOG_LEVEL` | `info` | `config/environments/production.rb` |
+| `BOOKMARKS_OTP_LENGTH` | `6` | `config/app_config.yml` |
+| `APP_HOST` | `localhost` | `config/app_config.yml` |
+| `SMTP_FROM` | `from@example.com` | `config/initializers/devise.rb`, `config/environments/production.rb` |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | `dev_dummy_key` | `config/application.rb` |
+| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | `dev_dummy_key` | `config/application.rb` |
+| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | `dev_dummy_key` | `config/application.rb` |
+
+## Per-environment overrides
+
+Environment-specific files live in `config/environments/`.
+
+### Development (`config/environments/development.rb`)
+
+- Code reloading enabled; changes take effect without a server restart.
+- Caching disabled by default; run `bin/rails dev:cache` to toggle.
+- `config.active_record.encryption.support_unencrypted_data = true` — allows reading rows inserted without encryption (fixtures, legacy data).
+- Mailer delivery errors suppressed; default URL host is `localhost:3000`.
+
+### Test (`config/environments/test.rb`)
+
+- `config.active_record.encryption.support_unencrypted_data = true` — required because test fixtures insert plain-text `otp_secret` values directly via SQL, bypassing ActiveRecord callbacks.
+- Eager loading is off by default; set `CI=1` to enable (matches CI pipeline behaviour).
+- ActionMailer uses `:test` delivery method — no real email is sent; deliveries accumulate in `ActionMailer::Base.deliveries`.
+
+### Production (`config/environments/production.rb`)
+
+- SSL enforced via `config.force_ssl = true` and `config.assume_ssl = true`.
+- Log level controlled by `RAILS_LOG_LEVEL` (default `info`).
+- I18n fallbacks enabled — missing translations fall back to the default locale (`ja`).
+- SMTP delivery via Amazon SES using `smtp_settings` from `config/app_config.yml`.
+- Action Cable uses Redis (see `config/cable.yml`).

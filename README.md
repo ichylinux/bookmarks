@@ -1,123 +1,123 @@
+<!-- generated-by: gsd-doc-writer -->
 # Bookmarks
 
-個人用のブックマーク・フィード・ToDo・カレンダーを一元管理する Rails アプリです。
+A personal bookmarks, feed reader, to-do, and calendar management app built with Rails.
 
-## 機能
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **ブックマーク** — URL を保存し、ページタイトルを自動取得。フォルダによる階層管理に対応
-- **フィード** — RSS/Atom フィードの購読と記事一覧表示
-- **ToDo** — タスク管理
-- **カレンダー** — 日本の祝日を考慮したカレンダー UI
-- **認証** — Devise によるユーザー認証・2 要素認証（TOTP）・OmniAuth 連携（Google / X / Facebook）
-- **連携アカウント** — 設定画面で OAuth プロバイダとメール認証の接続状態を確認し、個別に解除可能
-- **アカウント削除** — 設定から自主退会（ソフト削除）。90 日経過後は管理者が完全削除（`purge!`）
-- **テーマ** — モダン・クラシック・シンプルの 3 テーマを提供。設定画面から切り替え可能（デフォルト: モダン）
+## Features
 
-## 技術スタック
+- **Bookmarks** — Save URLs with auto-fetched page titles; organize into hierarchical folders
+- **Feeds** — Subscribe to RSS/Atom feeds and browse articles
+- **To-do** — Task management
+- **Calendar** — Calendar UI with Japanese public holiday support
+- **Authentication** — Devise with two-factor authentication (TOTP) and OmniAuth (Google, X, Facebook)
+- **Themes** — Modern, Classic, and Simple themes switchable from the preferences page
 
-| 層 | 採用技術 |
+## Tech Stack
+
+| Layer | Technology |
 |---|---|
-| 言語 | Ruby 3.4 / JavaScript (ES6, Sprockets) |
-| フレームワーク | Rails 8.1 |
-| DB | MySQL (`utf8mb4`) |
-| フロントエンド | Sprockets + jQuery 4 + SCSS（SPA フレームワークなし） |
-| Web サーバー | Puma |
-| 認証 | Devise + devise-two-factor + OmniAuth |
-| フィード解析 | Feedjira + Nokogiri |
-| テスト | Minitest / Cucumber + Capybara + Selenium |
+| Language | Ruby 3.4 / JavaScript (ES6, Sprockets) |
+| Framework | Rails 8.1 |
+| Database | MySQL (utf8mb4) |
+| Frontend | Sprockets + jQuery 4 + SCSS |
+| Web server | Puma |
+| Auth | Devise + devise-two-factor + OmniAuth |
+| Feed parsing | Feedjira + Nokogiri |
+| Tests | Minitest / Cucumber + Capybara + Selenium |
 
-## セットアップ
+## Prerequisites
 
-### 必要条件
-
-- Ruby 3.4（`.ruby-version` で固定）
-- Node.js 22（`.node-version` で固定）
+- Ruby 3.4.9 (pinned via `.ruby-version`)
+- Node.js 22.22.2 (pinned via `.node-version`)
 - MySQL
 - Yarn
 
-### インストール
+## Installation
 
 ```bash
+git clone https://github.com/ichylinux/bookmarks.git
+cd bookmarks
 bundle install
 yarn install
-bundle exec rake dad:setup
-bundle exec rake dad:setup:test
 ```
 
-### データベース
+Set up databases:
 
 ```bash
-# 環境変数を設定してから実行
+# Configure connection via environment variables
 # MYSQL_HOST, MYSQL_PORT, MYSQL_USERNAME, MYSQL_PASSWORD
 
+bundle exec rake dad:setup
+bundle exec rake dad:setup:test
 bundle exec rake dad:db:create
 bin/rails db:reset
 ```
 
-### サーバー起動
+## Quick Start
 
 ```bash
 bin/rails s
 ```
 
-## テスト
+The app runs at `http://localhost:3000`.
+
+## Testing
+
+Run the full quality gate (lint + Minitest + Cucumber):
 
 ```bash
-# ローカル品質ゲート（lint + Minitest + Cucumber）
 yarn run lint && bin/rails test && bundle exec rake dad:test
 ```
 
-個別実行:
+Run suites individually:
 
 ```bash
-bin/rails test              # Minitest
-bundle exec rake dad:test   # Cucumber（サーバー起動込み。bundle exec cucumber は使わない）
 yarn run lint               # ESLint
+bin/rails test              # Minitest (unit + integration)
+bundle exec rake dad:test   # Cucumber E2E (spawns server automatically; do not use bundle exec cucumber directly)
 ```
 
-詳細は [docs/TESTING.md](docs/TESTING.md)。
-
-## JavaScript / リンター
+## JavaScript and Linting
 
 ```bash
-# 依存関係のインストール
-yarn install
-
-# リント実行
-yarn run lint
-
-# 自動修正
-yarn run lint:fix
-
-# フォーマット
-yarn run format
+yarn run lint        # Run ESLint
+yarn run lint:fix    # Auto-fix lint errors
+yarn run format      # Format with Prettier
 ```
 
-ESLint 9（flat config）と Prettier を採用。設定は `eslint.config.mjs` / `.prettierrc.json`、規約は `.planning/codebase/CONVENTIONS.md` を参照。
+ESLint 9 (flat config) with Prettier. Configuration: `eslint.config.mjs`.
+
+## Database Configuration
+
+| Environment | Database |
+|---|---|
+| Development | `bookmarks_dev` |
+| Test | `bookmarks_test` |
+| Production | `bookmarks_pro` |
+
+Connection is configured via environment variables: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`.
 
 ## Docker
 
-リポジトリルートに `Dockerfile.app` / `Dockerfile.base` / `Dockerfile.test` があります。CI は `Jenkinsfile` で管理されています。
+The repository includes `Dockerfile.app`, `Dockerfile.base`, and `Dockerfile.test`. CI is managed via `Jenkinsfile`.
 
-## データベース構成
+## Documentation
 
-| 環境 | DB 名 |
+| Document | Contents |
 |---|---|
-| 開発 | `bookmarks_dev` |
-| テスト | `bookmarks_test` |
-| 本番 | `bookmarks_pro` |
+| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) | First-time setup |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Development workflow |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture overview |
+| [docs/API.md](docs/API.md) | Route reference |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Environment variables and settings |
+| [docs/TESTING.md](docs/TESTING.md) | Testing guide (tri-suite) |
 
-接続は環境変数（`MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`）で設定します。
+## Contributing
 
-## ドキュメント
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-| ドキュメント | 内容 |
-|-------------|------|
-| [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) | 初回セットアップ |
-| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 開発ワークフロー |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | アーキテクチャ概要 |
-| [docs/API.md](docs/API.md) | 主要ルート一覧 |
-| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | 環境変数・設定 |
-| [docs/TESTING.md](docs/TESTING.md) | テスト（tri-suite） |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | コントリビューション |
-| [CLAUDE.md](CLAUDE.md) | AI エージェント向けテスト方針 |
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
