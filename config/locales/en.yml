@@ -369,6 +369,18 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-06-15"
+          headline: Swipe through your notes on mobile
+          tag: ux
+          description: On smartphones, the note pane now joins the gadget columns in the swipe cycle — swipe through your gadgets and notes in one continuous loop.
+        - date: "2026-06-12"
+          headline: Sign in with Mastodon
+          tag: new
+          description: You can now create and sign in to your account with Mastodon, alongside Google, X, and Facebook — and show your recent toots on the dashboard.
+        - date: "2026-06-12"
+          headline: Add notes without a page reload
+          tag: ux
+          description: New notes are now saved in the background and appear at the top of your list instantly, with no page refresh.
         - date: "2026-06-09"
           headline: Highlight important tasks
           tag: new
