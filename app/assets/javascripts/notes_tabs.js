@@ -1,11 +1,11 @@
 $(function () {
   // Derive theme hidden-class and home panel selector once.
-  var isSimple = $('body').hasClass('simple');
-  var hiddenClass = isSimple ? 'simple-tab-panel--hidden' : 'welcome-tab-panel--hidden';
-  var $homePanel = isSimple ? $('#simple-home-panel') : $('#welcome-home-panel');
-  var $notesPanel = $('#notes-tab-panel');
+  const isSimple = $('body').hasClass('simple');
+  const hiddenClass = isSimple ? 'simple-tab-panel--hidden' : 'welcome-tab-panel--hidden';
+  const $homePanel = isSimple ? $('#simple-home-panel') : $('#welcome-home-panel');
+  const $notesPanel = $('#notes-tab-panel');
 
-  var notesLoaded = false;
+  let notesLoaded = false;
 
   // window.notePane: theme-agnostic shared note-pane reveal API.
   // Consumed by portal_mobile_tabs.js (swipe) and dormant tab buttons.
@@ -54,9 +54,9 @@ $(function () {
   if (!window.notePane.available()) return;
 
   // Initialize panel visibility from query string for all themes (not just simple).
-  var initFromQuery = function () {
-    var params = new URLSearchParams(window.location.search);
-    var tab = params.get('tab');
+  const initFromQuery = function () {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
     if (tab === 'notes') {
       window.notePane.show();
     }
@@ -67,7 +67,7 @@ $(function () {
 
   // Dormant simple-tab button bindings (buttons not currently rendered; future-proof).
   $('button.simple-tab[data-simple-tab]').on('click', function () {
-    var target = $(this).attr('data-simple-tab');
+    const target = $(this).attr('data-simple-tab');
     if (target === 'notes') {
       window.notePane.show();
     } else if (target === 'home') {
