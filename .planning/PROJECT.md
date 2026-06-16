@@ -2,24 +2,22 @@
 
 ## Current State
 
-**Last shipped:** v1.35 — Sign in with Mastodon using OAuth2 (2026-06-12)
+**Last shipped:** v1.35.1 — Mastodonハンドルと既存ユーザの関連付け (2026-06-16)
 
-Mastodon OAuth 2.0 sign-in is live via a custom OmniAuth strategy with federated instance selection, composite uid identity wiring, Connected Accounts UI, and tri-suite gate (644 Minitest, 38 Cucumber). Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
-
-**Active milestone:** v1.35.1 — Mastodonハンドルと既存ユーザの関連付け (planning)
-
-## Current Milestone: v1.35.1 Mastodonハンドルと既存ユーザの関連付け
-
-**Goal:** 既存ユーザが設定画面で Mastodon ハンドルを登録し、Mastodon OAuth 認証時にそのハンドルで既存アカウントにログインできるようにする。
-
-**Target features:**
-- 設定画面（`/preferences`）で `users.mastodon_handle` を入力・保存できる
-- Mastodon OAuth コールバック時、OAuth identity が未登録でも `mastodon_handle` が一致する既存ユーザにサインインする
-- ハンドル形式の正規化・バリデーション（`username@instance`）
-- ja/en ロケール対応とテスト（Minitest + 必要に応じて Cucumber）
+Existing users can register a Mastodon handle on `/preferences` and sign in via Mastodon OAuth to their existing account when the verified handle matches. Details: `.planning/milestones/v1.35.1-ROADMAP.md`. Audit: `.planning/v1.35.1-MILESTONE-AUDIT.md` (passed, 11/11).
 
 <details>
-<summary>Shipped: v1.35 Sign in with Mastodon using OAuth2 (2026-06-12)</summary>
+<summary>Shipped: v1.35.1 Mastodonハンドルと既存ユーザの関連付け (2026-06-16)</summary>
+
+**Delivered (phases 124–126):**
+- `MastodonHandleNormalizer` + unique index on `users.mastodon_handle`; preferences form field with ja/en locales (HDL-01–04, VIEW-04)
+- `User.from_omniauth` handle-based lookup after composite uid check; squatting prevention via exact username+instance match (IDNT-04–07)
+- Tri-suite green: lint ✓ · 667 Minitest · 38 Cucumber (TEST-03, TEST-04)
+
+</details>
+
+<details>
+<summary>Previous: v1.35 Sign in with Mastodon using OAuth2 (2026-06-12)</summary>
 
 **Delivered (phases 119–123):**
 - Custom `OmniAuth::Strategies::Mastodon` on `omniauth-oauth2`; dynamic `POST /api/v1/apps` registration; `verify_credentials` identity; WebMock Minitest (STRAT-01–04)

@@ -2,36 +2,35 @@
 gsd_state_version: 1.0
 milestone: v1.35.1
 milestone_name: Mastodonハンドルと既存ユーザの関連付け
-status: planning
-last_updated: "2026-06-16T13:41:49.767Z"
+status: complete
+last_updated: "2026-06-16"
 last_activity: 2026-06-16
 progress:
   total_phases: 3
-  completed_phases: 0
+  completed_phases: 3
   total_plans: 3
-  completed_plans: 0
-  percent: 0
+  completed_plans: 3
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 124 of 126 (Handle Data Layer & Preferences UI)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-06-16 — Milestone v1.35.1 roadmap created
+Phase: 126 of 126 (Tests & Tri-Suite Gate) — **MILESTONE COMPLETE**
+Status: Shipped 2026-06-16
+Last activity: 2026-06-16 — Autonomous execution completed v1.35.1
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-12)
+See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Phase 124 — Handle Data Layer & Preferences UI
+**Current focus:** Milestone complete — run `/gsd-new-milestone` for next work
 
 ## Performance Metrics
 
-- v1.35 close: `yarn run lint` ✓ · `bin/rails test` 644/644 ✓ · `dad:test` 38/38 ✓
+- v1.35.1 close: `yarn run lint` ✓ · `bin/rails test` 667/667 ✓ · `dad:test` 38/38 ✓
 - v1.34 close: `yarn run lint` ✓ · `bin/rails test` 587/587 ✓ · `dad:test` 38/38 ✓
 - v1.33 close: `yarn run lint` ✓ · `bin/rails test` 567/567 ✓ · `dad:test` 35/35 ✓
 - v1.32 close: `yarn run lint` ✓ · `bin/rails test` 559/559 ✓ · `dad:test` 34/34 ✓

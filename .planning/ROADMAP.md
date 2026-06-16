@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (active)
+- ✅ **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (shipped 2026-06-16) — [archived](milestones/v1.35.1-ROADMAP.md)
 - ✅ **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (shipped 2026-06-12) — [archived](milestones/v1.35-ROADMAP.md)
 - ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
@@ -43,9 +43,16 @@
 
 ### Milestone v1.35.1: Mastodonハンドルと既存ユーザの関連付け
 
-**Status:** ACTIVE
+**Status:** SHIPPED 2026-06-16
 **Phases:** 124–126
 **Requirements:** 11 (HDL-01–04, IDNT-04–07, VIEW-04, TEST-03–04)
+
+- [x] Phase 124: Handle Data Layer & Preferences UI (1/1 plan) — 2026-06-16
+- [x] Phase 125: OAuth Identity Wiring by Handle (1/1 plan) — 2026-06-16
+- [x] Phase 126: Tests & Tri-Suite Gate (1/1 plan) — 2026-06-16
+
+<details>
+<summary>Phase details (v1.35.1)</summary>
 
 #### Phase 124: Handle Data Layer & Preferences UI
 
@@ -55,7 +62,7 @@
 **Plans:** 1 plan
 
 Plans:
-- [ ] 124-01: `MastodonHandleNormalizer` + unique index migration + User validation + preferences field + ja/en locales + Minitest
+- [x] 124-01: `MastodonHandleNormalizer` + unique index migration + User validation + preferences field + ja/en locales + Minitest
 
 **Success Criteria:**
 1. `MastodonHandleNormalizer` accepts `@user@instance` and URL-ish input; outputs canonical `user@instance` or error key
@@ -74,7 +81,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 125-01: Extend `User.from_omniauth` `:mastodon` branch + Minitest (match, mismatch, create fallback, deleted user)
+- [x] 125-01: Extend `User.from_omniauth` `:mastodon` branch + Minitest (match, mismatch, create fallback, deleted user)
 
 **Success Criteria:**
 1. Lookup order: composite uid via `oauth_identities` → `User.active` by `mastodon_handle` → create new user
@@ -94,13 +101,15 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 126-01: Preferences integration test for handle field + tri-suite gate
+- [x] 126-01: Preferences integration test for handle field + tri-suite gate
 
 **Success Criteria:**
 1. Preferences controller test asserts `mastodon_handle` field renders and persists
 2. All v1.35.1 Minitest paths green (normalizer, model, from_omniauth, preferences)
 3. Existing v1.35 Mastodon tests remain green (no regression)
 4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
+</details>
 
 ---
 
