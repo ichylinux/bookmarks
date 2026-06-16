@@ -18,18 +18,24 @@ module OmniAuth
           name: raw_info['display_name'].presence || raw_info['username'],
           nickname: raw_info['username'],
           image: raw_info['avatar'],
-          instance: session[:mastodon_instance]
+          instance: mastodon_instance_hostname
         }.compact
+      end
+
+      extra do
+        { instance: mastodon_instance_hostname }.compact
       end
 
       def request_phase
         validate_mastodon_instance!
+        @mastodon_instance_hostname = session[:mastodon_instance]
         register_application!
         super
       end
 
       def callback_phase
         validate_mastodon_instance!
+        @mastodon_instance_hostname = session[:mastodon_instance]
         super
       end
 
@@ -64,8 +70,12 @@ module OmniAuth
         "https://#{session[:mastodon_instance]}"
       end
 
+      def mastodon_instance_hostname
+        @mastodon_instance_hostname.presence || session[:mastodon_instance].presence
+      end
+
       def validate_mastodon_instance!
-        return if session[:mastodon_instance].present?
+        return if mastodon_instance_hostname.present?
 
         fail!(:invalid_credentials, StandardError.new('mastodon_instance is required'))
       end

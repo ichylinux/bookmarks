@@ -97,14 +97,12 @@ class User < ApplicationRecord
       OauthIdentity.upsert_for!(user: user, provider: 'facebook', uid: access_token.uid.to_s)
       user
     when :mastodon
-      instance = data['instance'].to_s
+      instance = mastodon_oauth_instance(access_token, data)
       account_id = access_token.uid.to_s
       composite_uid = "#{instance}:#{account_id}"
       username = data['nickname'].to_s.presence
 
-      user = User.active
-                 .joins(:oauth_identities)
-                 .find_by(oauth_identities: { provider: 'mastodon', uid: composite_uid })
+      user = find_mastodon_oauth_user(composite_uid)
       if user
         OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
         return user
@@ -115,8 +113,7 @@ class User < ApplicationRecord
         if handle_result.success?
           user = User.active.find_by(mastodon_handle: handle_result.handle)
           if user
-            OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
-            return user
+            return link_mastodon_oauth_user!(user, composite_uid)
           end
         end
       end
@@ -249,6 +246,28 @@ class User < ApplicationRecord
   end
 
   private
+
+  def self.mastodon_oauth_instance(access_token, data)
+    data['instance'].presence ||
+      access_token.extra&.dig('instance').presence ||
+      access_token.extra&.dig(:instance).presence
+  end
+  private_class_method :mastodon_oauth_instance
+
+  def self.find_mastodon_oauth_user(composite_uid)
+    User.active
+        .joins(:oauth_identities)
+        .find_by(oauth_identities: { provider: 'mastodon', uid: composite_uid })
+  end
+  private_class_method :find_mastodon_oauth_user
+
+  def self.link_mastodon_oauth_user!(user, composite_uid)
+    OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
+    user
+  rescue OauthIdentity::UidOwnedByAnotherUserError
+    find_mastodon_oauth_user(composite_uid) || raise
+  end
+  private_class_method :link_mastodon_oauth_user!
 
   def after_password_reset
     self.password_auth_enabled = true

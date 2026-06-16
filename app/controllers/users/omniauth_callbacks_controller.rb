@@ -18,8 +18,16 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  def clear_mastodon_oauth_session!
+    session.delete(:mastodon_instance)
+    session.delete(:mastodon_oauth_client_id)
+    session.delete(:mastodon_oauth_client_secret)
+    session.delete(:mastodon_oauth_instance)
+  end
+
   def handle_callback(kind)
     @user = User.from_omniauth(request.env["omniauth.auth"])
+    clear_mastodon_oauth_session!
     sign_in_and_redirect @user, event: :authentication
   rescue ActiveRecord::RecordInvalid => e
     @user = e.record

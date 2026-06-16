@@ -176,6 +176,25 @@ class OauthIdentityTest < ActiveSupport::TestCase
     end
   end
 
+  def test_mastodon_from_omniauth_handle_match_does_not_hang_on_uid_conflict
+    handle_user = users(:one)
+    handle_user.update!(mastodon_handle: 'alice@mastodon.social')
+    oauth_user = users(:two)
+    OauthIdentity.create!(user: oauth_user, provider: 'mastodon', uid: 'mastodon.social:99999')
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '99999',
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'mastodon.social' }
+    )
+
+    result = nil
+    assert_nothing_raised do
+      result = User.from_omniauth(auth)
+    end
+    assert_equal oauth_user.id, result.id
+  end
+
   def test_google_from_omniauth_creates_identity
     auth = OmniAuth::AuthHash.new(
       'provider' => 'google_oauth2',

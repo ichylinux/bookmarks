@@ -74,6 +74,7 @@ class OmniAuth::Strategies::MastodonTest < ActiveSupport::TestCase
     assert_equal 'Alice', auth.info['name']
     assert_equal 'alice', auth.info['nickname']
     assert_equal INSTANCE, auth.info['instance']
+    assert_equal INSTANCE, auth.extra['instance']
   end
 
   def test_request_phase_skips_registration_when_credentials_cached_for_same_instance

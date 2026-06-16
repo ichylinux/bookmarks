@@ -30,7 +30,7 @@ class Users::OmniauthCallbacksControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.mock_auth[:mastodon] = OmniAuth::AuthHash.new(
       'provider' => 'mastodon',
       'uid' => 'mastodon-callback-uid',
-      'info' => { 'name' => 'Masto User', 'instance' => 'mastodon.social' }
+      'info' => { 'name' => 'Masto User', 'nickname' => 'masto', 'instance' => 'mastodon.social' }
     )
     assert_difference 'User.count', 1 do
       get '/users/auth/mastodon/callback'
@@ -40,6 +40,46 @@ class Users::OmniauthCallbacksControllerTest < ActionDispatch::IntegrationTest
     user = OauthIdentity.find_by(provider: 'mastodon', uid: 'mastodon.social:mastodon-callback-uid')&.user
     assert_not_nil user
     assert_equal user.id, session["warden.user.user.key"]&.first&.first
+    assert_nil session[:mastodon_instance]
+  end
+
+  def test_mastodon_callback_signs_in_user_by_registered_handle
+    existing = users(:one)
+    existing.update!(mastodon_handle: 'alice@mastodon.social')
+
+    OmniAuth.config.mock_auth[:mastodon] = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '54321',
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'mastodon.social' }
+    )
+
+    assert_no_difference 'User.count' do
+      get '/users/auth/mastodon/callback'
+    end
+
+    assert_response :redirect
+    follow_redirect!
+    assert_equal existing.id, session["warden.user.user.key"]&.first&.first
+    assert_equal 'mastodon.social:54321', OauthIdentity.find_by(user: existing, provider: 'mastodon').uid
+  end
+
+  def test_mastodon_callback_uses_extra_instance_when_info_instance_missing
+    existing = users(:two)
+    existing.update!(mastodon_handle: 'bob@ruby.social')
+
+    OmniAuth.config.mock_auth[:mastodon] = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '77777',
+      'info' => { 'name' => 'Bob', 'nickname' => 'bob' },
+      'extra' => { 'instance' => 'ruby.social' }
+    )
+
+    assert_no_difference 'User.count' do
+      get '/users/auth/mastodon/callback'
+    end
+
+    assert_equal existing.id, session["warden.user.user.key"]&.first&.first
+    assert_equal 'ruby.social:77777', OauthIdentity.find_by(user: existing, provider: 'mastodon').uid
   end
 
   def test_facebook_callback_redirects_to_registration_when_create_fails
