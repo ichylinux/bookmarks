@@ -1,26 +1,26 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.35
-milestone_name: — Sign in with Mastodon using OAuth2
-status: Awaiting next milestone
-last_updated: "2026-06-15T00:00:00.000Z"
-last_activity: 2026-06-15 — Completed quick task 260615-0jw: Integrate note into mobile swipe cycle (circular)
+milestone: v1.35.1
+milestone_name: Mastodonハンドルと既存ユーザの関連付け
+status: planning
+last_updated: "2026-06-16T13:41:49.767Z"
+last_activity: 2026-06-16
 progress:
-  total_phases: 20
-  completed_phases: 5
-  total_plans: 7
-  completed_plans: 7
-  percent: 25
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: Milestone v1.35 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-06-15 — Completed quick task 260615-9r6: refresh landing page
+Status: Defining requirements
+Last activity: 2026-06-16 — Milestone v1.35.1 started
 
 ## Project Reference
 

@@ -6,7 +6,17 @@
 
 Mastodon OAuth 2.0 sign-in is live via a custom OmniAuth strategy with federated instance selection, composite uid identity wiring, Connected Accounts UI, and tri-suite gate (644 Minitest, 38 Cucumber). Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
 
-**Next milestone:** Not yet defined — run `/gsd-new-milestone` to start planning.
+**Active milestone:** v1.35.1 — Mastodonハンドルと既存ユーザの関連付け (planning)
+
+## Current Milestone: v1.35.1 Mastodonハンドルと既存ユーザの関連付け
+
+**Goal:** 既存ユーザが設定画面で Mastodon ハンドルを登録し、Mastodon OAuth 認証時にそのハンドルで既存アカウントにログインできるようにする。
+
+**Target features:**
+- 設定画面（`/preferences`）で `users.mastodon_handle` を入力・保存できる
+- Mastodon OAuth コールバック時、OAuth identity が未登録でも `mastodon_handle` が一致する既存ユーザにサインインする
+- ハンドル形式の正規化・バリデーション（`username@instance`）
+- ja/en ロケール対応とテスト（Minitest + 必要に応じて Cucumber）
 
 <details>
 <summary>Shipped: v1.35 Sign in with Mastodon using OAuth2 (2026-06-12)</summary>
@@ -489,4 +499,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-12 after v1.35 milestone*
+*Last updated: 2026-06-16 after v1.35.1 milestone started*
