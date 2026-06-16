@@ -72,6 +72,13 @@
       </tr>
     <% end %>
     <tr>
+      <th><%= f.label :mastodon_handle %></th>
+      <td>
+        <%= f.text_field :mastodon_handle, placeholder: t('preferences.mastodon_handle.placeholder') %>
+        <p class="form-help"><%= t('preferences.mastodon_handle.help') %></p>
+      </td>
+    </tr>
+    <tr>
       <th><%= t('two_factor.section_title') %></th>
       <td>
         <% if current_user.two_factor_enabled? %>

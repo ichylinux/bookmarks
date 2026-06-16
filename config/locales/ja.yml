@@ -40,12 +40,18 @@ ja:
         title: タイトル
       user:
         email: メールアドレス
+        mastodon_handle: Mastodonハンドル
     errors:
       models:
         user:
           attributes:
             email:
               dummy_email: プレースホルダーのメールアドレスは使えません
+            mastodon_handle:
+              blank: Mastodonハンドルを入力してください
+              invalid: "有効なMastodonハンドルを入力してください（例: user@mastodon.social）。"
+              taken: このMastodonハンドルはすでに登録されています
+              missing_separator: "ハンドルは user@instance の形式で入力してください（例: user@mastodon.social）。"
         x_account:
           attributes:
             selected:
@@ -216,6 +222,9 @@ ja:
   preferences:
     font_size_migration_notice: 文字サイズの基準を見直したため、既存設定を「小」に移行しました。必要に応じて設定画面の「文字サイズ」から変更してください。
     saved: 設定を保存しました。
+    mastodon_handle:
+      placeholder: user@mastodon.social
+      help: 既存アカウントとMastodonを関連付けるためのハンドルです。OAuth認証時にこのハンドルでサインインできます。
     index:
       theme_options:
         modern: モダン

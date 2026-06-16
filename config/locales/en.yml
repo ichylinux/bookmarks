@@ -40,12 +40,18 @@ en:
         title: Title
       user:
         email: Email
+        mastodon_handle: Mastodon handle
     errors:
       models:
         user:
           attributes:
             email:
               dummy_email: cannot be a placeholder address
+            mastodon_handle:
+              blank: Enter a Mastodon handle
+              invalid: "Enter a valid Mastodon handle (e.g. user@mastodon.social)."
+              taken: This Mastodon handle is already registered
+              missing_separator: "Use the format user@instance (e.g. user@mastodon.social)."
         x_account:
           attributes:
             selected:
@@ -216,6 +222,9 @@ en:
   preferences:
     font_size_migration_notice: We updated the font-size baseline and migrated your existing setting to Small. You can change it anytime in Preferences > Font size.
     saved: Preferences saved.
+    mastodon_handle:
+      placeholder: user@mastodon.social
+      help: Links your existing account to Mastodon. You can sign in with this handle during OAuth.
     index:
       theme_options:
         modern: Modern

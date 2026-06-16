@@ -456,5 +456,27 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][show_icons]'
   end
 
+  def test_mastodon_handleを保存する
+    sign_in user
+    patch preference_path(user), params: {
+      user: {
+        mastodon_handle: '@alice@Mastodon.Social',
+        preference_attributes: preference_params.merge(id: user.preference.id)
+      }
+    }
+
+    assert_response :redirect
+    assert_equal 'alice@mastodon.social', user.reload.mastodon_handle
+  end
+
+  def test_設定画面にmastodon_handleフィールドを表示する
+    sign_in user
+    get preferences_path
+
+    assert_response :success
+    assert_select 'input[name=?]', 'user[mastodon_handle]'
+    assert_select 'label[for=?]', 'user_mastodon_handle', text: 'Mastodonハンドル'
+    assert_includes response.body, I18n.t('preferences.mastodon_handle.help', locale: :ja)
+  end
 
 end

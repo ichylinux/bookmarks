@@ -15,7 +15,11 @@ class User < ApplicationRecord
   validates :email,
             format: { without: /\Adummy_.+@example\.com\z/, message: :dummy_email },
             on: :update
+  validates :mastodon_handle,
+            uniqueness: { allow_nil: true },
+            on: :update
 
+  before_validation :normalize_mastodon_handle, if: -> { will_save_change_to_mastodon_handle? }
   before_create :generate_otp_secret_if_missing
   before_save :after_password_reset,
     if: -> { encrypted_password_changed? && reset_password_token_was.present? }
@@ -236,6 +240,21 @@ class User < ApplicationRecord
 
   def after_password_reset
     self.password_auth_enabled = true
+  end
+
+  def normalize_mastodon_handle
+    raw = mastodon_handle.to_s
+    if raw.strip.blank?
+      self.mastodon_handle = nil
+      return
+    end
+
+    result = MastodonHandleNormalizer.normalize(raw)
+    if result.success?
+      self.mastodon_handle = result.handle
+    else
+      errors.add(:mastodon_handle, result.error_key)
+    end
   end
 
   def generate_otp_secret_if_missing
