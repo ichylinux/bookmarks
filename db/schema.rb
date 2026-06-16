@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_09_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_16_000001) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -108,6 +108,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_09_000001) do
   create_table "todos", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
+    t.boolean "done", default: false, null: false
     t.boolean "highlighted", default: false, null: false
     t.integer "priority", null: false
     t.string "title", null: false

@@ -43,6 +43,33 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
       post delete_todos_path, params: { todo_id: [todo.id] }
     end
     assert_response :not_found
+    assert_not todo.reload.done?
+  end
+
+  def test_完了でdoneが立つ
+    todo = Todo.where(user_id: user.id).first
+    sign_in user
+
+    assert_not todo.done?
+
+    post delete_todos_path, params: { todo_id: [todo.id] }
+
+    assert_response :success
+    assert todo.reload.done?
+    assert_not todo.deleted?
+  end
+
+  def test_削除でdeletedが立つ
+    todo = Todo.where(user_id: user.id).first
+    sign_in user
+
+    assert_no_difference 'Todo.count' do
+      delete todo_path(todo)
+    end
+
+    assert_response :redirect
+    assert todo.reload.deleted?
+    assert_not todo.done?
   end
 
   def test_新規フォームが日本語ロケールで優先度と登録ボタンを表示する

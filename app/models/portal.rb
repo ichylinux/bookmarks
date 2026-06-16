@@ -59,7 +59,7 @@ class Portal < ApplicationRecord
     end
 
     if user.preference.use_todo?
-      todos = Todo.where(user_id: user.id).not_deleted.order(:priority, :title)
+      todos = Todo.where(user_id: user.id).not_deleted.not_done.order(:priority, :title)
       gadget = TodoGadget.new(todos) 
       ret[gadget.gadget_id] = gadget
     end

@@ -55,8 +55,8 @@ class TodosController < ApplicationController
       Todo.transaction do
         params[:todo_id].each do |id|
           @todo = Todo.find(id)
-          head :not_found and return unless @todo.deletable_by?(current_user)
-          @todo.destroy_logically!
+          head :not_found and return unless @todo.updatable_by?(current_user)
+          @todo.update!(done: true)
         end
       end
     end

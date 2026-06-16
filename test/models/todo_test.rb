@@ -36,4 +36,13 @@ class TodoTest < ActiveSupport::TestCase
       assert_equal 'High', todo.priority_name
     end
   end
+
+  def test_not_done_scope_excludes_done_todos
+    todo = Todo.where(user_id: user.id).first
+    pending = Todo.create!(user: user, title: '未完了タスク', priority: Todo::PRIORITY_NORMAL)
+    todo.update!(done: true)
+
+    assert_not_includes Todo.not_done, todo
+    assert_includes Todo.not_done, pending
+  end
 end

@@ -38,6 +38,8 @@ class Todo < ApplicationRecord
 
   belongs_to :user
 
+  scope :not_done, -> { where(done: false) }
+
   def self.priority_options
     PRIORITY_KEYS.map { |priority, _key| [priority_label(priority), priority] }
   end
