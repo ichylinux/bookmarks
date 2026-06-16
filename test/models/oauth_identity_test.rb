@@ -82,7 +82,7 @@ class OauthIdentityTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'mastodon',
       'uid' => '12345',
-      'info' => { 'name' => 'Alice', 'instance' => 'mastodon.social' }
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'mastodon.social' }
     )
     assert_difference 'OauthIdentity.count', 1 do
       User.from_omniauth(auth)
@@ -97,7 +97,7 @@ class OauthIdentityTest < ActiveSupport::TestCase
     auth = OmniAuth::AuthHash.new(
       'provider' => 'mastodon',
       'uid' => '99999',
-      'info' => { 'name' => 'Bob', 'instance' => 'ruby.social' }
+      'info' => { 'name' => 'Bob', 'nickname' => 'bob', 'instance' => 'ruby.social' }
     )
     user = User.from_omniauth(auth)
     composite_uid = 'ruby.social:99999'
@@ -109,6 +109,71 @@ class OauthIdentityTest < ActiveSupport::TestCase
       end
     end
     assert_equal composite_uid, OauthIdentity.find_by(user: user, provider: 'mastodon').uid
+  end
+
+  def test_mastodon_from_omniauth_finds_user_by_registered_handle
+    existing = users(:one)
+    existing.update!(mastodon_handle: 'alice@mastodon.social')
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '54321',
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'mastodon.social' }
+    )
+
+    assert_no_difference 'User.count' do
+      result = User.from_omniauth(auth)
+      assert_equal existing.id, result.id
+    end
+    identity = OauthIdentity.find_by(user: existing, provider: 'mastodon')
+    assert_equal 'mastodon.social:54321', identity.uid
+  end
+
+  def test_mastodon_from_omniauth_rejects_handle_squatting_on_instance_mismatch
+    existing = users(:one)
+    existing.update!(mastodon_handle: 'alice@mastodon.social')
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '77777',
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'ruby.social' }
+    )
+
+    assert_difference 'User.count', 1 do
+      result = User.from_omniauth(auth)
+      refute_equal existing.id, result.id
+    end
+  end
+
+  def test_mastodon_from_omniauth_rejects_handle_squatting_on_username_mismatch
+    existing = users(:one)
+    existing.update!(mastodon_handle: 'alice@mastodon.social')
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '88888',
+      'info' => { 'name' => 'Bob', 'nickname' => 'bob', 'instance' => 'mastodon.social' }
+    )
+
+    assert_difference 'User.count', 1 do
+      result = User.from_omniauth(auth)
+      refute_equal existing.id, result.id
+    end
+  end
+
+  def test_mastodon_from_omniauth_excludes_soft_deleted_user_from_handle_lookup
+    existing = users(:one)
+    existing.update!(mastodon_handle: 'alice@mastodon.social', deleted: true, deleted_at: Time.current)
+
+    auth = OmniAuth::AuthHash.new(
+      'provider' => 'mastodon',
+      'uid' => '11111',
+      'info' => { 'name' => 'Alice', 'nickname' => 'alice', 'instance' => 'mastodon.social' }
+    )
+
+    assert_difference 'User.count', 1 do
+      User.from_omniauth(auth)
+    end
   end
 
   def test_google_from_omniauth_creates_identity

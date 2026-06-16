@@ -100,21 +100,33 @@ class User < ApplicationRecord
       instance = data['instance'].to_s
       account_id = access_token.uid.to_s
       composite_uid = "#{instance}:#{account_id}"
+      username = data['nickname'].to_s.presence
 
       user = User.active
                  .joins(:oauth_identities)
                  .find_by(oauth_identities: { provider: 'mastodon', uid: composite_uid })
       if user
         OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
-        user
-      else
-        new_user = User.create!(
-          email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
-          password: Devise.friendly_token[0, 20]
-        )
-        OauthIdentity.upsert_for!(user: new_user, provider: 'mastodon', uid: composite_uid)
-        new_user
+        return user
       end
+
+      if username.present?
+        handle_result = MastodonHandleNormalizer.normalize("#{username}@#{instance}")
+        if handle_result.success?
+          user = User.active.find_by(mastodon_handle: handle_result.handle)
+          if user
+            OauthIdentity.upsert_for!(user: user, provider: 'mastodon', uid: composite_uid)
+            return user
+          end
+        end
+      end
+
+      new_user = User.create!(
+        email: data['email'].presence || "dummy_#{SecureRandom.uuid}@example.com",
+        password: Devise.friendly_token[0, 20]
+      )
+      OauthIdentity.upsert_for!(user: new_user, provider: 'mastodon', uid: composite_uid)
+      new_user
     else
       user = User.active.where(email: data['email']).first
       user ||= User.create!(email: data['email'], password: Devise.friendly_token[0, 20])
