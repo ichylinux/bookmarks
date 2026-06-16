@@ -90,9 +90,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select '#todo .title', text: 'タスク', count: 1
+    assert_select '#todo .gadget-title-text', text: 'タスク', count: 1
     assert_select '#todo .todo_actions a', text: '完了', count: 1
-    assert_select '#todo .todo_actions a', text: 'タスクを追加', count: 1
+    assert_select '#todo .title a.todo-gadget-new-link', text: '追加', count: 1
     assert_select '#todo span.priority_1', text: '高', count: 1
   end
 
@@ -105,9 +105,9 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select 'html[lang=?]', 'en'
-    assert_select '#todo .title', text: 'Tasks', count: 1
+    assert_select '#todo .gadget-title-text', text: 'Tasks', count: 1
     assert_select '#todo .todo_actions a', text: 'Complete', count: 1
-    assert_select '#todo .todo_actions a', text: 'Add Task', count: 1
+    assert_select '#todo .title a.todo-gadget-new-link', text: 'new', count: 1
     assert_select '#todo span.priority_1', text: 'High', count: 1
     assert_includes response.body, todo.title
   end

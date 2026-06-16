@@ -303,6 +303,9 @@ en:
       new_link_aria_label: Add bookmark
       dialog_title: Add Bookmark
       dialog_close_aria_label: Close
+    todo_gadget:
+      new_link: new
+      new_link_aria_label: Add task
     calendar_gadget:
       loading: Loading calendar...
     feed:

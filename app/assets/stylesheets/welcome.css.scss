@@ -283,8 +283,9 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-// Bookmark gadget "new" link — visible on title hover
-.bookmark-gadget-new-link {
+// Gadget header "new" link — visible on title hover
+.bookmark-gadget-new-link,
+.todo-gadget-new-link {
   margin-left: auto;
   flex-shrink: 0;
   opacity: 0;
@@ -303,7 +304,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-div.title:hover .bookmark-gadget-new-link {
+div.title:hover .bookmark-gadget-new-link,
+div.title:hover .todo-gadget-new-link {
   opacity: 1;
 }
 

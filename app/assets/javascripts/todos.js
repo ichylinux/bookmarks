@@ -25,6 +25,10 @@ todos.open_edit = function($li) {
 };
 
 todos.init = function(selector) {
+  $(selector).on('mousedown', '.todo-gadget-new-link', function(e) {
+    e.stopPropagation();
+  });
+
   $(selector).on('dblclick', 'li:not(.todo_actions)', function() {
     todos.open_edit($(this));
   });
@@ -101,8 +105,11 @@ todos.toggle_highlight = function($btn) {
 };
 
 todos.new_todo = function(trigger) {
-  const ol = $(trigger).closest('ol');
-  const url = $(trigger).attr('href');
+  const $trigger = $(trigger);
+  const ol = $trigger.closest('ol').length
+    ? $trigger.closest('ol')
+    : $trigger.closest('.gadget.todo').find('ol').first();
+  const url = $trigger.attr('href');
 
   $.get(url, {format: 'html'}, function(html) {
     ol.find('.todo_actions').after('<li>' + html + '</li>');

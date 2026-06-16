@@ -6,7 +6,15 @@
   </script>
 
   <div>
-    <%= render 'common/gadget_title_with_icon', variant: :todo do %>
+    <%= render 'common/gadget_title_with_icon',
+               variant: :todo,
+               header_link: link_to(
+                 t('welcome.todo_gadget.new_link'),
+                 new_todo_path,
+                 class: 'todo-gadget-new-link',
+                 aria: { label: t('welcome.todo_gadget.new_link_aria_label') },
+                 onclick: 'todos.new_todo(this); return false;'
+               ) do %>
       <%= gadget.title %>
     <% end %>
     <ol>

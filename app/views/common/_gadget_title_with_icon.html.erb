@@ -9,4 +9,7 @@
     <% end %>
   </span>
   <span class="gadget-title-text"><%= yield %></span>
+  <% if local_assigns[:header_link] %>
+    <%= header_link %>
+  <% end %>
 </div>

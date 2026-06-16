@@ -1,3 +1,7 @@
+def click_todo_gadget_new_link
+  find('#todo .todo-gadget-new-link', visible: :all).click
+end
+
 もし /^設定画面で タスクを表示する にチェックを入れます。$/ do
   sign_in user
   visit '/preferences'
@@ -20,7 +24,7 @@ end
 
 もし /^ポータルに (.*?) というウィジェットが表示されます。$/ do |name|
   find('a.head-title', text: 'Bookmarks').click
-  assert has_selector?('#todo .title', text: name)
+  assert has_selector?('#todo .gadget-title-text', text: name)
   capture
 end
 
@@ -29,8 +33,10 @@ end
     assert has_selector?('.todo_actions')
 
     @todo_count = find('#todo').all('li').size
-  
-    click_on action
+
+    within '#todo' do
+      click_todo_gadget_new_link
+    end
     assert has_selector?('form.todo')
     capture
 
@@ -49,7 +55,7 @@ end
   assert has_selector?('.todo_actions')
   capture
 
-  click_on 'タスクを追加'
+  click_todo_gadget_new_link
   assert has_selector?('form.todo')
   with_capture do
     within 'form.todo' do
@@ -61,7 +67,7 @@ end
 end
 
 もし /^空白のまま (.*) をクリックするとタスクの入力が終了します。$/ do |action|
-  click_on 'タスクを追加'
+  click_todo_gadget_new_link
   assert has_selector?('form.todo')
   capture
 
