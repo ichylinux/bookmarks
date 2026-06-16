@@ -66,7 +66,6 @@ Rails.application.routes.draw do
   resources :todos do
     collection do
       post 'delete'
-      post 'undo_complete'
     end
     member do
       patch 'toggle_highlight'

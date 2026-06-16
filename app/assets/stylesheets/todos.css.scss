@@ -10,50 +10,8 @@
     }
   }
 
-  li {
+  li:not(.todo_actions) {
     position: relative;
-    transition: opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
-  }
-
-  li.todo-completed {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-  }
-
-  .todo-undo-toast {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 6px;
-    padding: 6px 8px;
-    font-size: 0.85em;
-    line-height: 1.3;
-    background: #f3f4f6;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-  }
-
-  .todo-undo-toast__message {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .todo-undo-toast__undo {
-    flex: 0 0 auto;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: #2563eb;
-    cursor: pointer;
-    text-decoration: underline;
-    font: inherit;
   }
 
   li.highlighted {
@@ -65,12 +23,12 @@
       font-weight: bold;
     }
 
-    &:has(form.todo) {
+    &:not(.todo_actions):has(form.todo) {
       padding-left: 3px;
       box-sizing: border-box;
     }
 
-    &:not(:has(form.todo)) {
+    &:not(.todo_actions):not(:has(form.todo)) {
       display: flex;
       align-items: center;
 
@@ -106,20 +64,20 @@
     white-space: nowrap;
   }
 
-  li:hover .todo-highlight-btn {
+  li:not(.todo_actions):hover .todo-highlight-btn {
     display: inline-block;
   }
 
   @media (max-width: 767px) {
-    li.highlighted {
+    li.highlighted:not(.todo_actions) {
       padding-right: 10px;
     }
 
-    li .todo-highlight-btn {
+    li:not(.todo_actions) .todo-highlight-btn {
       display: none;
     }
 
-    li.todo-highlight-visible .todo-highlight-btn {
+    li:not(.todo_actions).todo-highlight-visible .todo-highlight-btn {
       display: inline-block;
     }
   }
@@ -246,6 +204,14 @@
   }
   .priority_3 {
     color: grey;
+  }
+  
+  .todo_actions {
+    min-height: 1.2em;
+    
+    a:visited {
+      color: blue;
+    }
   }
 }
 

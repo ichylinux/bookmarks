@@ -8,8 +8,6 @@ const todos = window.todos;
 const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
 const DOUBLE_TAP_MS = 350;
 const TAP_MOVE_THRESHOLD_PX = 20;
-const COMPLETE_FADE_MS = 300;
-const UNDO_TOAST_MS = 3000;
 
 todos.open_edit = function($li) {
   const $textInput = $li.find('input[type="text"]').first();
@@ -31,24 +29,21 @@ todos.init = function(selector) {
     e.stopPropagation();
   });
 
-  $(selector).on('dblclick', 'li', function() {
-    if ($(this).find('form.todo').length) return;
+  $(selector).on('dblclick', 'li:not(.todo_actions)', function() {
     todos.open_edit($(this));
   });
 
-  $(selector).on('touchstart', 'li', function(e) {
+  $(selector).on('touchstart', 'li:not(.todo_actions)', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(this).find('form.todo').length) return;
-    if ($(e.target).closest('span:first-child').length) return;
     const t = e.originalEvent.touches[0];
     $(this).data('tapStartX', t.clientX);
     $(this).data('tapStartY', t.clientY);
   });
 
-  $(selector).on('touchend', 'li', function(e) {
+  $(selector).on('touchend', 'li:not(.todo_actions)', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(this).find('form.todo').length) return;
-    if ($(e.target).closest('span:first-child').length) return;
     if ($(e.target).closest('.todo-highlight-btn').length) return;
     const $li = $(this);
     const changed = (e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) || null;
@@ -72,23 +67,22 @@ todos.init = function(selector) {
       return;
     }
     $li.data('lastTapAt', now);
-    $li.siblings().removeClass('todo-highlight-visible');
+    $li.siblings(':not(.todo_actions)').removeClass('todo-highlight-visible');
     $li.toggleClass('todo-highlight-visible');
   });
 
   $(document).on('touchstart', function(e) {
     if (!MOBILE_MQ.matches) return;
-    if (!$(e.target).closest('.todo li').length) {
+    if (!$(e.target).closest('.todo li:not(.todo_actions)').length) {
       $('.todo li.todo-highlight-visible').removeClass('todo-highlight-visible');
     }
   });
 
-  $(selector).on('click', 'li span:first-child', function(e) {
-    const $li = $(this).closest('li');
-    if ($li.find('form.todo').length || $li.hasClass('todo-completing')) return;
-    e.preventDefault();
-    e.stopPropagation();
-    todos.complete_todo($li);
+  $(selector).on('click', 'li span:first-child', function() {
+    if (!$(this).parent().is('.todo_actions')) {
+      $(this).toggleClass('selected');
+      $(this).parent().toggleClass('selected');
+    }
   });
 
   $(selector).on('click', '.todo-highlight-btn', function(e) {
@@ -118,7 +112,7 @@ todos.new_todo = function(trigger) {
   const url = $trigger.attr('href');
 
   $.get(url, {format: 'html'}, function(html) {
-    ol.prepend('<li>' + html + '</li>');
+    ol.find('.todo_actions').after('<li>' + html + '</li>');
   });
 };
 
@@ -140,96 +134,19 @@ todos.update_todo = function(trigger) {
   });
 };
 
-todos._clearUndoToast = function() {
-  if (todos._undoTimer) {
-    clearTimeout(todos._undoTimer);
-    todos._undoTimer = null;
-  }
-  if (todos._undoToast) {
-    todos._undoToast.remove();
-    todos._undoToast = null;
-  }
-};
+todos.delete_todos = function(trigger) {
+  const ol = $(trigger).closest('ol');
+  const url = $(trigger).attr('href');
 
-todos._showUndoToast = function($gadget, payload) {
-  todos._clearUndoToast();
-
-  const $ol = $gadget.find('ol').first();
-  const template = $ol.data('toast-completed') || 'Completed “%{title}”';
-  const undoLabel = $ol.data('toast-undo') || 'Undo';
-  const message = template.replace('%{title}', payload.title);
-
-  const $toast = $(
-    '<div class="todo-undo-toast" role="status">' +
-      '<span class="todo-undo-toast__message"></span>' +
-      '<button type="button" class="todo-undo-toast__undo"></button>' +
-    '</div>'
-  );
-  $toast.find('.todo-undo-toast__message').text(message);
-  $toast.find('.todo-undo-toast__undo').text(undoLabel);
-
-  $gadget.find('> div').append($toast);
-  todos._undoToast = $toast;
-  todos._undoPayload = payload;
-
-  $toast.find('.todo-undo-toast__undo').on('click', function() {
-    todos.undo_complete($gadget);
+  const params = {};
+  params.format = 'html';
+  params.authenticity_token = $(trigger).closest('.todo_actions').data('authenticity_token');
+  params.todo_id = [];
+  ol.find('li.selected').each(function() {
+    params.todo_id.push($(this).data('id'));
   });
 
-  todos._undoTimer = setTimeout(function() {
-    todos._clearUndoToast();
-    todos._undoPayload = null;
-  }, UNDO_TOAST_MS);
-};
-
-todos.complete_todo = function($li) {
-  if ($li.hasClass('todo-completing')) return;
-
-  const $ol = $li.closest('ol');
-  const $gadget = $ol.closest('.gadget.todo');
-  const todoId = $li.data('id');
-  const title = $.trim($li.find('.todo-title').text());
-  const $insertBefore = $li.next();
-
-  todos._clearUndoToast();
-
-  $li.addClass('todo-completing todo-completed');
-
-  $.post($ol.data('complete-url'), {
-    format: 'html',
-    authenticity_token: $ol.data('authenticity-token'),
-    todo_id: [todoId]
-  });
-
-  setTimeout(function() {
-    $li.remove();
-  }, COMPLETE_FADE_MS);
-
-  todos._showUndoToast($gadget, {
-    todoId: todoId,
-    title: title,
-    $insertBefore: $insertBefore
-  });
-};
-
-todos.undo_complete = function($gadget) {
-  const payload = todos._undoPayload;
-  if (!payload) return;
-
-  const $ol = $gadget.find('ol').first();
-  todos._clearUndoToast();
-
-  $.post($ol.data('undo-url'), {
-    format: 'html',
-    authenticity_token: $ol.data('authenticity-token'),
-    todo_id: [payload.todoId]
-  }, function(html) {
-    const $item = $(html);
-    if (payload.$insertBefore && payload.$insertBefore.length) {
-      payload.$insertBefore.before($item);
-    } else {
-      $ol.append($item);
-    }
-    todos._undoPayload = null;
+  $.post(url, params, function () {
+    ol.find('li.selected').hide();
   });
 };

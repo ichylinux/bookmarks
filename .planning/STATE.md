@@ -19,7 +19,7 @@ progress:
 
 Phase: 126 of 126 (Tests & Tri-Suite Gate) — **MILESTONE COMPLETE**
 Status: Shipped 2026-06-16
-Last activity: 2026-06-16 — Completed quick task 260617-2nf: ToDoガジェット チェック即完了+Undo（提案B）
+Last activity: 2026-06-16 — Autonomous execution completed v1.35.1
 
 ## Project Reference
 
@@ -94,7 +94,6 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 | 260615-0jw | Integrate note into mobile swipe cycle (circular) | 2026-06-15 | [260615-0jw-integrate-note-into-mobile-swipe-cycle-w](./quick/260615-0jw-integrate-note-into-mobile-swipe-cycle-w/) |
 | 260615-9r6 | refresh landing page | 2026-06-15 | [260615-9r6-refresh-landing-page](./quick/260615-9r6-refresh-landing-page/) |
 | 260617-09w | oauth_identities に一本化（users.uid/provider 廃止） | 2026-06-17 | [260617-09w-oauth-identities-unify](./quick/260617-09w-oauth-identities-unify/) |
-| 260617-2nf | ToDoガジェット: チェック即完了+Undoトースト（提案B） | 2026-06-16 | [260617-2nf-todo-undo-b](./quick/260617-2nf-todo-undo-b/) |
 
 ## Operator Next Steps
 

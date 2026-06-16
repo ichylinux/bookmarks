@@ -90,9 +90,6 @@ en:
       new_task: Add Task
       highlight: Highlight
       unhighlight: Highlight off
-    toast:
-      completed: Completed “%{title}”
-      undo: Undo
     form:
       create: Create
       update: Update

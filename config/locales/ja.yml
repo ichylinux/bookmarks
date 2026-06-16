@@ -90,9 +90,6 @@ ja:
       new_task: タスクを追加
       highlight: 強調表示
       unhighlight: 強調解除
-    toast:
-      completed: "「%{title}」を完了しました"
-      undo: 元に戻す
     form:
       create: 登録
       update: 更新

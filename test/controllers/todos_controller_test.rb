@@ -59,31 +59,6 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_not todo.deleted?
   end
 
-  def test_完了の取り消しでdoneが戻る
-    todo = Todo.where(user_id: user.id).first
-    todo.update!(done: true)
-    sign_in user
-
-    assert todo.done?
-
-    post undo_complete_todos_path, params: { todo_id: [todo.id] }, xhr: true
-
-    assert_response :success
-    assert_not todo.reload.done?
-    assert_select 'li[data-id=?]', todo.id.to_s, count: 1
-  end
-
-  def test_他人のタスクは完了の取り消しできない
-    sign_in user
-    assert todo = Todo.where('user_id <> ?', user).first
-    todo.update!(done: true)
-
-    post undo_complete_todos_path, params: { todo_id: [todo.id] }
-
-    assert_response :not_found
-    assert todo.reload.done?
-  end
-
   def test_削除でdeletedが立つ
     todo = Todo.where(user_id: user.id).first
     sign_in user
