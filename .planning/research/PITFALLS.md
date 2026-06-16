@@ -1,54 +1,108 @@
-# Pitfalls Research: Mastodon OAuth 2.0 Sign-In
+# Pitfalls Research
 
-**Milestone:** v1.35
-**Date:** 2026-06-12
+**Domain:** Mastodon handle linking for existing users
+**Researched:** 2026-06-16
+**Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### 1. Account ID collision across instances
-**Risk:** Mastodon account IDs are only unique per instance.
-**Prevention:** Store composite uid `instance_domain:account_id` in `oauth_identities.uid`.
-**Phase:** 120 (identity wiring)
+### Pitfall 1: Handle squatting without OAuth proof
 
-### 2. Static OmniAuth config won't work
-**Risk:** `config.omniauth` runs at boot with fixed URLs; Mastodon is federated.
-**Prevention:** Custom strategy overrides `client.site` from `session[:mastodon_instance]` at request time.
-**Phase:** 119 (strategy)
+**What goes wrong:**
+User A registers `bob@mastodon.social`; User B completes OAuth as bob and gets signed into User A's account.
 
-### 3. OAuth client credentials per instance
-**Risk:** Each Mastodon instance needs its own registered OAuth app.
-**Prevention:** Dynamic app registration via `POST /api/v1/apps` before authorization; cache client_id/secret in session for the callback token exchange.
-**Phase:** 119 (strategy)
+**Why it happens:**
+Matching on stored handle alone without verifying OAuth credentials username+instance.
 
-### 4. Using OAuth1 gems
-**Risk:** `omniauth-mastodon` etc. implement OAuth 1.0a only.
-**Prevention:** Build custom strategy on `omniauth-oauth2`; do not add legacy gems.
-**Phase:** 119 (strategy)
+**How to avoid:**
+At callback, build canonical handle from `raw_info['username']` + `info['instance']` and require exact match with candidate user's `mastodon_handle` before signing in.
 
-### 5. Instance domain validation
-**Risk:** Open redirect or SSRF if arbitrary URLs accepted.
-**Prevention:** Validate domain format (hostname only, no scheme/path); normalize to `https://{domain}`; reject private IP ranges.
-**Phase:** 119 (instance form)
+**Warning signs:**
+Test only checks DB lookup, not credential cross-check.
 
-## Integration Pitfalls
+**Phase to address:**
+Phase 125 (identity wiring)
 
-### 6. Disconnect safety guard regression
-**Risk:** New provider changes "last auth method" calculation.
-**Prevention:** Reuse existing `OauthIdentitiesController` guard; add test with only Mastodon linked.
-**Phase:** 123 (tests)
+---
 
-### 7. Email-less Mastodon accounts
-**Risk:** Mastodon may not return email; user creation needs dummy email pattern.
-**Prevention:** Follow Twitter pattern: `dummy_{uuid}@example.com` for new users without email.
-**Phase:** 120 (from_omniauth)
+### Pitfall 2: Duplicate handles across users
 
-### 8. Session instance lost between authorize and callback
-**Risk:** Callback can't resolve which instance to exchange token against.
-**Prevention:** Persist instance in session before redirect; strategy reads same key on callback.
-**Phase:** 119 (instance form + strategy)
+**What goes wrong:**
+Two users save the same handle; OAuth match becomes ambiguous.
 
-## Warning Signs During Implementation
+**Why it happens:**
+Missing uniqueness validation/index on `users.mastodon_handle`.
 
-- `OmniAuth::Strategies::OAuth2::CallbackError` — check redirect_uri matches registered app
-- `RecordNotUnique` on `(provider, uid)` — composite uid format inconsistent
-- Strategy connects to wrong host — session key not read in `callback_phase`
+**How to avoid:**
+Add unique index on `mastodon_handle` (MySQL allows multiple NULLs) + model uniqueness validation `allow_nil: true`.
+
+**Warning signs:**
+`find_by(mastodon_handle:)` used without uniqueness guarantee.
+
+**Phase to address:**
+Phase 124 (data + validation)
+
+---
+
+### Pitfall 3: Instance mismatch on OAuth
+
+**What goes wrong:**
+User registers `alice@mastodon.social` but OAuth via `ruby.social` with same username links incorrectly.
+
+**Why it happens:**
+Matching username only or ignoring session instance.
+
+**How to avoid:**
+Full `localpart@instance` comparison; instance from OAuth session must match stored handle's domain.
+
+**Warning signs:**
+Tests mock OAuth without `info[:instance]`.
+
+**Phase to address:**
+Phase 125
+
+---
+
+### Pitfall 4: Linking to soft-deleted user
+
+**What goes wrong:**
+Deleted account resurrected via handle match.
+
+**Why it happens:**
+Lookup without `User.active` scope.
+
+**How to avoid:**
+Use `User.active.find_by(mastodon_handle: ...)` consistent with other `from_omniauth` branches.
+
+**Phase to address:**
+Phase 125
+
+---
+
+## Security Mistakes
+
+| Mistake | Risk | Prevention |
+|---------|------|------------|
+| Open redirect via handle input | Low (field is not URL) | Reject paths/schemes in normalizer |
+| Account takeover via pre-registered handle | HIGH | OAuth proof required at callback |
+| Case confusion on instance | MEDIUM | Downcase instance in normalizer |
+
+## UX Pitfalls
+
+| Pitfall | User Impact | Better Approach |
+|---------|-------------|-----------------|
+| Unclear handle format | Save errors | Placeholder `user@mastodon.social` ja/en |
+| No explanation of pre-link step | User creates duplicate account | Help text: register handle before first Mastodon sign-in |
+
+## Pitfall-to-Phase Mapping
+
+| Pitfall | Prevention Phase | Verification |
+|---------|------------------|--------------|
+| Handle squatting | Phase 125 | Minitest: wrong OAuth user does not match |
+| Duplicate handles | Phase 124 | Model validation + DB unique index test |
+| Instance mismatch | Phase 125 | Minitest with differing instances |
+| Deleted user link | Phase 125 | Minitest with `deleted: true` user |
+
+---
+*Pitfalls research for: Mastodon handle linking*
+*Researched: 2026-06-16*

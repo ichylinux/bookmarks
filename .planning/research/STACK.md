@@ -1,47 +1,60 @@
-# Stack Research: Mastodon OAuth 2.0 Sign-In
+# Stack Research
 
-**Milestone:** v1.35 — Sign in with Mastodon using OAuth2
-**Date:** 2026-06-12
+**Domain:** Mastodon handle linking for existing Bookmarks users (brownfield extension)
+**Researched:** 2026-06-16
+**Confidence:** HIGH
 
-## Existing Stack (unchanged)
+## Recommended Stack
 
-- Rails 8.1, Ruby 3.4, Devise + `omniauthable`
-- `omniauth`, `omniauth-rails_csrf_protection` already in Gemfile
-- `omniauth-oauth2` 1.9.0 already present transitively via `omniauth-google-oauth2` / `omniauth-facebook`
+### Core Technologies (no additions)
 
-## Additions Required
+| Technology | Version | Purpose | Why Recommended |
+|------------|---------|---------|-----------------|
+| Rails | 8.1 | MVC, ActiveRecord, Devise/OmniAuth | Already powers auth and preferences |
+| Devise + OmniAuth | existing | Mastodon OAuth callback | v1.35 custom strategy already live |
+| MySQL | existing | `users.mastodon_handle` persistence | Column migration already added |
 
-| Gem / Component | Version | Purpose |
-|-----------------|---------|---------|
-| `omniauth-oauth2` | ~> 1.9 (explicit in Gemfile) | Base class for custom `OmniAuth::Strategies::Mastodon` |
-| `lib/omniauth/strategies/mastodon.rb` | app code | Custom strategy — not an external gem |
+### Supporting Libraries
 
-## Not Used
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| `MastodonInstanceNormalizer` | in-repo | Hostname validation | Reuse for handle instance segment parsing |
+| `OauthIdentity.upsert_for!` | in-repo | Link Mastodon identity after match | Same as v1.35 composite uid flow |
 
-| Option | Reason |
-|--------|--------|
-| `omniauth-mastodon` and similar gems | OAuth 1.0 only; do not support Mastodon OAuth 2.0 |
+### Development Tools
 
-## Mastodon OAuth 2.0 Endpoints (per instance)
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| Minitest | Model/controller tests for handle save + `from_omniauth` match | Extend existing `oauth_identity_test.rb` patterns |
+| Cucumber `dad:test` | Preferences UI smoke | Optional row for handle field; no live OAuth |
 
-Base URL: `https://{instance_domain}`
+## Alternatives Considered
 
-| Step | Endpoint |
-|------|----------|
-| App registration | `POST /api/v1/apps` |
-| Authorization | `GET /oauth/authorize` |
-| Token exchange | `POST /oauth/token` |
-| Verify credentials | `GET /api/v1/accounts/verify_credentials` |
+| Recommended | Alternative | When to Use Alternative |
+|-------------|-------------|-------------------------|
+| `users.mastodon_handle` string column | Separate `mastodon_identities` table | Only if multiple handles per user needed (out of scope) |
+| Normalizer service class (`MastodonHandleNormalizer`) | Inline regex in model | Normalizer preferred — mirrors `MastodonInstanceNormalizer` |
 
-## Configuration
+## What NOT to Use
 
-- Add `omniauth_mastodon_client_id` / `omniauth_mastodon_client_secret` to `config/app_config.yml` **only if** using pre-registered apps on known instances
-- **Recommended for arbitrary instances:** dynamic app registration via `/api/v1/apps` at request time (no static credentials per instance in env)
-- Redirect URI: `{host}/users/auth/mastodon/callback` (standard Devise OmniAuth path)
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| New OAuth gems | v1.35 custom strategy is OAuth 2.0 | Extend `User.from_omniauth` `:mastodon` branch |
+| WebFinger lookup at save time | Adds network dependency to preferences save | Trust user input format; verify at OAuth callback via `verify_credentials` |
+| Storing handle only in `oauth_identities` | Pre-OAuth link requires user-level field | `users.mastodon_handle` (already migrated) |
 
-## Integration Points
+## Stack Patterns by Variant
 
-- `config/initializers/devise.rb` — register `:mastodon` provider
-- `app/models/user.rb` — `omniauth_providers` + `from_omniauth` `:mastodon` branch
-- `app/controllers/users/omniauth_callbacks_controller.rb` — `#mastodon` action
-- `oauth_identities` table — provider `'mastodon'`, uid `'instance:account_id'`
+**If handle input accepts `@user@instance` or URL forms:**
+- Normalize to canonical `localpart@hostname` before save
+- Because OAuth callback compares against `raw_info['username']` + session instance
+
+## Sources
+
+- `.planning/PROJECT.md` — v1.35 Mastodon OAuth decisions
+- `db/migrate/20260616125530_add_column_mastodon_handle_on_users.rb` — column exists
+- `lib/omniauth/strategies/mastodon.rb` — `info[:instance]`, `raw_info['username']`
+
+---
+*Stack research for: Mastodon handle linking*
+*Researched: 2026-06-16*
