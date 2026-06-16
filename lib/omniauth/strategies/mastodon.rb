@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'json'
 require 'faraday'
 
@@ -86,8 +84,7 @@ module OmniAuth
 
         unless response.success?
           body_snippet = response.body.to_s[0, 200]
-          fail!(:invalid_credentials,
-                StandardError.new("App registration failed (#{response.status}): #{body_snippet}"))
+          fail!(:invalid_credentials, StandardError.new("App registration failed (#{response.status}): #{body_snippet}"))
         end
 
         data = parse_registration_response!(response.body)
@@ -105,13 +102,11 @@ module OmniAuth
       def parse_registration_response!(body)
         data = JSON.parse(body)
         if data['client_id'].blank? || data['client_secret'].blank?
-          fail!(:invalid_credentials,
-                StandardError.new('App registration response missing client_id or client_secret'))
+          fail!(:invalid_credentials, StandardError.new('App registration response missing client_id or client_secret'))
         end
         data
       rescue JSON::ParserError => e
-        fail!(:invalid_credentials,
-              StandardError.new("App registration returned invalid JSON: #{e.message}"))
+        fail!(:invalid_credentials, StandardError.new("App registration returned invalid JSON: #{e.message}"))
       end
     end
   end
