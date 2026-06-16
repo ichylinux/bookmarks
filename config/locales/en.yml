@@ -381,6 +381,14 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-06-16"
+          headline: Mark tasks as done without deleting them
+          tag: new
+          description: Tasks now have a distinct "done" state. Click the checkbox to mark a task complete — it stays in the list so you can see what you've accomplished, separate from items you delete.
+        - date: "2026-06-16"
+          headline: Add tasks from the gadget header
+          tag: ux
+          description: The task gadget header now has a quick-add button, matching the bookmark gadget's UX — create a new task without scrolling to the bottom of the list.
         - date: "2026-06-15"
           headline: Swipe through your notes on mobile
           tag: ux
