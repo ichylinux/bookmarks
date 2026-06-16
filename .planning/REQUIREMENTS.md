@@ -52,23 +52,23 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HDL-01 | — | Pending |
-| HDL-02 | — | Pending |
-| HDL-03 | — | Pending |
-| HDL-04 | — | Pending |
-| IDNT-04 | — | Pending |
-| IDNT-05 | — | Pending |
-| IDNT-06 | — | Pending |
-| IDNT-07 | — | Pending |
-| VIEW-04 | — | Pending |
-| TEST-03 | — | Pending |
-| TEST-04 | — | Pending |
+| HDL-01 | Phase 124 | Pending |
+| HDL-02 | Phase 124 | Pending |
+| HDL-03 | Phase 124 | Pending |
+| HDL-04 | Phase 124 | Pending |
+| VIEW-04 | Phase 124 | Pending |
+| IDNT-04 | Phase 125 | Pending |
+| IDNT-05 | Phase 125 | Pending |
+| IDNT-06 | Phase 125 | Pending |
+| IDNT-07 | Phase 125 | Pending |
+| TEST-03 | Phase 126 | Pending |
+| TEST-04 | Phase 126 | Pending |
 
 **Coverage:**
 - v1.35.1 requirements: 11 total
-- Mapped to phases: 0
-- Unmapped: 11 ⚠️
+- Mapped to phases: 11
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-16*
-*Last updated: 2026-06-16 after initial definition*
+*Last updated: 2026-06-16 after roadmap creation*

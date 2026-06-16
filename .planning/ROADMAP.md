@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (active)
 - ✅ **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (shipped 2026-06-12) — [archived](milestones/v1.35-ROADMAP.md)
 - ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
 - ✅ **v1.33 — Facebook Login** — Phases 112–113 (shipped 2026-05-24)
@@ -39,6 +40,69 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+### Milestone v1.35.1: Mastodonハンドルと既存ユーザの関連付け
+
+**Status:** ACTIVE
+**Phases:** 124–126
+**Requirements:** 11 (HDL-01–04, IDNT-04–07, VIEW-04, TEST-03–04)
+
+#### Phase 124: Handle Data Layer & Preferences UI
+
+**Goal:** Users can register a canonical Mastodon handle on `/preferences` with validation and uniqueness guarantees.
+**Depends on:** Nothing (first phase of v1.35.1)
+**Requirements:** HDL-01, HDL-02, HDL-03, HDL-04, VIEW-04
+**Plans:** 1 plan
+
+Plans:
+- [ ] 124-01: `MastodonHandleNormalizer` + unique index migration + User validation + preferences field + ja/en locales + Minitest
+
+**Success Criteria:**
+1. `MastodonHandleNormalizer` accepts `@user@instance` and URL-ish input; outputs canonical `user@instance` or error key
+2. Unique index on `users.mastodon_handle` (NULL allowed); model validates format and uniqueness on update
+3. `PreferencesController` permits `:mastodon_handle`; preferences form shows text field with label, placeholder, help text
+4. ja/en locale keys for label, placeholder, help, and validation errors; i18n parity test passes
+5. Minitest: normalizer cases, validation, uniqueness collision, preferences save round-trip
+
+---
+
+#### Phase 125: OAuth Identity Wiring by Handle
+
+**Goal:** Mastodon OAuth signs into an existing user when the verified OAuth account matches a pre-registered handle.
+**Depends on:** Phase 124
+**Requirements:** IDNT-04, IDNT-05, IDNT-06, IDNT-07
+**Plans:** 1 plan
+
+Plans:
+- [ ] 125-01: Extend `User.from_omniauth` `:mastodon` branch + Minitest (match, mismatch, create fallback, deleted user)
+
+**Success Criteria:**
+1. Lookup order: composite uid via `oauth_identities` → `User.active` by `mastodon_handle` → create new user
+2. Handle match requires OAuth `username` + session `instance` to equal stored canonical handle
+3. Successful match calls `OauthIdentity.upsert_for!` with composite uid (v1.35 behavior preserved)
+4. Instance mismatch or wrong username does not sign into handle owner; falls through to create or composite match only
+5. Soft-deleted users excluded from handle lookup
+6. Minitest covers match, re-auth via composite uid, squatting rejection, and create fallback
+
+---
+
+#### Phase 126: Tests & Tri-Suite Gate
+
+**Goal:** Full regression coverage and green lint + Minitest + Cucumber gate for v1.35.1.
+**Depends on:** Phase 125
+**Requirements:** TEST-03, TEST-04
+**Plans:** 1 plan
+
+Plans:
+- [ ] 126-01: Preferences integration test for handle field + tri-suite gate
+
+**Success Criteria:**
+1. Preferences controller test asserts `mastodon_handle` field renders and persists
+2. All v1.35.1 Minitest paths green (normalizer, model, from_omniauth, preferences)
+3. Existing v1.35 Mastodon tests remain green (no regression)
+4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
+---
 
 <details>
 <summary>✅ v1.32 — Admin Account Purge (Phases 109–111) — SHIPPED 2026-05-22</summary>
