@@ -17,9 +17,11 @@
                ) do %>
       <%= gadget.title %>
     <% end %>
-    <ol>
-      <%= render 'todos/actions' %>
-
+    <ol data-complete-url="<%= delete_todos_path %>"
+        data-undo-url="<%= undo_complete_todos_path %>"
+        data-authenticity-token="<%= form_authenticity_token %>"
+        data-toast-completed="<%= t('todos.toast.completed', title: '%{title}') %>"
+        data-toast-undo="<%= t('todos.toast.undo') %>">
       <% gadget.entries.each do |todo| %>
         <%= render todo %>
       <% end %>

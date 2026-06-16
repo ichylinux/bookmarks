@@ -64,6 +64,27 @@ class TodosController < ApplicationController
     head :ok
   end
 
+  def undo_complete
+    restored = []
+
+    if params[:todo_id].present?
+      Todo.transaction do
+        params[:todo_id].each do |id|
+          todo = Todo.find(id)
+          head :not_found and return unless todo.updatable_by?(current_user)
+          todo.update!(done: false)
+          restored << todo
+        end
+      end
+    end
+
+    if restored.one?
+      render partial: 'todo', locals: { todo: restored.first }
+    else
+      head :ok
+    end
+  end
+
   private
 
   def preload_todo

@@ -30,7 +30,7 @@ end
 
 もし /^(.*?) をクリックしてタスクを追加します。$/ do |action|
   with_capture do
-    assert has_selector?('.todo_actions')
+    assert has_selector?('#todo ol')
 
     @todo_count = find('#todo').all('li').size
 
@@ -52,7 +52,7 @@ end
 
 ならば /^新しいタスクの追加時に、選択した優先度が選択された状態で表示されます。$/ do
   visit '/'
-  assert has_selector?('.todo_actions')
+  assert has_selector?('#todo ol')
   capture
 
   click_todo_gadget_new_link
@@ -74,7 +74,7 @@ end
   within 'form.todo' do
     click_on action
   end
-  
-  assert has_selector?('.todo_actions')
+
+  assert has_selector?('#todo ol')
   capture
 end
