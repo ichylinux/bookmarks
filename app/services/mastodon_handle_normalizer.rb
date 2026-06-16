@@ -21,6 +21,7 @@ class MastodonHandleNormalizer
     return Result.new(handle: nil, error_key: :blank) if stripped.blank?
 
     localpart, instance = parse(stripped)
+    return failure(:invalid) if localpart.nil? && instance.nil? && stripped.match?(%r{\A[a-z][a-z0-9+.-]*://}i)
     return failure(:missing_separator) if localpart.nil? && instance.nil? && stripped.include?('@')
     return failure(:invalid) unless valid_parts?(localpart, instance)
 
