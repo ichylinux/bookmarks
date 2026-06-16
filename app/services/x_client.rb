@@ -11,7 +11,7 @@ class XClient
   # Returns { success: true, items: [...] } or { success: false, error: Symbol }
   # Each following item: { id:, username:, name:, profile_image_url:, protected: }
   def fetch_following(user:, max_results: 100)
-    uid = user.uid.to_s.presence
+    uid = user.twitter_oauth_uid.to_s.presence
     return { success: false, error: :api_error } if uid.blank?
 
     per_page = [max_results.to_i, 5].max.clamp(5, 100)

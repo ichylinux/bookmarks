@@ -61,14 +61,17 @@ class XClientTest < ActiveSupport::TestCase
     end
 
     u = users(:twitter_user)
-    u.update_columns(uid: '99', oauth2_token: 'tok', oauth2_token_expires_at: 1.hour.from_now)
+    identity = OauthIdentity.find_by!(user: u, provider: 'twitter2')
+    u.update_columns(oauth2_token: 'tok', oauth2_token_expires_at: 1.hour.from_now)
+    identity.update_column(:uid, '99')
 
     r = XClient.new(connection: conn).fetch_following(user: u, max_results: 3)
     assert r[:success], r.inspect
     assert_equal 2, r[:items].size
   ensure
+    identity&.update_column(:uid, 'fixture_twitter_uid')
     u = users(:twitter_user)
-    u.update_columns(uid: nil, oauth2_token: nil, oauth2_token_expires_at: nil)
+    u.update_columns(oauth2_token: nil, oauth2_token_expires_at: nil)
   end
 
 

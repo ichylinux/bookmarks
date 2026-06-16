@@ -8,7 +8,7 @@
   <%= render 'common/nav_item', variant: variant, label: t('nav.todos'), url: todos_path, icon: :todo %>
   <%= render 'common/nav_item', variant: variant, label: t('nav.feeds'), url: feeds_path, icon: :feed %>
   <%= render 'common/nav_item', variant: variant, label: t('nav.mastodon'), url: mastodon_accounts_path, icon: :mastodon %>
-  <% if current_user.uid.present? %>
+  <% if current_user.twitter_oauth_uid.present? %>
     <%= render 'common/nav_item', variant: variant, label: t('nav.x_accounts'), url: x_accounts_path, icon: :x %>
   <% end %>
 </div>

@@ -93,6 +93,7 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 | 260609-pnm | refresh landing page | 2026-06-09 | [260609-pnm-refresh-landing-page](./quick/260609-pnm-refresh-landing-page/) |
 | 260615-0jw | Integrate note into mobile swipe cycle (circular) | 2026-06-15 | [260615-0jw-integrate-note-into-mobile-swipe-cycle-w](./quick/260615-0jw-integrate-note-into-mobile-swipe-cycle-w/) |
 | 260615-9r6 | refresh landing page | 2026-06-15 | [260615-9r6-refresh-landing-page](./quick/260615-9r6-refresh-landing-page/) |
+| 260617-09w | oauth_identities に一本化（users.uid/provider 廃止） | 2026-06-17 | [260617-09w-oauth-identities-unify](./quick/260617-09w-oauth-identities-unify/) |
 
 ## Operator Next Steps
 

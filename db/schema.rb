@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_16_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_17_000001) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -137,19 +137,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_16_130000) do
     t.boolean "otp_required_for_login", default: false, null: false
     t.string "otp_secret", null: false
     t.boolean "password_auth_enabled", default: false, null: false
-    t.string "provider"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
     t.integer "sign_in_count", default: 0
-    t.string "uid"
     t.datetime "updated_at"
     t.datetime "x_accounts_last_refreshed_at"
     t.string "x_user_name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["mastodon_handle"], name: "index_users_on_mastodon_handle", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["uid"], name: "index_users_on_uid", unique: true
   end
 
   create_table "visited_links", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

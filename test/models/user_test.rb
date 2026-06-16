@@ -46,7 +46,7 @@ class UserTest < ActiveSupport::TestCase
     expires_ts = Time.now.to_i + 7200
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
-      'uid' => u.uid,
+      'uid' => u.twitter_oauth_uid,
       'info' => { 'name' => u.x_user_name },
       'credentials' => { 'token' => 'bearer-tok', 'refresh_token' => 'ref-tok', 'expires_at' => expires_ts, 'expires' => true }
     )
@@ -60,7 +60,8 @@ class UserTest < ActiveSupport::TestCase
 
   def test_twitter2_from_omniauth_links_existing_user_by_email_when_uid_missing
     u = users(:twitter_user)
-    u.update_columns(uid: nil, provider: nil, email: 'link-by-email@example.com')
+    OauthIdentity.where(user: u, provider: 'twitter2').delete_all
+    u.update_columns(email: 'link-by-email@example.com')
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
       'uid' => 'oauth2-uid-after-email-registration',
@@ -70,8 +71,8 @@ class UserTest < ActiveSupport::TestCase
     result = User.from_omniauth(auth)
     assert_equal u.id, result.id
     u.reload
-    assert_equal 'oauth2-uid-after-email-registration', u.uid
-    assert_equal 'twitter2', u.provider
+    assert_equal 'oauth2-uid-after-email-registration', u.twitter_oauth_uid
+    assert_equal 'twitter2', u.oauth_identity_for('twitter2').provider
     assert_equal 'bearer-tok', u.oauth2_token
   end
 
@@ -106,7 +107,7 @@ class UserTest < ActiveSupport::TestCase
     # u.email is already dummy_00000000-0000-0000-0000-000000000001@example.com
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
-      'uid' => u.uid,
+      'uid' => u.twitter_oauth_uid,
       'info' => { 'name' => u.x_user_name, 'email' => 'real-x-email@example.com' },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
@@ -120,7 +121,7 @@ class UserTest < ActiveSupport::TestCase
     u.update_columns(email: 'already-real@example.com')
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
-      'uid' => u.uid,
+      'uid' => u.twitter_oauth_uid,
       'info' => { 'name' => u.x_user_name, 'email' => 'new-x-email@example.com' },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
@@ -134,7 +135,7 @@ class UserTest < ActiveSupport::TestCase
     # u.email is already dummy — X sends no email
     auth = OmniAuth::AuthHash.new(
       'provider' => 'twitter2',
-      'uid' => u.uid,
+      'uid' => u.twitter_oauth_uid,
       'info' => { 'name' => u.x_user_name },
       'credentials' => { 'token' => 't', 'refresh_token' => 'r', 'expires_at' => Time.now.to_i + 3600, 'expires' => true }
     )
@@ -157,8 +158,8 @@ class UserTest < ActiveSupport::TestCase
     u = users(:twitter_user)
     email = u.email
     x_user_name = u.x_user_name
-    uid = u.uid
-    provider = u.provider
+    twitter_uid = u.twitter_oauth_uid
+    twitter_provider = u.oauth_identity_for('twitter2').provider
     note_count = Note.where(user_id: u.id).count
 
     u.destroy_account!
@@ -168,8 +169,8 @@ class UserTest < ActiveSupport::TestCase
     assert u.deleted_at.present?
     assert_equal email, u.email
     assert_equal x_user_name, u.x_user_name
-    assert_equal uid, u.uid
-    assert_equal provider, u.provider
+    assert_equal twitter_uid, u.twitter_oauth_uid
+    assert_equal twitter_provider, u.oauth_identity_for('twitter2').provider
     assert_equal note_count, Note.where(user_id: u.id).count
   end
 
@@ -181,7 +182,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_from_omniauth_twitter2_matches_user_after_operational_restore
     u = users(:twitter_user)
-    u.update_columns(provider: 'twitter2', uid: 'restore-oauth-uid')
+    OauthIdentity.upsert_for!(user: u, provider: 'twitter2', uid: 'restore-oauth-uid')
 
     u.destroy_account!
     u.reload
@@ -227,7 +228,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_from_omniauth_twitter2_does_not_match_deleted_user
     u = users(:twitter_user)
-    u.update_columns(provider: 'twitter2', uid: 'deleted-oauth-uid')
+    OauthIdentity.upsert_for!(user: u, provider: 'twitter2', uid: 'deleted-oauth-uid')
     u.destroy_account!
 
     auth = OmniAuth::AuthHash.new(
@@ -237,7 +238,7 @@ class UserTest < ActiveSupport::TestCase
       'credentials' => { 'token' => 't', 'refresh_token' => 'r' }
     )
 
-    assert_raise ActiveRecord::RecordNotUnique do
+    assert_raise OauthIdentity::UidOwnedByAnotherUserError do
       User.from_omniauth(auth)
     end
   end

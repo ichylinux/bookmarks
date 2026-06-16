@@ -1,0 +1,4 @@
+twitter_user_twitter2:
+  user: twitter_user
+  provider: twitter2
+  uid: fixture_twitter_uid

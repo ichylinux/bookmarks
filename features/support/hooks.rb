@@ -40,11 +40,9 @@ end
 
 Before('@x_gadget') do
   u = user
-  u.update_columns(
-    provider: 'twitter2',
-    uid: '9988776655',
-    oauth2_token: 'cucumber_oauth2_token'
-  )
+  u.update_columns(oauth2_token: 'cucumber_oauth2_token')
+  OauthIdentity.where(user_id: u.id, provider: 'twitter2').delete_all
+  OauthIdentity.create!(user_id: u.id, provider: 'twitter2', uid: '9988776655')
 
   XAccount.create!(
     user_id: u.id,
@@ -68,12 +66,15 @@ end
 After('@x_gadget') do
   WebMock.remove_request_stub(@_x_stub_tweets) if @_x_stub_tweets
   XAccount.where(user_id: user.id).delete_all
-  user.update_columns(provider: nil, uid: nil, oauth2_token: nil)
+  OauthIdentity.where(user_id: user.id, provider: 'twitter2').delete_all
+  user.update_columns(oauth2_token: nil)
 end
 
 Before('@x_manual_add') do
   u = user
-  u.update_columns(provider: 'twitter2', uid: 'x_manual_uid_host', oauth2_token: 'manual_add_token')
+  u.update_columns(oauth2_token: 'manual_add_token')
+  OauthIdentity.where(user_id: u.id, provider: 'twitter2').delete_all
+  OauthIdentity.create!(user_id: u.id, provider: 'twitter2', uid: 'x_manual_uid_host')
 
   @_x_manual_stub_lookup_ok = WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/by\/username\/testhandle/)
     .to_return(
@@ -100,7 +101,8 @@ After('@x_manual_add') do
   WebMock.remove_request_stub(@_x_manual_stub_lookup_404) if @_x_manual_stub_lookup_404
   WebMock.remove_request_stub(@_x_manual_stub_following) if @_x_manual_stub_following
   XAccount.where(user_id: user.id).delete_all
-  user.update_columns(provider: nil, uid: nil, oauth2_token: nil)
+  OauthIdentity.where(user_id: user.id, provider: 'twitter2').delete_all
+  user.update_columns(oauth2_token: nil)
 end
 
 Before('@feed_visited_links') do
@@ -176,8 +178,6 @@ Before('@account_deletion') do
     deleted_at: nil,
     email: 'user3@example.com',
     x_user_name: nil,
-    provider: nil,
-    uid: nil,
     oauth2_token: nil,
     oauth2_refresh_token: nil,
     oauth2_token_expires_at: nil

@@ -58,18 +58,16 @@ class User < ApplicationRecord
       uid = access_token.uid.to_s
       expires_at = creds['expires_at'] ? Time.at(creds['expires_at'].to_i) : nil
 
-      user = User.active.find_by(uid: uid)
+      user = find_twitter_oauth_user(uid)
       user ||= User.active.find_by(email: data['email']) if data['email'].present?
       if user
         # OAUTH-01: users.email scope is configured in devise.rb — email arrives here when granted
         attrs = {
-          provider: 'twitter2',
           x_user_name: data['name'],
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at
         }
-        attrs[:uid] = uid if user.uid.blank?
         # OAUTH-03: overwrite dummy email with real X email on re-auth when user lacks a valid email
         attrs[:email] = data['email'] if data['email'].present? && !user.has_valid_email?
         user.assign_attributes(attrs)
@@ -78,8 +76,6 @@ class User < ApplicationRecord
         user
       else
         new_user = User.create!(
-          provider: 'twitter2',
-          uid: uid,
           oauth2_token: creds['token'],
           oauth2_refresh_token: creds['refresh_token'],
           oauth2_token_expires_at: expires_at,
@@ -130,6 +126,18 @@ class User < ApplicationRecord
       OauthIdentity.upsert_for!(user: user, provider: access_token['provider'], uid: access_token.uid.to_s)
       user
     end
+  end
+
+  def oauth_identity_for(provider)
+    oauth_identities.find_by(provider: provider.to_s)
+  end
+
+  def twitter_oauth_uid
+    oauth_identity_for('twitter2')&.uid
+  end
+
+  def twitter_linked?
+    twitter_oauth_uid.present? && oauth2_token.present?
   end
 
   def display_name
@@ -253,6 +261,13 @@ class User < ApplicationRecord
       access_token.extra&.dig(:instance).presence
   end
   private_class_method :mastodon_oauth_instance
+
+  def self.find_twitter_oauth_user(uid)
+    User.active
+        .joins(:oauth_identities)
+        .find_by(oauth_identities: { provider: 'twitter2', uid: uid })
+  end
+  private_class_method :find_twitter_oauth_user
 
   def self.find_mastodon_oauth_user(composite_uid)
     User.active

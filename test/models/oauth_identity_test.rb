@@ -57,8 +57,8 @@ class OauthIdentityTest < ActiveSupport::TestCase
     assert_difference 'OauthIdentity.count', 1 do
       User.from_omniauth(auth)
     end
-    user = User.find_by(uid: 'new-twitter-uid-999')
-    identity = OauthIdentity.find_by(user: user, provider: 'twitter2')
+    identity = OauthIdentity.find_by(provider: 'twitter2', uid: 'new-twitter-uid-999')
+    user = identity.user
     assert_not_nil identity
     assert_equal 'new-twitter-uid-999', identity.uid
   end
