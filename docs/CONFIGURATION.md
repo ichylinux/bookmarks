@@ -25,7 +25,7 @@ Three keys are required in production. In development and test they fall back to
 | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | **Required (production)** | `dev_dummy_key` | Deterministic encryption key |
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | **Required (production)** | `dev_dummy_key` | Key derivation salt |
 
-These keys protect the `oauth2_token`, `oauth2_refresh_token`, and `otp_secret` columns on the `users` table. Do not use the `dev_dummy_key` fallback in production.
+These keys protect the `oauth2_token` and `oauth2_refresh_token` columns on the `users` table. Do not use the `dev_dummy_key` fallback in production.
 
 ### OAuth providers (OmniAuth)
 
@@ -128,7 +128,7 @@ Settings that cause application boot or runtime failure if absent in production:
 
 | Setting | Variable | Failure mode |
 |---------|----------|--------------|
-| Encryption primary key | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Decryption errors on `oauth2_token`, `oauth2_refresh_token`, `otp_secret` columns |
+| Encryption primary key | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Decryption errors on `oauth2_token`, `oauth2_refresh_token` columns |
 | Encryption deterministic key | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | Decryption errors on encrypted columns |
 | Encryption derivation salt | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Decryption errors on encrypted columns |
 | MySQL password | `MYSQL_PASSWORD` | `Mysql2::Error` if production credentials differ from dev defaults |
