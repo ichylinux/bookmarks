@@ -45,7 +45,6 @@ bin/rails db:test:prepare
 | `bin/rails db:migrate` | Run pending migrations |
 | `bin/rails db:test:prepare` | Sync test schema after migrations |
 | `bin/rails db:reset` | Drop, create, schema-load, and seed the development DB |
-| `bundle exec rake dad:setup` | Bootstrap app configuration via the `daddy` gem |
 | `bundle exec rake dad:setup:test` | Bootstrap test environment via the `daddy` gem |
 | `bundle exec rake dad:db:create` | Create the database via the `daddy` gem |
 | `bin/rails assets:precompile` | Compile Sprockets assets |

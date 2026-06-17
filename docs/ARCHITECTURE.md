@@ -20,6 +20,10 @@ graph TD
     Controllers --> MAC[MastodonAccountsController]
     Controllers --> XAC[XAccountsController]
     Controllers --> PC[PreferencesController]
+    Controllers --> CALENRC[CalendarsController]
+    Controllers --> PAGESRC[PagesController\nprivacy / terms]
+    Controllers --> OAUTHRC[OauthIdentitiesController]
+    Controllers --> VLC[VisitedLinksController]
     Controllers --> AdminC[Admin::UsersController\nAdmin::XApiUsagesController]
     WC --> Portal[Portal model\ngadget assembly + column layout]
     Portal --> Gadgets[Gadget objects\nBookmarkGadget / TodoGadget /\nCalendarGadget / Feed /\nMastodonAccount / XAccount]
@@ -40,14 +44,15 @@ graph TD
 A typical authenticated dashboard request follows this path:
 
 1. The browser sends `GET /` to the Rails router which dispatches to `WelcomeController#index`.
-2. `ApplicationController` runs `before_action :authenticate_user!` (Devise). If 2FA is enabled the session must already hold a completed OTP challenge — `otp_user_id` is deleted after `Users::TwoFactorAuthenticationController#verify` succeeds.
+2. `ApplicationController` runs `before_action :authenticate_user!` (Devise). `WelcomeController#index` skips this via `skip_before_action` and instead checks `user_signed_in?` internally, returning early for guests. If 2FA is enabled the session must already hold a completed OTP challenge — `otp_user_id` is deleted after `Users::TwoFactorAuthenticationController#verify` succeeds.
 3. The `Localization` around-action resolves the active locale from (in priority order): `?locale=` query param, saved `Preference#locale`, guest session, or `Accept-Language` header.
-4. `WelcomeController#index` loads `current_user.portals.first` which retrieves or creates the user's default `Portal`.
-5. The `Portal` model calls the private `get_gadgets` method, which reads `Preference` flags (`use_bookmark?`, `use_todo?`, `use_calendar?`) and collects active `Feed`, `MastodonAccount`, and selected `XAccount` rows. Each is wrapped in a gadget object implementing the `Gadget` concern.
+4. `WelcomeController#index` loads `current_user.portals.first` which retrieves the user's default `Portal`.
+5. The `Portal` model calls the private `get_gadgets` method, which reads `Preference` flags (`use_bookmark?`, `use_todo?`, `use_calendar?`) and collects active `Feed`, `MastodonAccount`, and selected `XAccount` rows. Each implements the `gadget_id` and `entries` interface (some via the `Gadget` concern, others directly).
 6. `Portal#portal_columns` distributes gadgets into 3 or 4 columns according to `PortalLayout` rows ordered by `column_no, display_order`.
 7. The view renders each gadget partial. Feed entries are fetched on-demand via `Feedjira` during rendering; `MastodonClient` and `XClient` make HTTP calls to external APIs at this point.
-8. Bookmark links receive a `link--visited` CSS class via `ApplicationHelper#visited_link_class`, which compares URLs against the `visited_links` table without an extra controller round-trip.
-9. Portal column state is saved asynchronously via `POST /welcome/save_state` (XHR) whenever the user reorders gadgets, updating `PortalLayout` rows inside a transaction.
+8. Notes are loaded separately: the portal view triggers `GET /notes/gadget` (XHR, no layout) when the notes tab is opened. The `use_note` preference flag controls notes tab visibility.
+9. Bookmark links receive a `link--visited` CSS class via `ApplicationHelper#visited_link_class`, which compares URLs against the `visited_links` table without an extra controller round-trip.
+10. Portal column state is saved asynchronously via `POST /welcome/save_state` (XHR) whenever the user reorders gadgets, updating `PortalLayout` rows inside a transaction.
 
 For OAuth sign-in: browser → OmniAuth provider redirect → `Users::OmniauthCallbacksController#<provider>` → `User.from_omniauth` (find or create) → Devise `sign_in_and_redirect` → root path.
 
@@ -57,11 +62,11 @@ For 2FA sign-in: Devise `Users::SessionsController` validates password → store
 
 | Abstraction | File | Description |
 |---|---|---|
-| `Gadget` | `app/models/concerns/gadget.rb` | Concern that defines the dashboard widget interface: `gadget_id`, `entries`, `visible?`. All content widgets — both AR-backed models and plain Ruby value objects — include this concern. |
+| `Gadget` | `app/models/concerns/gadget.rb` | Concern that defines the dashboard widget interface: `gadget_id`, `entries`, `visible?`. Only `BookmarkGadget` includes this concern. Other gadget objects (`TodoGadget`, `CalendarGadget`, `Feed`, `MastodonAccount`, `XAccount`) implement the same duck-typed interface without including the concern. |
 | `Crud::ByUser` | `app/models/crud/by_user.rb` | Module adding `readable_by?`, `updatable_by?`, `deletable_by?` for user-scoped ownership. Included by `Bookmark`, `Feed`, `Note`, `Todo`, `MastodonAccount`, `XAccount`. |
 | `Localization` | `app/controllers/concerns/localization.rb` | Controller concern that wraps each action in `I18n.with_locale` using a multi-source locale resolution chain (params → preference → guest session → `Accept-Language`). |
 | `Portal` | `app/models/portal.rb` | Assembles the set of active gadget objects from user data and `Preference` flags, then distributes them into ordered columns using `PortalLayout` records. Central coordinator of the dashboard. |
-| `PortalLayout` | `app/models/portal_layout.rb` | Persists `column_no` and `display_order` for each `gadget_id` per user. Updated by `WelcomeController#save_state` on drag-and-drop or column reorder. |
+| `PortalLayout` | `app/models/portal_layout.rb` | Persists `column_no` and `display_order` for each `gadget_id` per user. Updated by `Portal#update_layout` (called from `WelcomeController#save_state`) on drag-and-drop or column reorder. |
 | `Preference` | `app/models/preference.rb` | Per-user settings: active gadgets (`use_bookmark`, `use_todo`, `use_calendar`, `use_note`), theme, font size, locale, portal column count (3 or 4), column widths (JSON array summing to 100), and link behaviour flags. |
 | `MastodonClient` | `app/services/mastodon_client.rb` | Plain-Ruby Faraday client for the public Mastodon REST API (read-only, no OAuth). Looks up an account via `/api/v1/accounts/lookup` then fetches recent statuses. Returns `{ success:, items: }` result hashes. |
 | `XClient` | `app/services/x_client.rb` | Plain-Ruby Faraday client for the X API v2. Authenticates with the user's OAuth 2.0 Bearer token and handles automatic token refresh. Exposes `fetch_following`, `fetch_recent_tweets`, and `lookup_user_by_username`. |
@@ -81,6 +86,7 @@ app/
     concerns/        # Gadget interface concern; shared model-level mixins
     crud/            # Crud::ByUser — user-scoped ownership methods
   services/          # External HTTP clients: MastodonClient, XClient (Faraday)
+                     # Input normalizers: MastodonHandleNormalizer, MastodonInstanceNormalizer
   views/
     welcome/         # Portal/dashboard view and all gadget partials
     admin/           # Admin-only views
@@ -102,12 +108,12 @@ lib/
     strategies/      # Custom Mastodon OAuth2 strategy with dynamic instance
                      # registration and per-request app credential lookup
 db/
-  schema.rb          # Authoritative MySQL schema (utf8mb4); version 2026_06_09_000001
+  schema.rb          # Authoritative MySQL schema (utf8mb4); version 2026_06_17_000001
 features/            # Cucumber E2E feature files (run via bundle exec rake dad:test)
 test/                # Minitest unit and integration tests
 ```
 
-The `app/services/` layer isolates external HTTP calls behind plain Ruby objects, keeping controllers and models free of Faraday concerns. Gadget value objects (`BookmarkGadget`, `TodoGadget`, `CalendarGadget`) implement the `Gadget` concern but are not ActiveRecord models — they wrap database query results for portal rendering without adding persistence. The Mastodon OAuth strategy lives in `lib/` rather than a gem because it requires dynamic per-request Mastodon instance registration, which differs from the static client configuration used by standard OmniAuth strategies.
+The `app/services/` layer isolates external HTTP calls and input normalization behind plain Ruby objects, keeping controllers and models free of Faraday concerns. Gadget value objects (`BookmarkGadget`, `TodoGadget`, `CalendarGadget`) are not ActiveRecord models — they wrap database query results for portal rendering without adding persistence. Only `BookmarkGadget` includes the `Gadget` concern; `TodoGadget` and `CalendarGadget` define their interface methods directly. The Mastodon OAuth strategy lives in `lib/` rather than a gem because it requires dynamic per-request Mastodon instance registration, which differs from the static client configuration used by standard OmniAuth strategies.
 
 ## Related Docs
 

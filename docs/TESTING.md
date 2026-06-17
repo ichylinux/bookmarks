@@ -66,6 +66,7 @@ Test files follow Rails conventions:
 - `test/controllers/*_controller_test.rb` — Controller tests using `ActionDispatch::IntegrationTest`
 - `test/services/*_test.rb` — Service object tests
 - `test/mailers/*_mailer_test.rb` — Mailer tests
+- `test/helpers/*_helper_test.rb` — Helper tests
 - `test/assets/*_contract_test.rb` — Frontend asset contract/regression tests (no browser)
 - `test/i18n/` — Locale parity tests
 - `test/integration/` — Cross-cutting integration tests
@@ -100,7 +101,7 @@ All files in `test/support/` are loaded and mixed into `ActiveSupport::TestCase`
 
 ### Fixtures
 
-Fixtures live in `test/fixtures/` as YAML files: `users.yml`, `bookmarks.yml`, `feeds.yml`, `notes.yml`, `todos.yml`, `preferences.yml`, `portals.yml`, `visited_links.yml`, `mastodon_accounts.yml`.
+Fixtures live in `test/fixtures/` as YAML files: `users.yml`, `bookmarks.yml`, `feeds.yml`, `notes.yml`, `todos.yml`, `preferences.yml`, `portals.yml`, `visited_links.yml`, `mastodon_accounts.yml`, `oauth_identities.yml`.
 
 **Important:** Fixtures use raw SQL inserts and bypass ActiveRecord callbacks and encryption. `otp_secret` values in fixtures are stored as plain text. The test environment has `config.active_record.encryption.support_unencrypted_data = true` set to accommodate this.
 
@@ -123,7 +124,7 @@ To add a new E2E scenario:
 3. Use `features/support/login.rb`'s `sign_in(user)` helper for authentication — it handles the two-step TOTP flow automatically.
 4. Use `features/support/preferences_reset.rb`'s `reset_preferences_via_browser!` to reset preference state between scenarios (call via the `Login#sign_in` helper which invokes this automatically).
 
-Hooks in `features/support/hooks.rb` run `Capybara.reset_sessions!` and clear transient DB records (`MastodonAccount`, `XAccount`, `VisitedLink`, etc.) before each scenario. Preference state is reset via the `/preferences` UI form (not direct ActiveRecord writes) to avoid cross-connection snapshot issues.
+Hooks in `features/support/hooks.rb` run `Capybara.reset_sessions!` and clear transient DB records (`MastodonAccount`, `XAccount`, `XApiCall`, `VisitedLink`) before each scenario. Preference state is reset via the `/preferences` UI form (not direct ActiveRecord writes) to avoid cross-connection snapshot issues.
 
 Available Cucumber tags for per-scenario setup:
 
@@ -154,9 +155,11 @@ Two Jenkins pipelines run the test suites:
 - Environment: `RAILS_ENV=test`, `COVERAGE=true`, `FORMAT=junit`
 - Steps: `rake dad:db:create` → `rails db:reset` → `rails test`
 - JUnit results are published via `publishUnitResult()`
+- On success, automatically triggers the `bookmarks-features` pipeline (E2E) without waiting
 
 **`Jenkinsfile.features` — E2E pipeline:**
-- Runs Cucumber separately in a Kubernetes pod with MySQL and Chrome sidecars
+- Triggered automatically by the unit pipeline on success, or can be run independently
+- Runs Cucumber in a Kubernetes pod with MySQL and Chrome sidecars
 - Environment: `RAILS_ENV=test`, `HEADLESS=true`, `REMOTE=true`
 - Steps: `rake dad:db:create` → `rails db:reset` → `rake dad:test`
 - HTML report published from `features/reports/` as "Features" in Jenkins

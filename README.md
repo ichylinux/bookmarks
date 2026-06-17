@@ -11,7 +11,7 @@ A personal bookmarks, feed reader, to-do, and calendar management app built with
 - **Feeds** — Subscribe to RSS/Atom feeds and browse articles
 - **To-do** — Task management
 - **Calendar** — Calendar UI with Japanese public holiday support
-- **Authentication** — Devise with two-factor authentication (TOTP) and OmniAuth (Google, X, Facebook)
+- **Authentication** — Devise with two-factor authentication (TOTP) and OmniAuth (Google, X, Facebook, Mastodon)
 - **Themes** — Modern, Classic, and Simple themes switchable from the preferences page
 
 ## Tech Stack
@@ -21,7 +21,7 @@ A personal bookmarks, feed reader, to-do, and calendar management app built with
 | Language | Ruby 3.4 / JavaScript (ES6, Sprockets) |
 | Framework | Rails 8.1 |
 | Database | MySQL (utf8mb4) |
-| Frontend | Sprockets + jQuery 4 + SCSS |
+| Frontend | Sprockets + jQuery 1.12.4 + SCSS |
 | Web server | Puma |
 | Auth | Devise + devise-two-factor + OmniAuth |
 | Feed parsing | Feedjira + Nokogiri |
