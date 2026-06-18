@@ -195,16 +195,6 @@
     max-width: 3.5em;
     box-sizing: border-box;
   }
-
-  .priority_1 {
-    color: red;
-  }
-  .priority_2 {
-    color: green;
-  }
-  .priority_3 {
-    color: grey;
-  }
   
   .todo_actions {
     min-height: 1.2em;
@@ -213,6 +203,16 @@
       color: blue;
     }
   }
+}
+
+.priority_1 {
+  color: red;
+}
+.priority_2 {
+  color: green;
+}
+.priority_3 {
+  color: grey;
 }
 
 html:lang(en) .todo {
