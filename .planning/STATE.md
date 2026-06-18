@@ -1,25 +1,26 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.35.1
-milestone_name: Mastodonハンドルと既存ユーザの関連付け
-status: complete
-last_updated: "2026-06-16"
-last_activity: 2026-06-16
+milestone: v1.36.0
+milestone_name: タスクガジェットの完了操作の改善
+status: planning
+last_updated: "2026-06-18T14:11:38.626Z"
+last_activity: 2026-06-18
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: 126 of 126 (Tests & Tri-Suite Gate) — **MILESTONE COMPLETE**
-Status: Shipped 2026-06-16
-Last activity: 2026-06-16 — Autonomous execution completed v1.35.1
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-06-18 — Milestone v1.36.0 started
 
 ## Project Reference
 

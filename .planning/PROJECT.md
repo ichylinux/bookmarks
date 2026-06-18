@@ -28,6 +28,17 @@ Existing users can register a Mastodon handle on `/preferences` and sign in via 
 
 </details>
 
+## Current Milestone: v1.36.0 タスクガジェットの完了操作の改善
+
+**Goal:** タスクガジェットの「完了」操作をヘッダに集約し、複数選択での一括完了を分かりやすく効率化する。
+
+**Target features:**
+- 1行まるごと使っていた `.todo_actions` 行を廃止し、縦スペースを回収
+- 「完了」アクションをガジェットヘッダ（「新規」リンクと同じ行）に移動し、「N件選択中」のカウントを表示
+- 「完了」アクションは1件以上選択されているときのみ表示（未選択時はヘッダがすっきり）
+- 既存のタップ選択（行クリックでチェックマーク）仕様と一括完了バックエンド（`POST /todos/delete`）を流用
+- ja/en ロケール、Minitest + Cucumber、トライスイートグリーン
+
 ## What This Is
 
 Bookmarks is a personal Rails 8.1 web app (Ruby 3.4, MySQL) for saving and organizing bookmarks, feeds, todos, and calendar-oriented UI, with a per-user quick note gadget on the welcome page. The browser UI uses the classic Sprockets asset pipeline with jQuery and SCSS, not a SPA framework. The app is fully bilingual in Japanese and English, with per-account language preference and Accept-Language fallback.
@@ -497,4 +508,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-16 after v1.35.1 milestone started*
+*Last updated: 2026-06-18 — v1.36.0 タスクガジェットの完了操作の改善 milestone started*
