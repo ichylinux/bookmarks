@@ -14,11 +14,23 @@
                  class: 'todo-gadget-new-link',
                  aria: { label: t('welcome.todo_gadget.new_link_aria_label') },
                  onclick: 'todos.new_todo(this); return false;'
-               ) do %>
+               ),
+               complete_group: content_tag(:span, class: 'todo-gadget-complete-group') {
+                 content_tag(:span, '',
+                   class: 'todo-gadget-selected-count',
+                   aria: { live: 'polite' },
+                   data: { template: t('welcome.todo_gadget.selected_count', count: '%{count}') }
+                 ) +
+                 link_to(
+                   t('todos.actions.complete'),
+                   delete_todos_path,
+                   class: 'todo-gadget-complete-link',
+                   onclick: 'todos.delete_todos(this); return false;'
+                 )
+               } do %>
       <%= gadget.title %>
     <% end %>
     <ol>
-      <%= render 'todos/actions' %>
 
       <% gadget.entries.each do |todo| %>
         <%= render todo %>

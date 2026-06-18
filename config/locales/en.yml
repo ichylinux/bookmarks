@@ -320,6 +320,7 @@ en:
     todo_gadget:
       new_link: new
       new_link_aria_label: Add task
+      selected_count: "%{count} selected"
     calendar_gadget:
       loading: Loading calendar...
     feed:
