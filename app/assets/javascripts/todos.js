@@ -29,11 +29,11 @@ todos.init = function(selector) {
     e.stopPropagation();
   });
 
-  $(selector).on('dblclick', 'li:not(.todo_actions)', function() {
+  $(selector).on('dblclick', 'li', function() {
     todos.open_edit($(this));
   });
 
-  $(selector).on('touchstart', 'li:not(.todo_actions)', function(e) {
+  $(selector).on('touchstart', 'li', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(this).find('form.todo').length) return;
     const t = e.originalEvent.touches[0];
@@ -41,7 +41,7 @@ todos.init = function(selector) {
     $(this).data('tapStartY', t.clientY);
   });
 
-  $(selector).on('touchend', 'li:not(.todo_actions)', function(e) {
+  $(selector).on('touchend', 'li', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(this).find('form.todo').length) return;
     if ($(e.target).closest('.todo-highlight-btn').length) return;
@@ -67,22 +67,22 @@ todos.init = function(selector) {
       return;
     }
     $li.data('lastTapAt', now);
-    $li.siblings(':not(.todo_actions)').removeClass('todo-highlight-visible');
+    $li.siblings().removeClass('todo-highlight-visible');
     $li.toggleClass('todo-highlight-visible');
   });
 
   $(document).on('touchstart', function(e) {
     if (!MOBILE_MQ.matches) return;
-    if (!$(e.target).closest('.todo li:not(.todo_actions)').length) {
+    if (!$(e.target).closest('.todo li').length) {
       $('.todo li.todo-highlight-visible').removeClass('todo-highlight-visible');
     }
   });
 
   $(selector).on('click', 'li span:first-child', function() {
-    if (!$(this).parent().is('.todo_actions')) {
-      $(this).toggleClass('selected');
-      $(this).parent().toggleClass('selected');
-    }
+    $(this).toggleClass('selected');
+    $(this).parent().toggleClass('selected');
+    const ol = $(this).closest('ol');
+    todos._updateCompleteGroup(ol);
   });
 
   $(selector).on('click', '.todo-highlight-btn', function(e) {
@@ -90,6 +90,21 @@ todos.init = function(selector) {
     e.stopPropagation();
     todos.toggle_highlight($(this));
   });
+};
+
+todos._updateCompleteGroup = function(ol) {
+  const count = ol.find('li.selected').length;
+  const $gadget = ol.closest('.gadget.todo');
+  const $group = $gadget.find('.todo-gadget-complete-group');
+  const $countEl = $group.find('.todo-gadget-selected-count');
+
+  if (count > 0) {
+    const template = $countEl.data('template'); // e.g. "%{count}件選択中"
+    $countEl.text(template.replace('%{count}', count));
+    $group.css('display', 'inline-flex');
+  } else {
+    $group.hide();
+  }
 };
 
 todos.toggle_highlight = function($btn) {
@@ -112,7 +127,7 @@ todos.new_todo = function(trigger) {
   const url = $trigger.attr('href');
 
   $.get(url, {format: 'html'}, function(html) {
-    ol.find('.todo_actions').after('<li>' + html + '</li>');
+    ol.prepend('<li>' + html + '</li>');
   });
 };
 
@@ -135,18 +150,22 @@ todos.update_todo = function(trigger) {
 };
 
 todos.delete_todos = function(trigger) {
-  const ol = $(trigger).closest('ol');
-  const url = $(trigger).attr('href');
+  const $trigger = $(trigger);
+  const ol = $trigger.closest('ol').length
+    ? $trigger.closest('ol')
+    : $trigger.closest('.gadget.todo').find('ol').first();
+  const url = $trigger.attr('href');
 
   const params = {};
   params.format = 'html';
-  params.authenticity_token = $(trigger).closest('.todo_actions').data('authenticity_token');
+  params.authenticity_token = $('meta[name="csrf-token"]').attr('content');
   params.todo_id = [];
   ol.find('li.selected').each(function() {
     params.todo_id.push($(this).data('id'));
   });
-
+  if (params.todo_id.length === 0) return;
   $.post(url, params, function () {
     ol.find('li.selected').hide();
+    todos._updateCompleteGroup(ol);
   });
 };
