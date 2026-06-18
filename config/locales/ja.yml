@@ -38,7 +38,6 @@ ja:
       todo:
         priority: 優先度
         title: タイトル
-        done: 完了
       user:
         email: メールアドレス
         mastodon_handle: Mastodonハンドル

@@ -184,7 +184,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "input[type=checkbox][id=?]", "todo_done_#{todo.id}"
-    assert_select 'th', text: '完了', count: 1
+    assert_select 'th', text: I18n.t('todos.actions.complete'), count: 1
   end
 
   def test_完了をトグルできる

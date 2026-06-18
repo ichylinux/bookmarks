@@ -1,6 +1,6 @@
 <table>
   <tr>
-    <th><%= Todo.human_attribute_name :done %></th>
+    <th><%= t('todos.actions.complete') %></th>
     <th><%= Todo.human_attribute_name :priority %></th>
     <th><%= Todo.human_attribute_name :title %></th>
     <th></th>
@@ -10,7 +10,7 @@
     <tr class="<%= 'todo-done' if t.done? %>">
       <td class="center">
         <%= form_tag toggle_done_todo_path(t), method: :patch, class: 'todo-done-form', data: { turbo: false } do %>
-          <%= check_box_tag :done, '1', t.done?, id: "todo_done_#{t.id}", onchange: 'this.form.submit()', aria: { label: Todo.human_attribute_name(:done) } %>
+          <%= check_box_tag :done, '1', t.done?, id: "todo_done_#{t.id}", onchange: 'this.form.submit()', aria: { label: t('todos.actions.complete') } %>
         <% end %>
       </td>
       <td class="<%= "priority_#{t.priority}" %> center"><%= t.priority_name %></td>
