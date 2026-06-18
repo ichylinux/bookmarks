@@ -1,3 +1,15 @@
+<%= form_tag todos_path, method: :get, class: 'todo-filter-form' do %>
+  <fieldset>
+    <legend><%= t('todos.filter.label') %></legend>
+    <% [['all', t('todos.filter.all')], ['not_done', t('todos.filter.not_done')], ['done', t('todos.filter.done')]].each do |value, label| %>
+      <label>
+        <%= radio_button_tag :filter, value, @filter == value, onchange: 'this.form.submit()' %>
+        <%= label %>
+      </label>
+    <% end %>
+  </fieldset>
+<% end %>
+
 <table>
   <tr>
     <th><%= t('todos.actions.complete') %></th>
@@ -5,7 +17,7 @@
     <th><%= Todo.human_attribute_name :title %></th>
     <th></th>
   </tr>
-  
+
   <% @todos.each do |t| %>
     <tr class="<%= 'todo-done' if t.done? %>">
       <td class="center">

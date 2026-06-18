@@ -9,6 +9,66 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_equal '/todos', path
   end
 
+  def test_一覧にフィルタフォームが表示される
+    sign_in user
+    get todos_path
+
+    assert_response :success
+    assert_select 'input[type=radio][name=filter][value=all]', count: 1
+    assert_select 'input[type=radio][name=filter][value=not_done]', count: 1
+    assert_select 'input[type=radio][name=filter][value=done]', count: 1
+  end
+
+  def test_未完了フィルタで完了タスクは表示されない
+    todo_done = Todo.where(user_id: user.id).first
+    todo_done.update!(done: true)
+    todo_not_done = Todo.where(user_id: user.id).where.not(id: todo_done.id).first
+    todo_not_done.update!(done: false)
+
+    sign_in user
+    get todos_path, params: { filter: 'not_done' }
+
+    assert_response :success
+    assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_done.id}]", count: 0
+  end
+
+  def test_完了フィルタで未完了タスクは表示されない
+    todo_done = Todo.where(user_id: user.id).first
+    todo_done.update!(done: true)
+    todo_not_done = Todo.where(user_id: user.id).where.not(id: todo_done.id).first
+    todo_not_done.update!(done: false)
+
+    sign_in user
+    get todos_path, params: { filter: 'done' }
+
+    assert_response :success
+    assert_select "input[type=checkbox][id=todo_done_#{todo_done.id}]", count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 0
+  end
+
+  def test_すべてフィルタで完了タスクも未完了タスクも表示される
+    todo_done = Todo.where(user_id: user.id).first
+    todo_done.update!(done: true)
+    todo_not_done = Todo.where(user_id: user.id).where.not(id: todo_done.id).first
+    todo_not_done.update!(done: false)
+
+    sign_in user
+    get todos_path, params: { filter: 'all' }
+
+    assert_response :success
+    assert_select "input[type=checkbox][id=todo_done_#{todo_done.id}]", count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 1
+  end
+
+  def test_不正なfilterパラメータは無視されすべて表示される
+    sign_in user
+    get todos_path, params: { filter: 'invalid' }
+
+    assert_response :success
+    assert_select 'input[type=radio][name=filter][value=all][checked=checked]', count: 1
+  end
+
   def test_他人のタスクは編集できない
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
