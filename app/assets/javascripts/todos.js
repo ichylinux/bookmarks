@@ -93,17 +93,20 @@ todos.init = function(selector) {
 };
 
 todos._updateCompleteGroup = function(ol) {
-  const count = ol.find('li.selected').length;
+  const count = ol.find('li.selected:visible').length;
   const $gadget = ol.closest('.gadget.todo');
   const $group = $gadget.find('.todo-gadget-complete-group');
   const $countEl = $group.find('.todo-gadget-selected-count');
+  const $newLink = $gadget.find('.todo-gadget-new-link');
 
   if (count > 0) {
     const template = $countEl.data('template'); // e.g. "%{count}件選択中"
     $countEl.text(template.replace('%{count}', count));
     $group.css('display', 'inline-flex');
+    $newLink.hide();
   } else {
     $group.hide();
+    $newLink.show();
   }
 };
 
