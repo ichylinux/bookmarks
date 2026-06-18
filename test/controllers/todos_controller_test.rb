@@ -61,12 +61,34 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 1
   end
 
-  def test_不正なfilterパラメータは無視されすべて表示される
+  def test_不正なfilterパラメータは無視され未完了がデフォルトになる
+    todo_done = Todo.where(user_id: user.id).first
+    todo_done.update!(done: true)
+    todo_not_done = Todo.where(user_id: user.id).where.not(id: todo_done.id).first
+    todo_not_done.update!(done: false)
+
     sign_in user
     get todos_path, params: { filter: 'invalid' }
 
     assert_response :success
-    assert_select 'input[type=radio][name=filter][value=all][checked=checked]', count: 1
+    assert_select 'input[type=radio][name=filter][value=not_done][checked=checked]', count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_done.id}]", count: 0
+  end
+
+  def test_パラメータなしの一覧は未完了がデフォルトで選択される
+    todo_done = Todo.where(user_id: user.id).first
+    todo_done.update!(done: true)
+    todo_not_done = Todo.where(user_id: user.id).where.not(id: todo_done.id).first
+    todo_not_done.update!(done: false)
+
+    sign_in user
+    get todos_path
+
+    assert_response :success
+    assert_select 'input[type=radio][name=filter][value=not_done][checked=checked]', count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_not_done.id}]", count: 1
+    assert_select "input[type=checkbox][id=todo_done_#{todo_done.id}]", count: 0
   end
 
   def test_他人のタスクは編集できない

@@ -1,7 +1,7 @@
 <%= form_tag todos_path, method: :get, class: 'todo-filter-form' do %>
   <fieldset>
     <legend><%= t('todos.filter.label') %></legend>
-    <% [['all', t('todos.filter.all')], ['not_done', t('todos.filter.not_done')], ['done', t('todos.filter.done')]].each do |value, label| %>
+    <% [['not_done', t('todos.filter.not_done')], ['done', t('todos.filter.done')], ['all', t('todos.filter.all')]].each do |value, label| %>
       <label>
         <%= radio_button_tag :filter, value, @filter == value, onchange: 'this.form.submit()' %>
         <%= label %>

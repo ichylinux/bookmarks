@@ -4,6 +4,12 @@
   title: 原稿締切り
   priority: <%= Todo::PRIORITY_HIGH %>
 
+3:
+  id: 3
+  user_id: 1
+  title: メール返信
+  priority: <%= Todo::PRIORITY_NORMAL %>
+
 2:
   id: 2
   user_id: 2

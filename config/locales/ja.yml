@@ -94,7 +94,7 @@ ja:
       label: 絞り込み
       all: すべて
       not_done: 未完了
-      done: 完了済み
+      done: 完了
     form:
       create: 登録
       update: 更新
