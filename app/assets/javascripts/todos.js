@@ -160,6 +160,29 @@ todos.update_todo = function(trigger) {
   });
 };
 
+todos.toggle_done = function(checkbox) {
+  const $checkbox = $(checkbox);
+  const $tr = $checkbox.closest('tr');
+  const $form = $checkbox.closest('form');
+  $.ajax({
+    url: $form.attr('action'),
+    type: 'PATCH',
+    dataType: 'json',
+    data: { authenticity_token: $('meta[name="csrf-token"]').attr('content') },
+    success: function(data) {
+      $checkbox.prop('checked', data.done);
+      $tr.toggleClass('todo-done', data.done);
+    },
+    error: function() {
+      $checkbox.prop('checked', !$checkbox.prop('checked'));
+    }
+  });
+};
+
+$(document).on('change', '.todo-done-form input[type=checkbox]', function() {
+  todos.toggle_done(this);
+});
+
 todos.delete_todos = function(trigger) {
   const $trigger = $(trigger);
   const ol = $trigger.closest('ol').length

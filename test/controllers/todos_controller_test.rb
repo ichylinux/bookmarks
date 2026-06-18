@@ -301,12 +301,14 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
 
     assert_not todo.done?
 
-    patch toggle_done_todo_path(todo)
-    assert_response :redirect
+    patch toggle_done_todo_path(todo), xhr: true
+    assert_response :success
+    assert_equal true, JSON.parse(response.body)['done']
     assert todo.reload.done?
 
-    patch toggle_done_todo_path(todo)
-    assert_response :redirect
+    patch toggle_done_todo_path(todo), xhr: true
+    assert_response :success
+    assert_equal false, JSON.parse(response.body)['done']
     assert_not todo.reload.done?
   end
 

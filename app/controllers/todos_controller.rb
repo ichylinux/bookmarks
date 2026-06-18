@@ -59,7 +59,7 @@ class TodosController < ApplicationController
       @todo.update!(done: !@todo.done?)
     end
 
-    redirect_to action: 'index'
+    render json: { done: @todo.done? }
   end
 
   def delete
