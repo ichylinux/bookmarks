@@ -90,6 +90,11 @@ ja:
       new_task: タスクを追加
       highlight: 強調表示
       unhighlight: 強調解除
+    filter:
+      label: 絞り込み
+      all: すべて
+      not_done: 未完了
+      done: 完了済み
     form:
       create: 登録
       update: 更新

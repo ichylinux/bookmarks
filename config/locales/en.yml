@@ -90,6 +90,11 @@ en:
       new_task: Add Task
       highlight: Highlight
       unhighlight: Highlight off
+    filter:
+      label: Filter
+      all: All
+      not_done: Not done
+      done: Done
     form:
       create: Create
       update: Update

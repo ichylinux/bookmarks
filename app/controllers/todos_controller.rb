@@ -2,7 +2,11 @@ class TodosController < ApplicationController
   before_action :preload_todo, only: ['edit', 'update', 'destroy', 'toggle_highlight', 'toggle_done']
   
   def index
-    @todos = Todo.where(user_id: current_user).not_deleted.order(:title)
+    @filter = params[:filter].presence_in(%w[all not_done done]) || 'all'
+    scope = Todo.where(user_id: current_user).not_deleted
+    scope = scope.not_done if @filter == 'not_done'
+    scope = scope.done_tasks if @filter == 'done'
+    @todos = scope.order(:title)
   end
 
   def new
