@@ -625,7 +625,11 @@ Plans:
   4. ヘッダの「完了」をクリックすると選択中の全タスクが `done: true` になりガジェット一覧から外れる（既存 `POST /todos/delete` を流用）；未選択でクリックしても何も起きない
   5. 新しいヘッダ文言（完了ラベル・選択件数）が ja/en 両ロケールでレンダリングされ、ロケールキーパリティテストが通る
 
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+
+- [ ] 127-01-PLAN.md — Header complete group + selected_count locale + CSS refactor + todos.js rewire + dashboard assertion fix
+
 **UI hint**: yes
 
 ### Phase 128: Test Coverage & Tri-Suite Gate
@@ -665,7 +669,7 @@ Plans:
 | 121. Identity Wiring — from_omniauth & Callback | 1/1 | Complete    | 2026-06-12 |
 | 122. Auth UI & Connected Accounts | 1/1 | Complete    | 2026-06-12 |
 | 123. Tests & Tri-Suite Gate | 1/1 | Complete | 2026-06-12 |
-| 127. Header-Integrated Task Completion | 0/0 | Not started | - |
+| 127. Header-Integrated Task Completion | 0/1 | Not started | - |
 | 128. Test Coverage & Tri-Suite Gate | 0/0 | Not started | - |
 
 *Last updated: 2026-06-18 — v1.36.0 roadmap created (Phases 127–128)*
