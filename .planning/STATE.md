@@ -2,32 +2,35 @@
 gsd_state_version: 1.0
 milestone: v1.36.0
 milestone_name: タスクガジェットの完了操作の改善
-status: roadmap_complete
-last_updated: "2026-06-18T00:00:00.000Z"
+current_phase: 127
+current_phase_name: Header-Integrated Task Completion
+status: verifying
+last_updated: "2026-06-18T15:11:07.200Z"
 last_activity: 2026-06-18
+last_activity_desc: Phase 127 execution started
 progress:
-  total_phases: 2
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 1
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+  percent: 100
 ---
 
 # State
 
 ## Current Position
 
-Phase: 127 — Header-Integrated Task Completion (not started)
-Plan: —
-Status: Roadmap created — ready to plan Phase 127
-Last activity: 2026-06-18 — v1.36.0 roadmap created (Phases 127–128)
+Phase: 127 (Header-Integrated Task Completion) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-06-18 — Phase 127 execution started
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** タスクガジェットの「完了」操作をヘッダに集約し、複数選択での一括完了を分かりやすく効率化する。
+**Current focus:** Phase 127 — Header-Integrated Task Completion
 
 ## Milestone Roadmap (v1.36.0)
 
@@ -61,6 +64,7 @@ Coverage: 10/10 v1.36.0 requirements mapped. No orphans.
 | v2 | FORM-FUT-01 change password from preferences without reset flow | open |
 | debug | disconnect-form-auth-error [awaiting_human_verify] | deferred at v1.35 close |
 | quick_task | lock-version-oauth-disconnect (20260529) | deferred at v1.35 close |
+| Phase 127 P01 | 17 minutes | 3 tasks | 9 files |
 
 ## Accumulated Context
 

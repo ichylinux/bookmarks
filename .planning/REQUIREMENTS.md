@@ -9,22 +9,22 @@
 
 ### Gadget Header (HDR)
 
-- [ ] **HDR-01**: タスクガジェットのヘッダ行（既存の「新規」リンクと同じ行）に「完了」アクションを配置する
-- [ ] **HDR-02**: 「完了」アクションは1件以上のタスクが選択されているときのみ表示され、未選択時はヘッダに現れない
-- [ ] **HDR-03**: ヘッダに現在の選択件数（例: 「2件選択中」/ "2 selected"）を表示し、選択数の増減に追従して更新される
+- [x] **HDR-01**: タスクガジェットのヘッダ行（既存の「新規」リンクと同じ行）に「完了」アクションを配置する
+- [x] **HDR-02**: 「完了」アクションは1件以上のタスクが選択されているときのみ表示され、未選択時はヘッダに現れない
+- [x] **HDR-03**: ヘッダに現在の選択件数（例: 「2件選択中」/ "2 selected"）を表示し、選択数の増減に追従して更新される
 
 ### Layout (LAY)
 
-- [ ] **LAY-01**: 従来の `.todo_actions` 行（リスト内の独立した `<li>`、1行分の高さを占有）を廃止し、タスク一覧の縦スペースを回収する
+- [x] **LAY-01**: 従来の `.todo_actions` 行（リスト内の独立した `<li>`、1行分の高さを占有）を廃止し、タスク一覧の縦スペースを回収する
 
 ### Selection (SEL)
 
-- [ ] **SEL-01**: 既存のタップ/クリック選択挙動（行をクリックすると `span.selected` でチェックマークが表示される）を変更せず維持する
-- [ ] **SEL-02**: ヘッダの「完了」実行で、選択中の全タスクが完了扱い（`done: true`）になり、ガジェット一覧から外れる（既存 `POST /todos/delete` バックエンドを流用、未選択時は無操作）
+- [x] **SEL-01**: 既存のタップ/クリック選択挙動（行をクリックすると `span.selected` でチェックマークが表示される）を変更せず維持する
+- [x] **SEL-02**: ヘッダの「完了」実行で、選択中の全タスクが完了扱い（`done: true`）になり、ガジェット一覧から外れる（既存 `POST /todos/delete` バックエンドを流用、未選択時は無操作）
 
 ### Internationalization (I18N)
 
-- [ ] **I18N-01**: 新規・変更したヘッダUI文言（完了ラベル・選択件数）が ja/en の両ロケールキーで提供され、ロケールキーのパリティテストが通る
+- [x] **I18N-01**: 新規・変更したヘッダUI文言（完了ラベル・選択件数）が ja/en の両ロケールキーで提供され、ロケールキーのパリティテストが通る
 
 ### Test (TEST)
 
@@ -54,13 +54,13 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HDR-01 | Phase 127 | Pending |
-| HDR-02 | Phase 127 | Pending |
-| HDR-03 | Phase 127 | Pending |
-| LAY-01 | Phase 127 | Pending |
-| SEL-01 | Phase 127 | Pending |
-| SEL-02 | Phase 127 | Pending |
-| I18N-01 | Phase 127 | Pending |
+| HDR-01 | Phase 127 | Complete |
+| HDR-02 | Phase 127 | Complete |
+| HDR-03 | Phase 127 | Complete |
+| LAY-01 | Phase 127 | Complete |
+| SEL-01 | Phase 127 | Complete |
+| SEL-02 | Phase 127 | Complete |
+| I18N-01 | Phase 127 | Complete |
 | TEST-01 | Phase 128 | Pending |
 | TEST-02 | Phase 128 | Pending |
 | TEST-03 | Phase 128 | Pending |
