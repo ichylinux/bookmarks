@@ -161,28 +161,7 @@
         box-sizing: border-box;
         width: 100%;
         max-width: 100%;
-      }
-    }
-
-    @media (max-width: 767px) {
-      tr {
-        flex-wrap: wrap;
-      }
-
-      td:first-child {
-        width: auto;
-      }
-
-      td:nth-child(2) {
-        width: auto;
-      }
-
-      td:last-child {
-        flex: 0 0 100%;
-        width: 100%;
-        max-width: 100%;
-        padding: 6px 0 0;
-        white-space: normal;
+        min-width: 0;
       }
     }
   }
