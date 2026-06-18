@@ -386,6 +386,10 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-06-18"
+          headline: Filter the task list by completion status
+          tag: new
+          description: A filter form on the task list page lets you switch between incomplete, completed, and all tasks. The list now defaults to showing only incomplete tasks.
         - date: "2026-06-16"
           headline: Mark tasks as done without deleting them
           tag: new
