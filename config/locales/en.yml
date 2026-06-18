@@ -38,6 +38,7 @@ en:
       todo:
         priority: Priority
         title: Title
+        done: Done
       user:
         email: Email
         mastodon_handle: Mastodon handle

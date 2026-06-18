@@ -1,5 +1,5 @@
 class TodosController < ApplicationController
-  before_action :preload_todo, only: ['edit', 'update', 'destroy', 'toggle_highlight']
+  before_action :preload_todo, only: ['edit', 'update', 'destroy', 'toggle_highlight', 'toggle_done']
   
   def index
     @todos = Todo.where(user_id: current_user).not_deleted.order(:title)
@@ -48,6 +48,14 @@ class TodosController < ApplicationController
     end
 
     render partial: 'todo', locals: { todo: @todo }
+  end
+
+  def toggle_done
+    @todo.transaction do
+      @todo.update!(done: !@todo.done?)
+    end
+
+    redirect_to action: 'index'
   end
 
   def delete

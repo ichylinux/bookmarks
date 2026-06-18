@@ -69,6 +69,7 @@ Rails.application.routes.draw do
     end
     member do
       patch 'toggle_highlight'
+      patch 'toggle_done'
     end
   end
 

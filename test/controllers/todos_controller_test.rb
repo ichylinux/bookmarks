@@ -177,4 +177,38 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  def test_一覧に完了チェックボックスが表示される
+    todo = Todo.where(user_id: user.id).first
+    sign_in user
+    get todos_path
+
+    assert_response :success
+    assert_select "input[type=checkbox][id=?]", "todo_done_#{todo.id}"
+    assert_select 'th', text: '完了', count: 1
+  end
+
+  def test_完了をトグルできる
+    todo = Todo.where(user_id: user.id).first
+    sign_in user
+
+    assert_not todo.done?
+
+    patch toggle_done_todo_path(todo)
+    assert_response :redirect
+    assert todo.reload.done?
+
+    patch toggle_done_todo_path(todo)
+    assert_response :redirect
+    assert_not todo.reload.done?
+  end
+
+  def test_他人のタスクは完了をトグルできない
+    sign_in user
+    assert todo = Todo.where('user_id <> ?', user).first
+
+    patch toggle_done_todo_path(todo)
+    assert_response :not_found
+    assert_not todo.reload.done?
+  end
+
 end
