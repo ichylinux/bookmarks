@@ -54,4 +54,13 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| _(filled by roadmap)_ | | |
+| HDR-01 | Phase 127 | Pending |
+| HDR-02 | Phase 127 | Pending |
+| HDR-03 | Phase 127 | Pending |
+| LAY-01 | Phase 127 | Pending |
+| SEL-01 | Phase 127 | Pending |
+| SEL-02 | Phase 127 | Pending |
+| I18N-01 | Phase 127 | Pending |
+| TEST-01 | Phase 128 | Pending |
+| TEST-02 | Phase 128 | Pending |
+| TEST-03 | Phase 128 | Pending |

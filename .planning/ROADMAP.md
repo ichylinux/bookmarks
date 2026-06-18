@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.36.0 — タスクガジェットの完了操作の改善** — Phases 127–128 (in progress)
 - ✅ **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (shipped 2026-06-16) — [archived](milestones/v1.35.1-ROADMAP.md)
 - ✅ **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (shipped 2026-06-12) — [archived](milestones/v1.35-ROADMAP.md)
 - ✅ **v1.34 — Connected OAuth Providers** — Phases 114–118 (shipped 2026-05-24) — [archived](milestones/v1.34-ROADMAP.md)
@@ -40,6 +41,17 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+### Milestone v1.36.0: タスクガジェットの完了操作の改善
+
+**Status:** IN PROGRESS
+**Phases:** 127–128
+**Requirements:** 10 (HDR-01–03, LAY-01, SEL-01–02, I18N-01, TEST-01–03)
+
+- [ ] **Phase 127: Header-Integrated Task Completion** — 完了操作をガジェットヘッダに集約し、選択件数を表示し、独立した `.todo_actions` 行を撤廃
+- [ ] **Phase 128: Test Coverage & Tri-Suite Gate** — 新しい完了操作を Minitest + Cucumber で保護し、トライスイートグリーン
+
+---
 
 ### Milestone v1.35.1: Mastodonハンドルと既存ユーザの関連付け
 
@@ -600,6 +612,35 @@ Plans:
 
 **Plans**: 1/1 complete
 
+### Phase 127: Header-Integrated Task Completion
+
+**Goal**: タスクガジェットの「完了」操作がヘッダに集約され、現在の選択件数が見え、独立したアクション行が消えて縦スペースが回収される
+**Depends on**: Nothing (first phase of v1.36.0)
+**Requirements**: HDR-01, HDR-02, HDR-03, LAY-01, SEL-01, SEL-02, I18N-01
+**Success Criteria** (what must be TRUE):
+
+  1. 行をクリックすると従来通り `span.selected` のチェックマークが出る（選択挙動は不変）一方で、旧来の独立した `.todo_actions` 行はリストから消え、その分の縦スペースが回収されている
+  2. 1件以上選択されているときのみ、ガジェットヘッダ（「新規」リンクと同じ行）に「完了」アクションが現れる；未選択時はヘッダに「完了」は表示されない
+  3. ヘッダに現在の選択件数（例: 「2件選択中」 / "2 selected"）が表示され、行の選択・解除に追従して更新される
+  4. ヘッダの「完了」をクリックすると選択中の全タスクが `done: true` になりガジェット一覧から外れる（既存 `POST /todos/delete` を流用）；未選択でクリックしても何も起きない
+  5. 新しいヘッダ文言（完了ラベル・選択件数）が ja/en 両ロケールでレンダリングされ、ロケールキーパリティテストが通る
+
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 128: Test Coverage & Tri-Suite Gate
+
+**Goal**: 新しいヘッダ集約の完了操作が自動テストで保護され、トライスイートがグリーン
+**Depends on**: Phase 127
+**Requirements**: TEST-01, TEST-02, TEST-03
+**Success Criteria** (what must be TRUE):
+
+  1. Minitest がヘッダへの「完了」配置・選択件数表示・空選択ガードをカバーする（welcome/todo ガジェットの構造テスト + `TodosController#delete` の controller テスト）としてグリーン
+  2. Cucumber シナリオが「複数タスクを選択 → ヘッダの完了を実行 → 対象タスクが完了扱いになる」フローをエンドツーエンドで検証してパスする
+  3. `yarn run lint`・`bin/rails test`・`bundle exec rake dad:test` がすべてグリーン（0 failures / 0 failed scenarios）
+
+**Plans**: TBD
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -624,5 +665,7 @@ Plans:
 | 121. Identity Wiring — from_omniauth & Callback | 1/1 | Complete    | 2026-06-12 |
 | 122. Auth UI & Connected Accounts | 1/1 | Complete    | 2026-06-12 |
 | 123. Tests & Tri-Suite Gate | 1/1 | Complete | 2026-06-12 |
+| 127. Header-Integrated Task Completion | 0/0 | Not started | - |
+| 128. Test Coverage & Tri-Suite Gate | 0/0 | Not started | - |
 
-*Last updated: 2026-06-12 — v1.35 milestone shipped (Phases 119–123)*
+*Last updated: 2026-06-18 — v1.36.0 roadmap created (Phases 127–128)*

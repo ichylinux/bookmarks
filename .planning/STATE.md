@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.36.0
 milestone_name: タスクガジェットの完了操作の改善
-status: planning
-last_updated: "2026-06-18T14:11:38.626Z"
+status: roadmap_complete
+last_updated: "2026-06-18T00:00:00.000Z"
 last_activity: 2026-06-18
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,26 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 127 — Header-Integrated Task Completion (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-06-18 — Milestone v1.36.0 started
+Status: Roadmap created — ready to plan Phase 127
+Last activity: 2026-06-18 — v1.36.0 roadmap created (Phases 127–128)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-06-16)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Milestone complete — run `/gsd-new-milestone` for next work
+**Current focus:** タスクガジェットの「完了」操作をヘッダに集約し、複数選択での一括完了を分かりやすく効率化する。
+
+## Milestone Roadmap (v1.36.0)
+
+| Phase | Goal | Requirements |
+|-------|------|--------------|
+| 127. Header-Integrated Task Completion | 完了操作をヘッダに集約・選択件数表示・独立行撤廃 | HDR-01–03, LAY-01, SEL-01–02, I18N-01 |
+| 128. Test Coverage & Tri-Suite Gate | Minitest + Cucumber + トライスイートグリーン | TEST-01–03 |
+
+Coverage: 10/10 v1.36.0 requirements mapped. No orphans.
 
 ## Performance Metrics
 
@@ -40,6 +49,8 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 | Category | Item | Status |
 |----------|------|--------|
+| v2 | HDR-FUT-01 行ごとの個別「完了」操作（タスク単位のワンクリック完了） | open |
+| v2 | HDR-FUT-02 ヘッダに「すべて選択 / 選択解除」トグル | open |
 | v2 | ACCT-FUT-01b scheduled purge job after 90 days | open |
 | v2 | ACCT-FUT-03 data export before purge | open |
 | v2 | PURGE-FUT-01 bulk purge of all eligible accounts | open |
@@ -55,6 +66,8 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 ### Decisions
 
+- (v1.36.0) 完了アクションはガジェットヘッダ（「新規」リンクと同じ行）に集約；旧 `.todo_actions` 独立 `<li>` 行は撤廃
+- (v1.36.0) 既存のタップ選択（行クリック → `span.selected` チェックマーク）と一括完了バックエンド `POST /todos/delete` を流用 — 新規 JS ライブラリは導入しない（Sprockets + jQuery 制約）
 - (v1.34) `oauth_identities` table uses unique index on `(user_id, provider)` — one row per provider per user
 - (v1.34) `password_auth_enabled` defaults to `false` — no existing users have set passwords via the reset flow
 - (v1.34) Disconnect safety guard: blocked if no other linked provider AND `password_auth_enabled: false`
@@ -98,4 +111,4 @@ See: .planning/PROJECT.md (updated 2026-06-16)
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Plan the first phase with `/gsd-plan-phase 127`
