@@ -283,12 +283,11 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-// Gadget header "new" link — visible on title hover
+// Shared visual style for all gadget header action links
 .bookmark-gadget-new-link,
-.todo-gadget-new-link {
-  margin-left: auto;
+.todo-gadget-new-link,
+.todo-gadget-complete-link {
   flex-shrink: 0;
-  opacity: 0;
   font-size: 0.78em;
   font-weight: normal;
   text-decoration: none;
@@ -297,6 +296,13 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   border: 1px solid currentColor;
   line-height: 1.4;
   cursor: pointer;
+}
+
+// New-link only: hover-opacity and auto-margin (pushes to far right)
+.bookmark-gadget-new-link,
+.todo-gadget-new-link {
+  margin-left: auto;
+  opacity: 0;
   transition: opacity 0.12s ease;
 
   @media (prefers-reduced-motion: reduce) {
@@ -307,6 +313,22 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 div.title:hover .bookmark-gadget-new-link,
 div.title:hover .todo-gadget-new-link {
   opacity: 1;
+}
+
+// Complete group: hidden until JS shows it (JS toggles to inline-flex when count > 0)
+.todo-gadget-complete-group {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.todo-gadget-selected-count {
+  font-size: 0.78em;
+  font-weight: normal;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: inherit;
 }
 
 // Bookmark new dialog

@@ -10,7 +10,7 @@
     }
   }
 
-  li:not(.todo_actions) {
+  li {
     position: relative;
   }
 
@@ -23,12 +23,12 @@
       font-weight: bold;
     }
 
-    &:not(.todo_actions):has(form.todo) {
+    &:has(form.todo) {
       padding-left: 3px;
       box-sizing: border-box;
     }
 
-    &:not(.todo_actions):not(:has(form.todo)) {
+    &:not(:has(form.todo)) {
       display: flex;
       align-items: center;
 
@@ -64,20 +64,20 @@
     white-space: nowrap;
   }
 
-  li:not(.todo_actions):hover .todo-highlight-btn {
+  li:hover .todo-highlight-btn {
     display: inline-block;
   }
 
   @media (max-width: 767px) {
-    li.highlighted:not(.todo_actions) {
+    li.highlighted {
       padding-right: 10px;
     }
 
-    li:not(.todo_actions) .todo-highlight-btn {
+    li .todo-highlight-btn {
       display: none;
     }
 
-    li:not(.todo_actions).todo-highlight-visible .todo-highlight-btn {
+    li.todo-highlight-visible .todo-highlight-btn {
       display: inline-block;
     }
   }
@@ -175,13 +175,6 @@
     box-sizing: border-box;
   }
   
-  .todo_actions {
-    min-height: 1.2em;
-    
-    a:visited {
-      color: blue;
-    }
-  }
 }
 
 .priority_1 {
