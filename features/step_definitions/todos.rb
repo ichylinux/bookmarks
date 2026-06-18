@@ -78,3 +78,42 @@ end
   assert has_selector?('#todo .todo-gadget-new-link', visible: :all)
   capture
 end
+
+もし /^タスクガジェットで (\d+) 件のタスクを選択します。$/ do |count|
+  find('a.head-title', text: 'Bookmarks').click if has_selector?('a.head-title', text: 'Bookmarks', wait: 1)
+  assert has_selector?('#todo ol li', minimum: count.to_i)
+
+  @selected_todo_ids = []
+  within '#todo ol' do
+    all('li').first(count.to_i).each do |li|
+      li.find('span:first-child').click
+      @selected_todo_ids << li['data-id'].to_i
+    end
+  end
+  capture
+end
+
+ならば /^ヘッダに「(\d+)件選択中」が表示されます。$/ do |count|
+  within '#todo' do
+    assert has_selector?('.todo-gadget-complete-group', visible: :all)
+    assert has_selector?('.todo-gadget-selected-count', text: "#{count}件選択中", visible: :all)
+  end
+  capture
+end
+
+もし /^ヘッダの完了をクリックします。$/ do
+  within '#todo' do
+    find('.todo-gadget-complete-link', visible: :all).click
+  end
+  capture
+end
+
+ならば /^選択したタスクがガジェット一覧から消える$/ do
+  @selected_todo_ids.each do |id|
+    within '#todo' do
+      assert has_no_selector?("li[data-id='#{id}']", visible: true, wait: 5)
+    end
+    assert Todo.find(id).reload.done?, "Todo #{id} should be done"
+  end
+  capture
+end

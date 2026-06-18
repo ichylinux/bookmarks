@@ -2,12 +2,24 @@
 
 ## Current State
 
-**Last shipped:** v1.35.1 — Mastodonハンドルと既存ユーザの関連付け (2026-06-16)
+**Last shipped:** v1.36.0 — タスクガジェットの完了操作の改善 (2026-06-19)
 
-Existing users can register a Mastodon handle on `/preferences` and sign in via Mastodon OAuth to their existing account when the verified handle matches. Details: `.planning/milestones/v1.35.1-ROADMAP.md`. Audit: `.planning/v1.35.1-MILESTONE-AUDIT.md` (passed, 11/11).
+Todo gadget bulk-complete moved to the header with live selection count; `.todo_actions` row removed. Details: `.planning/milestones/v1.36.0-ROADMAP.md`. Tri-suite at close: lint ✓ · 681 Minitest · 39 Cucumber.
 
 <details>
-<summary>Shipped: v1.35.1 Mastodonハンドルと既存ユーザの関連付け (2026-06-16)</summary>
+<summary>Shipped: v1.36.0 タスクガジェットの完了操作の改善 (2026-06-19)</summary>
+
+**Delivered (phases 127–128):**
+- Header complete group (`.todo-gadget-complete-group`) with live count via `data-template` + `todos._updateCompleteGroup` (HDR-01–03, LAY-01, SEL-02)
+- Removed `.todo_actions` row; `delete_todos` rewritten with closest-ol fallback and CSRF from meta tag
+- Gap fix: `toggle_highlight` preserves `.selected` across AJAX re-render (SEL-01)
+- ja/en `welcome.todo_gadget.selected_count` locale keys (I18N-01)
+- Minitest structure/controller tests + Cucumber header bulk-complete E2E; tri-suite green (TEST-01–03)
+
+</details>
+
+<details>
+<summary>Previous: v1.35.1 Mastodonハンドルと既存ユーザの関連付け (2026-06-16)</summary>
 
 **Delivered (phases 124–126):**
 - `MastodonHandleNormalizer` + unique index on `users.mastodon_handle`; preferences form field with ja/en locales (HDL-01–04, VIEW-04)
@@ -28,16 +40,23 @@ Existing users can register a Mastodon handle on `/preferences` and sign in via 
 
 </details>
 
-## Current Milestone: v1.36.0 タスクガジェットの完了操作の改善
+## Next Milestone Goals
+
+Run `/gsd-new-milestone` to define scope, requirements, and roadmap for the next release.
+
+<details>
+<summary>Shipped: v1.36.0 タスクガジェットの完了操作の改善 (2026-06-19)</summary>
 
 **Goal:** タスクガジェットの「完了」操作をヘッダに集約し、複数選択での一括完了を分かりやすく効率化する。
 
-**Target features:**
+**Target features (all delivered):**
 - 1行まるごと使っていた `.todo_actions` 行を廃止し、縦スペースを回収
 - 「完了」アクションをガジェットヘッダ（「新規」リンクと同じ行）に移動し、「N件選択中」のカウントを表示
 - 「完了」アクションは1件以上選択されているときのみ表示（未選択時はヘッダがすっきり）
 - 既存のタップ選択（行クリックでチェックマーク）仕様と一括完了バックエンド（`POST /todos/delete`）を流用
 - ja/en ロケール、Minitest + Cucumber、トライスイートグリーン
+
+</details>
 
 ## What This Is
 

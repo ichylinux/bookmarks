@@ -141,6 +141,32 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_not todo.deleted?
   end
 
+  def test_複数タスクをバッチ完了できる
+    todo1 = Todo.find(1)
+    todo3 = Todo.find(3)
+    assert_equal user.id, todo1.user_id
+    assert_equal user.id, todo3.user_id
+    todo1.update!(done: false)
+    todo3.update!(done: false)
+    sign_in user
+
+    post delete_todos_path, params: { todo_id: [todo1.id, todo3.id] }
+
+    assert_response :success
+    assert todo1.reload.done?
+    assert todo3.reload.done?
+  end
+
+  def test_todo_idなしではタスクを完了にしない
+    todo = Todo.where(user_id: user.id).not_done.first
+    sign_in user
+
+    post delete_todos_path
+
+    assert_response :success
+    assert_not todo.reload.done?
+  end
+
   def test_削除でdeletedが立つ
     todo = Todo.where(user_id: user.id).first
     sign_in user

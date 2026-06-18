@@ -1,5 +1,23 @@
 # Milestones
 
+## v1.36.0 — タスクガジェットの完了操作の改善 (shipped 2026-06-19)
+
+**Scope:** Phases 127–128 (2 phases, 3 plans) — header-integrated bulk complete with selection count, `.todo_actions` row removal, highlight-toggle selection preservation, Minitest + Cucumber tri-suite gate. Tri-suite at close: lint ✓ · 681 Minitest · 39 Cucumber.
+
+**Key accomplishments:**
+
+- Header complete group (`.todo-gadget-complete-group`) with live count via `data-template` + `todos._updateCompleteGroup` (HDR-01–03, LAY-01, SEL-02).
+- Removed `.todo_actions` row; `delete_todos` rewritten with closest-ol fallback and CSRF from meta tag; `new_todo` prepends to list.
+- Gap fix: `toggle_highlight` preserves `.selected` across AJAX `replaceWith` (SEL-01).
+- ja/en `welcome.todo_gadget.selected_count` locale keys (I18N-01).
+- Minitest structure/controller tests + Cucumber header bulk-complete E2E; tri-suite gate green (TEST-01–03).
+
+Known deferred items at close: HDR-FUT-01, HDR-FUT-02 (see STATE.md Deferred Items). No formal milestone audit file.
+
+**Archives:** [ROADMAP snapshot](milestones/v1.36.0-ROADMAP.md) · [REQUIREMENTS snapshot](milestones/v1.36.0-REQUIREMENTS.md)
+
+---
+
 ## v1.35 — Sign in with Mastodon using OAuth2 (shipped 2026-06-12)
 
 **Scope:** Phases 119–123 (5 phases, 7 plans) — custom OmniAuth Mastodon strategy, instance selection UI, composite uid identity wiring, auth UI + Connected Accounts row, tri-suite gate. Tri-suite at close: lint ✓ · 644 Minitest · 38 Cucumber.

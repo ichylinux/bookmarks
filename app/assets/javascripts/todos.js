@@ -109,12 +109,20 @@ todos._updateCompleteGroup = function(ol) {
 
 todos.toggle_highlight = function($btn) {
   const $li = $btn.closest('li');
+  const ol = $li.closest('ol');
+  const wasSelected = $li.hasClass('selected');
   $.ajax({
     url: $btn.data('url'),
     type: 'PATCH',
     data: { authenticity_token: $('meta[name="csrf-token"]').attr('content') },
     success: function(html) {
-      $li.replaceWith(html);
+      const $newLi = $(html);
+      if (wasSelected) {
+        $newLi.addClass('selected');
+        $newLi.find('span:first-child').addClass('selected');
+      }
+      $li.replaceWith($newLi);
+      todos._updateCompleteGroup(ol);
     }
   });
 };
