@@ -107,6 +107,28 @@ ja:
     formats:
       admin_datetime: "%Y-%m-%d %H:%M"
 
+  views:
+    pagination:
+      first: "&laquo; 最初"
+      last: "最後 &raquo;"
+      previous: "&lsaquo; 前"
+      next: "次 &rsaquo;"
+      truncate: "&hellip;"
+
+  helpers:
+    page_entries_info:
+      entry:
+        zero: 件
+        one: 件
+        other: 件
+      one_page:
+        display_entries:
+          zero: "%{entry_name}は見つかりませんでした"
+          one: "<b>1</b> %{entry_name}を表示"
+          other: "<b>全 %{count}</b> %{entry_name}を表示"
+      more_pages:
+        display_entries: "全 <b>%{total}</b> %{entry_name}のうち <b>%{first}&nbsp;-&nbsp;%{last}</b> を表示"
+
   bookmarks:
     index:
       breadcrumbs_aria: パンくずリスト
@@ -191,10 +213,6 @@ ja:
         col_updated_at: 更新日時
         col_actions: 操作
         purge_button: 完全削除
-        pagination_label: ユーザー一覧のページ送り
-        pagination_prev: 前へ
-        pagination_next: 次へ
-        pagination_status: '%{page} / %{total_pages} ページ（全 %{total_count} 件）'
       confirm_purge:
         title: ユーザーの完全削除
         body: '「%{email}」と紐づくデータをすべて完全に削除します。この操作は取り消せません。'

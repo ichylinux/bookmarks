@@ -50,12 +50,5 @@
       </tbody>
     </table>
   </div>
-  <% if @users.total_pages > 1 %>
-    <nav class="admin-users__pagination" aria-label="<%= t('.pagination_label') %>">
-      <%= paginate @users, theme: 'admin_users' %>
-      <span class="admin-users__pagination-status">
-        <%= t('.pagination_status', page: @users.current_page, total_pages: @users.total_pages, total_count: @users.total_count) %>
-      </span>
-    </nav>
-  <% end %>
+  <%= paginate @users if @users.total_pages > 1 %>
 </section>

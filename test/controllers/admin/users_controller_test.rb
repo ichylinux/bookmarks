@@ -161,7 +161,7 @@ module Admin
       sign_in users(:one)
       get admin_users_path
       assert_response :success
-      assert_select 'nav.admin-users__pagination', count: 0
+      assert_select 'nav.pagination', count: 0
     end
 
     private
