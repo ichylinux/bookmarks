@@ -1,74 +1,57 @@
-# Requirements: Bookmarks — v1.35.1
+# Requirements: Bookmarks — v1.36.0 タスクガジェットの完了操作の改善
 
-**Defined:** 2026-06-16
+**Defined:** 2026-06-18
 **Core Value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
 
-## v1.35.1 Requirements
+**Milestone goal:** タスクガジェットの「完了」操作をヘッダに集約し、複数選択での一括完了を分かりやすく効率化する。
 
-### Handle
+## v1.36.0 Requirements
 
-- [x] **HDL-01**: User can save `mastodon_handle` from the preferences page (`/preferences`) via the existing preferences form
-- [x] **HDL-02**: Input is normalized to canonical `localpart@instance` form (strip leading `@`, downcase instance hostname, reject paths/schemes)
-- [x] **HDL-03**: Invalid handle format shows a localized validation error on save (ja/en)
-- [x] **HDL-04**: Non-blank `mastodon_handle` is unique across users (DB unique index; multiple blank allowed)
+### Gadget Header (HDR)
 
-### Identity
+- [ ] **HDR-01**: タスクガジェットのヘッダ行（既存の「新規」リンクと同じ行）に「完了」アクションを配置する
+- [ ] **HDR-02**: 「完了」アクションは1件以上のタスクが選択されているときのみ表示され、未選択時はヘッダに現れない
+- [ ] **HDR-03**: ヘッダに現在の選択件数（例: 「2件選択中」/ "2 selected"）を表示し、選択数の増減に追従して更新される
 
-- [x] **IDNT-04**: `User.from_omniauth` `:mastodon` branch finds an active existing user by `mastodon_handle` when no `oauth_identities` row matches the composite uid
-- [x] **IDNT-05**: Handle-based sign-in only proceeds when OAuth-verified `username` + session `instance` exactly match the stored canonical handle (prevents handle squatting)
-- [x] **IDNT-06**: Successful handle-based match upserts `OauthIdentity` with composite uid `instance:account_id` (same as v1.35)
-- [x] **IDNT-07**: When handle match fails, behavior unchanged from v1.35 — create new user with dummy email and link identity
+### Layout (LAY)
 
-### View
+- [ ] **LAY-01**: 従来の `.todo_actions` 行（リスト内の独立した `<li>`、1行分の高さを占有）を廃止し、タスク一覧の縦スペースを回収する
 
-- [x] **VIEW-04**: Preferences page shows a `mastodon_handle` text field with label, placeholder (`user@mastodon.social`), and brief help text in ja/en
+### Selection (SEL)
 
-### Test
+- [ ] **SEL-01**: 既存のタップ/クリック選択挙動（行をクリックすると `span.selected` でチェックマークが表示される）を変更せず維持する
+- [ ] **SEL-02**: ヘッダの「完了」実行で、選択中の全タスクが完了扱い（`done: true`）になり、ガジェット一覧から外れる（既存 `POST /todos/delete` バックエンドを流用、未選択時は無操作）
 
-- [x] **TEST-03**: Minitest covers `MastodonHandleNormalizer`, model validation/uniqueness, `from_omniauth` handle match, instance mismatch rejection, and create fallback
-- [x] **TEST-04**: Preferences controller integration test saves and reloads `mastodon_handle`; tri-suite gate green at milestone close
+### Internationalization (I18N)
+
+- [ ] **I18N-01**: 新規・変更したヘッダUI文言（完了ラベル・選択件数）が ja/en の両ロケールキーで提供され、ロケールキーのパリティテストが通る
+
+### Test (TEST)
+
+- [ ] **TEST-01**: Minitest が、ヘッダへの「完了」配置・選択件数表示・空選択ガードをカバーする（welcome/todo ガジェットの構造テスト + `TodosController#delete` の controller テスト）
+- [ ] **TEST-02**: Cucumber E2E が「複数タスクを選択 → ヘッダの完了を実行 → 対象タスクが完了扱いになる」フローを検証する
+- [ ] **TEST-03**: マイルストーン終了時にトライスイートがグリーン（`yarn run lint` / `bin/rails test` / `bundle exec rake dad:test`）
 
 ## v2 Requirements
 
 Deferred to future release.
 
-### Identity
+### Gadget Header (HDR)
 
-- **IDNT-FUT-01**: User can connect a new OAuth provider directly from the preferences page (unchanged from v1.35)
-- **HDL-FUT-01**: Auto-populate `mastodon_handle` after first successful Mastodon OAuth when field is blank
+- **HDR-FUT-01**: 行ごとの個別「完了」操作（タスク単位のワンクリック完了）をガジェットに追加する
+- **HDR-FUT-02**: ヘッダに「すべて選択 / 選択解除」トグルを追加する
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Connect Mastodon from preferences without OAuth | Deferred as IDNT-FUT-01 |
-| Match by username only (ignore instance) | Federated Mastodon — ambiguous across instances |
-| WebFinger validation at preferences save | Network dependency; OAuth callback provides proof |
-| Multiple Mastodon handles per user | Single `users.mastodon_handle` column |
-| Live Mastodon OAuth round-trip in Cucumber | v1.35 precedent — Minitest + static UI checks |
-| Admin UI for mastodon_handle | Personal app; not needed |
+| 選択UIの全面刷新（チェックボックス化・長押し選択モード） | 既存のタップ選択（チェックマーク）仕様を維持する方針のため対象外 |
+| ガジェットからの完了取り消し（done → not done） | `/todos` 一覧画面のフィルタで対応済み；本マイルストーン範囲外 |
+| todo 以外のガジェットヘッダ再設計 | 本マイルストーンは todo ガジェットに限定 |
+| 新規 JS ライブラリ/ビルドツールの導入 | Sprockets + jQuery 制約を踏襲（standing out of scope） |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HDL-01 | Phase 124 | Complete |
-| HDL-02 | Phase 124 | Complete |
-| HDL-03 | Phase 124 | Complete |
-| HDL-04 | Phase 124 | Complete |
-| VIEW-04 | Phase 124 | Complete |
-| IDNT-04 | Phase 125 | Complete |
-| IDNT-05 | Phase 125 | Complete |
-| IDNT-06 | Phase 125 | Complete |
-| IDNT-07 | Phase 125 | Complete |
-| TEST-03 | Phase 126 | Complete |
-| TEST-04 | Phase 126 | Complete |
-
-**Coverage:**
-- v1.35.1 requirements: 11 total
-- Mapped to phases: 11
-- Unmapped: 0 ✓
-
----
-*Requirements defined: 2026-06-16*
-*Last updated: 2026-06-16 after roadmap creation*
+| _(filled by roadmap)_ | | |
