@@ -25,7 +25,13 @@ todos.open_edit = function($li) {
 };
 
 todos.init = function(selector) {
-  $(selector).on('mousedown', '.todo-gadget-new-link', function(e) {
+  // Stop mousedown/touchstart from bubbling to .gadgets so that jQuery UI
+  // sortable (and touch-punch on mobile) cannot capture these button taps as
+  // the beginning of a gadget-reorder drag.  Without this, touch-punch calls
+  // preventDefault() on touchstart, which suppresses the native click event;
+  // and if the finger moves at all during the tap it also skips its own
+  // synthetic click, leaving the buttons completely unresponsive on mobile.
+  $(selector).on('mousedown touchstart', '.todo-gadget-new-link, .todo-gadget-complete-link', function(e) {
     e.stopPropagation();
   });
 
