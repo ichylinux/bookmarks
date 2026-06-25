@@ -65,6 +65,85 @@ $(function () {
     activateColumn($portal, $tabs, index);
   });
 
+  const handleSwipeEnd = function (portalEl, totalDx, scrollIntent) {
+    if (portalEl.classList.contains('portal--gadget-sorting')) return;
+    if (scrollIntent || Math.abs(totalDx) < 50) return;
+
+    const $portal = $(portalEl);
+    const $tabs = $portal.prev('.portal-column-tabs');
+    const colCount = portalColumnCount($portal);
+    if (colCount < 2) return;
+
+    let currentIndex;
+    if ($tabs.length) {
+      const $activeTab = $tabs.find('.portal-column-tab--active');
+      currentIndex = parseInt($activeTab.attr('data-portal-column-index'), 10);
+      if (Number.isNaN(currentIndex)) return;
+    } else {
+      currentIndex = parseActiveColumnIndexFromPortal($portal);
+    }
+
+    const direction = totalDx < 0 ? 1 : -1;
+    const newIndex = ((currentIndex + direction) % colCount + colCount) % colCount;
+
+    if (typeof window.notePane !== 'undefined') window.notePane.hide();
+    activateColumn($portal, $tabs, newIndex);
+  };
+
+  const resolvePortalEl = function () {
+    return document.querySelector('.portal');
+  };
+  const gestureBlocked = function (portalEl) {
+    if (!portalEl) return true;
+    if (portalEl.classList.contains('portal--gadget-sorting')) return true;
+    return document.body.classList.contains('drawer-open');
+  };
+
+  let startX = 0;
+  let startY = 0;
+  let scrollIntent = false;
+  let totalDx = 0;
+
+  document.addEventListener(
+    'touchstart',
+    function (e) {
+      if (gestureBlocked(resolvePortalEl())) return;
+      const t = e.touches[0];
+      if (!t) return;
+      startX = t.clientX;
+      startY = t.clientY;
+      scrollIntent = false;
+      totalDx = 0;
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    'touchmove',
+    function (e) {
+      if (gestureBlocked(resolvePortalEl())) return;
+      if (scrollIntent) return;
+      const t = e.touches[0];
+      if (!t) return;
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) < 10) return;
+      if (Math.abs(dy) > Math.abs(dx)) {
+        scrollIntent = true;
+        return;
+      }
+      e.preventDefault();
+      totalDx = dx;
+    },
+    { passive: false }
+  );
+
+  document.addEventListener('touchend', function () {
+    const portalEl = resolvePortalEl();
+    if (gestureBlocked(portalEl)) return;
+    handleSwipeEnd(portalEl, totalDx, scrollIntent);
+  });
+
   if (isMobileViewport()) {
     $('.portal').each(function () {
       const $portal = $(this);

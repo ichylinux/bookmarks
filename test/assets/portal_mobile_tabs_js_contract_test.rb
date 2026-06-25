@@ -29,12 +29,20 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_match(/columnScrollPositions\[parseActiveColumnIndexFromPortal\(\$portal\)\] = window\.scrollY/m, @source)
   end
 
-  test 'tab click uses shared activateColumn flow' do
+  test 'tab click and swipe both use shared activateColumn flow' do
     assert_includes @source, 'activateColumn = function ($portal, $tabs, index) {'
     assert_includes @source, "const index = parseInt($btn.attr('data-portal-column-index'), 10);"
     assert_includes @source, "const $tabs = $btn.closest('.portal-column-tabs');"
     assert_includes @source, "const $portal = $tabs.next('.portal');"
     assert_match(/\$root\.on\('click', '\.portal-column-tab'.*activateColumn\(\$portal, \$tabs, index\)/m, @source)
+    assert_match(/activateColumn\(\$portal, \$tabs, newIndex\);/m, @source)
+  end
+
+  test 'swipe navigates between columns only, not to note pane' do
+    assert_includes @source, 'if (colCount < 2) return;'
+    refute_includes @source, 'noteInCycle'
+    refute_includes @source, "window.notePane.show()"
+    assert_match(/const newIndex = \(\(currentIndex \+ direction\) % colCount \+ colCount\) % colCount/, @source)
   end
 
   test 'activateColumn keeps tab ui and portal state synchronized' do
