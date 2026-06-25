@@ -61,7 +61,6 @@ $(function () {
     const $tabs = $btn.closest('.portal-column-tabs');
     const $portal = $tabs.next('.portal');
     if (!$portal.length) return;
-    // Ensure note pane is hidden when activating a column tab
     if (typeof window.notePane !== 'undefined') window.notePane.hide();
     activateColumn($portal, $tabs, index);
   });
@@ -73,17 +72,10 @@ $(function () {
     const $portal = $(portalEl);
     const $tabs = $portal.prev('.portal-column-tabs');
     const colCount = portalColumnCount($portal);
-    const noteInCycle =
-      typeof window.notePane !== 'undefined' && window.notePane.available();
-    // cycleLength = columns + note slot (when note is available)
-    const cycleLength = colCount + (noteInCycle ? 1 : 0);
-    // Note sentinel index is colCount (the last slot in the cycle)
-    if (cycleLength < 2) return;
+    if (colCount < 2) return;
 
     let currentIndex;
-    if (noteInCycle && window.notePane.isVisible()) {
-      currentIndex = colCount; // currently on note pane
-    } else if ($tabs.length) {
+    if ($tabs.length) {
       const $activeTab = $tabs.find('.portal-column-tab--active');
       currentIndex = parseInt($activeTab.attr('data-portal-column-index'), 10);
       if (Number.isNaN(currentIndex)) return;
@@ -92,41 +84,18 @@ $(function () {
     }
 
     const direction = totalDx < 0 ? 1 : -1;
-    // Modular wrap-around — replaces Math.min/Math.max clamping
-    const newIndex =
-      ((currentIndex + direction) % cycleLength + cycleLength) % cycleLength;
+    const newIndex = ((currentIndex + direction) % colCount + colCount) % colCount;
 
-    if (noteInCycle && newIndex === colCount) {
-      // Swiped to note pane: reveal it and deactivate all column tabs
-      window.notePane.show();
-      if ($tabs.length) {
-        $tabs.find('.portal-column-tab').each(function () {
-          $(this).toggleClass('portal-column-tab--active', false);
-          $(this).attr('aria-selected', 'false');
-        });
-      }
-      // Persist note sentinel so reload restores the note pane
-      window.localStorage.setItem(STORAGE_KEY, 'note');
-    } else {
-      // Swiped to a column: hide note pane first, then activate column
-      if (typeof window.notePane !== 'undefined') window.notePane.hide();
-      activateColumn($portal, $tabs, newIndex);
-    }
+    if (typeof window.notePane !== 'undefined') window.notePane.hide();
+    activateColumn($portal, $tabs, newIndex);
   };
 
-  // Swipe gesture detection is bound once at the document level rather than on
-  // the .portal element. When the note pane is visible the home panel holding
-  // .portal is display:none, so a .portal-scoped listener never fires; and the
-  // note pane itself can be shorter than the viewport, leaving dead zones. A
-  // single document-level listener captures the swipe wherever it happens and
-  // resolves the (possibly hidden) portal lazily inside the handler.
   const resolvePortalEl = function () {
     return document.querySelector('.portal');
   };
   const gestureBlocked = function (portalEl) {
     if (!portalEl) return true;
     if (portalEl.classList.contains('portal--gadget-sorting')) return true;
-    // Don't hijack swipes while the slide-in drawer menu is open.
     return document.body.classList.contains('drawer-open');
   };
 
@@ -182,25 +151,7 @@ $(function () {
       const colCount = portalColumnCount($portal);
       if (colCount < 1) return;
 
-      const noteInCycle =
-        typeof window.notePane !== 'undefined' && window.notePane.available();
       const raw = window.localStorage.getItem(STORAGE_KEY);
-
-      // 'note' is a valid stored sentinel — restore note pane directly.
-      // Number.parseInt('note', 10) is NaN so the NaN guard below would also
-      // catch it, but we check explicitly first to avoid falling back to column 0.
-      if (raw === 'note' && noteInCycle) {
-        window.notePane.show();
-        // Deactivate all column tabs while note pane is active
-        if ($tabs.length) {
-          $tabs.find('.portal-column-tab').each(function () {
-            $(this).toggleClass('portal-column-tab--active', false);
-            $(this).attr('aria-selected', 'false');
-          });
-        }
-        return;
-      }
-
       const restored = parseInt(raw, 10);
       if (Number.isNaN(restored) || restored < 0 || restored >= colCount) {
         activateColumn($portal, $tabs, 0);
