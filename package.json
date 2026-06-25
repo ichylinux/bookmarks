@@ -1,7 +1,6 @@
 {
   "name": "bookmarks",
   "private": true,
-  "dependencies": {},
   "scripts": {
     "lint": "eslint \"app/assets/javascripts/**/*.js\"",
     "lint:fix": "eslint \"app/assets/javascripts/**/*.js\" --fix",
@@ -11,7 +10,7 @@
     "@babel/core": "^7.0.0",
     "@babel/eslint-parser": "^7.0.0",
     "@babel/preset-env": "^7.29.2",
-    "@eslint/js": "^9.0.0",
+    "@eslint/js": "^9.39.4",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.0.0",
     "globals": "^15.0.0",
