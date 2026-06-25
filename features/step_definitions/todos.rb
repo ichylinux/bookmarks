@@ -1,5 +1,6 @@
 def click_todo_gadget_new_link
-  find('#todo .todo-gadget-new-link', visible: :all).click
+  el = find('#todo .todo-gadget-new-link', visible: :all)
+  page.execute_script('arguments[0].click()', el)
 end
 
 もし /^設定画面で タスクを表示する にチェックを入れます。$/ do

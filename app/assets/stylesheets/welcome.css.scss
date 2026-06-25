@@ -303,18 +303,21 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 .todo-gadget-new-link {
   margin-left: auto;
   opacity: 0;
-  pointer-events: none;
   transition: opacity 0.12s ease;
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+
+  // On touch-only devices, hover never fires — prevent tapping the invisible button
+  @media (hover: none) {
+    pointer-events: none;
   }
 }
 
 div.title:hover .bookmark-gadget-new-link,
 div.title:hover .todo-gadget-new-link {
   opacity: 1;
-  pointer-events: auto;
 }
 
 // Complete group: hidden until JS shows it (JS toggles to inline-flex when count > 0)
