@@ -50,6 +50,9 @@
 **Requirements:** 7 (MOB-01–04, TEST-01–03)
 
 - [ ] **Phase 129: Mobile CSS & Link Visibility** - Touch-device link fix, flex-wrap form layout, .todo scope wrapper, iOS zoom guard
+  **Plans:** 1 plan
+  Plans:
+  - [ ] 129-01-PLAN.md — CSS touch-device override (MOB-01), mobile flex-wrap form layout (MOB-02), .todo view wrappers (MOB-03), iOS font-size zoom guard (MOB-04)
 - [ ] **Phase 130: Test Coverage & Tri-Suite Gate** - Minitest CSS contract, Cucumber @mobile_portal E2E, tri-suite green
 
 ---
@@ -692,7 +695,7 @@ Plans:
 | 123. Tests & Tri-Suite Gate | 1/1 | Complete | 2026-06-12 |
 | 127. Header-Integrated Task Completion | 2/2 | Complete   | 2026-06-19 |
 | 128. Test Coverage & Tri-Suite Gate | 1/1 | Complete | 2026-06-19 |
-| 129. Mobile CSS & Link Visibility | 0/1 | Not started | - |
+| 129. Mobile CSS & Link Visibility | 0/1 | Planned | - |
 | 130. Test Coverage & Tri-Suite Gate | 0/1 | Not started | - |
 
 *Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 roadmap created*
