@@ -40,9 +40,15 @@ Todo gadget bulk-complete moved to the header with live selection count; `.todo_
 
 </details>
 
-## Next Milestone Goals
+## Current Milestone: v1.37.0 モバイルでのタスク追加機能
 
-Run `/gsd-new-milestone` to define scope, requirements, and roadmap for the next release.
+**Goal:** モバイルでもインラインフォームでタスクを快適に追加できるようにし、デスクトップとの一貫性も確保する。
+
+**Target features:**
+- ヘッダリンクのテキストを「新規」→「追加」に変更（デスクトップ・モバイル共通）
+- インライン追加フォーム（`_form.html.erb`）をモバイル対応レイアウトに改修（現状は `<table>` レイアウトのため狭い画面で崩れる）
+- デスクトップ表示は現状を維持または改善（フォームは `/todos/new` 単独ページにも流用）
+- ja/en ロケール更新（「追加」テキスト）、Minitest + Cucumber、トライスイートグリーン
 
 <details>
 <summary>Shipped: v1.36.0 タスクガジェットの完了操作の改善 (2026-06-19)</summary>
@@ -527,4 +533,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-18 — v1.36.0 タスクガジェットの完了操作の改善 milestone started*
+*Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 milestone started*

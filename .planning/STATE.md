@@ -1,13 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: null
-milestone_name: null
-current_phase: null
-current_phase_name: null
-status: between_milestones
-last_updated: "2026-06-19T15:00:00Z"
-last_activity: 2026-06-19
-last_activity_desc: v1.36.0 milestone archived and tagged
+milestone: v1.37.0
+milestone_name: モバイルでのタスク追加機能
+status: planning
+last_updated: "2026-06-26T12:45:45.668Z"
+last_activity: 2026-06-26
 progress:
   total_phases: 0
   completed_phases: 0
@@ -20,9 +17,10 @@ progress:
 
 ## Current Position
 
-Milestone: v1.36.0 — ARCHIVED ✅
-Status: Between milestones — ready for `/gsd-new-milestone`
-Last activity: 2026-06-19 — v1.36.0 archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-06-26 — Milestone v1.37.0 started
 
 ## Project Reference
 
