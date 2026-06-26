@@ -14,9 +14,9 @@
 
 ### テスト (TEST)
 
-- [ ] **TEST-01**: Minitest — `.todo-gadget-new-link` がモバイル CSS で `opacity: 1` / `pointer-events: auto` になることを検証する構造テスト
-- [ ] **TEST-02**: Cucumber — 390px ビューポートで「追加」リンクをタップ → インラインフォーム表示 → タスク追加の E2E シナリオ
-- [ ] **TEST-03**: トライスイートグリーン（`yarn run lint` + `bin/rails test` + `bundle exec rake dad:test`）
+- [x] **TEST-01**: Minitest — `.todo-gadget-new-link` がモバイル CSS で `opacity: 1` / `pointer-events: auto` になることを検証する構造テスト
+- [x] **TEST-02**: Cucumber — 390px ビューポートで「追加」リンクをタップ → インラインフォーム表示 → タスク追加の E2E シナリオ
+- [x] **TEST-03**: トライスイートグリーン（`yarn run lint` + `bin/rails test` + `bundle exec rake dad:test`）
 
 ## Future Requirements
 
@@ -43,6 +43,6 @@
 | MOB-02 | Phase 129 | Complete |
 | MOB-03 | Phase 129 | Complete |
 | MOB-04 | Phase 129 | Complete |
-| TEST-01 | Phase 130 | Pending |
-| TEST-02 | Phase 130 | Pending |
-| TEST-03 | Phase 130 | Pending |
+| TEST-01 | Phase 130 | Complete |
+| TEST-02 | Phase 130 | Complete |
+| TEST-03 | Phase 130 | Complete |
