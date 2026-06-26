@@ -405,6 +405,18 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-06-25"
+          headline: Fixed swipe navigation between gadget columns on mobile
+          tag: fix
+          description: Removed swipe-to-notes transition and restored swipe navigation between gadget columns on smartphones.
+        - date: "2026-06-25"
+          headline: Fixed task gadget add button tappable when hidden on mobile
+          tag: fix
+          description: The add button in the task gadget was still tappable on mobile even when visually hidden — that is now fixed.
+        - date: "2026-06-22"
+          headline: Fixed task completion button not responding on mobile
+          tag: fix
+          description: Tapping the completion checkbox on smartphones sometimes had no effect — that is now fixed.
         - date: "2026-06-18"
           headline: Filter the task list by completion status
           tag: new
@@ -417,10 +429,6 @@ en:
           headline: Add tasks from the gadget header
           tag: ux
           description: The task gadget header now has a quick-add button, matching the bookmark gadget's UX — create a new task without scrolling to the bottom of the list.
-        - date: "2026-06-15"
-          headline: Swipe through your notes on mobile
-          tag: ux
-          description: On smartphones, the note pane now joins the gadget columns in the swipe cycle — swipe through your gadgets and notes in one continuous loop.
         - date: "2026-06-12"
           headline: Sign in with Mastodon
           tag: new
