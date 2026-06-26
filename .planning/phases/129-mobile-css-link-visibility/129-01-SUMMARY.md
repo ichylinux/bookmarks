@@ -4,6 +4,7 @@ plan: "01"
 subsystem: frontend/css
 status: complete
 tags: [mobile, css, erb, todo-gadget]
+requirements-completed: [MOB-01, MOB-02, MOB-03, MOB-04]
 dependency_graph:
   requires: []
   provides: [mobile-todo-add-css, touch-link-visibility, ios-zoom-guard]

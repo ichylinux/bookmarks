@@ -3,6 +3,7 @@ phase: 130-test-coverage-tri-suite-gate
 plan: "01"
 subsystem: test
 tags: [testing, mobile, css-contract, cucumber, tri-suite]
+requirements-completed: [TEST-01, TEST-02, TEST-03]
 dependency_graph:
   requires: [129-mobile-css-link-visibility]
   provides: [TEST-01, TEST-02, TEST-03]
