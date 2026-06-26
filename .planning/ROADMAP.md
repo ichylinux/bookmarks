@@ -57,7 +57,8 @@
 - [ ] **Phase 130: Test Coverage & Tri-Suite Gate** - Minitest CSS contract, Cucumber @mobile_portal E2E, tri-suite green
   **Plans:** 1 plan
   Plans:
-  - [ ] 130-01-PLAN.md — Minitest CSS contract test (TEST-01), @mobile_portal Cucumber scenario (TEST-02/TEST-03), tri-suite gate
+
+  - [x] 130-01-PLAN.md — Minitest CSS contract test (TEST-01), @mobile_portal Cucumber scenario (TEST-02/TEST-03), tri-suite gate
 
 ---
 
@@ -674,7 +675,9 @@ Plans:
   3. The Cucumber step that navigates to the welcome page explicitly calls `ensure_mobile_viewport!` before `visit root_path` so the viewport is set correctly
   4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+- [x] 130-01-PLAN.md
 
 ## Progress Table
 
@@ -703,6 +706,6 @@ Plans:
 | 127. Header-Integrated Task Completion | 2/2 | Complete   | 2026-06-19 |
 | 128. Test Coverage & Tri-Suite Gate | 1/1 | Complete | 2026-06-19 |
 | 129. Mobile CSS & Link Visibility | 1/1 | Complete   | 2026-06-26 |
-| 130. Test Coverage & Tri-Suite Gate | 0/1 | Not started | - |
+| 130. Test Coverage & Tri-Suite Gate | 1/1 | Complete   | 2026-06-26 |
 
 *Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 roadmap created*
