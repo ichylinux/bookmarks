@@ -15,6 +15,9 @@
   }
 
   li.highlighted {
+    // common.css: ol { padding: 2px }, ol li { margin: 0.5em } — extend to gadget inner edge
+    margin-left: calc(-0.5em - 2px);
+    margin-right: calc(-0.5em - 2px);
     background: #fff8e1;
     box-shadow: inset 3px 0 0 #f59e0b;
 
