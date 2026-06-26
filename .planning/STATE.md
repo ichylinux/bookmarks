@@ -2,9 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
+current_phase: 129
 status: roadmap_ready
-last_updated: "2026-06-26"
+last_updated: "2026-06-26T13:47:31.668Z"
 last_activity: 2026-06-26
+last_activity_desc: v1.37.0 roadmap created (2 phases, 7 requirements)
 progress:
   total_phases: 2
   completed_phases: 0
