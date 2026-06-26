@@ -96,6 +96,21 @@ $todo-priority-width-en: 4.5em;
     li.todo-highlight-visible .todo-highlight-btn {
       display: inline-block;
     }
+
+    // MOB-02: Stack form rows vertically on narrow viewports
+    form.todo table.todo-form tr {
+      flex-wrap: wrap;
+    }
+
+    form.todo table.todo-form td {
+      flex: 0 0 100%;
+    }
+
+    // MOB-04: Prevent iOS Safari auto-zoom on focused inputs/selects
+    form.todo td input[type="text"],
+    form.todo td select {
+      font-size: 1rem;
+    }
   }
 
   .todo-highlight-btn:hover {
