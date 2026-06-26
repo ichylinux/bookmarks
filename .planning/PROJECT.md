@@ -2,9 +2,22 @@
 
 ## Current State
 
-**Last shipped:** v1.36.0 — タスクガジェットの完了操作の改善 (2026-06-19)
+**Last shipped:** v1.37.0 — モバイルでのタスク追加機能 (2026-06-27)
 
-Todo gadget bulk-complete moved to the header with live selection count; `.todo_actions` row removed. Details: `.planning/milestones/v1.36.0-ROADMAP.md`. Tri-suite at close: lint ✓ · 681 Minitest · 39 Cucumber.
+Mobile todo-add UX: touch-device "追加" link visible, inline form stacks vertically at ≤767px, iOS auto-zoom prevented. CSS contract test + @mobile_portal Cucumber E2E added. Tri-suite at close: lint ✓ · 684 Minitest · 40 Cucumber. Details: `.planning/milestones/v1.37.0-ROADMAP.md`. Audit: `.planning/milestones/v1.37.0-MILESTONE-AUDIT.md` (gaps_found — documentation only).
+
+<details>
+<summary>Shipped: v1.37.0 モバイルでのタスク追加機能 (2026-06-27)</summary>
+
+**Delivered (phases 129–130):**
+- `@media (hover: none)` override on `.todo-gadget-new-link`: `opacity: 1; pointer-events: auto` — touch devices see and tap the link (MOB-01)
+- `flex-wrap: wrap` + `flex: 0 0 100%` inside `.todo @media(max-width:767px)` block — form stacks vertically at 390px (MOB-02)
+- `<div class="todo">` wrapper on `new.html.erb` + `edit.html.erb` standalone pages — CSS scope parity with gadget inline form (MOB-03)
+- `font-size: 1rem` on form inputs in mobile media query — prevents iOS Safari auto-zoom (MOB-04)
+- `TodoGadgetMobileCssContractTest`: 3 assert_match tests verify @media block structure (TEST-01)
+- `@mobile_portal` Cucumber scenario at 390px: 設定チェック → viewport resize → column nav → 追加 tap → form submit → assertion (TEST-02/TEST-03)
+
+</details>
 
 <details>
 <summary>Shipped: v1.36.0 タスクガジェットの完了操作の改善 (2026-06-19)</summary>
@@ -40,15 +53,19 @@ Todo gadget bulk-complete moved to the header with live selection count; `.todo_
 
 </details>
 
-## Current Milestone: v1.37.0 モバイルでのタスク追加機能
+<details>
+<summary>Shipped: v1.37.0 モバイルでのタスク追加機能 (2026-06-27)</summary>
 
 **Goal:** モバイルでもインラインフォームでタスクを快適に追加できるようにし、デスクトップとの一貫性も確保する。
 
-**Target features:**
-- ヘッダリンクのテキストを「新規」→「追加」に変更（デスクトップ・モバイル共通）
-- インライン追加フォーム（`_form.html.erb`）をモバイル対応レイアウトに改修（現状は `<table>` レイアウトのため狭い画面で崩れる）
-- デスクトップ表示は現状を維持または改善（フォームは `/todos/new` 単独ページにも流用）
-- ja/en ロケール更新（「追加」テキスト）、Minitest + Cucumber、トライスイートグリーン
+**Delivered (phases 129–130):**
+- `@media (hover: none)` override on `.todo-gadget-new-link` — visible + tappable on touch devices (MOB-01)
+- Flex-wrap form layout + `font-size: 1rem` iOS zoom guard in `todos.css.scss` mobile block (MOB-02, MOB-04)
+- `<div class="todo">` wrapper on standalone `/todos/new` + `/todos/edit` for CSS scope parity (MOB-03)
+- `TodoGadgetMobileCssContractTest` 3-assert CSS contract test + `@mobile_portal` Cucumber E2E at 390px (TEST-01–03)
+- Tri-suite: lint ✓ · 684 Minitest · 40 Cucumber
+
+</details>
 
 <details>
 <summary>Shipped: v1.36.0 タスクガジェットの完了操作の改善 (2026-06-19)</summary>
@@ -300,6 +317,12 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ Composite uid `instance_domain:account_id` in `oauth_identities`; `from_omniauth` wired for `:mastodon` — **v1.35 Phase 121**
 - ✓ Mastodon OAuth button and Connected Accounts row with ja/en labels — **v1.35 Phase 122**
 - ✓ Mastodon disconnect guard + Cucumber 5-row connected-accounts coverage; tri-suite green (644 Minitest, 38 Cucumber) — **v1.35 Phase 123**
+- ✓ `@media (hover: none)` override on `.todo-gadget-new-link`: `opacity: 1; pointer-events: auto` — "追加" visible and tappable on touch devices without hover capability — **v1.37.0 Phase 129**
+- ✓ `flex-wrap: wrap` + `flex: 0 0 100%` in `todos.css.scss` mobile block — inline todo form stacks vertically at ≤767px — **v1.37.0 Phase 129**
+- ✓ `<div class="todo">` CSS scope wrapper on `/todos/new` and `/todos/edit` standalone pages — mobile form layout consistent with gadget inline form — **v1.37.0 Phase 129**
+- ✓ `font-size: 1rem` on form inputs in mobile media query — prevents iOS Safari 16px auto-zoom on text inputs — **v1.37.0 Phase 129**
+- ✓ `TodoGadgetMobileCssContractTest` with 3 `assert_match` regex tests verifying `@media (hover: none)` block structure in `welcome.css.scss` — **v1.37.0 Phase 130**
+- ✓ `@mobile_portal` Cucumber E2E scenario at 390×844px viewport: preference enable → mobile root → column nav → タップ → form submit → assertion; tri-suite green (684 Minitest, 40 Cucumber) — **v1.37.0 Phase 130**
 
 <details>
 <summary>Shipped: v1.31 X Account Manual Add (Non-Following) (2026-05-22)</summary>
@@ -329,6 +352,8 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 
 ## Context
 
+- **Shipped v1.37.0 (2026-06-27):** Mobile todo-add UX — `@media (hover: none)` touch link fix, flex-wrap inline form at ≤767px, iOS auto-zoom guard, `<div class="todo">` standalone-page scope wrapper, CSS contract test + `@mobile_portal` Cucumber E2E. Tri-suite: lint ✓ · 684 Minitest · 40 Cucumber. Audit: `.planning/milestones/v1.37.0-MILESTONE-AUDIT.md` (gaps_found — Phase 129 VERIFICATION.md missing, functionality confirmed).
+- **Shipped v1.36.0 (2026-06-19):** Todo gadget bulk-complete header — `.todo-gadget-complete-group` with live count, `.todo_actions` row removed, `toggle_highlight` selected-preservation fix. Tri-suite: lint ✓ · 681 Minitest · 39 Cucumber. Details: `.planning/milestones/v1.36.0-ROADMAP.md`.
 - **Shipped v1.35 (2026-06-12):** Mastodon OAuth 2.0 sign-in — custom OmniAuth strategy with federated instance selection, composite uid identity, Connected Accounts 5th row, tri-suite gate. Tri-suite: lint ✓ · 644 Minitest · 38 Cucumber. Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
 - **Shipped v1.34 (2026-05-24):** Connected OAuth Providers — `oauth_identities` table + `OauthIdentity.upsert_for!` for all 3 providers + backfill; `password_auth_enabled` flag + `after_password_reset` callback + `disconnect_form_auth!`; `OauthIdentitiesController#destroy` with safety guard; "Connected Accounts" preferences section (4 rows, icons, bilingual); 3 Cucumber E2E scenarios. Tri-suite: lint ✓ · 587 Minitest · 38 Cucumber. Audit: `.planning/milestones/v1.34-MILESTONE-AUDIT.md` (passed, 13/13).
 - **Shipped v1.31 (2026-05-22):** X account manual add — `manually_added` schema column + `upsert_manual!` + refresh guard, `XClient#lookup_user_by_username` (7-symbol error contract), `POST /x_accounts/lookup_and_add` (7 flash states), handle input form + manually-added badge, Cucumber E2E `@x_manual_add` hook + 2 Japanese scenarios. Tri-suite: lint ✓ · 546 Minitest 0 failures · 33/33 Cucumber. Details: `.planning/milestones/v1.31-ROADMAP.md`. No formal audit file (tri-suite gate and SUMMARY.md presence accepted as evidence).
@@ -429,6 +454,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Blank input guard in controller before XClient call (v1.31) | Saves an API round-trip; semantically correct — blank handle is a user error, not an API query | ✓ Good — clean separation of concerns; guard tested as a distinct controller case |
 | WebMock stubs use regex (not exact URL strings) for lookup endpoints (v1.31) | `XClient` appends `?user.fields=...` query params; exact strings reject the annotated request | ✓ Good — regex pattern consistent with all other stubs in `hooks.rb`; fixes Phase 108 first-run failure |
 | `lookup_user_by_username` routes via `following_connection(user)` not `connection_for(user)` (v1.31) | Ensures `@forced_connection` injection works for Faraday `:test` adapter in Minitest | ✓ Good — same pattern as `fetch_following`; aligns service test injection with OAuth token path |
+| CSS-only fix for mobile todo-add (v1.37.0) | `_form.html.erb` is shared by 3 render contexts (gadget, `/todos/new`, `/todos/edit`); touching the partial would cascade to all three. `@media (hover: none)` on the container + `flex-wrap` inside the existing `.todo` scope is the least-footprint path | ✓ Good — no JS changes; no partial changes; `<div class="todo">` wrapper on standalone pages adds scope without breaking desktop |
 | Custom OmniAuth strategy in `lib/omniauth/strategies/` (v1.35) | Existing Mastodon gems are OAuth 1.0 only; `omniauth-oauth2` base with dynamic instance endpoints | ✓ Good — Zeitwerk `push_dir` + `before_initialize` require for Devise boot |
 | Session-scoped OAuth client credentials (v1.35) | Per-instance `POST /api/v1/apps` registration; stale `mastodon_oauth_client_*` cleared on instance change | ✓ Good — supports federated instances without static ENV config |
 | Composite uid `instance:account_id` for Mastodon (v1.35) | `oauth_identities` unique on `(user_id, provider)` — one Mastodon account per user across instances | ✓ Good — `info[:instance]` from strategy enables assembly in `from_omniauth` |
@@ -533,4 +559,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 milestone started*
+*Last updated: 2026-06-27 — v1.37.0 モバイルでのタスク追加機能 shipped*

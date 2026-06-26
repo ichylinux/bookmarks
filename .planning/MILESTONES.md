@@ -1,5 +1,21 @@
 # Milestones
 
+## v1.37.0 モバイルでのタスク追加機能 (Shipped: 2026-06-27)
+
+**Phases completed:** 2 phases, 2 plans, 5 tasks
+
+**Key accomplishments:**
+
+- `@media (hover: none)` block on `.todo-gadget-new-link` — makes "追加" link visible and tappable on touch devices (MOB-01)
+- Mobile flex-wrap form layout in `todos.css.scss` + `font-size: 1rem` iOS zoom guard (MOB-02, MOB-04)
+- `<div class="todo">` wrapper on `/todos/new` and `/todos/edit` standalone pages for CSS scope parity (MOB-03)
+- `TodoGadgetMobileCssContractTest` (3 assert_match tests) + `@mobile_portal` Cucumber E2E at 390px viewport (TEST-01, TEST-02)
+- Tri-suite gate green: lint ✓ · 684 Minitest ✓ · 40 Cucumber scenarios 0 failed (TEST-03)
+
+Known deferred items at close: 4 (1 debug session, 3 quick tasks — see STATE.md Deferred Items). Audit: gaps_found (documentation gaps only; Phase 129 missing VERIFICATION.md — functional delivery confirmed).
+
+---
+
 ## v1.36.0 — タスクガジェットの完了操作の改善 (shipped 2026-06-19)
 
 **Scope:** Phases 127–128 (2 phases, 3 plans) — header-integrated bulk complete with selection count, `.todo_actions` row removal, highlight-toggle selection preservation, Minitest + Cucumber tri-suite gate. Tri-suite at close: lint ✓ · 681 Minitest · 39 Cucumber.

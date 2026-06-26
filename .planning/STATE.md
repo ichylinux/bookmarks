@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
-current_phase: 129
-status: executing
-stopped_at: context exhaustion at 76% (2026-06-26)
-last_updated: "2026-06-26T15:21:56.057Z"
+current_phase: 37.0
+status: Awaiting next milestone
+stopped_at: context exhaustion at 82% (2026-06-26)
+last_updated: "2026-06-26T16:13:42.611Z"
 last_activity: 2026-06-26
-last_activity_desc: Phase 129 marked complete
+last_activity_desc: Milestone v1.37.0 completed and archived
 progress:
   total_phases: 2
   completed_phases: 2
@@ -20,15 +20,10 @@ progress:
 
 ## Current Position
 
-Phase: 129 — COMPLETE
+Phase: Milestone v1.37.0 complete
 Plan: —
-Status: Ready to execute
-Last activity: 2026-06-26 — Phase 129 marked complete
-
-```
-[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
-Phase 129 ──────────────────────────────────── Phase 130
-```
+Status: Awaiting next milestone
+Last activity: 2026-06-26 — Milestone v1.37.0 completed and archived
 
 ## Project Reference
 
@@ -39,11 +34,14 @@ See: .planning/PROJECT.md (updated 2026-06-26)
 
 ## Performance Metrics
 
+- v1.37.0 close: `yarn run lint` ✓ · `bin/rails test` 684/684 ✓ · `dad:test` 40/40 ✓
 - v1.36.0 close: `yarn run lint` ✓ · `bin/rails test` 681/681 ✓ · `dad:test` 39/39 ✓
 - v1.35.1 close: `yarn run lint` ✓ · `bin/rails test` 667/667 ✓ · `dad:test` 38/38 ✓
 - v1.34 close: `yarn run lint` ✓ · `bin/rails test` 587/587 ✓ · `dad:test` 38/38 ✓
 
 ## Deferred Items
+
+Items acknowledged and deferred at milestone close on 2026-06-27:
 
 | Category | Item | Status |
 |----------|------|--------|
@@ -60,8 +58,11 @@ See: .planning/PROJECT.md (updated 2026-06-26)
 | v2 | LOC-FUT-01 英語ロケールキー `welcome.todo_gadget.new_link` を "Add" に変更 | open |
 | v2 | MOB-FUT-01 auto-focus — iOS Safari AJAX callback 制限により延期 | open |
 | v2 | MOB-FUT-02 キャンセルボタン — 空タイトル dismiss が既存パターンのため延期 | open |
-| debug | disconnect-form-auth-error [awaiting_human_verify] | deferred at v1.35 close |
+| debug | disconnect-form-auth-error [awaiting_human_verify] | deferred at v1.35 close; still open at v1.37.0 close |
 | quick_task | lock-version-oauth-disconnect (20260529) | deferred at v1.35 close |
+| quick_task | 260615-0jw-integrate-note-into-mobile-swipe-cycle-w | deferred at v1.37.0 close (unknown status) |
+| quick_task | 260615-9r6-refresh-landing-page | deferred at v1.37.0 close (unknown status) |
+| quick_task | 260617-2nf-todo-undo-b | deferred at v1.37.0 close (missing) |
 
 ## Accumulated Context
 
@@ -87,10 +88,10 @@ See: .planning/PROJECT.md (updated 2026-06-26)
 
 ## Operator Next Steps
 
-- Plan Phase 129: `/gsd-plan-phase 129`
+- Start the next milestone with /gsd-new-milestone
 
 ## Session
 
-**Last session:** 2026-06-26T15:21:56.046Z
-**Stopped at:** context exhaustion at 76% (2026-06-26)
+**Last session:** 2026-06-26T16:13:42.591Z
+**Stopped at:** context exhaustion at 82% (2026-06-26)
 **Resume file:** None
