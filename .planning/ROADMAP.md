@@ -55,6 +55,9 @@
 
   - [x] 129-01-PLAN.md — CSS touch-device override (MOB-01), mobile flex-wrap form layout (MOB-02), .todo view wrappers (MOB-03), iOS font-size zoom guard (MOB-04)
 - [ ] **Phase 130: Test Coverage & Tri-Suite Gate** - Minitest CSS contract, Cucumber @mobile_portal E2E, tri-suite green
+  **Plans:** 1 plan
+  Plans:
+  - [ ] 130-01-PLAN.md — Minitest CSS contract test (TEST-01), @mobile_portal Cucumber scenario (TEST-02/TEST-03), tri-suite gate
 
 ---
 
