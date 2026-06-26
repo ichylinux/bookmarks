@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🔄 **v1.37.0 — モバイルでのタスク追加機能** — Phases 129–130 (active 2026-06-26)
 - ✅ **v1.36.0 — タスクガジェットの完了操作の改善** — Phases 127–128 (shipped 2026-06-19) — [archived](milestones/v1.36.0-ROADMAP.md)
 - ✅ **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (shipped 2026-06-16) — [archived](milestones/v1.35.1-ROADMAP.md)
 - ✅ **v1.35 — Sign in with Mastodon using OAuth2** — Phases 119–123 (shipped 2026-06-12) — [archived](milestones/v1.35-ROADMAP.md)
@@ -41,6 +42,17 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+### Milestone v1.37.0: モバイルでのタスク追加機能
+
+**Status:** Active
+**Phases:** 129–130
+**Requirements:** 7 (MOB-01–04, TEST-01–03)
+
+- [ ] **Phase 129: Mobile CSS & Link Visibility** - Touch-device link fix, flex-wrap form layout, .todo scope wrapper, iOS zoom guard
+- [ ] **Phase 130: Test Coverage & Tri-Suite Gate** - Minitest CSS contract, Cucumber @mobile_portal E2E, tri-suite green
+
+---
 
 ### Milestone v1.36.0: タスクガジェットの完了操作の改善
 
@@ -622,6 +634,38 @@ Plans:
 
 **Plans**: 1/1 complete
 
+---
+
+### Phase 129: Mobile CSS & Link Visibility
+
+**Goal**: Mobile users can see and tap the "追加" link in the todo gadget header, and the inline add form stacks cleanly on narrow viewports
+**Depends on**: Nothing (first phase of v1.37.0)
+**Requirements**: MOB-01, MOB-02, MOB-03, MOB-04
+**Success Criteria** (what must be TRUE):
+
+  1. On a touch-only device (`@media (hover: none)`), the "追加" link in the todo gadget header is visible (`opacity: 1`) and tappable (`pointer-events: auto`) — the default hover-hide rule is overridden
+  2. At ≤767px viewport width, the inline add form rows wrap vertically (`flex-wrap: wrap`) so the title field, priority field, and submit button each occupy full width without horizontal overflow
+  3. The `/todos/new` and `/todos/edit` standalone pages wrap their content in a `<div class="todo">` so they share the same `.todo`-scoped CSS rules as the gadget form
+  4. Form input and select elements within `.todo` on mobile have `font-size: 1rem` — iOS Safari does not auto-zoom when a field is tapped
+  5. Desktop (>767px) layout is visually unchanged — no regression in gadget or standalone page appearance
+
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 130: Test Coverage & Tri-Suite Gate
+
+**Goal**: All mobile changes are verified by automated tests and the full tri-suite gate is green
+**Depends on**: Phase 129
+**Requirements**: TEST-01, TEST-02, TEST-03
+**Success Criteria** (what must be TRUE):
+
+  1. A Minitest CSS structure test asserts that `welcome.css.scss` contains an `@media (hover: none)` block overriding `.todo-gadget-new-link` with `opacity: 1` and `pointer-events: auto`
+  2. A Cucumber `@mobile_portal` scenario at 390px viewport: visits the welcome page, taps the "追加" link, fills the title field, submits the form, and asserts the new todo item appears in the gadget list
+  3. The Cucumber step that navigates to the welcome page explicitly calls `ensure_mobile_viewport!` before `visit root_path` so the viewport is set correctly
+  4. `yarn run lint && bin/rails test && bundle exec rake dad:test` all exit 0 with 0 failures
+
+**Plans**: TBD
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -648,5 +692,7 @@ Plans:
 | 123. Tests & Tri-Suite Gate | 1/1 | Complete | 2026-06-12 |
 | 127. Header-Integrated Task Completion | 2/2 | Complete   | 2026-06-19 |
 | 128. Test Coverage & Tri-Suite Gate | 1/1 | Complete | 2026-06-19 |
+| 129. Mobile CSS & Link Visibility | 0/1 | Not started | - |
+| 130. Test Coverage & Tri-Suite Gate | 0/1 | Not started | - |
 
-*Last updated: 2026-06-19 — v1.36.0 milestone archived*
+*Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 roadmap created*

@@ -39,10 +39,10 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| MOB-01 | — | Pending |
-| MOB-02 | — | Pending |
-| MOB-03 | — | Pending |
-| MOB-04 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
-| TEST-03 | — | Pending |
+| MOB-01 | Phase 129 | Pending |
+| MOB-02 | Phase 129 | Pending |
+| MOB-03 | Phase 129 | Pending |
+| MOB-04 | Phase 129 | Pending |
+| TEST-01 | Phase 130 | Pending |
+| TEST-02 | Phase 130 | Pending |
+| TEST-03 | Phase 130 | Pending |

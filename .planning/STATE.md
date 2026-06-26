@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
-status: planning
-last_updated: "2026-06-26T12:45:45.668Z"
+status: roadmap_ready
+last_updated: "2026-06-26"
 last_activity: 2026-06-26
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,22 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 129 — Mobile CSS & Link Visibility (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-06-26 — Milestone v1.37.0 started
+Status: Roadmap created — ready to plan Phase 129
+Last activity: 2026-06-26 — v1.37.0 roadmap created (2 phases, 7 requirements)
+
+```
+[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+Phase 129 ──────────────────────────────────── Phase 130
+```
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-19)
+See: .planning/PROJECT.md (updated 2026-06-26)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Start next milestone with `/gsd-new-milestone`
+**Current focus:** Plan and execute Phase 129 with `/gsd-plan-phase 129`
 
 ## Performance Metrics
 
@@ -49,6 +54,9 @@ See: .planning/PROJECT.md (updated 2026-06-19)
 | v2 | XMAN-FUT-03 dedicated remove action for manually-added accounts | open |
 | v2 | IDNT-FUT-01 connect new OAuth provider from preferences page | open |
 | v2 | FORM-FUT-01 change password from preferences without reset flow | open |
+| v2 | LOC-FUT-01 英語ロケールキー `welcome.todo_gadget.new_link` を "Add" に変更 | open |
+| v2 | MOB-FUT-01 auto-focus — iOS Safari AJAX callback 制限により延期 | open |
+| v2 | MOB-FUT-02 キャンセルボタン — 空タイトル dismiss が既存パターンのため延期 | open |
 | debug | disconnect-form-auth-error [awaiting_human_verify] | deferred at v1.35 close |
 | quick_task | lock-version-oauth-disconnect (20260529) | deferred at v1.35 close |
 
@@ -56,6 +64,13 @@ See: .planning/PROJECT.md (updated 2026-06-19)
 
 ### Decisions
 
+- (v1.37.0) CSS-only approach for mobile layout — no JS changes to `todos.js`; `_form.html.erb` partial is NOT touched (shared by 3 render contexts)
+- (v1.37.0) `@media (hover: none)` override scoped to `.todo-gadget-new-link` only in `welcome.css.scss` (MOB-01)
+- (v1.37.0) `flex-wrap: wrap` added inside `.todo` scope in `todos.css.scss` mobile media query block (MOB-02)
+- (v1.37.0) `<div class="todo">` wrapper added to `new.html.erb` and `edit.html.erb` standalone pages only (MOB-03)
+- (v1.37.0) `font-size: 1rem` on form inputs in mobile media query — prevents iOS Safari auto-zoom (MOB-04)
+- (v1.37.0) `ensure_mobile_viewport!` must be called explicitly in Cucumber step before `visit root_path` — `@mobile_portal` tag alone does not resize (TEST-02)
+- (v1.37.0) Never use bare CSS `min()`/`max()` in SCSS — wrap in `calc()` to avoid Dart Sass misparse (project precedent from v1.18)
 - (v1.36.0) 完了アクションはガジェットヘッダ（「新規」リンクと同じ行）に集約；旧 `.todo_actions` 独立 `<li>` 行は撤廃
 - (v1.36.0) 既存のタップ選択（行クリック → `span.selected` チェックマーク）と一括完了バックエンド `POST /todos/delete` を流用 — 新規 JS ライブラリは導入しない（Sprockets + jQuery 制約）
 - (v1.34) `oauth_identities` table uses unique index on `(user_id, provider)` — one row per provider per user
@@ -69,4 +84,4 @@ See: .planning/PROJECT.md (updated 2026-06-19)
 
 ## Operator Next Steps
 
-- Start next milestone: `/gsd-new-milestone`
+- Plan Phase 129: `/gsd-plan-phase 129`
