@@ -1,37 +1,40 @@
 require 'test_helper'
 
-# MOB-01: On touch-only devices, the .todo-gadget-new-link "追加" link must be visible
-# and tappable. This @media (hover: none) block in welcome.css.scss overrides the default
-# opacity:0 / pointer-events:none that hides the link on desktop.
-#
-# These are regression-guard contract tests. A violation means the mobile override block
-# was removed from welcome.css.scss.
+# Mobile todo gadget: "追加" link is hidden by default and revealed when the user
+# taps the header title/icon (todos.js toggles .title--gadget-actions-visible).
 class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
   def setup
     @welcome = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read
+    @todos_js = Rails.root.join('app/assets/javascripts/todos.js').read
   end
 
-  test 'welcome.css.scss contains hover-none media block for todo-gadget-new-link' do
+  test 'welcome.css.scss hides todo-gadget-new-link on mobile by default' do
     assert_match(
-      /@media\s*\(\s*hover\s*:\s*none\s*\)[\s\S]*?\.todo-gadget-new-link/,
+      /@media\s*\(\s*max-width\s*:\s*767px\s*\)[\s\S]*?\.gadget\.todo\s+\.todo-gadget-new-link[\s\S]*?pointer-events\s*:\s*none/,
       @welcome,
-      'welcome.css.scss must contain @media (hover: none) { .todo-gadget-new-link { ... } }. MOB-01 override is missing.'
+      'welcome.css.scss must set pointer-events: none on .gadget.todo .todo-gadget-new-link inside @media (max-width: 767px).'
     )
   end
 
-  test 'welcome.css.scss todo-gadget-new-link has opacity 1 inside hover-none block' do
+  test 'welcome.css.scss reveals todo-gadget-new-link when header has actions-visible class' do
     assert_match(
-      /@media\s*\(\s*hover\s*:\s*none\s*\)[\s\S]*?\.todo-gadget-new-link[\s\S]*?opacity\s*:\s*1/,
+      /\.title--gadget-actions-visible[\s\S]*?\.todo-gadget-new-link[\s\S]*?opacity\s*:\s*1/,
       @welcome,
-      'welcome.css.scss must set opacity: 1 on .todo-gadget-new-link inside @media (hover: none). MOB-01 tap-visibility rule is missing.'
+      'welcome.css.scss must set opacity: 1 on .todo-gadget-new-link when .title--gadget-actions-visible is present.'
+    )
+
+    assert_match(
+      /\.title--gadget-actions-visible[\s\S]*?\.todo-gadget-new-link[\s\S]*?pointer-events\s*:\s*auto/,
+      @welcome,
+      'welcome.css.scss must set pointer-events: auto on .todo-gadget-new-link when .title--gadget-actions-visible is present.'
     )
   end
 
-  test 'welcome.css.scss todo-gadget-new-link has pointer-events auto inside hover-none block' do
+  test 'todos.js toggles title--gadget-actions-visible on mobile header tap' do
     assert_match(
-      /@media\s*\(\s*hover\s*:\s*none\s*\)[\s\S]*?\.todo-gadget-new-link[\s\S]*?pointer-events\s*:\s*auto/,
-      @welcome,
-      'welcome.css.scss must set pointer-events: auto on .todo-gadget-new-link inside @media (hover: none). MOB-01 tap-interactivity rule is missing.'
+      /title--gadget-actions-visible/,
+      @todos_js,
+      'todos.js must toggle .title--gadget-actions-visible on the todo gadget header for mobile tap-to-reveal.'
     )
   end
 end

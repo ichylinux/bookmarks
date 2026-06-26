@@ -1,4 +1,12 @@
 def click_todo_gadget_new_link
+  within '#todo' do
+    if @mobile_portal_scenario
+      header = find('.title--gadget-with-icon')
+      unless header[:class].to_s.include?('title--gadget-actions-visible')
+        find('.gadget-title-text').click
+      end
+    end
+  end
   el = find('#todo .todo-gadget-new-link', visible: :all)
   page.execute_script('arguments[0].click()', el)
 end

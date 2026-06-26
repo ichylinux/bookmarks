@@ -35,6 +35,12 @@ todos.init = function(selector) {
     e.stopPropagation();
   });
 
+  $(selector).on('click', '.gadget.todo .gadget-title-icon, .gadget.todo .gadget-title-text', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    e.stopPropagation();
+    $(this).closest('.title--gadget-with-icon').toggleClass('title--gadget-actions-visible');
+  });
+
   $(selector).on('dblclick', 'li', function() {
     todos.open_edit($(this));
   });
@@ -81,6 +87,9 @@ todos.init = function(selector) {
     if (!MOBILE_MQ.matches) return;
     if (!$(e.target).closest('.todo li').length) {
       $('.todo li.todo-highlight-visible').removeClass('todo-highlight-visible');
+    }
+    if (!$(e.target).closest('.gadget.todo .title--gadget-with-icon').length) {
+      $('.gadget.todo .title--gadget-with-icon').removeClass('title--gadget-actions-visible');
     }
   });
 

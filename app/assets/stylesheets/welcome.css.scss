@@ -315,10 +315,14 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-// MOB-01: On touch-only devices, the todo gadget "追加" link must be visible and tappable.
-// Bookmark new-link opens a dialog and is intentionally excluded from this override.
-@media (hover: none) {
-  .todo-gadget-new-link {
+// Mobile: hide "追加" by default; reveal when header title/icon is tapped
+// (todos.js toggles .title--gadget-actions-visible on the gadget header).
+@media (max-width: 767px) {
+  .gadget.todo .todo-gadget-new-link {
+    pointer-events: none;
+  }
+
+  .gadget.todo .title--gadget-with-icon.title--gadget-actions-visible .todo-gadget-new-link {
     opacity: 1;
     pointer-events: auto;
   }
