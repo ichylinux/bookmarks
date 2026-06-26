@@ -1,3 +1,12 @@
+$todo-priority-width: 3.5em;
+$todo-priority-width-en: 4.5em;
+
+@mixin fixed-priority-width($width) {
+  width: $width;
+  min-width: $width;
+  max-width: $width;
+}
+
 .todo {
   ol {
     padding-left: 0;
@@ -9,6 +18,8 @@
   }
 
   li {
+    position: relative;
+
     span {
       display: table-cell;
       padding: 0;
@@ -17,42 +28,42 @@
     span:first-child {
       cursor: pointer;
     }
-  }
 
-  li {
-    position: relative;
-  }
+    &:hover {
+      background: #EEEEEE;
 
-  li.highlighted {
-    background: #fff8e1;
-    box-shadow: inset 3px 0 0 #f59e0b;
-
-    .todo-title {
-      color: #92400e;
-      font-weight: bold;
-    }
-
-    &:has(form.todo) {
-      padding-left: 3px;
-      box-sizing: border-box;
-    }
-
-    &:not(:has(form.todo)) {
-      display: flex;
-      align-items: center;
-
-      span {
-        display: block;
+      .todo-highlight-btn {
+        display: inline-block;
       }
     }
-  }
 
-  li:hover {
-    background: #EEEEEE;
-  }
+    &.highlighted {
+      background: #fff8e1;
+      box-shadow: inset 3px 0 0 #f59e0b;
 
-  li.highlighted:hover {
-    background: #fef3c7;
+      .todo-title {
+        color: #92400e;
+        font-weight: bold;
+      }
+
+      &:has(form.todo) {
+        padding-left: 3px;
+        box-sizing: border-box;
+      }
+
+      &:not(:has(form.todo)) {
+        display: flex;
+        align-items: center;
+
+        span {
+          display: block;
+        }
+      }
+
+      &:hover {
+        background: #fef3c7;
+      }
+    }
   }
 
   .todo-highlight-btn {
@@ -73,16 +84,12 @@
     white-space: nowrap;
   }
 
-  li:hover .todo-highlight-btn {
-    display: inline-block;
-  }
-
   @media (max-width: 767px) {
     li.highlighted {
       padding-right: 10px;
     }
 
-    li .todo-highlight-btn {
+    .todo-highlight-btn {
       display: none;
     }
 
@@ -143,7 +150,7 @@
 
       &:first-child {
         flex: 0 0 auto;
-        width: 3.5em;
+        width: $todo-priority-width;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -178,9 +185,7 @@
   .priority_1,
   .priority_2,
   .priority_3 {
-    width: 3.5em;
-    min-width: 3.5em;
-    max-width: 3.5em;
+    @include fixed-priority-width($todo-priority-width);
     box-sizing: border-box;
   }
   
@@ -200,13 +205,11 @@ html:lang(en) .todo {
   .priority_1,
   .priority_2,
   .priority_3 {
-    width: 4.5em;
-    min-width: 4.5em;
-    max-width: 4.5em;
+    @include fixed-priority-width($todo-priority-width-en);
   }
 
   form.todo table.todo-form td:first-child {
-    width: 4.5em;
+    width: $todo-priority-width-en;
 
     select {
       width: auto;
