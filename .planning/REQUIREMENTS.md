@@ -7,10 +7,10 @@
 
 ### モバイル UI (MOB)
 
-- [ ] **MOB-01**: タッチデバイス（`@media (hover: none)`）でも「追加」リンクが表示され、タップできる
-- [ ] **MOB-02**: インライン追加フォームが ≤767px で縦積みレイアウトになる（`flex-wrap` 対応）
-- [ ] **MOB-03**: `/todos/new` および `/todos/edit` 単独ページにも `.todo` ラッパーを追加し、同じ CSS スコープを共有する
-- [ ] **MOB-04**: フォーム入力に `font-size: 1rem` を設定し、iOS Safari の自動ズームを防止する
+- [x] **MOB-01**: タッチデバイス（`@media (hover: none)`）でも「追加」リンクが表示され、タップできる
+- [x] **MOB-02**: インライン追加フォームが ≤767px で縦積みレイアウトになる（`flex-wrap` 対応）
+- [x] **MOB-03**: `/todos/new` および `/todos/edit` 単独ページにも `.todo` ラッパーを追加し、同じ CSS スコープを共有する
+- [x] **MOB-04**: フォーム入力に `font-size: 1rem` を設定し、iOS Safari の自動ズームを防止する
 
 ### テスト (TEST)
 
@@ -39,10 +39,10 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| MOB-01 | Phase 129 | Pending |
-| MOB-02 | Phase 129 | Pending |
-| MOB-03 | Phase 129 | Pending |
-| MOB-04 | Phase 129 | Pending |
+| MOB-01 | Phase 129 | Complete |
+| MOB-02 | Phase 129 | Complete |
+| MOB-03 | Phase 129 | Complete |
+| MOB-04 | Phase 129 | Complete |
 | TEST-01 | Phase 130 | Pending |
 | TEST-02 | Phase 130 | Pending |
 | TEST-03 | Phase 130 | Pending |
