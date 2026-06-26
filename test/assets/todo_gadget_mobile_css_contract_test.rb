@@ -30,11 +30,12 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
     )
   end
 
-  test 'todos.js toggles title--gadget-actions-visible on mobile header tap' do
+  test 'todos.js binds header tap-to-reveal on title--gadget-with-icon within gadget root' do
     assert_match(
-      /title--gadget-actions-visible/,
+      /\.on\(\s*['\"]click['\"],\s*['\"]\.title--gadget-with-icon['\"]/,
       @todos_js,
-      'todos.js must toggle .title--gadget-actions-visible on the todo gadget header for mobile tap-to-reveal.'
+      'todos.js must delegate click on .title--gadget-with-icon within the gadget root (#todo). ' \
+      'Do not use .gadget.todo .title--gadget-with-icon — jQuery treats the left side as a descendant of the root, so it never matches.'
     )
   end
 end

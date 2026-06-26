@@ -35,10 +35,18 @@ todos.init = function(selector) {
     e.stopPropagation();
   });
 
-  $(selector).on('click', '.gadget.todo .gadget-title-icon, .gadget.todo .gadget-title-text', function(e) {
-    if (!MOBILE_MQ.matches) return;
+  // Same stopPropagation as action links: touch-punch on the sortable handle (div.title)
+  // otherwise captures touchstart and suppresses the click that reveals "追加".
+  $(selector).on('mousedown touchstart', '.title--gadget-with-icon', function(e) {
+    if ($(e.target).closest('.todo-gadget-new-link, .todo-gadget-complete-link').length) return;
     e.stopPropagation();
-    $(this).closest('.title--gadget-with-icon').toggleClass('title--gadget-actions-visible');
+  });
+
+  $(selector).on('click', '.title--gadget-with-icon', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if ($(e.target).closest('.todo-gadget-new-link, .todo-gadget-complete-link').length) return;
+    e.stopPropagation();
+    $(this).toggleClass('title--gadget-actions-visible');
   });
 
   $(selector).on('dblclick', 'li', function() {
