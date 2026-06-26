@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
 current_phase: 129
-status: completed
+status: executing
 stopped_at: context exhaustion at 76% (2026-06-26)
-last_updated: "2026-06-26T14:23:10.630Z"
+last_updated: "2026-06-26T14:49:48.124Z"
 last_activity: 2026-06-26
 last_activity_desc: Phase 129 marked complete
 progress:
@@ -22,7 +22,7 @@ progress:
 
 Phase: 129 — COMPLETE
 Plan: —
-Status: Phase 129 complete
+Status: Ready to execute
 Last activity: 2026-06-26 — Phase 129 marked complete
 
 ```
