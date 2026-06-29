@@ -43,9 +43,7 @@ end
 
     @todo_count = find('#todo').all('li').size
 
-    within '#todo' do
-      click_todo_gadget_new_link
-    end
+    click_todo_gadget_new_link
     assert has_selector?('form.todo')
     capture
 
