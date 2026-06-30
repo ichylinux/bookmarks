@@ -46,7 +46,9 @@ div.gadgets {
       div.title.title--gadget-with-icon .gadget-title-text {
         min-width: 0;
       }
-      div.title:hover {
+      // Entire header row is the sortable handle (incl. padding/gaps); action links
+      // override below with higher-specificity cursor: pointer (Windows Chrome).
+      div.title.title--gadget-with-icon {
         cursor: move;
       }
     }
@@ -295,6 +297,13 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   border-radius: 3px;
   border: 1px solid currentColor;
   line-height: 1.4;
+  cursor: pointer;
+}
+
+// Beat div.title { cursor: move } on Windows Chrome (parent :hover no longer used).
+div.title.title--gadget-with-icon .bookmark-gadget-new-link,
+div.title.title--gadget-with-icon .todo-gadget-new-link,
+div.title.title--gadget-with-icon .todo-gadget-complete-link {
   cursor: pointer;
 }
 
