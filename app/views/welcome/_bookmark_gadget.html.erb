@@ -4,10 +4,12 @@
 <div id="<%= gadget.gadget_id %>" class="gadget">
   <div>
     <div class="title title--gadget-with-icon" data-gadget-icon="bookmark">
-      <span class="gadget-title-icon gadget-title-icon--bookmark" aria-hidden="true">
-        <%= render 'icons/service', variant: :bookmark %>
+      <span class="gadget-title-drag-handle">
+        <span class="gadget-title-icon gadget-title-icon--bookmark" aria-hidden="true">
+          <%= render 'icons/service', variant: :bookmark %>
+        </span>
+        <span class="gadget-title-text"><%= gadget.title %></span>
       </span>
-      <span class="gadget-title-text"><%= gadget.title %></span>
       <a href="#" class="bookmark-gadget-new-link" aria-label="<%= t('welcome.bookmark_gadget.new_link_aria_label') %>" data-dialog="bookmark-new-dialog"><%= t('welcome.bookmark_gadget.new_link') %></a>
     </div>
 

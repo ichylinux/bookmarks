@@ -46,7 +46,7 @@
     const mobile = isMobileViewport();
     const sortableOptions = {
       connectWith: '.gadgets',
-      handle: 'div.title',
+      handle: '.gadget-title-drag-handle',
       tolerance: 'pointer',
       start: function(_event, ui) {
         $(this).addClass('dragging');

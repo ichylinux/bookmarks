@@ -20,7 +20,7 @@ class PortalGadgetSortJsContractTest < ActiveSupport::TestCase
     assert_includes @source, 'window.matchMedia(MOBILE_MEDIA).matches'
     assert_includes @source, 'LONG_PRESS_MS = 2000'
     assert_includes @source, 'sortableOptions.delay = LONG_PRESS_MS'
-    assert_includes @source, "handle: 'div.title'"
+    assert_includes @source, "handle: '.gadget-title-drag-handle'"
   end
 
   test 'enters expanded column mode while sorting on mobile' do

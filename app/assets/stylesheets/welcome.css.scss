@@ -24,6 +24,15 @@ div.gadgets {
         gap: 6px;
       }
 
+      div.title.title--gadget-with-icon .gadget-title-drag-handle {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: move;
+      }
+
       div.title.title--gadget-with-icon .gadget-title-icon {
         flex-shrink: 0;
         display: inline-flex;
@@ -45,11 +54,6 @@ div.gadgets {
 
       div.title.title--gadget-with-icon .gadget-title-text {
         min-width: 0;
-      }
-      // Entire header row is the sortable handle (incl. padding/gaps); action links
-      // override below with higher-specificity cursor: pointer (Windows Chrome).
-      div.title.title--gadget-with-icon {
-        cursor: move;
       }
     }
   }
@@ -153,11 +157,11 @@ div.gadgets {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   }
 
-  .gadgets.dragging .gadget .title {
+  .gadgets.dragging .gadget .gadget-title-drag-handle {
     cursor: grabbing;
   }
 
-  .gadget .title {
+  .gadget .gadget-title-drag-handle {
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
@@ -297,13 +301,6 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   border-radius: 3px;
   border: 1px solid currentColor;
   line-height: 1.4;
-  cursor: pointer;
-}
-
-// Beat div.title { cursor: move } on Windows Chrome (parent :hover no longer used).
-div.title.title--gadget-with-icon .bookmark-gadget-new-link,
-div.title.title--gadget-with-icon .todo-gadget-new-link,
-div.title.title--gadget-with-icon .todo-gadget-complete-link {
   cursor: pointer;
 }
 

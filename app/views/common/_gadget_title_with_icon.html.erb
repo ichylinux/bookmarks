@@ -1,14 +1,16 @@
 <% v = variant.to_sym %>
 <% feed_img = (v == :feed && local_assigns[:image_url].present?) ? image_url : nil %>
 <div class="title title--gadget-with-icon" data-gadget-icon="<%= v %>">
-  <span class="gadget-title-icon gadget-title-icon--<%= v %><%= feed_img ? ' gadget-title-icon--with-image' : '' %>" aria-hidden="true">
-    <% if feed_img %>
-      <%= image_tag feed_img, class: 'gadget-title-icon__img', alt: '', size: '24x24', loading: 'lazy', decoding: 'async' %>
-    <% else %>
-      <%= render 'icons/service', variant: v %>
-    <% end %>
+  <span class="gadget-title-drag-handle">
+    <span class="gadget-title-icon gadget-title-icon--<%= v %><%= feed_img ? ' gadget-title-icon--with-image' : '' %>" aria-hidden="true">
+      <% if feed_img %>
+        <%= image_tag feed_img, class: 'gadget-title-icon__img', alt: '', size: '24x24', loading: 'lazy', decoding: 'async' %>
+      <% else %>
+        <%= render 'icons/service', variant: v %>
+      <% end %>
+    </span>
+    <span class="gadget-title-text"><%= yield %></span>
   </span>
-  <span class="gadget-title-text"><%= yield %></span>
   <% if local_assigns[:header_link] %>
     <%= header_link %>
   <% end %>
