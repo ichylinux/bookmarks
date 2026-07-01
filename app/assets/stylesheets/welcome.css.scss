@@ -337,6 +337,9 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 div.title:hover .bookmark-gadget-new-link,
 div.title:hover .todo-gadget-new-link {
   opacity: 1;
+  // hover:none devices (common on Windows Chrome) keep pointer-events:none until
+  // title hover — without this, the revealed link looks clickable but ignores clicks.
+  pointer-events: auto;
 }
 
 // Complete group: hidden until JS shows it (JS toggles to inline-flex when count > 0)
