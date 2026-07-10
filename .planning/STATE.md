@@ -23,7 +23,7 @@ progress:
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-06-26 — Milestone v1.37.0 completed and archived
+Last activity: 2026-07-10 - Completed quick task 260710-p6v: モバイルでタスクを完了した後にガジェットヘッダに追加ボタンが表示される不具合を修正
 
 ## Project Reference
 
@@ -85,6 +85,12 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 ### Blockers/Concerns
 
 - Mobile scroll stickiness: `e.preventDefault()` in `portal_mobile_tabs.js` hijacks native scroll if initial touch is slightly horizontal. (Identified 2026-06-04)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260710-p6v | モバイルでタスク完了後にガジェットヘッダの追加ボタンが誤表示される不具合を修正 | 2026-07-10 | 2212e00 | [260710-p6v-mobile-gadget-add-btn-after-done](./quick/260710-p6v-mobile-gadget-add-btn-after-done/) |
 
 ## Operator Next Steps
 
