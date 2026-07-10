@@ -225,5 +225,6 @@ todos.delete_todos = function(trigger) {
   $.post(url, params, function () {
     ol.find('li.selected').hide();
     todos._updateCompleteGroup(ol);
+    ol.closest('.gadget.todo').find('.title--gadget-with-icon').removeClass('title--gadget-actions-visible');
   });
 };

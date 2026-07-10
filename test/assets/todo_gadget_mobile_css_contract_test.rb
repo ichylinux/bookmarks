@@ -38,4 +38,13 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
       'Do not use .gadget.todo .title--gadget-with-icon — jQuery treats the left side as a descendant of the root, so it never matches.'
     )
   end
+
+  test 'todos.js delete_todos success callback removes title--gadget-actions-visible from the gadget header' do
+    assert_match(
+      /delete_todos[\s\S]*?removeClass\(\s*['\"]title--gadget-actions-visible['\"]\s*\)/,
+      @todos_js,
+      'todos.js delete_todos success callback must removeClass("title--gadget-actions-visible") from the gadget header, ' \
+      'so the "追加" link stays hidden on mobile immediately after bulk-completing tasks.'
+    )
+  end
 end
