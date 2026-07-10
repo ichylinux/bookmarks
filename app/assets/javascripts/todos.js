@@ -207,7 +207,7 @@ $(document).on('change', '.todo-done-form input[type=checkbox]', function() {
   todos.toggle_done(this);
 });
 
-todos.delete_todos = function(trigger) {
+todos.complete_todos = function(trigger) {
   const $trigger = $(trigger);
   const ol = $trigger.closest('ol').length
     ? $trigger.closest('ol')

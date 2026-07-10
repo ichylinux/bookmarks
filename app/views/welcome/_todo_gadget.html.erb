@@ -23,9 +23,9 @@
                  ) +
                  link_to(
                    t('todos.actions.complete'),
-                   delete_todos_path,
+                   complete_todos_path,
                    class: 'todo-gadget-complete-link',
-                   onclick: 'todos.delete_todos(this); return false;'
+                   onclick: 'todos.complete_todos(this); return false;'
                  )
                } do %>
       <%= gadget.title %>

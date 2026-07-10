@@ -62,7 +62,7 @@ class TodosController < ApplicationController
     render json: { done: @todo.done? }
   end
 
-  def delete
+  def complete
     if params[:todo_id].present?
       Todo.transaction do
         params[:todo_id].each do |id|

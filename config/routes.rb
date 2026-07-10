@@ -65,7 +65,7 @@ Rails.application.routes.draw do
 
   resources :todos do
     collection do
-      post 'delete'
+      post 'complete'
     end
     member do
       patch 'toggle_highlight'

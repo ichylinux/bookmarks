@@ -39,11 +39,11 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
     )
   end
 
-  test 'todos.js delete_todos success callback removes title--gadget-actions-visible from the gadget header' do
+  test 'todos.js complete_todos success callback removes title--gadget-actions-visible from the gadget header' do
     assert_match(
-      /delete_todos[\s\S]*?removeClass\(\s*['\"]title--gadget-actions-visible['\"]\s*\)/,
+      /complete_todos[\s\S]*?removeClass\(\s*['\"]title--gadget-actions-visible['\"]\s*\)/,
       @todos_js,
-      'todos.js delete_todos success callback must removeClass("title--gadget-actions-visible") from the gadget header, ' \
+      'todos.js complete_todos success callback must removeClass("title--gadget-actions-visible") from the gadget header, ' \
       'so the "追加" link stays hidden on mobile immediately after bulk-completing tasks.'
     )
   end

@@ -117,12 +117,12 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  def test_他人のタスクはバッチ削除できない
+  def test_他人のタスクはバッチ完了できない
     sign_in user
     assert todo = Todo.where('user_id <> ?', user).first
 
     assert_no_difference 'Todo.not_deleted.count' do
-      post delete_todos_path, params: { todo_id: [todo.id] }
+      post complete_todos_path, params: { todo_id: [todo.id] }
     end
     assert_response :not_found
     assert_not todo.reload.done?
@@ -134,7 +134,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
 
     assert_not todo.done?
 
-    post delete_todos_path, params: { todo_id: [todo.id] }
+    post complete_todos_path, params: { todo_id: [todo.id] }
 
     assert_response :success
     assert todo.reload.done?
@@ -150,7 +150,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     todo3.update!(done: false)
     sign_in user
 
-    post delete_todos_path, params: { todo_id: [todo1.id, todo3.id] }
+    post complete_todos_path, params: { todo_id: [todo1.id, todo3.id] }
 
     assert_response :success
     assert todo1.reload.done?
@@ -161,7 +161,7 @@ class TodosControllerTest < ActionDispatch::IntegrationTest
     todo = Todo.where(user_id: user.id).not_done.first
     sign_in user
 
-    post delete_todos_path
+    post complete_todos_path
 
     assert_response :success
     assert_not todo.reload.done?
