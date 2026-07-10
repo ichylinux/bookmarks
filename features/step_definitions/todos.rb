@@ -124,3 +124,18 @@ end
   end
   capture
 end
+
+もし /^ガジェットヘッダをタップして操作を表示します。$/ do
+  within '#todo' do
+    find('.gadget-title-text').click
+    assert has_selector?('.title--gadget-actions-visible')
+  end
+  capture
+end
+
+ならば /^ヘッダの操作表示が解除されている$/ do
+  within '#todo' do
+    assert has_no_selector?('.title--gadget-actions-visible')
+  end
+  capture
+end
