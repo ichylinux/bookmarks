@@ -30,6 +30,15 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
     )
   end
 
+  test 'welcome.css.scss scopes title:hover new-link reveal to fine pointer hover only' do
+    assert_match(
+      /@media\s*\(\s*hover\s*:\s*hover\s*\)\s*and\s*\(\s*pointer\s*:\s*fine\s*\)\s*\{[\s\S]*?div\.title:hover\s+\.todo-gadget-new-link/,
+      @welcome,
+      'welcome.css.scss must wrap div.title:hover .todo-gadget-new-link in @media (hover: hover) and (pointer: fine) ' \
+      'so sticky :hover on touch devices cannot leave the "追加" link visible after completing tasks.'
+    )
+  end
+
   test 'todos.js binds header tap-to-reveal on title--gadget-with-icon within gadget root' do
     assert_match(
       /\.on\(\s*['\"]click['\"],\s*['\"]\.title--gadget-with-icon['\"]/,

@@ -136,6 +136,8 @@ end
 ならば /^ヘッダの操作表示が解除されている$/ do
   within '#todo' do
     assert has_no_selector?('.title--gadget-actions-visible')
+    # opacity:0 / sticky :hover でも「追加」が画面上に見えていないこと
+    assert has_no_selector?('.todo-gadget-new-link', visible: true)
   end
   capture
 end
