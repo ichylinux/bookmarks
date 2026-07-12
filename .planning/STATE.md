@@ -5,9 +5,9 @@ milestone_name: モバイルでのタスク追加機能
 current_phase: 37.0
 status: Awaiting next milestone
 stopped_at: context exhaustion at 82% (2026-06-26)
-last_updated: "2026-06-26T16:13:42.611Z"
-last_activity: 2026-06-26
-last_activity_desc: Milestone v1.37.0 completed and archived
+last_updated: "2026-07-12T05:50:00.000Z"
+last_activity: 2026-07-12
+last_activity_desc: "Completed quick task 260712-j75: harden mobile new-link against sticky :hover"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -23,7 +23,7 @@ progress:
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-10 - Completed quick task 260710-p6v: モバイルでタスクを完了した後にガジェットヘッダに追加ボタンが表示される不具合を修正
+Last activity: 2026-07-12 - Completed quick task 260712-j75: Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない
 
 ## Project Reference
 
@@ -91,6 +91,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260710-p6v | モバイルでタスク完了後にガジェットヘッダの追加ボタンが誤表示される不具合を修正 | 2026-07-10 | 2212e00 | [260710-p6v-mobile-gadget-add-btn-after-done](./quick/260710-p6v-mobile-gadget-add-btn-after-done/) |
+| 260712-j75 | Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない | 2026-07-12 | b0f4c19 | [260712-j75-fix-failing-cucumber-features-02-feature](./quick/260712-j75-fix-failing-cucumber-features-02-feature/) |
 
 ## Operator Next Steps
 
