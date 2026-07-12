@@ -56,4 +56,14 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
       'so the "追加" link stays hidden on mobile immediately after bulk-completing tasks.'
     )
   end
+
+  test 'welcome.css.scss hides new-link on mobile independent of :hover (QUICK-MOB-ADDBTN-02)' do
+    assert_match(
+      /@media\s*\(\s*max-width\s*:\s*767px\s*\)[\s\S]*?\.gadget\.todo\s+\.title--gadget-with-icon\s+\.todo-gadget-new-link[\s\S]*?opacity\s*:\s*0/,
+      @welcome,
+      'On mobile, "追加" visibility must be controlled solely by the tap-reveal class, not by :hover. ' \
+      'welcome.css.scss must set opacity: 0 on .gadget.todo .title--gadget-with-icon .todo-gadget-new-link ' \
+      'inside @media (max-width: 767px) with specificity (0,4,0) to override the :hover rule.'
+    )
+  end
 end

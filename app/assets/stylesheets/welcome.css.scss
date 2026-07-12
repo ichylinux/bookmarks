@@ -328,6 +328,13 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     pointer-events: none;
   }
 
+  // Specificity (0,4,0) — overrides :hover rule (0,3,1) so headless Chrome's
+  // sticky hover cannot expose "追加" on mobile after completing tasks.
+  // QUICK-MOB-ADDBTN-02
+  .gadget.todo .title--gadget-with-icon .todo-gadget-new-link {
+    opacity: 0;
+  }
+
   .gadget.todo .title--gadget-with-icon.title--gadget-actions-visible .todo-gadget-new-link {
     opacity: 1;
     pointer-events: auto;
