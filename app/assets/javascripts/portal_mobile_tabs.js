@@ -103,10 +103,16 @@ $(function () {
   let startY = 0;
   let scrollIntent = false;
   let totalDx = 0;
+  // Gadget headers stopPropagation() their touchstart (see todos.js) so it
+  // never reaches this document listener. Without this flag, touchend would
+  // then reuse the stale totalDx from the previous swipe and flip columns on
+  // a plain tap.
+  let gestureActive = false;
 
   document.addEventListener(
     'touchstart',
     function (e) {
+      gestureActive = false;
       if (gestureBlocked(resolvePortalEl())) return;
       const t = e.touches[0];
       if (!t) return;
@@ -114,6 +120,7 @@ $(function () {
       startY = t.clientY;
       scrollIntent = false;
       totalDx = 0;
+      gestureActive = true;
     },
     { passive: true }
   );
@@ -121,6 +128,7 @@ $(function () {
   document.addEventListener(
     'touchmove',
     function (e) {
+      if (!gestureActive) return;
       if (gestureBlocked(resolvePortalEl())) return;
       if (scrollIntent) return;
       const t = e.touches[0];
@@ -139,9 +147,15 @@ $(function () {
   );
 
   document.addEventListener('touchend', function () {
+    if (!gestureActive) return;
+    gestureActive = false;
     const portalEl = resolvePortalEl();
     if (gestureBlocked(portalEl)) return;
     handleSwipeEnd(portalEl, totalDx, scrollIntent);
+  });
+
+  document.addEventListener('touchcancel', function () {
+    gestureActive = false;
   });
 
   if (isMobileViewport()) {
