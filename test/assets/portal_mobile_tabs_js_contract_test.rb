@@ -62,6 +62,17 @@ class PortalMobileTabsJsContractTest < ActiveSupport::TestCase
     assert_includes @welcome_view, "document.documentElement.style.setProperty('--portal-initial-active-index', String(restored));"
   end
 
+  test 'touchend ignores gestures whose touchstart never reached document' do
+    # Gadget headers stopPropagation() their touchstart (todos.js), so without
+    # this guard a header tap after a swipe would replay the stale totalDx.
+    assert_includes @source, 'let gestureActive = false;'
+    assert_match(/'touchstart',\s*function \(e\) \{\s*gestureActive = false;/m, @source)
+    assert_match(/totalDx = 0;\s*gestureActive = true;/m, @source)
+    assert_match(/'touchmove',\s*function \(e\) \{\s*if \(!gestureActive\) return;/m, @source)
+    assert_match(/'touchend', function \(\) \{\s*if \(!gestureActive\) return;\s*gestureActive = false;/m, @source)
+    assert_match(/'touchcancel', function \(\) \{\s*gestureActive = false;/m, @source)
+  end
+
   test 'activateColumn calls portalLazy loadColumn on mobile' do
     assert_match(
       /const activateColumn = function.*?window\.portalLazy\.loadColumn\(index\)/m,
