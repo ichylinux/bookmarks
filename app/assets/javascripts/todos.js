@@ -5,7 +5,16 @@ window.todos = window.todos || {};
 // file or the alias here will become stale.
 const todos = window.todos;
 
-const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
+// Shared mobile breakpoint query — single source of truth for todos.js,
+// note_gadget.js, and bookmark_gadget.js (matches the CSS breakpoint in
+// welcome.css.scss). Exposed on window rather than declared with `const`
+// because Sprockets concatenates these files into one script; a bare
+// top-level `const` would collide across files, whereas each file reads
+// this bare identifier via global-object fallback once assigned here. Safe
+// regardless of require_tree load order since every consumer only reads it
+// from inside a deferred callback (event handler / $(document).ready),
+// which always runs after this synchronous assignment.
+window.MOBILE_MQ = window.matchMedia('(max-width: 767px)');
 const DOUBLE_TAP_MS = 350;
 const TAP_MOVE_THRESHOLD_PX = 20;
 

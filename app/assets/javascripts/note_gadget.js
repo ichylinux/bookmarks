@@ -52,7 +52,7 @@ $(function() {
       }
     });
 
-    const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
+    // MOBILE_MQ is shared globally — defined once in todos.js.
     const DOUBLE_TAP_MS = 350;
     const TAP_MOVE_THRESHOLD_PX = 20;
 

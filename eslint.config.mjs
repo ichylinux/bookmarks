@@ -30,6 +30,7 @@ export default [
         jQuery: 'readonly',
         ActionCable: 'readonly',
         App: 'writable',
+        MOBILE_MQ: 'readonly',
       },
     },
   },
