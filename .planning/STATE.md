@@ -92,6 +92,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 |---|-------------|------|--------|-----------|
 | 260710-p6v | モバイルでタスク完了後にガジェットヘッダの追加ボタンが誤表示される不具合を修正 | 2026-07-10 | 2212e00 | [260710-p6v-mobile-gadget-add-btn-after-done](./quick/260710-p6v-mobile-gadget-add-btn-after-done/) |
 | 260712-j75 | Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない | 2026-07-12 | b0f4c19 | [260712-j75-fix-failing-cucumber-features-02-feature](./quick/260712-j75-fix-failing-cucumber-features-02-feature/) |
+| 260716-h4d | モバイルのブックマークガジェットにタスクと同様のヘッダタップで追加ボタンを表示する機能を追加 | 2026-07-16 | 387bfb3 | [260716-h4d-mobile-bookmark-add](./quick/260716-h4d-mobile-bookmark-add/) |
 
 ## Operator Next Steps
 
