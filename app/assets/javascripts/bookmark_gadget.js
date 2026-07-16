@@ -2,7 +2,6 @@
 $(document).ready(() => {
   const STORAGE_KEY = 'bookmark_expanded_folders';
   const BOOKMARK_HEADER_SELECTOR = '.title--gadget-with-icon[data-gadget-icon="bookmark"]';
-  // MOBILE_MQ is shared globally — defined once in todos.js.
 
   function getExpandedFolders() {
     const stored = localStorage.getItem(STORAGE_KEY);

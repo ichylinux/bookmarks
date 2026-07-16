@@ -52,7 +52,6 @@ $(function() {
       }
     });
 
-    // MOBILE_MQ is shared globally — defined once in todos.js.
     const DOUBLE_TAP_MS = 350;
     const TAP_MOVE_THRESHOLD_PX = 20;
 
