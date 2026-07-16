@@ -1,6 +1,8 @@
 // ブックマークガジェットのフォルダ開閉機能 + 新規追加ダイアログ
 $(document).ready(() => {
   const STORAGE_KEY = 'bookmark_expanded_folders';
+  const BOOKMARK_HEADER_SELECTOR = '.title--gadget-with-icon[data-gadget-icon="bookmark"]';
+  const MOBILE_MQ = window.matchMedia('(max-width: 767px)');
 
   function getExpandedFolders() {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -45,8 +47,35 @@ $(document).ready(() => {
   }
 
   // 新規ブックマークダイアログ
-  $(document).on('mousedown', '.bookmark-gadget-new-link', function(e) {
+  // mousedown/touchstart のバブリングを止め、jQuery UI sortable（モバイルでは
+  // touch-punch）がガジェット並べ替えドラッグの開始としてこのタップを捕捉しない
+  // ようにする（todos.js の .todo-gadget-new-link 対策と同じ手当て）。
+  $(document).on('mousedown touchstart', '.bookmark-gadget-new-link', function(e) {
     e.stopPropagation();
+  });
+
+  // ヘッダのドラッグハンドル（.gadget-title-drag-handle）が touch-punch で
+  // touchstart を捕捉すると「追加」表示切替のタップが effectively 無効になる。
+  // 追加リンク自身のタップはここでは止めない。
+  $(document).on('mousedown touchstart', BOOKMARK_HEADER_SELECTOR, function(e) {
+    if ($(e.target).closest('.bookmark-gadget-new-link').length) return;
+    e.stopPropagation();
+  });
+
+  // モバイルでヘッダ（アイコン/タイトル）をタップすると「追加」リンクの表示を
+  // 切り替える（todos.js の title--gadget-actions-visible トグルと同じ挙動）。
+  $(document).on('click', BOOKMARK_HEADER_SELECTOR, function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if ($(e.target).closest('.bookmark-gadget-new-link').length) return;
+    e.stopPropagation();
+    $(this).toggleClass('title--gadget-actions-visible');
+  });
+
+  // ヘッダ外をタップしたら表示中の「追加」を閉じる。
+  $(document).on('touchstart', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if ($(e.target).closest(BOOKMARK_HEADER_SELECTOR).length) return;
+    $(BOOKMARK_HEADER_SELECTOR).removeClass('title--gadget-actions-visible');
   });
 
   $(document).on('click', '.bookmark-gadget-new-link', function(e) {

@@ -339,6 +339,22 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     opacity: 1;
     pointer-events: auto;
   }
+
+  // Bookmark gadget parity (QUICK-MOB-BM-ADD-01): same tap-to-reveal pattern as
+  // the task gadget above, scoped via the header's data-gadget-icon attribute
+  // (the bookmark gadget root has no `.todo`-style modifier class to hang a
+  // compound selector off of). Specificity (0,4,0) — same as the todo hide rule
+  // above — overrides the :hover rule (0,3,1) below.
+  .gadget .title--gadget-with-icon[data-gadget-icon="bookmark"] .bookmark-gadget-new-link {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  // Specificity (0,5,0) — same as the todo reveal rule above.
+  .gadget .title--gadget-with-icon[data-gadget-icon="bookmark"].title--gadget-actions-visible .bookmark-gadget-new-link {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 // Only real pointer hover — touch browsers keep :hover "stuck" after a tap, which
