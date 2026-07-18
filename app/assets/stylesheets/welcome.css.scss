@@ -194,8 +194,8 @@ div.gadgets {
 
 $bookmark-folder-toggle-width: 1.1em;
 $bookmark-folder-toggle-gap: 0.25em;
-$bookmark-folder-bookmark-indent-fudge: 0.28em; // optical align with .folder-name text start
-$bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge} - 1ch);
+$bookmark-folder-bookmark-indent-fudge: -0.72em; // nudge folder bookmarks left to align with .folder-name
+$bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookmark-folder-toggle-gap} + #{$bookmark-folder-bookmark-indent-fudge});
 
 #bookmark_gadget .folder-header {
   line-height: 1.3em; // match common.css ol li
