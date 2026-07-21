@@ -44,17 +44,37 @@ todos.init = function(selector) {
     e.stopPropagation();
   });
 
-  // Same stopPropagation as action links: touch-punch on the sortable handle
-  // (.gadget-title-drag-handle) otherwise captures touchstart and suppresses the
-  // click that reveals "追加".
-  $(selector).on('mousedown touchstart', '.title--gadget-with-icon', function(e) {
-    if ($(e.target).closest('.todo-gadget-new-link, .todo-gadget-complete-link').length) return;
-    e.stopPropagation();
+  // Tap-to-reveal on the drag handle: events must bubble to .gadgets for sortable,
+  // but touch-punch suppresses click, so use touchend with a movement threshold.
+  $(selector).on('touchstart', '.gadget-title-drag-handle', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    const t = e.originalEvent.touches[0];
+    $(this).data('tapStartX', t.clientX);
+    $(this).data('tapStartY', t.clientY);
+  });
+
+  $(selector).on('touchend', '.gadget-title-drag-handle', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if ($(this).closest('.portal').hasClass('portal--gadget-sorting')) return;
+    const changed = (e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) || null;
+    if (!changed) return;
+
+    const startX = $(this).data('tapStartX');
+    const startY = $(this).data('tapStartY');
+    if (typeof startX === 'number' && typeof startY === 'number') {
+      if (Math.abs(changed.clientX - startX) > TAP_MOVE_THRESHOLD_PX ||
+          Math.abs(changed.clientY - startY) > TAP_MOVE_THRESHOLD_PX) {
+        return;
+      }
+    }
+
+    $(this).closest('.title--gadget-with-icon').toggleClass('title--gadget-actions-visible');
   });
 
   $(selector).on('click', '.title--gadget-with-icon', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(e.target).closest('.todo-gadget-new-link, .todo-gadget-complete-link').length) return;
+    if ($(e.target).closest('.gadget-title-drag-handle').length) return;
     e.stopPropagation();
     $(this).toggleClass('title--gadget-actions-visible');
   });

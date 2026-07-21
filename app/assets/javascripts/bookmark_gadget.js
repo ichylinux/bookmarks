@@ -53,12 +53,33 @@ $(document).ready(() => {
     e.stopPropagation();
   });
 
-  // ヘッダのドラッグハンドル（.gadget-title-drag-handle）が touch-punch で
-  // touchstart を捕捉すると「追加」表示切替のタップが effectively 無効になる。
-  // 追加リンク自身のタップはここでは止めない。
-  $(document).on('mousedown touchstart', BOOKMARK_HEADER_SELECTOR, function(e) {
-    if ($(e.target).closest('.bookmark-gadget-new-link').length) return;
-    e.stopPropagation();
+  const TAP_MOVE_THRESHOLD_PX = 20;
+
+  // ドラッグハンドルは sortable へイベントを伝播させる必要があるため、
+  // touch-punch が click を抑制する分は touchend + 移動閾値で「追加」表示を切り替える。
+  $(document).on('touchstart', BOOKMARK_HEADER_SELECTOR + ' .gadget-title-drag-handle', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    const t = e.originalEvent.touches[0];
+    $(this).data('tapStartX', t.clientX);
+    $(this).data('tapStartY', t.clientY);
+  });
+
+  $(document).on('touchend', BOOKMARK_HEADER_SELECTOR + ' .gadget-title-drag-handle', function(e) {
+    if (!MOBILE_MQ.matches) return;
+    if ($(this).closest('.portal').hasClass('portal--gadget-sorting')) return;
+    const changed = (e.originalEvent.changedTouches && e.originalEvent.changedTouches[0]) || null;
+    if (!changed) return;
+
+    const startX = $(this).data('tapStartX');
+    const startY = $(this).data('tapStartY');
+    if (typeof startX === 'number' && typeof startY === 'number') {
+      if (Math.abs(changed.clientX - startX) > TAP_MOVE_THRESHOLD_PX ||
+          Math.abs(changed.clientY - startY) > TAP_MOVE_THRESHOLD_PX) {
+        return;
+      }
+    }
+
+    $(this).closest(BOOKMARK_HEADER_SELECTOR).toggleClass('title--gadget-actions-visible');
   });
 
   // モバイルでヘッダ（アイコン/タイトル）をタップすると「追加」リンクの表示を
@@ -66,6 +87,7 @@ $(document).ready(() => {
   $(document).on('click', BOOKMARK_HEADER_SELECTOR, function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(e.target).closest('.bookmark-gadget-new-link').length) return;
+    if ($(e.target).closest('.gadget-title-drag-handle').length) return;
     e.stopPropagation();
     $(this).toggleClass('title--gadget-actions-visible');
   });

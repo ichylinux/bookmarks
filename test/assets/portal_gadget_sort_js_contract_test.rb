@@ -39,4 +39,33 @@ class PortalGadgetSortJsContractTest < ActiveSupport::TestCase
   test 'portal mobile swipe is disabled during gadget sorting' do
     assert_includes @mobile_tabs, "portalEl.classList.contains('portal--gadget-sorting')"
   end
+
+  test 'gadget header handlers do not block drag handle touch events from reaching sortable' do
+    todos_js = Rails.root.join('app/assets/javascripts/todos.js').read
+    bookmark_gadget_js = Rails.root.join('app/assets/javascripts/bookmark_gadget.js').read
+
+    refute_match(
+      /\.on\(\s*['"]mousedown touchstart['"],\s*['"]\.title--gadget-with-icon['"][\s\S]*?stopPropagation/,
+      todos_js,
+      'todos.js must not stopPropagation on the entire gadget title; that blocks mobile sortable on the drag handle.'
+    )
+
+    refute_match(
+      /\.on\(\s*['"]mousedown touchstart['"],\s*BOOKMARK_HEADER_SELECTOR[\s\S]*?stopPropagation/,
+      bookmark_gadget_js,
+      'bookmark_gadget.js must not stopPropagation on the entire bookmark header; that blocks mobile sortable on the drag handle.'
+    )
+
+    assert_match(
+      /\.on\(\s*['"]touchend['"],\s*['"]\.gadget-title-drag-handle['"]/,
+      todos_js,
+      'todos.js must use touchend on .gadget-title-drag-handle for mobile tap-to-reveal while allowing sortable.'
+    )
+
+    assert_match(
+      /BOOKMARK_HEADER_SELECTOR \+ ' \.gadget-title-drag-handle'/,
+      bookmark_gadget_js,
+      'bookmark_gadget.js must use touchend on the bookmark drag handle for mobile tap-to-reveal while allowing sortable.'
+    )
+  end
 end
