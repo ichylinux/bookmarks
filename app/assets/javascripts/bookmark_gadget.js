@@ -87,7 +87,6 @@ $(document).ready(() => {
   $(document).on('click', BOOKMARK_HEADER_SELECTOR, function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(e.target).closest('.bookmark-gadget-new-link').length) return;
-    if ($(e.target).closest('.gadget-title-drag-handle').length) return;
     e.stopPropagation();
     $(this).toggleClass('title--gadget-actions-visible');
   });

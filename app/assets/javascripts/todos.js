@@ -74,7 +74,6 @@ todos.init = function(selector) {
   $(selector).on('click', '.title--gadget-with-icon', function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(e.target).closest('.todo-gadget-new-link, .todo-gadget-complete-link').length) return;
-    if ($(e.target).closest('.gadget-title-drag-handle').length) return;
     e.stopPropagation();
     $(this).toggleClass('title--gadget-actions-visible');
   });
