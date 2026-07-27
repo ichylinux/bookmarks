@@ -23,6 +23,36 @@ class PortalGadgetSortJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "handle: '.gadget-title-drag-handle'"
   end
 
+  # ガジェットヘッダのリンク（フィードのサイト名 / Mastodon・X のアカウント名）は
+  # ドラッグハンドルの内側にあるため、この 2 つの手当てが外れると「押してから離す
+  # までに数 px 動くとリンクが開かない」状態に戻る。
+  test 'header links are excluded from the sortable drag handle' do
+    assert_includes @source, "const HEADER_LINK_SELECTOR = '.gadget-title-text a'"
+
+    # (1) リンクの上ではドラッグを開始しない（デスクトップ: 1px 動くと sortable が
+    #     ドラッグを始め preventClickEvent で click が潰される）
+    assert_includes @source, "'input,textarea,button,select,option,' + HEADER_LINK_SELECTOR"
+    assert_includes @source, 'cancel: SORTABLE_CANCEL'
+
+    # (2) touch-punch は cancel を見ずに handle 判定だけで touchstart を握り
+    #     preventDefault() するので、.gadgets に届く前に止める必要がある
+    assert_match(
+      /\$gadgets\.on\(\s*['"]mousedown touchstart['"],\s*HEADER_LINK_SELECTOR/,
+      @source,
+      'portal_gadget_sort.js must stop mousedown/touchstart on gadget header links before they ' \
+      'reach the sortable element, otherwise touch-punch swallows the tap on mobile.'
+    )
+    assert_includes @source, 'e.stopImmediatePropagation()',
+                    'stopPropagation is not enough — touch-punch and sortable bind directly on ' \
+                    'the same .gadgets element, so remaining handlers there must be stopped too.'
+  end
+
+  test 'touch-punch only synthesizes a click when the finger did not move' do
+    # 上記 (2) の前提。この分岐が変わったら header link の手当ても見直すこと。
+    assert_includes @touch_punch, 'if (!this._touchMoved)'
+    assert_includes @touch_punch, 'event.preventDefault();'
+  end
+
   test 'enters expanded column mode while sorting on mobile' do
     assert_includes @source, 'portal--gadget-sorting'
     assert_includes @source, 'enterMobileSortMode'
