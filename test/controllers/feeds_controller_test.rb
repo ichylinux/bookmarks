@@ -213,6 +213,8 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'a.feed-gadget-settings-link[data-dialog=?]', "feed-settings-dialog-#{feed.id}", text: '設定'
     assert_select "dialog#feed-settings-dialog-#{feed.id}.feed-settings-dialog", count: 1
+    assert_select 'form.feed-settings-dialog__form[data-remote=true][data-feed-id=?][data-feed-url=?]',
+                  feed.id.to_s, feed_path(feed), count: 1
   end
 
   def test_ダッシュボードからのAJAX更新はokを返す

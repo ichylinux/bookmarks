@@ -8,9 +8,11 @@
     <%= form_for feed,
                  url: feed_path(feed),
                  method: :patch,
-                 class: 'feed-settings-dialog__form',
                  remote: true,
-                 data: { feed_id: feed.id, feed_url: feed_path(feed) } do |f| %>
+                 html: {
+                   class: 'feed-settings-dialog__form',
+                   data: { feed_id: feed.id, feed_url: feed_path(feed) }
+                 } do |f| %>
       <%= hidden_field_tag :return_to, 'dashboard' %>
       <div class="feed-settings-dialog__field">
         <%= f.label :feed_url %>
