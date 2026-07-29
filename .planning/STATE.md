@@ -4,9 +4,9 @@ milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
 status: Awaiting next milestone
 stopped_at: context exhaustion at 82% (2026-06-26)
-last_updated: "2026-07-29T05:44:36.298Z"
-last_activity: 2026-07-12
-last_activity_desc: "Completed quick task 260712-j75: Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない"
+last_updated: "2026-07-29T10:30:00.000Z"
+last_activity: 2026-07-29
+last_activity_desc: "Completed quick task 260729-qew: refresh landing page info"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -22,7 +22,7 @@ current_phase: 37.0
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-12 - Completed quick task 260712-j75: Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない
+Last activity: 2026-07-29 - Completed quick task 260729-qew: refresh landing page info
 
 ## Project Reference
 
@@ -93,6 +93,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 260712-j75 | Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない | 2026-07-12 | b0f4c19 | [260712-j75-fix-failing-cucumber-features-02-feature](./quick/260712-j75-fix-failing-cucumber-features-02-feature/) |
 | 260716-h4d | モバイルのブックマークガジェットにタスクと同様のヘッダタップで追加ボタンを表示する機能を追加 | 2026-07-16 | 387bfb3 | [260716-h4d-mobile-bookmark-add](./quick/260716-h4d-mobile-bookmark-add/) |
 | 4 | フィードガジェット編集ダイアログ更新後に閉じない問題を修正 | 2026-07-29 | 9922647 | — |
+| 260729-qew | refresh landing page info | 2026-07-29 | f136f88 | [260729-qew-refresh-landing-page-info](./quick/260729-qew-refresh-landing-page-info/) |
 
 ## Operator Next Steps
 
