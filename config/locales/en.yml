@@ -410,6 +410,30 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-07-29"
+          headline: Edit feed gadget settings from your dashboard
+          tag: new
+          description: The feed gadget header now has a settings button. Open the dialog to update the feed URL, site name, and how many items to show — all without leaving the dashboard.
+        - date: "2026-07-27"
+          headline: Fixed gadget header links being swallowed by drag and swipe
+          tag: fix
+          description: Site name links and header action buttons sometimes failed to respond because a reorder drag or column swipe consumed the tap. Gadget header links now react reliably on both desktop and mobile.
+        - date: "2026-07-18"
+          headline: The navigation header now stays put while you scroll
+          tag: ux
+          description: On the Simple theme, the navigation header sticks to the top of the screen, so Home and Notes stay one click away no matter how far down the page you are.
+        - date: "2026-07-16"
+          headline: Add bookmarks from the gadget header on mobile
+          tag: ux
+          description: Tap a bookmark gadget header on your smartphone to reveal the add button — the same gesture already available in the task gadget.
+        - date: "2026-07-10"
+          headline: Fixed the add button lingering after completing tasks on mobile
+          tag: fix
+          description: After marking tasks complete on a smartphone, a leftover touch state could keep the add button visible in the task gadget header. It now hides as expected.
+        - date: "2026-06-27"
+          headline: Add tasks from the gadget header on mobile
+          tag: ux
+          description: Tap a task gadget header on your smartphone to reveal the add button and create a task without leaving the dashboard.
         - date: "2026-06-25"
           headline: Fixed swipe navigation between gadget columns on mobile
           tag: fix
