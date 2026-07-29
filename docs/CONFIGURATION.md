@@ -47,7 +47,7 @@ Mastodon provider is configured with placeholder client credentials in `config/i
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `APP_HOST` | Optional | `localhost` | Host used in mailer URL generation (production `app_config.yml`) |
-| `BOOKMARKS_OTP_LENGTH` | Optional | `6` | Number of digits in TOTP codes |
+| `BOOKMARKS_OTP_LENGTH` | Optional | `6` | Defined in `config/app_config.yml` as `otp_length`, but not read anywhere in application code — `app/models/user.rb` calls `ROTP::TOTP.new` without a `digits:` option, so this variable has no effect on TOTP code length (ROTP's built-in 6-digit default applies regardless) |
 | `SMTP_FROM` | Optional | `from@example.com` | Mailer sender address used by Devise and production ActionMailer |
 
 ### Email / AWS SES (production only)
@@ -106,7 +106,7 @@ production:
     password:                      # AWS_SECRET_ACCESS_KEY
 ```
 
-Access values in application code via `Rails.application.config.app_config.otp_length`, etc.
+Access values in application code via `Rails.application.config.app_config.omniauth_google_oauth2_client_id`, etc. (e.g. `config/initializers/devise.rb`, `app/services/x_client.rb`). Note: `otp_length` is defined here but is never read elsewhere in the codebase — it has no effect on application behavior.
 
 ### `config/database.yml`
 

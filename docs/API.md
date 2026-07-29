@@ -21,7 +21,7 @@ Devise routes under `/users/*` (sessions, registration, passwords, OmniAuth call
 |----------|-------|-------|
 | `bookmarks` | CRUD + `GET /bookmarks/fetch_title` | Folder tree |
 | `feeds` | CRUD + `GET /feeds/fetch_title` | RSS gadgets |
-| `todos` | CRUD + `POST /todos/delete` | Bulk delete |
+| `todos` | CRUD + `POST /todos/complete` | Bulk complete |
 | `notes` | `create`, `update`, `destroy` + `GET /notes/gadget` | AJAX gadget HTML |
 | `preferences` | `index`, `update` | Nested preference attrs |
 | `mastodon_accounts` | Full CRUD | Management + gadget preview |

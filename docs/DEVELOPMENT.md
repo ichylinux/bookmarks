@@ -72,7 +72,7 @@ See [Testing](TESTING.md) for full details.
 ### Ruby
 
 - Two-space indentation (Rails default); no RuboCop config enforced (`.rubocop.yml` is absent).
-- No `frozen_string_literal: true` pragma in `app/` source files.
+- `frozen_string_literal: true` pragma is not consistently applied in `app/` source files (present in `app/controllers/admin/users_controller.rb`, absent elsewhere).
 - Test method names use Japanese for domain actions: `def test_一覧`, `def test_登録`, `def test_削除`.
 - Inline business-rule comments inside models and controllers are written in Japanese; architectural/technical comments may be English.
 
@@ -95,7 +95,7 @@ Rules:
 - Use `const` and `let` only; `var` is disallowed (ESLint will catch it).
 - No ES module `import` — the Sprockets asset pipeline uses `//= require` directives in `application.js`.
 - Reusable modules use the IIFE pattern (`window.moduleName`); page-specific event binding uses jQuery document-ready (`$(function() { ... })`).
-- Allowed globals: `$`, `jQuery`, `ActionCable`, `App`.
+- Allowed globals: `$`, `jQuery`, `ActionCable`, `App`, `MOBILE_MQ`.
 
 Run linting and formatting before every commit:
 

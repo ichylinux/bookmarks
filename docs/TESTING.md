@@ -43,7 +43,7 @@ ESLint is configured in `eslint.config.mjs` using `@babel/eslint-parser` with `e
 bin/rails test                                        # Full suite
 bin/rails test test/models/user_test.rb               # Single file
 bin/rails test test/controllers/                      # All controller tests
-bin/rails test test/models/bookmark_test.rb:42        # Single test by line number
+bin/rails test test/models/user_test.rb:42            # Single test by line number
 ```
 
 ### Cucumber (E2E)
@@ -65,11 +65,11 @@ Test files follow Rails conventions:
 - `test/models/*_test.rb` — ActiveRecord model tests
 - `test/controllers/*_controller_test.rb` — Controller tests using `ActionDispatch::IntegrationTest`
 - `test/services/*_test.rb` — Service object tests
-- `test/mailers/*_mailer_test.rb` — Mailer tests
+- `test/mailers/*_mailer_test.rb` — Mailer tests (directory scaffolded via `.keep`, no mailer tests currently present)
 - `test/helpers/*_helper_test.rb` — Helper tests
 - `test/assets/*_contract_test.rb` — Frontend asset contract/regression tests (no browser)
 - `test/i18n/` — Locale parity tests
-- `test/integration/` — Cross-cutting integration tests
+- `test/integration/` — Cross-cutting integration tests (directory scaffolded via `.keep`, currently empty)
 
 Test method names use Japanese descriptions following the existing convention:
 
@@ -143,7 +143,7 @@ The Cucumber `World` object includes `TestSupport` (which loads all `test/suppor
 
 ## Coverage requirements
 
-No minimum coverage thresholds are configured. `simplecov` is present in the Gemfile (`require: false`) and is activated in CI when the `COVERAGE=true` environment variable is set (Jenkinsfile unit stage). No coverage threshold enforcement is defined; reports are generated for informational purposes only.
+No minimum coverage thresholds are configured. `simplecov` is present in the Gemfile (`require: false`) but is not required or started anywhere in the codebase. The Jenkinsfile unit stage sets `COVERAGE=true`, but no code reads `ENV['COVERAGE']`, so this variable currently has no effect and SimpleCov is not activated.
 
 ## CI integration
 

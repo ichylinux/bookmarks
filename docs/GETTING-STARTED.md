@@ -9,8 +9,8 @@ Before running the app, ensure these tools are installed at the versions below.
 |------|---------|--------|
 | Ruby | 3.4.9 | `.ruby-version` — use rbenv or asdf |
 | Node.js | 22.22.2 | `.node-version` — use nvm or asdf |
-| Yarn | 1.x or 4.x | installed via `npm install -g yarn` |
-| MySQL | 8.0+ | running locally, default port 3306 |
+| Yarn | not pinned in `package.json` (1.22.22 confirmed working) | installed via `npm install -g yarn` |
+| MySQL | not pinned in the repo <!-- VERIFY: confirm minimum supported server version --> | running locally, default port 3306 |
 
 MySQL must be running and reachable at `127.0.0.1:3306` (or override via environment variables — see [Configuration](CONFIGURATION.md)).
 
@@ -60,9 +60,9 @@ MySQL must be running and reachable at `127.0.0.1:3306` (or override via environ
    bin/rails db:reset
    ```
 
-   - `dad:setup` — installs app-level setup (directories, config) for development
-   - `dad:setup:test` — installs test environment setup
-   - `dad:db:create` — creates `bookmarks_dev` and `bookmarks_test` databases
+   - `dad:setup` — runs the `default` [itamae](https://github.com/itamae-kitchen/itamae) role (`config/itamae/roles/default.rb`), which installs the MySQL client system package and runs `bundle install`. May prompt for `sudo` to install OS packages.
+   - `dad:setup:test` — same as `dad:setup`, plus installs the Selenium/headless Chrome driver needed by the Cucumber suite (`config/itamae/roles/test.rb`)
+   - `dad:db:create` — creates `bookmarks_dev` and `bookmarks_test` databases per `config/database.yml`
    - `db:reset` — drops, creates, and seeds the development database
 
 ## First run
