@@ -1,8 +1,16 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<% dialog_id = "feed-settings-dialog-#{@feed.id}" %>
 <div>
   <%= render 'common/gadget_title_with_icon',
         variant: :feed,
-        image_url: @feed.gadget_title_icon_image_url do %>
+        image_url: @feed.gadget_title_icon_image_url,
+        header_link: link_to(
+          t('welcome.feed_gadget.settings_link'),
+          '#',
+          class: 'feed-gadget-settings-link',
+          aria: { label: t('welcome.feed_gadget.settings_link_aria_label') },
+          data: { dialog: dialog_id }
+        ) do %>
     <%= link_to @feed.title, @feed.url, link_opts %>
   <% end %>
   <ol>
@@ -11,3 +19,4 @@
     <% end %>
   </ol>
 </div>
+<%= render 'feeds/settings_dialog', feed: @feed %>

@@ -339,6 +339,11 @@ ja:
       new_link: 追加
       new_link_aria_label: タスクを追加
       selected_count: "%{count}件選択中"
+    feed_gadget:
+      settings_link: 設定
+      settings_link_aria_label: フィードを編集
+      dialog_title: フィードを編集
+      dialog_close_aria_label: 閉じる
     calendar_gadget:
       loading: カレンダーを読み込み中・・・
     feed:
