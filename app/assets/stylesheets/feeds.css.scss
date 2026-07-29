@@ -7,8 +7,9 @@ input[type="text"].feed_url {
 }
 
 input[type="number"].display_count {
-  text-align: right;
-  width: 3em;
+  text-align: center;
+  box-sizing: border-box;
+  width: 5em;
   padding: 0 0.5em;
 }
 
