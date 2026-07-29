@@ -1,0 +1,40 @@
+<% dialog_id = "feed-settings-dialog-#{feed.id}" %>
+<dialog id="<%= dialog_id %>" class="feed-settings-dialog">
+  <div class="feed-settings-dialog__inner">
+    <div class="feed-settings-dialog__header">
+      <span class="feed-settings-dialog__title"><%= t('welcome.feed_gadget.dialog_title') %></span>
+      <button type="button" class="feed-settings-dialog__close" aria-label="<%= t('welcome.feed_gadget.dialog_close_aria_label') %>" data-dialog-close="<%= dialog_id %>">&#x2715;</button>
+    </div>
+    <%= form_for feed,
+                 url: feed_path(feed),
+                 method: :patch,
+                 class: 'feed-settings-dialog__form',
+                 remote: true,
+                 data: { feed_id: feed.id, feed_url: feed_path(feed) } do |f| %>
+      <%= hidden_field_tag :return_to, 'dashboard' %>
+      <div class="feed-settings-dialog__field">
+        <%= f.label :feed_url %>
+        <%= f.text_field :feed_url, class: 'feed_url feed-settings-dialog__input' %>
+      </div>
+      <div class="feed-settings-dialog__field">
+        <%= f.label :title %>
+        <div class="feed-settings-dialog__title-row">
+          <%= f.text_field :title, class: 'feed-settings-dialog__input' %>
+          <button type="button"
+                  onclick="feeds.fetch_title(this); return false;"
+                  data-url="<%= fetch_title_feeds_path %>"
+                  data-feed-url-required-message="<%= t('feeds.form.feed_url_required') %>"
+                  data-feed-fetch-failed-message="<%= t('feeds.form.feed_fetch_failed') %>"
+                  class="feed-settings-dialog__fetch-btn"><%= t('feeds.form.fetch_from_feed') %></button>
+        </div>
+      </div>
+      <div class="feed-settings-dialog__field">
+        <%= f.label :display_count %>
+        <%= f.number_field :display_count, class: 'display_count feed-settings-dialog__input' %>
+      </div>
+      <div class="feed-settings-dialog__actions">
+        <%= f.submit t('feeds.form.submit_update'), class: 'feed-settings-dialog__submit' %>
+      </div>
+    <% end %>
+  </div>
+</dialog>

@@ -204,6 +204,38 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
   end
 
+  def test_show_renders_settings_link_in_gadget_header
+    feed = feed_of(user)
+    stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
+    sign_in user
+    get feed_path(feed, format: :html), xhr: true
+
+    assert_response :success
+    assert_select 'a.feed-gadget-settings-link[data-dialog=?]', "feed-settings-dialog-#{feed.id}", text: '設定'
+    assert_select "dialog#feed-settings-dialog-#{feed.id}.feed-settings-dialog", count: 1
+  end
+
+  def test_ダッシュボードからのAJAX更新はokを返す
+    feed = feed_of(user)
+    sign_in user
+    patch feed_path(feed),
+          params: { feed: feed_params, return_to: 'dashboard' },
+          xhr: true
+
+    assert_response :ok
+  end
+
+  def test_ダッシュボードからのAJAX更新がバリデーションエラーの場合は422を返す
+    feed = feed_of(user)
+    sign_in user
+    patch feed_path(feed),
+          params: { feed: feed_params.merge(title: ''), return_to: 'dashboard' },
+          xhr: true
+
+    assert_response :unprocessable_entity
+    assert_match(/can't be blank|空白/, response.body)
+  end
+
   private
 
   def stub_feed_with_items(items)

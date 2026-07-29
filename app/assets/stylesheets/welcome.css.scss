@@ -292,7 +292,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 // Shared visual style for all gadget header action links
 .bookmark-gadget-new-link,
 .todo-gadget-new-link,
-.todo-gadget-complete-link {
+.todo-gadget-complete-link,
+.feed-gadget-settings-link {
   flex-shrink: 0;
   font-size: 0.78em;
   font-weight: normal;
@@ -306,7 +307,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 
 // New-link only: hover-opacity and auto-margin (pushes to far right)
 .bookmark-gadget-new-link,
-.todo-gadget-new-link {
+.todo-gadget-new-link,
+.feed-gadget-settings-link {
   margin-left: auto;
   opacity: 0;
   transition: opacity 0.12s ease;
@@ -355,13 +357,25 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     opacity: 1;
     pointer-events: auto;
   }
+
+  // Feed gadget parity: same tap-to-reveal pattern as bookmark/task gadgets.
+  .gadget .title--gadget-with-icon[data-gadget-icon="feed"] .feed-gadget-settings-link {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .gadget .title--gadget-with-icon[data-gadget-icon="feed"].title--gadget-actions-visible .feed-gadget-settings-link {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 // Only real pointer hover — touch browsers keep :hover "stuck" after a tap, which
 // would otherwise leave "追加" visible after completing tasks on mobile.
 @media (hover: hover) and (pointer: fine) {
   div.title:hover .bookmark-gadget-new-link,
-  div.title:hover .todo-gadget-new-link {
+  div.title:hover .todo-gadget-new-link,
+  div.title:hover .feed-gadget-settings-link {
     opacity: 1;
     pointer-events: auto;
   }
@@ -384,8 +398,9 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   color: inherit;
 }
 
-// Bookmark new dialog
-.bookmark-new-dialog {
+// Bookmark new dialog / feed settings dialog
+.bookmark-new-dialog,
+.feed-settings-dialog {
   border: none;
   border-radius: 8px;
   padding: 0;
@@ -457,7 +472,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     gap: 6px;
     align-items: center;
 
-    .bookmark-new-dialog__input {
+    .bookmark-new-dialog__input,
+    .feed-settings-dialog__input {
       flex: 1;
       min-width: 0;
     }
