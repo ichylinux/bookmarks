@@ -225,15 +225,12 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
   end
 
-  def test_ダッシュボードからのAJAX更新がバリデーションエラーの場合は422を返す
+  def test_通常の更新は一覧へリダイレクトする
     feed = feed_of(user)
     sign_in user
-    patch feed_path(feed),
-          params: { feed: feed_params.merge(title: ''), return_to: 'dashboard' },
-          xhr: true
+    patch feed_path(feed), params: { feed: feed_params }
 
-    assert_response :unprocessable_entity
-    assert_match(/can't be blank|空白/, response.body)
+    assert_redirected_to feeds_path
   end
 
   private
