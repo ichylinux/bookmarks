@@ -15,17 +15,42 @@ $(document).ready(() => {
     e.stopPropagation();
   });
 
-  $(document).on('mousedown touchstart', FEED_HEADER_SELECTOR, function(e) {
-    if ($(e.target).closest('.feed-gadget-settings-link').length) return;
-    e.stopPropagation();
-  });
+  // document 委譲の stopPropagation だけでは touch-punch が先に touchstart を
+  // 握って click を潰す。portal_gadget_sort.js のヘッダリンク対策と同様に
+  // .gadgets へ直接 bind して stopImmediatePropagation する（#260731-u3v）。
+  function bindFeedHeaderSortGuard() {
+    const $gadgets = $('.gadgets');
+    if (!$gadgets.length) return;
+
+    $gadgets
+      .off('mousedown.feedGadgetHeader touchstart.feedGadgetHeader', FEED_HEADER_SELECTOR)
+      .on('mousedown.feedGadgetHeader touchstart.feedGadgetHeader', FEED_HEADER_SELECTOR, function(e) {
+        if ($(e.target).closest('.feed-gadget-settings-link').length) return;
+        e.stopImmediatePropagation();
+      });
+  }
+
+  bindFeedHeaderSortGuard();
 
   // モバイルでヘッダ（アイコン/タイトル）をタップすると「設定」リンクの表示を切り替える。
+  // フィードだけヘッダタイトルが外部サイトへのリンクのため、初回タップでは遷移を
+  // 抑止する（表示中にサイト名を再タップしたときだけリンク先へ進める）。
   $(document).on('click', FEED_HEADER_SELECTOR, function(e) {
     if (!MOBILE_MQ.matches) return;
     if ($(e.target).closest('.feed-gadget-settings-link').length) return;
+
+    const $header = $(this);
+    const $siteLink = $(e.target).closest('.gadget-title-text a');
+    const actionsVisible = $header.hasClass('title--gadget-actions-visible');
+
+    if ($siteLink.length && actionsVisible) {
+      $header.removeClass('title--gadget-actions-visible');
+      return;
+    }
+
+    e.preventDefault();
     e.stopPropagation();
-    $(this).toggleClass('title--gadget-actions-visible');
+    $header.toggleClass('title--gadget-actions-visible');
   });
 
   $(document).on('touchstart', function(e) {

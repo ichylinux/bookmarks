@@ -1,3 +1,23 @@
+def navigate_to_feed_gadget_column!
+  return if has_selector?('.gadget[id^="feed_"]', visible: true, wait: 1)
+
+  all('button.portal-column-tab').each do |tab|
+    tab.click
+    return if has_selector?('.gadget[id^="feed_"]', visible: true, wait: 1)
+  end
+end
+
+def click_feed_gadget_settings_link
+  within first('.gadget[id^="feed_"]') do
+    header = find('.title--gadget-with-icon[data-gadget-icon="feed"]')
+    unless header[:class].to_s.include?('title--gadget-actions-visible')
+      find('.gadget-title-text').click
+    end
+  end
+  el = find('.gadget[id^="feed_"] .feed-gadget-settings-link', visible: :all)
+  page.execute_script('arguments[0].click()', el)
+end
+
 module FeedGadgetHeaderHelpers
   # feeds/show.html.erb がヘッダに描画するサイト名リンク。
   # common/_gadget_title_with_icon.html.erb 経由で .gadget-title-drag-handle の
@@ -63,5 +83,29 @@ end
 ならば /^ガジェットの並べ替えドラッグは開始されていません。$/ do
   assert !page.evaluate_script('window.__gadgetSortStarted === true'),
          'ヘッダのサイト名を押しただけでガジェットの並べ替えドラッグが始まっています'
+  capture
+end
+
+もし /^フィードガジェットが表示されたモバイル版ルートページを開きます。$/ do
+  sign_in user
+  ensure_mobile_viewport!
+  visit root_path
+  navigate_to_feed_gadget_column!
+  assert has_selector?('.gadget[id^="feed_"]', visible: true)
+  find(feed_header_link_selector, wait: 15)
+  capture
+end
+
+もし /^フィードガジェットのヘッダをタップして操作を表示します。$/ do
+  within first('.gadget[id^="feed_"]') do
+    find('.gadget-title-text').click
+    assert has_selector?('.title--gadget-actions-visible')
+  end
+  capture
+end
+
+もし /^フィード設定リンクをタップしてダイアログを開きます。$/ do
+  click_feed_gadget_settings_link
+  assert has_selector?('dialog.feed-settings-dialog[open]', visible: :all, wait: 5)
   capture
 end

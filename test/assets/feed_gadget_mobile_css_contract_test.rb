@@ -64,4 +64,22 @@ class FeedGadgetMobileCssContractTest < ActiveSupport::TestCase
       'so jQuery UI sortable / touch-punch cannot swallow the tap on mobile.'
     )
   end
+
+  test 'feed_gadget.js stops immediate propagation on the feed header via .gadgets' do
+    assert_match(
+      /\.gadgets[\s\S]*?stopImmediatePropagation\(\)/,
+      @feed_gadget_js,
+      'feed_gadget.js must bind on .gadgets and stopImmediatePropagation on the feed header ' \
+      'so touch-punch cannot suppress the reveal click on mobile.'
+    )
+  end
+
+  test 'feed_gadget.js prevents default navigation on first mobile header tap' do
+    assert_match(
+      /MOBILE_MQ\.matches[\s\S]*?preventDefault\(\)/,
+      @feed_gadget_js,
+      'feed_gadget.js must call preventDefault on the mobile feed header tap so the site-name ' \
+      'link does not navigate before revealing the settings link.'
+    )
+  end
 end
