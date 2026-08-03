@@ -11,7 +11,7 @@
     "ui_safety_gate": true,
     "ai_integration_phase": true,
     "research_before_questions": true,
-    "skip_discuss": false,
+    "skip_discuss": true,
     "use_worktrees": true
   },
   "git": {
