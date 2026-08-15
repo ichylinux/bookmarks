@@ -85,7 +85,7 @@ spec:
   }
   post {
     success {
-      build job: '${APP_NAME}-features', wait: false
+      build job: "${APP_NAME}-features", wait: false
     }
   }
 }
