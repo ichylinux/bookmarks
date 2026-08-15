@@ -1,5 +1,8 @@
 pipeline {
   agent none
+  options {
+    lock(resource: 'global-build-lock')
+  }
   environment {
     APP_NAME = 'bookmarks'
     HEADLESS = 'true'
