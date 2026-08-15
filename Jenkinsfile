@@ -2,10 +2,11 @@ pipeline {
   agent none
   options {
     ansiColor('xterm')
+    lock(resource: 'global-build-lock')
   }
   environment {
     APP_NAME = 'bookmarks'
-    KANIKO_OPTIONS = "--cache=${CACHE} --compressed-caching=false --build-arg registry=${ECR}"
+    KANIKO_OPTIONS = "--cache=${CACHE} --cache-repo=${ECR}/${APP_NAME}/cache --compressed-caching=false --build-arg registry=${ECR}"
     MILESTONE = "v1.37.0"
   }
   stages {
@@ -84,7 +85,7 @@ spec:
   }
   post {
     success {
-      build job: 'bookmarks-features', wait: false
+      build job: '${APP_NAME}-features', wait: false
     }
   }
 }
