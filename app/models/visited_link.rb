@@ -14,6 +14,6 @@ class VisitedLink < ApplicationRecord
   end
 
   def self.normalize_url(url)
-    url.to_s.sub(/#.*$/, '')
+    url.to_s.split('#', 2).first.to_s
   end
 end
