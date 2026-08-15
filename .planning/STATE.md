@@ -4,9 +4,9 @@ milestone: v1.37.0
 milestone_name: モバイルでのタスク追加機能
 status: Awaiting next milestone
 stopped_at: context exhaustion at 82% (2026-06-26)
-last_updated: "2026-07-31T12:45:00.000Z"
-last_activity: 2026-07-31
-last_activity_desc: "Completed quick task 260731-u3v: mobile feed gadget settings tap reveal"
+last_updated: "2026-08-16T00:00:00.000Z"
+last_activity: 2026-08-16
+last_activity_desc: "Completed quick task 260816-s7k: SECURITY.md security policy"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -22,7 +22,7 @@ current_phase: 37.0
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-07-31 - Completed quick task 260731-u3v: mobile feed gadget settings tap reveal
+Last activity: 2026-08-16 - Completed quick task 260816-s7k: SECURITY.md security policy
 
 ## Project Reference
 
@@ -95,6 +95,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 4 | フィードガジェット編集ダイアログ更新後に閉じない問題を修正 | 2026-07-29 | 9922647 | — |
 | 260729-qew | refresh landing page info | 2026-07-29 | f136f88 | [260729-qew-refresh-landing-page-info](./quick/260729-qew-refresh-landing-page-info/) |
 | 260731-u3v | モバイルでフィードガジェットヘッダをタップしても「設定」ボタンが表示されない不具合を修正 | 2026-07-31 | 51c6c9b | [260731-u3v-mobile-feed-settings-tap](./quick/260731-u3v-mobile-feed-settings-tap/) |
+| 260816-s7k | GitHub の SECURITY.md テンプレートを実態に即したセキュリティポリシーに書き換え | 2026-08-16 | 22b83e4 | [260816-s7k-security-policy](./quick/260816-s7k-security-policy/) |
 
 ## Operator Next Steps
 
