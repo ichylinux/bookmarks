@@ -22,7 +22,7 @@ current_phase: 37.0
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-16 - Completed quick task 260816-s7k: SECURITY.md security policy
+Last activity: 2026-08-31 - Quick task 260831-1mg (Windows+Chrome hover add button): fix committed 71b8c47, verification outstanding (dad:test not run, Windows hardware check pending)
 
 ## Project Reference
 
@@ -96,6 +96,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 260729-qew | refresh landing page info | 2026-07-29 | f136f88 | [260729-qew-refresh-landing-page-info](./quick/260729-qew-refresh-landing-page-info/) |
 | 260731-u3v | モバイルでフィードガジェットヘッダをタップしても「設定」ボタンが表示されない不具合を修正 | 2026-07-31 | 51c6c9b | [260731-u3v-mobile-feed-settings-tap](./quick/260731-u3v-mobile-feed-settings-tap/) |
 | 260816-s7k | GitHub の SECURITY.md テンプレートを実態に即したセキュリティポリシーに書き換え | 2026-08-16 | 22b83e4 | [260816-s7k-security-policy](./quick/260816-s7k-security-policy/) |
+| 260831-1mg | Windows+Chromeの場合、タスクガジェットのヘッダにマウスオーバーしても追加ボタンが表示されない(⚠ 未検証: dad:test 未実行 + 実機確認待ち) | 2026-08-31 | 71b8c47 | [260831-1mg-windows-chrome](./quick/260831-1mg-windows-chrome/) |
 
 ## Operator Next Steps
 
