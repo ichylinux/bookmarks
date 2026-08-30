@@ -317,8 +317,10 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     transition: none;
   }
 
-  // On touch-only devices, hover never fires — prevent tapping the invisible button
-  @media (hover: none) {
+  // Guard applies only when no attached input mechanism can hover — using the
+  // primary-only `hover` feature here would wrongly apply this on a Windows
+  // touchscreen laptop where a touchscreen is primary but a mouse is also attached.
+  @media (any-hover: none) {
     pointer-events: none;
   }
 }
@@ -370,9 +372,14 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-// Only real pointer hover — touch browsers keep :hover "stuck" after a tap, which
-// would otherwise leave "追加" visible after completing tasks on mobile.
-@media (hover: hover) and (pointer: fine) {
+// Any attached input mechanism that can hover with a fine pointer — not just the
+// *primary* one. This is what lets a Windows touchscreen laptop with a mouse
+// attached reveal the button, since Chrome reports the touchscreen as primary
+// on such machines (any-hover/any-pointer look across all input mechanisms).
+// Touch browsers keeping :hover "stuck" after a tap (which would otherwise leave
+// "追加" visible after completing tasks on mobile) is guarded by the (0,4,0)
+// hide rules inside the max-width:767px block above, not by this condition.
+@media (any-hover: hover) and (any-pointer: fine) {
   div.title:hover .bookmark-gadget-new-link,
   div.title:hover .todo-gadget-new-link,
   div.title:hover .feed-gadget-settings-link {

@@ -125,6 +125,60 @@ end
   capture
 end
 
+もし /^デスクトップ幅でタスクガジェットのヘッダにマウスオーバーすると「追加」が表示されます。$/ do
+  # Standard headless Chrome reports no pointer devices at all (hover:none,
+  # pointer:none, any-hover:none, any-pointer:none), so it cannot distinguish
+  # the primary-only media conditions (the bug) from the any-input media
+  # conditions (the fix). A dedicated hybrid-input session is required — see
+  # features/support/windows_hybrid_input.rb.
+  with_windows_hybrid_input_session do
+    within '#todo' do
+      find('.title--gadget-with-icon').hover
+      assert has_selector?('.todo-gadget-new-link', visible: true)
+      capture
+
+      find('.todo-gadget-new-link', visible: true).click
+      assert has_selector?('form.todo')
+    end
+    capture
+  end
+end
+
+ならば /^「追加」の表示条件が入力デバイスの有無で判定されています。$/ do
+  condition_texts = evaluate_script(<<~JS)
+    (function() {
+      var results = [];
+      Array.from(document.styleSheets).forEach(function(sheet) {
+        var rules;
+        try {
+          rules = sheet.cssRules;
+        } catch (e) {
+          return;
+        }
+        if (!rules) return;
+        Array.from(rules).forEach(function(rule) {
+          if (rule.type !== CSSRule.MEDIA_RULE) return;
+          var matches = Array.from(rule.cssRules).some(function(inner) {
+            return inner.selectorText &&
+              inner.selectorText.indexOf('.todo-gadget-new-link') !== -1 &&
+              inner.selectorText.indexOf(':hover') !== -1;
+          });
+          if (matches) {
+            results.push(String(rule.conditionText));
+          }
+        });
+      });
+      return results;
+    })()
+  JS
+
+  assert condition_texts.present?, '.todo-gadget-new-link を含む :hover 系メディアクエリが見つかりません'
+  condition_texts.each do |condition_text|
+    assert_match(/any-hover|any-pointer/, condition_text, "条件がany-inputに基づいていません: #{condition_text}")
+  end
+  capture
+end
+
 もし /^ガジェットヘッダをタップして操作を表示します。$/ do
   within '#todo' do
     find('.gadget-title-text').click
