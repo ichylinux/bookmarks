@@ -14,14 +14,28 @@
 #
 # PointerType bitmask: none=1, coarse=2, fine=4. HoverType bitmask: none=1, hover=2.
 # primary + available are all coarse/no-hover => the mouse is invisible to Chrome.
-Capybara.register_driver :headless_chrome_windows_touch_only_input do |app|
-  options = Closer::Drivers::Chrome.options(headless: true)
+#
+# Boot type mirrors Closer's own driver registration (closer/helpers/driver.rb):
+# Jenkins runs with REMOTE=true and has no Chrome in the app container — the
+# browser lives in a sidecar reachable over Selenium at 127.0.0.1:4444.
+Capybara.register_driver :chrome_windows_touch_only_input do |app|
+  remote = Closer.config.remote?
+  options = Closer::Drivers::Chrome.options(headless: !remote && Closer.config.headless?)
   options.add_argument(
     'blink-settings=primaryPointerType=2,primaryHoverType=1,' \
     'availablePointerTypes=2,availableHoverTypes=1'
   )
 
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  if remote
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :remote,
+      url: 'http://127.0.0.1:4444/wd/hub',
+      options: options
+    )
+  else
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  end
 end
 
 # Opens a throwaway browser session emulating the affected Windows machine, signs
@@ -32,7 +46,7 @@ end
 # what the emulation changes is only what the *media features* report, which is
 # exactly the axis WINCHR-01 turns on.
 def with_windows_touch_only_session
-  session = Capybara::Session.new(:headless_chrome_windows_touch_only_input, Capybara.app)
+  session = Capybara::Session.new(:chrome_windows_touch_only_input, Capybara.app)
 
   Capybara.using_session(session) do
     resize_browser_window(1280, 800)
