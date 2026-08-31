@@ -42,10 +42,14 @@
     border-radius: 6px;
     transition: background-color 120ms ease;
 
-    @media (hover: hover) {
-      &:hover {
-        background: #eeeeee;
-      }
+    // WINCHR-01: deliberately not gated on hover/pointer media features — Chrome
+    // on a Windows touchscreen laptop reports hover:none / any-hover:none while a
+    // real mouse is in use, so the gate removed this affordance on real desktops.
+    // Unlike the portal gadgets there is no responsive breakpoint on this page and
+    // a sticky touch :hover here only tints one settings row until the next tap,
+    // so no replacement gate is warranted.
+    &:hover {
+      background: #eeeeee;
     }
 
     &:last-child {

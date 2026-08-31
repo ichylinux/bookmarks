@@ -126,12 +126,21 @@ end
 end
 
 もし /^デスクトップ幅でタスクガジェットのヘッダにマウスオーバーすると「追加」が表示されます。$/ do
-  # Standard headless Chrome reports no pointer devices at all (hover:none,
-  # pointer:none, any-hover:none, any-pointer:none), so it cannot distinguish
-  # the primary-only media conditions (the bug) from the any-input media
-  # conditions (the fix). A dedicated hybrid-input session is required — see
-  # features/support/windows_hybrid_input.rb.
-  with_windows_hybrid_input_session do
+  # WINCHR-01: reproduce the affected Windows machine, where Chrome reports no
+  # hovering pointer at all (hover/pointer AND any-hover/any-pointer all come back
+  # none/coarse) while the user drives a real mouse. Standard headless Chrome
+  # cannot express this, so a dedicated session is required — see
+  # features/support/windows_touch_only_input.rb.
+  with_windows_touch_only_session do
+    # The reveal is now gated on viewport width, so this scenario depends on the
+    # session actually being at desktop width. Headless Chrome starts with
+    # --ozone-override-screen-size=800,600 and can clamp resize_browser_window,
+    # so assert the width explicitly — otherwise a clamped window fails below as
+    # an unexplained "追加 not visible" instead of naming the real cause.
+    inner_width = evaluate_script('window.innerWidth')
+    assert inner_width >= 768,
+           "デスクトップ幅になっていません (innerWidth=#{inner_width})。ウィンドウサイズがクランプされた可能性があります"
+
     within '#todo' do
       find('.title--gadget-with-icon').hover
       assert has_selector?('.todo-gadget-new-link', visible: true)
@@ -144,7 +153,10 @@ end
   end
 end
 
-ならば /^「追加」の表示条件が入力デバイスの有無で判定されています。$/ do
+ならば /^「追加」の表示条件が入力デバイスに依存していません。$/ do
+  # The reveal rule must be gated on viewport width only. Any hover/pointer media
+  # feature — primary-only or any-input — is a false negative on the WINCHR-01
+  # hardware and makes the button unreachable for real mouse users.
   condition_texts = evaluate_script(<<~JS)
     (function() {
       var results = [];
@@ -174,7 +186,10 @@ end
 
   assert condition_texts.present?, '.todo-gadget-new-link を含む :hover 系メディアクエリが見つかりません'
   condition_texts.each do |condition_text|
-    assert_match(/any-hover|any-pointer/, condition_text, "条件がany-inputに基づいていません: #{condition_text}")
+    assert_no_match(/hover|pointer/, condition_text,
+                    "表示条件が入力デバイスに依存しています: #{condition_text}")
+    assert_match(/width/, condition_text,
+                 "表示条件が幅ベースではありません: #{condition_text}")
   end
   capture
 end
