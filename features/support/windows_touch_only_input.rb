@@ -20,7 +20,7 @@
 # browser lives in a sidecar reachable over Selenium at 127.0.0.1:4444.
 Capybara.register_driver :chrome_windows_touch_only_input do |app|
   remote = Closer.config.remote?
-  options = Closer::Drivers::Chrome.options(headless: !remote && Closer.config.headless?)
+  options = Closer::Drivers::Chrome.options(headless: Closer.config.headless?)
   options.add_argument(
     'blink-settings=primaryPointerType=2,primaryHoverType=1,' \
     'availablePointerTypes=2,availableHoverTypes=1'
