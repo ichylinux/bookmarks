@@ -125,35 +125,13 @@ end
   capture
 end
 
-もし /^デスクトップ幅でタスクガジェットのヘッダにマウスオーバーすると「追加」が表示されます。$/ do
-  # WINCHR-01: reproduce the affected Windows machine, where Chrome reports no
-  # hovering pointer at all (hover/pointer AND any-hover/any-pointer all come back
-  # none/coarse) while the user drives a real mouse. Standard headless Chrome
-  # cannot express this, so a dedicated session is required — see
-  # features/support/windows_touch_only_input.rb.
-  with_windows_touch_only_session do
-    # The reveal is now gated on viewport width, so this scenario depends on the
-    # session actually being at desktop width. Headless Chrome starts with
-    # --ozone-override-screen-size=800,600 and can clamp resize_browser_window,
-    # so assert the width explicitly — otherwise a clamped window fails below as
-    # an unexplained "追加 not visible" instead of naming the real cause.
-    inner_width = evaluate_script('window.innerWidth')
-    assert inner_width >= 768,
-           "デスクトップ幅になっていません (innerWidth=#{inner_width})。ウィンドウサイズがクランプされた可能性があります"
-
-    within '#todo' do
-      find('.title--gadget-with-icon').hover
-      assert has_selector?('.todo-gadget-new-link', visible: true)
-      capture
-
-      find('.todo-gadget-new-link', visible: true).click
-      assert has_selector?('form.todo')
-    end
-    capture
-  end
-end
-
 ならば /^「追加」の表示条件が入力デバイスに依存していません。$/ do
+  # Real-hardware evidence (WINCHR-01): Chrome 151 / Windows 10, maxTouchPoints 10,
+  # innerWidth 1289, touchscreen laptop. Despite the user driving a real mouse, all
+  # four hover/pointer media feature axes — primary (hover / pointer) and any-input
+  # (any-hover / any-pointer) — reported none/coarse. This means the reveal rule
+  # cannot be gated on any hover/pointer media feature and must rely on viewport
+  # width alone. Source: quick task 260831-1mg (commit 71b8c47).
   # The reveal rule must be gated on viewport width only. Any hover/pointer media
   # feature — primary-only or any-input — is a false negative on the WINCHR-01
   # hardware and makes the button unreachable for real mouse users.
