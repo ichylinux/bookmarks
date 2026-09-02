@@ -3,9 +3,14 @@ require 'test_helper'
 # Mobile todo gadget: "追加" link is hidden by default and revealed when the user
 # taps the header title/icon (todos.js toggles .title--gadget-actions-visible).
 class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
+  # Read once for the whole class — `setup` runs per test method, and these
+  # sources are immutable for the duration of the run.
+  WELCOME_CSS = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read.freeze
+  TODOS_JS = Rails.root.join('app/assets/javascripts/todos.js').read.freeze
+
   def setup
-    @welcome = Rails.root.join('app/assets/stylesheets/welcome.css.scss').read
-    @todos_js = Rails.root.join('app/assets/javascripts/todos.js').read
+    @welcome = WELCOME_CSS
+    @todos_js = TODOS_JS
   end
 
   test 'welcome.css.scss hides todo-gadget-new-link on mobile by default' do
@@ -30,12 +35,9 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
     )
   end
 
-  # WINCHR-01 (supersedes the former "fine pointer hover only" contract): the reveal
-  # must be gated on viewport width, never on input-device media features. Chrome on
-  # a Windows touchscreen laptop reports no hovering pointer at all — hover:none,
-  # pointer:coarse AND any-hover:none, any-pointer:coarse — while the user drives a
-  # real mouse, so any such gate makes "追加" unreachable on a genuine desktop.
-  # Sticky :hover on touch is guarded by the (0,4,0) mobile hide rule instead.
+  # WINCHR-01 (supersedes the former "fine pointer hover only" contract) — rationale:
+  # test/assets/css_architecture_contract_test.rb, which also enforces the project-wide
+  # ban on hover/pointer gates. This test pins the positive half for this selector.
   test 'welcome.css.scss gates title:hover new-link reveal on viewport width' do
     assert_match(
       /@media\s*\(\s*min-width\s*:\s*\$portal-mobile-breakpoint\s*\)\s*\{[\s\S]*?div\.title:hover\s+\.todo-gadget-new-link/,
@@ -43,19 +45,6 @@ class TodoGadgetMobileCssContractTest < ActiveSupport::TestCase
       'welcome.css.scss must wrap div.title:hover .todo-gadget-new-link in ' \
       '@media (min-width: $portal-mobile-breakpoint).'
     )
-  end
-
-  test 'welcome.css.scss never gates styles on hover/pointer media features (WINCHR-01)' do
-    offenders = @welcome.scan(/@media[^{]*/).select do |condition|
-      condition.match?(/\(\s*(any-)?(hover|pointer)\s*:/)
-    end
-
-    assert_empty offenders.map(&:strip),
-                 'welcome.css.scss must not gate any style on hover/pointer media features. ' \
-                 'Chrome on a Windows touchscreen laptop reports none/coarse for both the ' \
-                 'primary-only (hover/pointer) and the any-input (any-hover/any-pointer) ' \
-                 'families while a real mouse is in use, so such a gate silently disables the ' \
-                 'affordance on real desktops. Gate on viewport width instead.'
   end
 
   test 'todos.js binds header tap-to-reveal on title--gadget-with-icon within gadget root' do

@@ -126,15 +126,10 @@ end
 end
 
 ならば /^「追加」の表示条件が入力デバイスに依存していません。$/ do
-  # Real-hardware evidence (WINCHR-01): Chrome 151 / Windows 10, maxTouchPoints 10,
-  # innerWidth 1289, touchscreen laptop. Despite the user driving a real mouse, all
-  # four hover/pointer media feature axes — primary (hover / pointer) and any-input
-  # (any-hover / any-pointer) — reported none/coarse. This means the reveal rule
-  # cannot be gated on any hover/pointer media feature and must rely on viewport
-  # width alone. Source: quick task 260831-1mg (commit 71b8c47).
-  # The reveal rule must be gated on viewport width only. Any hover/pointer media
-  # feature — primary-only or any-input — is a false negative on the WINCHR-01
-  # hardware and makes the button unreachable for real mouse users.
+  # WINCHR-01: the reveal rule must be gated on viewport width alone, never on a
+  # hover/pointer media feature. Real-hardware evidence and the full rationale live
+  # in test/assets/css_architecture_contract_test.rb. This step checks the rule as
+  # the browser actually resolves it, against the compiled stylesheet.
   condition_texts = evaluate_script(<<~JS)
     (function() {
       var results = [];

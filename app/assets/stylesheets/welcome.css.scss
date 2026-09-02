@@ -210,12 +210,10 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
     transition: none;
   }
 
-  // WINCHR-01: gated on viewport width, never on hover/pointer media features —
-  // Chrome on a Windows touchscreen laptop reports no hovering pointer at all
-  // (hover:none, any-hover:none, any-pointer:coarse) while a real mouse is in use,
-  // so such a gate silently kills the hover affordance on genuine desktops.
-  // The width gate still keeps sticky touch :hover from leaving a folder header
-  // highlighted on mobile, which is what this condition was originally for.
+  // WINCHR-01: width gate, never a hover/pointer media feature — rationale in
+  // test/assets/css_architecture_contract_test.rb, which enforces this project-wide.
+  // The width gate still serves this condition's original purpose: keeping sticky
+  // touch :hover from leaving a folder header highlighted on mobile.
   @media (min-width: $portal-mobile-breakpoint) {
     &:hover {
       background-color: rgba(0, 0, 0, 0.08);
@@ -325,10 +323,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
 
   // Unconditional: the link is invisible (opacity 0) until revealed, so it must
   // not be clickable until then. The reveal rules below turn this back to `auto`.
-  // Deliberately NOT gated on hover/pointer media features — see WINCHR-01: Chrome
-  // on a Windows touchscreen laptop reports NO hovering pointer at all
-  // (any-hover:none, any-pointer:coarse) even with a mouse in use, so any such gate
-  // silently disables the button for real mouse users.
+  // Not gated on a hover/pointer media feature — WINCHR-01, see
+  // test/assets/css_architecture_contract_test.rb.
   pointer-events: none;
 }
 
@@ -379,11 +375,8 @@ $bookmark-folder-child-indent: calc(#{$bookmark-folder-toggle-width} + #{$bookma
   }
 }
 
-// WINCHR-01: gated on viewport width only, never on hover/pointer media features.
-// Chrome on a Windows touchscreen laptop reports no hovering pointer at all — both
-// the primary-only (`hover`/`pointer`) and the any-input (`any-hover`/`any-pointer`)
-// features come back none/coarse while the user is driving an actual mouse — so a
-// device-capability gate here makes "追加" unreachable on real desktops.
+// WINCHR-01: width gate, never a hover/pointer media feature — rationale in
+// test/assets/css_architecture_contract_test.rb, which enforces this project-wide.
 // Touch browsers keeping :hover "stuck" after a tap (which would otherwise leave
 // "追加" visible after completing tasks on mobile) is guarded by the (0,4,0)
 // hide rules inside the mobile block above, which this rule cannot override.
