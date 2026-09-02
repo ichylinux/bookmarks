@@ -1,17 +1,18 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.37.0
-milestone_name: モバイルでのタスク追加機能
 status: Awaiting next milestone
-stopped_at: context exhaustion at 82% (2026-06-26)
-last_updated: "2026-08-16T00:00:00.000Z"
-last_activity: 2026-08-16
-last_activity_desc: "Completed quick task 260816-s7k: SECURITY.md security policy"
+stopped_at: Completed quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除)
+last_updated: "2026-09-02T12:17:24.063Z"
+last_activity: 2026-09-02
+last_activity_desc: "Completed quick task 260902-tc9: Jenkins非対応マウスオーバーステップ削除"
+state_head: 1ce9ec142cadbeb4e430c0846eaac489335c956d
 progress:
   total_phases: 2
   completed_phases: 2
   total_plans: 2
   completed_plans: 2
+milestone_name: モバイルでのタスク追加機能
 current_phase: 37.0
 ---
 
@@ -22,7 +23,7 @@ current_phase: 37.0
 Phase: Milestone v1.37.0 complete
 Plan: —
 Status: Awaiting next milestone
-Last activity: 2026-08-31 - Quick task 260831-1mg (Windows+Chrome hover add button): fix committed 71b8c47, verification outstanding (dad:test not run, Windows hardware check pending)
+Last activity: 2026-09-02 - Quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除): commits a71a692..1ce9ec1, all scoped tests green (lint, minitest, dad:test 6/6)
 
 ## Project Reference
 
@@ -80,6 +81,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 - (v1.34) `password_auth_enabled` defaults to `false` — no existing users have set passwords via the reset flow
 - (v1.34) Disconnect safety guard: blocked if no other linked provider AND `password_auth_enabled: false`
 - (v1.34) No "connect new provider" from preferences — sign-in pages remain the only linking surface
+- [Phase 37.0]: quick-260902-tc9: Jenkinsのリモート Chrome サイドカーで動作しない専用セッションCucumberステップを削除、WINCHR-01実機証跡は残存ステップへコメント移送 (commit範囲 a71a692..1ce9ec1)
 
 ### Blockers/Concerns
 
@@ -97,6 +99,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 260731-u3v | モバイルでフィードガジェットヘッダをタップしても「設定」ボタンが表示されない不具合を修正 | 2026-07-31 | 51c6c9b | [260731-u3v-mobile-feed-settings-tap](./quick/260731-u3v-mobile-feed-settings-tap/) |
 | 260816-s7k | GitHub の SECURITY.md テンプレートを実態に即したセキュリティポリシーに書き換え | 2026-08-16 | 22b83e4 | [260816-s7k-security-policy](./quick/260816-s7k-security-policy/) |
 | 260831-1mg | Windows+Chromeの場合、タスクガジェットのヘッダにマウスオーバーしても追加ボタンが表示されない(⚠ 未検証: dad:test 未実行 + 実機確認待ち) | 2026-08-31 | 71b8c47 | [260831-1mg-windows-chrome](./quick/260831-1mg-windows-chrome/) |
+| 260902-tc9 | Jenkinsのリモート Chrome サイドカーで動作しないマウスオーバーステップをCucumberから割愛し、WINCHR-01実機証跡を残存ステップへ移送 | 2026-09-02 | a71a692..1ce9ec1 | [260902-tc9-jenkins](./quick/260902-tc9-jenkins/) |
 
 ## Operator Next Steps
 
@@ -104,6 +107,6 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 
 ## Session
 
-**Last session:** 2026-06-26T16:13:42.591Z
-**Stopped at:** context exhaustion at 82% (2026-06-26)
+**Last session:** 2026-09-02T12:17:22.856Z
+**Stopped at:** Completed quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除)
 **Resume file:** None
