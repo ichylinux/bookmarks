@@ -10,6 +10,19 @@
     <%= stylesheet_link_tag    'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
 
+    <% if guest_root_landing_page? %>
+      <script>
+        (function redirectReturningGuestToSignIn() {
+          try {
+            if (window.localStorage.getItem('<%= ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY %>') === '1') {
+              window.location.replace('<%= new_user_session_path %>');
+            }
+          } catch (e) {
+            // Ignore localStorage access errors in private mode or restricted browsers.
+          }
+        })();
+      </script>
+    <% end %>
   </head>
 
   <body class="<%= [favorite_theme, font_size_class, no_icons_class, ('auth-flow' if auth_flow_page?)].compact.join(' ').strip %>">

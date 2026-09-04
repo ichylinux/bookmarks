@@ -95,4 +95,24 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'a.landing-cta--primary[href=?]', new_user_registration_path, count: 0
   end
+
+  def test_未ログインでrootには過去ログイン済みゲスト向けリダイレクトスクリプトが含まれる
+    get root_path
+    assert_response :success
+    assert_includes response.body, ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY
+    assert_includes response.body, "window.location.replace('#{new_user_session_path}')"
+  end
+
+  def test_ログイン済みユーザーのrootには過去ログイン記録スクリプトが含まれる
+    sign_in User.first
+    get root_path
+    assert_response :success
+    assert_includes response.body, "localStorage.setItem('#{ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY}'"
+  end
+
+  def test_ログイン画面にはランディングスキップ用リダイレクトスクリプトが含まれない
+    get new_user_session_path
+    assert_response :success
+    assert_not_includes response.body, 'redirectReturningGuestToSignIn'
+  end
 end

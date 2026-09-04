@@ -1,4 +1,12 @@
 <script>
+  (function recordLoggedInBefore() {
+    try {
+      window.localStorage.setItem('<%= ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY %>', '1');
+    } catch (e) {
+      // Ignore localStorage access errors in private mode or restricted browsers.
+    }
+  })();
+
   (function prehydrateMobilePortalColumn() {
     try {
       if (!window.matchMedia || !window.matchMedia('(max-width: 767px)').matches) return;
