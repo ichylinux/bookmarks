@@ -22,4 +22,10 @@ module ApplicationHelper
   def auth_flow_page?
     !user_signed_in? && devise_controller? && %w[sessions registrations].include?(controller_name)
   end
+
+  LOGGED_IN_BEFORE_STORAGE_KEY = 'bookmarksHasLoggedIn'
+
+  def guest_root_landing_page?
+    !user_signed_in? && controller_name == 'welcome' && action_name == 'index'
+  end
 end
