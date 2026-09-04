@@ -22,8 +22,7 @@ end
 ならば /^ログアウトされホーム画面が表示されます。$/ do
   @deletion_user.reload
   assert @deletion_user.deleted?, 'user should be soft-deleted'
-  assert_equal new_user_session_path, current_path
-  assert_text I18n.t('devise.sessions.new.sign_in', locale: :ja)
+  assert_text I18n.t('landing.hero.eyebrow', locale: :ja)
 end
 
 ならば /^削除したアカウントではログインできません。$/ do

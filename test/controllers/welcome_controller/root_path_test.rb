@@ -110,6 +110,13 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "localStorage.setItem('#{ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY}'"
   end
 
+  def test_ログイン済みの設定画面には過去ログイン記録スクリプトが含まれる
+    sign_in User.first
+    get preferences_path
+    assert_response :success
+    assert_includes response.body, "localStorage.setItem('#{ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY}'"
+  end
+
   def test_ログイン画面にはランディングスキップ用リダイレクトスクリプトが含まれない
     get new_user_session_path
     assert_response :success
