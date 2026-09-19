@@ -71,6 +71,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get new_user_session_path
     assert_response :success
     assert_select 'form[action=?][method=post]', user_mastodon_instance_path
+    assert_select 'form.auth-oauth-mastodon-form[data-mastodon-instance-storage-key=?]',
+      ApplicationHelper::MASTODON_INSTANCE_STORAGE_KEY
     assert_select 'input#mastodon_instance[name=instance][required]'
     assert_select 'button.auth-oauth-btn--mastodon[type=submit] .auth-oauth-btn__label',
       text: I18n.t('devise.shared.omniauth.mastodon.sign_in', locale: :ja)

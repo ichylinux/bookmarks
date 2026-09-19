@@ -48,7 +48,10 @@
         <div class="auth-oauth-mastodon">
           <%= form_with url: user_mastodon_instance_path,
                 method: :post,
-                data: { turbo: false },
+                data: {
+                  turbo: false,
+                  mastodon_instance_storage_key: ApplicationHelper::MASTODON_INSTANCE_STORAGE_KEY
+                },
                 class: 'auth-oauth-mastodon-form' do %>
             <div class="auth-field">
               <%= label_tag :instance,

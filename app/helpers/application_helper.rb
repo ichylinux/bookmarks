@@ -24,6 +24,7 @@ module ApplicationHelper
   end
 
   LOGGED_IN_BEFORE_STORAGE_KEY = 'bookmarksHasLoggedIn'
+  MASTODON_INSTANCE_STORAGE_KEY = 'bookmarksMastodonInstance'
 
   def guest_root_landing_page?
     !user_signed_in? && controller_name == 'welcome' && action_name == 'index'
