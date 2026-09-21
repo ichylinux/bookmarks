@@ -104,7 +104,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select 'ul.navigation a[href=?]', root_path(tab: 'notes'), text: 'ノート'
-    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: '閲覧履歴'
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: '履歴'
   end
 
   def test_シンプルテーマの英語ナビに閲覧履歴リンクが表示される
@@ -187,7 +187,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'ノート', 'ノート', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
-    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴', count: 1
     assert_select '#header a.head-history-btn.head-history-btn--active', count: 0
   end
 
@@ -206,7 +206,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#header .head-box.head-box--with-note-action', count: 1
     assert_select '#header a.head-note-btn', count: 0
-    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴', count: 1
   end
 
   def test_クラシックテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
@@ -241,7 +241,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get feed_article_histories_path
     assert_response :success
-    assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴', count: 1
   end
 
   def test_モダンテーマでuse_feed_article_historiesオフのときヘッダーに履歴アイコンがない
