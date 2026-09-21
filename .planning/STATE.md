@@ -1,20 +1,20 @@
 ---
 gsd_state_version: "1.0"
 milestone: v1.37.1
-milestone_name: フィード記事の閲覧履歴
 status: Awaiting next milestone
 stopped_at: Phase 133 complete — all phases complete
-last_updated: "2026-09-21T08:50:00.000Z"
+last_updated: "2026-09-21T14:29:25.366Z"
 last_activity: 2026-09-21
 last_activity_desc: "Completed quick task 260921-ot0: 閲覧履歴でMastodonもサポート"
-state_head: 152895f
+state_head: 1de38a745ab11ab175c212fd8c1320ca464a2391
+milestone_name: フィード記事の閲覧履歴
+current_phase: 133
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 3
   completed_plans: 3
   percent: 33
-current_phase: 133
 ---
 
 # State
@@ -104,17 +104,6 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 260710-p6v | モバイルでタスク完了後にガジェットヘッダの追加ボタンが誤表示される不具合を修正 | 2026-07-10 | 2212e00 | [260710-p6v-mobile-gadget-add-btn-after-done](./quick/260710-p6v-mobile-gadget-add-btn-after-done/) |
-| 260712-j75 | Fix failing Cucumber: features/02.タスク.feature:31 モバイルでタスクを完了した直後は「追加」ボタンが表示されない | 2026-07-12 | b0f4c19 | [260712-j75-fix-failing-cucumber-features-02-feature](./quick/260712-j75-fix-failing-cucumber-features-02-feature/) |
-| 260716-h4d | モバイルのブックマークガジェットにタスクと同様のヘッダタップで追加ボタンを表示する機能を追加 | 2026-07-16 | 387bfb3 | [260716-h4d-mobile-bookmark-add](./quick/260716-h4d-mobile-bookmark-add/) |
-| 4 | フィードガジェット編集ダイアログ更新後に閉じない問題を修正 | 2026-07-29 | 9922647 | — |
-| 260729-qew | refresh landing page info | 2026-07-29 | f136f88 | [260729-qew-refresh-landing-page-info](./quick/260729-qew-refresh-landing-page-info/) |
-| 260731-u3v | モバイルでフィードガジェットヘッダをタップしても「設定」ボタンが表示されない不具合を修正 | 2026-07-31 | 51c6c9b | [260731-u3v-mobile-feed-settings-tap](./quick/260731-u3v-mobile-feed-settings-tap/) |
-| 260816-s7k | GitHub の SECURITY.md テンプレートを実態に即したセキュリティポリシーに書き換え | 2026-08-16 | 22b83e4 | [260816-s7k-security-policy](./quick/260816-s7k-security-policy/) |
-| 260831-1mg | Windows+Chromeの場合、タスクガジェットのヘッダにマウスオーバーしても追加ボタンが表示されない(⚠ 未検証: dad:test 未実行 + 実機確認待ち) | 2026-08-31 | 71b8c47 | [260831-1mg-windows-chrome](./quick/260831-1mg-windows-chrome/) |
-| 260902-tc9 | Jenkinsのリモート Chrome サイドカーで動作しないマウスオーバーステップをCucumberから割愛し、WINCHR-01実機証跡を残存ステップへ移送 | 2026-09-02 | a71a692..1ce9ec1 | [260902-tc9-jenkins](./quick/260902-tc9-jenkins/) |
-| 260921-opa | 閲覧履歴でXもサポート | 2026-09-21 | 907ccc6 | [260921-opa-x](./quick/260921-opa-x/) |
-| 260921-ot0 | 閲覧履歴でMastodonもサポート | 2026-09-21 | 152895f | [260921-ot0-mastodon](./quick/260921-ot0-mastodon/) |
 
 ## Operator Next Steps
 
