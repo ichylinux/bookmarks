@@ -52,6 +52,47 @@ class VisitedLinksControllerTest < ActionDispatch::IntegrationTest
     assert_routing({ path: '/visited_links', method: :post }, { controller: 'visited_links', action: 'create' })
   end
 
+  def test_feed_idempotent_create_updates_visited_at
+    sign_in @user
+
+    post visited_links_path, params: {
+      url: 'https://example.com/feed-dup',
+      title: 'Headline',
+      source: 'feed'
+    }
+    assert_response :no_content
+    first_visited_at = VisitedLink.last.visited_at
+
+    travel 1.second do
+      assert_no_difference('VisitedLink.count') do
+        post visited_links_path, params: {
+          url: 'https://example.com/feed-dup',
+          title: 'Headline',
+          source: 'feed'
+        }
+      end
+    end
+
+    assert_response :no_content
+    assert_equal 1, VisitedLink.count
+    assert VisitedLink.last.visited_at >= first_visited_at
+  end
+
+  def test_non_feed_ignores_title_and_source
+    sign_in @user
+
+    post visited_links_path, params: {
+      url: 'https://example.com/x-post',
+      title: 'Should Not Persist'
+    }
+
+    assert_response :no_content
+    link = VisitedLink.last
+    assert_equal 'https://example.com/x-post', link.url
+    assert_nil link.title
+    assert_nil link.source
+  end
+
   def test_feed_create_persists_title_and_source
     sign_in @user
 

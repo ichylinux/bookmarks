@@ -58,6 +58,30 @@ class VisitedLinkTest < ActiveSupport::TestCase
     end
   end
 
+  def test_feed_record_updates_visited_at_and_title_without_duplicate
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'First Title', source: 'feed')
+    first = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    first_visited_at = first.visited_at
+
+    travel 1.second do
+      assert_no_difference -> { VisitedLink.count } do
+        VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Updated Title', source: 'feed')
+      end
+    end
+
+    first.reload
+    assert first.visited_at > first_visited_at
+    assert_equal 'Updated Title', first.title
+    assert_equal 'feed', first.source
+  end
+
+  def test_non_feed_source_does_not_persist_title_or_source
+    VisitedLink.record!(@user, 'https://example.com/mastodon', title: 'Ignored', source: 'mastodon')
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/mastodon')
+    assert_nil link.title
+    assert_nil link.source
+  end
+
   # urls_for
 
   def test_urls_for_returns_set
