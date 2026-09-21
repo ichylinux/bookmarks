@@ -1,0 +1,133 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v1.37.1",
+  "phases": [
+    {
+      "number": "104",
+      "name": "Schema, Model & Refresh Guard",
+      "status": "complete"
+    },
+    {
+      "number": "105",
+      "name": "XClient Lookup Service",
+      "status": "complete"
+    },
+    {
+      "number": "106",
+      "name": "Controller Action, Routes & Locales",
+      "status": "complete"
+    },
+    {
+      "number": "107",
+      "name": "View Form & Manually-Added Badge",
+      "status": "complete"
+    },
+    {
+      "number": "108",
+      "name": "Full Test Coverage & Tri-suite Gate",
+      "status": "complete"
+    },
+    {
+      "number": "109",
+      "name": "Model Layer — Purge Predicate & Cascade",
+      "status": "complete"
+    },
+    {
+      "number": "110",
+      "name": "Controller + Views + Locale",
+      "status": "complete"
+    },
+    {
+      "number": "111",
+      "name": "Cucumber E2E + Tri-suite Gate",
+      "status": "complete"
+    },
+    {
+      "number": "112",
+      "name": "Backend — Gem, Config, Model & Controller",
+      "status": "complete"
+    },
+    {
+      "number": "113",
+      "name": "Frontend & E2E — Button UI, CSS, Locale & Cucumber",
+      "status": "complete"
+    },
+    {
+      "number": "114",
+      "name": "OAuth Identity Data Layer",
+      "status": "complete"
+    },
+    {
+      "number": "115",
+      "name": "Form Auth Data Layer",
+      "status": "complete"
+    },
+    {
+      "number": "116",
+      "name": "Disconnect Controller & Routes",
+      "status": "complete"
+    },
+    {
+      "number": "117",
+      "name": "Preferences View — Connected Accounts",
+      "status": "complete"
+    },
+    {
+      "number": "118",
+      "name": "Tests & Tri-suite Gate",
+      "status": "complete"
+    },
+    {
+      "number": "119",
+      "name": "Custom OmniAuth Mastodon Strategy",
+      "status": "complete"
+    },
+    {
+      "number": "120",
+      "name": "Instance Selection UI",
+      "status": "complete"
+    },
+    {
+      "number": "121",
+      "name": "Identity Wiring — from_omniauth & Callback",
+      "status": "complete"
+    },
+    {
+      "number": "122",
+      "name": "Auth UI & Connected Accounts",
+      "status": "complete"
+    },
+    {
+      "number": "123",
+      "name": "Tests & Tri-Suite Gate",
+      "status": "complete"
+    },
+    {
+      "number": "127",
+      "name": "Header-Integrated Task Completion",
+      "status": "complete"
+    },
+    {
+      "number": "128",
+      "name": "Test Coverage & Tri-Suite Gate",
+      "status": "complete"
+    },
+    {
+      "number": "129",
+      "name": "Mobile CSS & Link Visibility",
+      "status": "complete"
+    },
+    {
+      "number": "130",
+      "name": "Test Coverage & Tri-Suite Gate",
+      "status": "complete"
+    }
+  ],
+  "next": {
+    "command": "/gsd-discuss-phase",
+    "label": "Discuss the first phase",
+    "reason": "Project initialized — plan your first phase"
+  },
+  "updated_at": "2026-09-21T05:27:40.999Z"
+}
