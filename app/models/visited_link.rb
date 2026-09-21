@@ -3,6 +3,8 @@ class VisitedLink < ApplicationRecord
   validates :url, presence: true
 
   HISTORY_SOURCES = %w[feed x mastodon].freeze
+  X_STATUS_URL = %r{\Ahttps://x\.com/i/status/\d+\z}
+  MASTODON_STATUS_URL = %r{\Ahttps://[^/]+/@[^/]+/\d+\z}
 
   scope :feed_history_for, ->(user) { where(user_id: user.id, source: HISTORY_SOURCES).order(visited_at: :desc) }
 
@@ -31,4 +33,23 @@ class VisitedLink < ApplicationRecord
   def self.normalize_url(url)
     url.to_s.split('#', 2).first.to_s
   end
+
+  def self.backfill_history_sources!
+    ids_by_source = Hash.new { |h, k| h[k] = [] }
+    where(source: nil).find_each do |row|
+      inferred = inferred_history_source(row.url)
+      ids_by_source[inferred] << row.id if inferred
+    end
+    ids_by_source.each do |source, ids|
+      where(id: ids, source: nil).update_all(source: source)
+    end
+  end
+
+  def self.inferred_history_source(url)
+    case url
+    when X_STATUS_URL then 'x'
+    when MASTODON_STATUS_URL then 'mastodon'
+    end
+  end
+  private_class_method :inferred_history_source
 end

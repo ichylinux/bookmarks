@@ -145,6 +145,91 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_equal 3, titles.length
   end
 
+  # backfill_history_sources!
+
+  def test_backfill_sets_x_source_from_canonical_status_url
+    VisitedLink.record!(@user, 'https://x.com/i/status/123')
+
+    VisitedLink.backfill_history_sources!
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://x.com/i/status/123')
+    assert_equal 'x', link.source
+    assert_nil link.title
+  end
+
+  def test_backfill_sets_mastodon_source_from_status_url
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1')
+
+    VisitedLink.backfill_history_sources!
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://mastodon.example/@user/1')
+    assert_equal 'mastodon', link.source
+    assert_nil link.title
+  end
+
+  def test_backfill_leaves_generic_url_only_rows
+    VisitedLink.record!(@user, 'https://example.com/article')
+
+    VisitedLink.backfill_history_sources!
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/article')
+    assert_nil link.source
+  end
+
+  def test_backfill_does_not_match_x_user_status_url
+    VisitedLink.record!(@user, 'https://x.com/user/status/1')
+
+    VisitedLink.backfill_history_sources!
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://x.com/user/status/1')
+    assert_nil link.source
+  end
+
+  def test_backfill_does_not_overwrite_existing_source
+    VisitedLink.record!(@user, 'https://x.com/i/status/123', title: 'Feed Headline', source: 'feed')
+
+    VisitedLink.backfill_history_sources!
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://x.com/i/status/123')
+    assert_equal 'feed', link.source
+    assert_equal 'Feed Headline', link.title
+  end
+
+  def test_backfill_is_idempotent
+    VisitedLink.record!(@user, 'https://x.com/i/status/123')
+    VisitedLink.backfill_history_sources!
+
+    assert_no_difference -> { VisitedLink.where(source: 'x').count } do
+      VisitedLink.backfill_history_sources!
+    end
+  end
+
+  def test_backfill_includes_rows_in_feed_history_for
+    VisitedLink.record!(@user, 'https://x.com/i/status/123')
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1')
+    VisitedLink.record!(@user, 'https://example.com/url-only')
+
+    VisitedLink.backfill_history_sources!
+
+    urls = VisitedLink.feed_history_for(@user).map(&:url)
+    assert_includes urls, 'https://x.com/i/status/123'
+    assert_includes urls, 'https://mastodon.example/@user/1'
+    assert_not_includes urls, 'https://example.com/url-only'
+  end
+
+  def test_backfill_does_not_change_visited_at_or_updated_at
+    VisitedLink.record!(@user, 'https://x.com/i/status/123')
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://x.com/i/status/123')
+    visited_at = link.visited_at
+    updated_at = link.updated_at
+
+    VisitedLink.backfill_history_sources!
+
+    link.reload
+    assert_equal visited_at, link.visited_at
+    assert_equal updated_at, link.updated_at
+  end
+
   # urls_for
 
   def test_urls_for_returns_set
