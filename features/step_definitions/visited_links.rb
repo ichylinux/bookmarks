@@ -115,6 +115,30 @@ end
   capture
 end
 
+もし /^閲覧履歴を(\d+)件投入します。$/ do |count|
+  base = Time.current
+  count.to_i.times do |i|
+    VisitedLink.create!(
+      user: user,
+      url: "https://example.com/hist-#{i}",
+      title: "History Item #{i}",
+      source: 'feed',
+      visited_at: base + i.seconds
+    )
+  end
+end
+
+ならば /^閲覧履歴に "([^"]*)" が表示されない$/ do |title|
+  assert page.has_no_css?('ol li a', text: title),
+         "expected history not to include #{title.inspect}"
+  capture
+end
+
+もし /^閲覧履歴の次ページを開きます。$/ do
+  find('nav.pagination span.next a').click
+  capture
+end
+
 もし /^閲覧履歴の記事リンクのナビゲーションを抑制します。$/ do
   raise 'run history visibility step first' if @_history_article_href.blank?
 

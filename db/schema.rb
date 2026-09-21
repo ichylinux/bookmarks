@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_21_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_21_130000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -159,6 +159,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_120000) do
     t.bigint "user_id", null: false
     t.datetime "visited_at", null: false
     t.index ["user_id", "url"], name: "index_visited_links_on_user_id_and_url", unique: true, length: { url: 766 }
+    t.index ["user_id", "visited_at"], name: "index_visited_links_on_user_id_and_visited_at"
   end
 
   create_table "x_accounts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|

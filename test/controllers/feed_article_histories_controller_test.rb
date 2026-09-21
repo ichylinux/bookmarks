@@ -162,4 +162,53 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'ol li a[href=?]', 'https://example.com/article', text: 'Article'
     assert_select 'ol li a[href=?][target=?]', 'https://example.com/article', '_blank', count: 0
   end
+
+  def test_index_paginates_first_page
+    sign_in @user
+    seed_history(Kaminari.config.default_per_page + 1)
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li a', text: "History Item #{Kaminari.config.default_per_page}", count: 1
+    assert_select 'ol li a', text: 'History Item 0', count: 0
+    assert_select 'nav.pagination', count: 1
+  end
+
+  def test_index_paginates_second_page
+    sign_in @user
+    seed_history(Kaminari.config.default_per_page + 1)
+
+    get feed_article_histories_path(page: 2)
+
+    assert_response :success
+    assert_select 'ol li a', text: 'History Item 0', count: 1
+    assert_select 'ol li a', text: "History Item #{Kaminari.config.default_per_page}", count: 0
+    assert_select 'nav.pagination', count: 1
+  end
+
+  def test_index_hides_pagination_when_one_page
+    sign_in @user
+    seed_history(Kaminari.config.default_per_page)
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li a', count: Kaminari.config.default_per_page
+    assert_select 'nav.pagination', count: 0
+  end
+
+  private
+
+  def seed_history(count)
+    count.times do |i|
+      VisitedLink.create!(
+        user: @user,
+        url: "https://example.com/hist-#{i}",
+        title: "History Item #{i}",
+        source: 'feed',
+        visited_at: Time.utc(2026, 9, 21, 0, 0, i)
+      )
+    end
+  end
 end

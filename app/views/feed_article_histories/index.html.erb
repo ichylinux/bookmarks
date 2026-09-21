@@ -18,3 +18,5 @@
     <% end %>
   </ol>
 <% end %>
+
+<%= paginate @feed_article_histories if @feed_article_histories.total_pages > 1 %>
