@@ -43,6 +43,11 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "indexOf('x_account_') === 0"
   end
 
+  test 'mastodon branch posts url title and source mastodon' do
+    assert_includes @source, "source: 'mastodon'"
+    assert_includes @source, "indexOf('mastodon_account_') === 0"
+  end
+
   test 'feed detection uses feed_ id prefix' do
     assert_includes @source, "indexOf('feed_') === 0"
     assert_includes @source, "closest('.gadget')"

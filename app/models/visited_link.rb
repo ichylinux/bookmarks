@@ -2,7 +2,7 @@ class VisitedLink < ApplicationRecord
   belongs_to :user
   validates :url, presence: true
 
-  HISTORY_SOURCES = %w[feed x].freeze
+  HISTORY_SOURCES = %w[feed x mastodon].freeze
 
   scope :feed_history_for, ->(user) { where(user_id: user.id, source: HISTORY_SOURCES).order(visited_at: :desc) }
 

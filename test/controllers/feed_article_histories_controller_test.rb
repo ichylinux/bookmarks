@@ -24,16 +24,26 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Feed Headline'
   end
 
-  def test_index_excludes_non_feed_rows
+  def test_index_excludes_url_only_rows
     sign_in @user
     VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Headline', source: 'feed')
-    VisitedLink.record!(@user, 'https://example.com/mastodon', title: 'Mastodon Post', source: 'mastodon')
+    VisitedLink.record!(@user, 'https://example.com/url-only')
 
     get feed_article_histories_path
 
     assert_response :success
     assert_includes response.body, 'Feed Headline'
-    assert_not_includes response.body, 'Mastodon Post'
+    assert_not_includes response.body, 'url-only'
+  end
+
+  def test_index_shows_mastodon_title
+    sign_in @user
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1', title: 'Mastodon Toot Headline', source: 'mastodon')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_includes response.body, 'Mastodon Toot Headline'
   end
 
   def test_index_shows_x_title

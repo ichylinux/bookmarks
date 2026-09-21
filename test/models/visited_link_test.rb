@@ -75,9 +75,9 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_equal 'feed', first.source
   end
 
-  def test_non_feed_source_does_not_persist_title_or_source
-    VisitedLink.record!(@user, 'https://example.com/mastodon', title: 'Ignored', source: 'mastodon')
-    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/mastodon')
+  def test_non_history_source_does_not_persist_title_or_source
+    VisitedLink.record!(@user, 'https://example.com/other', title: 'Ignored', source: 'bookmark')
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/other')
     assert_nil link.title
     assert_nil link.source
   end
@@ -123,16 +123,26 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_equal 'x', link.source
   end
 
-  def test_feed_history_for_includes_feed_and_x_rows
+  def test_mastodon_record_persists_title_and_source
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1', title: 'Sample Toot', source: 'mastodon')
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://mastodon.example/@user/1')
+    assert_equal 'Sample Toot', link.title
+    assert_equal 'mastodon', link.source
+  end
+
+  def test_feed_history_for_includes_feed_x_and_mastodon_rows
     VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Item', source: 'feed')
     VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'X Post', source: 'x')
     VisitedLink.record!(@user, 'https://mastodon.example/@user/1', title: 'Mastodon Post', source: 'mastodon')
+    VisitedLink.record!(@user, 'https://example.com/url-only')
 
     titles = VisitedLink.feed_history_for(@user).map(&:title)
 
     assert_includes titles, 'Feed Item'
     assert_includes titles, 'X Post'
-    assert_not_includes titles, 'Mastodon Post'
+    assert_includes titles, 'Mastodon Post'
+    assert_equal 3, titles.length
   end
 
   # urls_for

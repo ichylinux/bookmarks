@@ -9,6 +9,8 @@
       $.post('/visited_links', { url: url, title: title, source: 'feed' });
     } else if (gadgetId.indexOf('x_account_') === 0) {
       $.post('/visited_links', { url: url, title: title, source: 'x' });
+    } else if (gadgetId.indexOf('mastodon_account_') === 0) {
+      $.post('/visited_links', { url: url, title: title, source: 'mastodon' });
     } else {
       $.post('/visited_links', { url: url });
     }
