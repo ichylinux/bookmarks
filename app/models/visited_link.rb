@@ -2,15 +2,19 @@ class VisitedLink < ApplicationRecord
   belongs_to :user
   validates :url, presence: true
 
+  MAX_TITLE_LENGTH = 2083
+
   def self.record!(user, url, title: nil, source: nil)
     normalized = normalize_url(url)
     return if normalized.blank?
 
     attrs = { user_id: user.id, url: normalized, visited_at: Time.current }
     if source == 'feed'
-      stripped_title = title.to_s.strip
       attrs[:source] = 'feed'
-      attrs[:title] = stripped_title.presence
+      stripped_title = title.to_s.strip
+      if stripped_title.present?
+        attrs[:title] = stripped_title.byteslice(0, MAX_TITLE_LENGTH)
+      end
     end
 
     upsert(attrs)

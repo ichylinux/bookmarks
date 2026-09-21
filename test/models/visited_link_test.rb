@@ -82,6 +82,39 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_nil link.source
   end
 
+  def test_feed_record_empty_title_preserves_existing_title
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'First Title', source: 'feed')
+
+    assert_no_difference -> { VisitedLink.count } do
+      VisitedLink.record!(@user, 'https://example.com/feed-item', title: '   ', source: 'feed')
+    end
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    assert_equal 'First Title', link.title
+    assert_equal 'feed', link.source
+  end
+
+  def test_url_only_row_upgraded_on_feed_visit
+    VisitedLink.record!(@user, 'https://example.com/article')
+
+    assert_no_difference -> { VisitedLink.count } do
+      VisitedLink.record!(@user, 'https://example.com/article', title: 'Feed Headline', source: 'feed')
+    end
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/article')
+    assert_equal 'Feed Headline', link.title
+    assert_equal 'feed', link.source
+  end
+
+  def test_feed_record_truncates_overlong_title
+    long_title = 'a' * 3000
+    VisitedLink.record!(@user, 'https://example.com/long', title: long_title, source: 'feed')
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/long')
+    assert_equal 2083, link.title.length
+    assert_equal 'a' * 2083, link.title
+  end
+
   # urls_for
 
   def test_urls_for_returns_set
