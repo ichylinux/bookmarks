@@ -44,13 +44,14 @@
 
 ## Phases
 
-### 🚧 v1.37.1 — フィード記事の閲覧履歴 (In Progress)
+<details>
+<summary>✅ v1.37.1 — フィード記事の閲覧履歴 (Phases 131–133) — SHIPPED 2026-09-21</summary>
 
-**Milestone Goal:** フィードから開いた記事の履歴を専用ページで一覧し、タイトルから同じ記事を開き直せる。
+- [x] Phase 131: Feed Visit Recording (1/1 plan) — 2026-09-21
+- [x] Phase 132: History Page, Navigation & i18n (1/1 plan) — 2026-09-21
+- [x] Phase 133: Test Coverage & Tri-Suite Gate (1/1 plan) — 2026-09-21
 
-- [x] **Phase 131: Feed Visit Recording** - Persist title + URL on feed clicks; upsert last-visited without duplicates (completed 2026-09-21)
-- [x] **Phase 132: History Page, Navigation & i18n** - Dedicated history page from nav; ja/en chrome (completed 2026-09-21)
-- [x] **Phase 133: Test Coverage & Tri-Suite Gate** - Minitest + Cucumber + lint gate (completed 2026-09-21)
+</details>
 
 <details>
 <summary>✅ v1.37.0 — モバイルでのタスク追加機能 (Phases 129–130) — SHIPPED 2026-06-27</summary>
