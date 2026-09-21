@@ -73,7 +73,7 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
   def test_日本語ロケールで最新changelog見出しが表示される
     get root_path
     assert_response :success
-    assert_includes response.body, 'フィードガジェットの設定をダッシュボードから変更できるようになりました'
+    assert_includes response.body, 'フィード・X・Mastodonで開いた記事の閲覧履歴を確認できるようになりました'
   end
 
   def test_英語ロケールでchangelog見出しがWhatsNewになる

@@ -412,6 +412,18 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-09-21"
+          headline: Revisit articles you opened from feeds, X, and Mastodon
+          tag: new
+          description: Turn on "Show reading history" in preferences to open a dedicated page from the navigation. Feed articles, X posts, and Mastodon toots you opened from the dashboard appear newest first, and you can reopen them from the title.
+        - date: "2026-08-31"
+          headline: Fixed the add button not appearing on hover in the task gadget
+          tag: fix
+          description: On some computers, hovering the task gadget header did not reveal the add button. It now appears based on screen width, so mouse users can add a task reliably.
+        - date: "2026-07-31"
+          headline: Fixed feed gadget settings not appearing when tapping the header on mobile
+          tag: fix
+          description: Tapping a feed gadget header on a smartphone now reveals the settings button. You can change the feed without accidentally following the site name link.
         - date: "2026-07-29"
           headline: Edit feed gadget settings from your dashboard
           tag: new
