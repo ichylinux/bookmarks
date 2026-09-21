@@ -25,8 +25,13 @@ module ApplicationHelper
 
   LOGGED_IN_BEFORE_STORAGE_KEY = 'bookmarksHasLoggedIn'
   MASTODON_INSTANCE_STORAGE_KEY = 'bookmarksMastodonInstance'
+  EXPLICIT_LANDING_PARAM = :landing
 
   def guest_root_landing_page?
     !user_signed_in? && controller_name == 'welcome' && action_name == 'index'
+  end
+
+  def explicit_landing_request?
+    params[EXPLICIT_LANDING_PARAM].present?
   end
 end

@@ -1,6 +1,6 @@
 <%# locals: path_helper (Symbol), back_home_key (String) %>
 <div class="landing-page__toolbar">
-  <%= link_to root_path, class: 'landing-back-link' do %>
+  <%= link_to root_path(landing: 1), class: 'landing-back-link' do %>
     <span aria-hidden="true">←</span>
     <%= t(back_home_key).sub(/\A←\s*/, '') %>
   <% end %>

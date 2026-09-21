@@ -103,6 +103,25 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "window.location.replace('#{new_user_session_path}')"
   end
 
+  def test_未ログインで明示的ランディング表示時はリダイレクトスクリプトを含まない
+    get root_path, params: { landing: 1 }
+    assert_response :success
+    assert_select '.landing-page', count: 1
+    assert_not_includes response.body, 'redirectReturningGuestToSignIn'
+  end
+
+  def test_サインイン画面のホームに戻るリンクは明示的ランディングパラメータ付きrootへ向く
+    get new_user_session_path
+    assert_response :success
+    assert_select 'a.landing-back-link[href=?]', root_path(landing: 1)
+  end
+
+  def test_明示的ランディング表示時の言語切替リンクはlandingパラメータを維持する
+    get root_path, params: { landing: 1 }
+    assert_response :success
+    assert_select 'a.landing-lang-link[href=?]', root_path(locale: 'en', landing: 1)
+  end
+
   def test_ログイン済みユーザーのrootには過去ログイン記録スクリプトが含まれる
     sign_in User.first
     get root_path

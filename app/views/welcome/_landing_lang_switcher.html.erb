@@ -1,5 +1,6 @@
 <%# locals: path_helper (:root_path, :privacy_path, :terms_path, :new_user_session_path, :new_user_registration_path) %>
+<% preserve_landing = path_helper == :root_path && explicit_landing_request? %>
 <div class="landing-lang-switcher">
-  <%= link_to "日本語", send(path_helper, locale: 'ja'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :ja}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
-  <%= link_to "English", send(path_helper, locale: 'en'), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :en}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
+  <%= link_to "日本語", send(path_helper, { locale: 'ja' }.tap { |p| p[:landing] = 1 if preserve_landing }), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :ja}", aria: { current: (I18n.locale == :ja ? 'true' : nil) } %>
+  <%= link_to "English", send(path_helper, { locale: 'en' }.tap { |p| p[:landing] = 1 if preserve_landing }), class: "landing-lang-link #{'landing-lang-link--active' if I18n.locale == :en}", aria: { current: (I18n.locale == :en ? 'true' : nil) } %>
 </div>

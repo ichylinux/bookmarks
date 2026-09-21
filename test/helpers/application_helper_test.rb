@@ -56,6 +56,15 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal "", visited_link_class(nil, "https://example.com/page")
   end
 
+  test "explicit_landing_request? returns true when landing param is present" do
+    @controller.params[:landing] = '1'
+    assert explicit_landing_request?
+  end
+
+  test "explicit_landing_request? returns false when landing param is absent" do
+    assert_not explicit_landing_request?
+  end
+
   # CSS contract test (VIS-01 + VIS-02 success criterion 3)
 
   test "common.css.scss defines .link--visited selector" do
