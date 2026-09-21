@@ -548,8 +548,8 @@ ja:
 
   feed_article_histories:
     index:
-      heading: フィード閲覧履歴
-      empty: フィードで開いた記事はまだありません
+      heading: 閲覧履歴
+      empty: まだ閲覧履歴はありません
 
   feeds:
     index:
