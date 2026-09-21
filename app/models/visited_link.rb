@@ -2,6 +2,8 @@ class VisitedLink < ApplicationRecord
   belongs_to :user
   validates :url, presence: true
 
+  scope :feed_history_for, ->(user) { where(user_id: user.id, source: 'feed').order(visited_at: :desc) }
+
   MAX_TITLE_LENGTH = 2083
 
   def self.record!(user, url, title: nil, source: nil)

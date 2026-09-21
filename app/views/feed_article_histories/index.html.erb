@@ -1,0 +1,13 @@
+<% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+
+<h1><%= t('feed_article_histories.index.heading') %></h1>
+
+<% unless @feed_article_histories.present? %>
+  <div><%= t('feed_article_histories.index.empty') %></div>
+<% else %>
+  <ol>
+    <% @feed_article_histories.each do |link| %>
+      <li><%= link_to link.title.presence || link.url, link.url, **link_opts %></li>
+    <% end %>
+  </ol>
+<% end %>

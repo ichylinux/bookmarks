@@ -544,6 +544,11 @@ ja:
       previous_month: 前の月
       next_month: 次の月
 
+  feed_article_histories:
+    index:
+      heading: フィード閲覧履歴
+      empty: フィードで開いた記事はまだありません
+
   feeds:
     index:
       add: 追加

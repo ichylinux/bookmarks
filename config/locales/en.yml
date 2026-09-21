@@ -544,6 +544,11 @@ en:
       previous_month: Previous month
       next_month: Next month
 
+  feed_article_histories:
+    index:
+      heading: Feed reading history
+      empty: No articles opened from feeds yet
+
   feeds:
     index:
       add: Add

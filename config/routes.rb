@@ -43,6 +43,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :feed_article_histories, only: [:index]
+
   resources :mastodon_accounts, only: %i[index show new create edit update destroy]
 
   resources :x_accounts, only: %i[index show update] do
