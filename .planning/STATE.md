@@ -1,29 +1,26 @@
 ---
-gsd_state_version: 1.0
-milestone: v1.37.0
-status: Awaiting next milestone
-stopped_at: Completed quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除)
-last_updated: "2026-09-02T12:17:24.063Z"
-last_activity: 2026-09-02
-last_activity_desc: "Completed quick task 260902-tc9: Jenkins非対応マウスオーバーステップ削除"
-state_head: 1ce9ec142cadbeb4e430c0846eaac489335c956d
+gsd_state_version: "1.0"
+milestone: v1.37.1
+milestone_name: フィード記事の閲覧履歴
+status: planning
+last_updated: "2026-09-21T05:27:40.993Z"
+last_activity: 2026-09-21
 progress:
-  total_phases: 2
-  completed_phases: 2
-  total_plans: 2
-  completed_plans: 2
-milestone_name: モバイルでのタスク追加機能
-current_phase: 37.0
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State
 
 ## Current Position
 
-Phase: Milestone v1.37.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-09-02 - Quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除): commits a71a692..1ce9ec1, all scoped tests green (lint, minitest, dad:test 6/6)
+Status: Defining requirements
+Last activity: 2026-09-21 — Milestone v1.37.1 started
 
 ## Project Reference
 

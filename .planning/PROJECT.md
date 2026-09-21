@@ -6,6 +6,16 @@
 
 Mobile todo-add UX: touch-device "追加" link visible, inline form stacks vertically at ≤767px, iOS auto-zoom prevented. CSS contract test + @mobile_portal Cucumber E2E added. Tri-suite at close: lint ✓ · 684 Minitest · 40 Cucumber. Details: `.planning/milestones/v1.37.0-ROADMAP.md`. Audit: `.planning/milestones/v1.37.0-MILESTONE-AUDIT.md` (gaps_found — documentation only).
 
+## Current Milestone: v1.37.1 フィード記事の閲覧履歴
+
+**Goal:** フィードから開いた記事の履歴を専用ページで一覧し、タイトルから同じ記事を開き直せる。
+
+**Target features:**
+- ナビから開ける専用の履歴ページ（既存 `/feeds` 設定テーブルは触らない）
+- RSS/Atom フィードから開いた記事だけを新しい順に表示
+- タイトルをクリックして同じ記事を開き直す
+- 履歴が空のときの表示、自分の履歴だけが見えること
+
 <details>
 <summary>Shipped: v1.37.0 モバイルでのタスク追加機能 (2026-06-27)</summary>
 
@@ -324,6 +334,20 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - ✓ `TodoGadgetMobileCssContractTest` with 3 `assert_match` regex tests verifying `@media (hover: none)` block structure in `welcome.css.scss` — **v1.37.0 Phase 130**
 - ✓ `@mobile_portal` Cucumber E2E scenario at 390×844px viewport: preference enable → mobile root → column nav → タップ → form submit → assertion; tri-suite green (684 Minitest, 40 Cucumber) — **v1.37.0 Phase 130**
 
+### Active
+
+- [ ] Feed article click persists title + URL for history (REC-01)
+- [ ] Re-clicking the same article upserts last-visited time without duplicating the row (REC-02)
+- [ ] Dedicated history page reachable from navigation (HIST-01)
+- [ ] Feed-opened article titles list newest first (HIST-02)
+- [ ] Title click reopens the same article, honoring `open_links_in_new_tab` (HIST-03)
+- [ ] Empty state when the user has no feed article history (HIST-04)
+- [ ] History is per-user isolated (HIST-05)
+- [ ] Mastodon / X visits do not appear (HIST-06)
+- [ ] Nav, heading, and empty state are ja/en (I18N-01)
+- [ ] Minitest for recording and index (TEST-01)
+- [ ] Cucumber: feed click → history title → reopen (TEST-02)
+
 <details>
 <summary>Shipped: v1.31 X Account Manual Add (Non-Following) (2026-05-22)</summary>
 
@@ -349,9 +373,14 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - Pagination for admin user table — deferred (user count is small)
 - Column sorting/filtering on admin screens — deferred
 - User role editing from admin screen — read-only for now
+- Which-feed-source column on article history — user chose title + reopen only
+- Delete / manage history rows — not requested for v1.37.1
+- Backfill of existing `visited_links` that have URL only — no title/source to reconstruct
+- Mastodon / X visit history — feeds-only scope
 
 ## Context
 
+- **Current focus (v1.37.1):** Dedicated page listing RSS/Atom articles the user opened, so they can reopen by title. Extend `visited_links` with nullable `title` + `source='feed'`; do not change `/feeds` CRUD.
 - **Shipped v1.37.0 (2026-06-27):** Mobile todo-add UX — `@media (hover: none)` touch link fix, flex-wrap inline form at ≤767px, iOS auto-zoom guard, `<div class="todo">` standalone-page scope wrapper, CSS contract test + `@mobile_portal` Cucumber E2E. Tri-suite: lint ✓ · 684 Minitest · 40 Cucumber. Audit: `.planning/milestones/v1.37.0-MILESTONE-AUDIT.md` (gaps_found — Phase 129 VERIFICATION.md missing, functionality confirmed).
 - **Shipped v1.36.0 (2026-06-19):** Todo gadget bulk-complete header — `.todo-gadget-complete-group` with live count, `.todo_actions` row removed, `toggle_highlight` selected-preservation fix. Tri-suite: lint ✓ · 681 Minitest · 39 Cucumber. Details: `.planning/milestones/v1.36.0-ROADMAP.md`.
 - **Shipped v1.35 (2026-06-12):** Mastodon OAuth 2.0 sign-in — custom OmniAuth strategy with federated instance selection, composite uid identity, Connected Accounts 5th row, tri-suite gate. Tri-suite: lint ✓ · 644 Minitest · 38 Cucumber. Details: `.planning/milestones/v1.35-ROADMAP.md`. Audit: `.planning/milestones/v1.35-MILESTONE-AUDIT.md` (passed, 16/16).
@@ -459,6 +488,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Session-scoped OAuth client credentials (v1.35) | Per-instance `POST /api/v1/apps` registration; stale `mastodon_oauth_client_*` cleared on instance change | ✓ Good — supports federated instances without static ENV config |
 | Composite uid `instance:account_id` for Mastodon (v1.35) | `oauth_identities` unique on `(user_id, provider)` — one Mastodon account per user across instances | ✓ Good — `info[:instance]` from strategy enables assembly in `from_omniauth` |
 | No live Mastodon OAuth in Cucumber CI (v1.35) | Facebook precedent; static 5-row presence check sufficient | ✓ Good — avoids flaky external dependency in `dad:test` |
+| Extend `visited_links` with nullable `title` + `source` (v1.37.1) | History needs title after feed entries rotate off; `source='feed'` keeps Mastodon/X visits off the page without a new table | — Pending |
 
 ## Evolution
 
@@ -559,4 +589,4 @@ This document evolves at phase transitions and milestone boundaries.
 **Goal achieved:** In-repo JavaScript is maintainable and lint-consistent without replacing Sprockets or jQuery.
 
 ---
-*Last updated: 2026-06-27 — v1.37.0 モバイルでのタスク追加機能 shipped*
+*Last updated: 2026-09-21 — v1.37.1 フィード記事の閲覧履歴 started*
