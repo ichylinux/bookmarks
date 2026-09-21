@@ -43,6 +43,7 @@ end
 
 group :development do
   gem 'rails-erd'
+  gem 'ruby-graphviz'
   gem 'web-console', '>= 3.3.0'
 end
 
