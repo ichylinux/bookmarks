@@ -691,7 +691,10 @@ Plans:
   2. When the user opens the same feed article again, they still have one history row and last-visited time is newer
   3. Existing URL-only visited-link rows and gadget "visited" styling still work — new nullable `title` / `source` columns do not lose or break prior data
   4. Title and source are accepted only for feed visits (`source='feed'`); Mastodon/X clicks remain URL-only and are not titled as feed history
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 131-01-PLAN.md — Feed visit recording: migration, model/controller, feed-aware JS, scoped tests
 
 ---
 
