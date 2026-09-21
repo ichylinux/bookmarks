@@ -289,6 +289,7 @@ en:
     bookmarks: Bookmarks
     todos: Tasks
     feeds: Feeds
+    feed_article_histories: Reading history
     mastodon: Mastodon
     x_accounts: X (Twitter)
     users: Users
