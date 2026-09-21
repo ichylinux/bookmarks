@@ -1,5 +1,17 @@
 # Milestones
 
+## v1.37.1 v1.37.1 (Shipped: 2026-09-21)
+
+**Phases completed:** 3 phases, 3 plans, 3 tasks
+
+**Key accomplishments:**
+
+- Feed article clicks persist title + URL with source='feed' via extended upsert, while Mastodon/X gadgets remain URL-only
+- 132-01 — History Page, Navigation & i18n
+- 133-01 — Test Coverage & Tri-Suite Gate
+
+---
+
 ## v1.37.0 モバイルでのタスク追加機能 (Shipped: 2026-06-27)
 
 **Phases completed:** 2 phases, 2 plans, 5 tasks
