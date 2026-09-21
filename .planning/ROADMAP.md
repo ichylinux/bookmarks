@@ -2,7 +2,7 @@
 
 ## Milestones
 
-- 🚧 **v1.37.1 — フィード記事の閲覧履歴** — Phases 131–133 (active)
+- ✅ **v1.37.1 — フィード記事の閲覧履歴** — Phases 131–133 (shipped 2026-09-21) — [archived](milestones/v1.37.1-ROADMAP.md)
 - ✅ **v1.37.0 — モバイルでのタスク追加機能** — Phases 129–130 (shipped 2026-06-27) — [archived](milestones/v1.37.0-ROADMAP.md)
 - ✅ **v1.36.0 — タスクガジェットの完了操作の改善** — Phases 127–128 (shipped 2026-06-19) — [archived](milestones/v1.36.0-ROADMAP.md)
 - ✅ **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (shipped 2026-06-16) — [archived](milestones/v1.35.1-ROADMAP.md)
