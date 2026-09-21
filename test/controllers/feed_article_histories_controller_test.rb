@@ -56,6 +56,42 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'X Post Headline'
   end
 
+  def test_index_shows_feed_source_icon
+    sign_in @user
+    VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Headline', source: 'feed')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    label = I18n.t('feed_article_histories.index.sources.feed')
+    assert_select 'ol li .history-source-icon[role=img][aria-label=?][title=?]', label, label, count: 1
+    assert_select 'ol li .history-source-icon svg', count: 1
+  end
+
+  def test_index_shows_x_source_icon
+    sign_in @user
+    VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'X Post Headline', source: 'x')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    label = I18n.t('feed_article_histories.index.sources.x')
+    assert_select 'ol li .history-source-icon[role=img][aria-label=?][title=?]', label, label, count: 1
+    assert_select 'ol li .history-source-icon svg', count: 1
+  end
+
+  def test_index_shows_mastodon_source_icon
+    sign_in @user
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1', title: 'Mastodon Toot Headline', source: 'mastodon')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    label = I18n.t('feed_article_histories.index.sources.mastodon')
+    assert_select 'ol li .history-source-icon[role=img][aria-label=?][title=?]', label, label, count: 1
+    assert_select 'ol li .history-source-icon svg', count: 1
+  end
+
   def test_index_orders_newest_first
     sign_in @user
     VisitedLink.record!(@user, 'https://example.com/older', title: 'Older Article', source: 'feed')

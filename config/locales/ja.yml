@@ -550,6 +550,10 @@ ja:
     index:
       heading: 閲覧履歴
       empty: まだ閲覧履歴はありません
+      sources:
+        feed: フィード
+        x: X
+        mastodon: Mastodon
 
   feeds:
     index:

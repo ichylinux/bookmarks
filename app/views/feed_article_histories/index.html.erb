@@ -7,7 +7,14 @@
 <% else %>
   <ol>
     <% @feed_article_histories.each do |link| %>
-      <li><%= link_to link.title.presence || link.url, link.url, **link_opts %></li>
+      <% source_label = t("feed_article_histories.index.sources.#{link.source}") %>
+      <li>
+        <span class="history-source-icon" role="img"
+              aria-label="<%= source_label %>" title="<%= source_label %>">
+          <%= render 'icons/service', variant: link.source.to_sym %>
+        </span>
+        <%= link_to link.title.presence || link.url, link.url, **link_opts %>
+      </li>
     <% end %>
   </ol>
 <% end %>
