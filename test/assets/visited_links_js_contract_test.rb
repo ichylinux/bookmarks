@@ -27,9 +27,20 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
            "addClass('link--visited') must appear before $.post('/visited_links') in source"
   end
 
-  test 'posts url only — csrf handled by rails-ujs ajax prefilter' do
+  test 'non-feed branch posts url only' do
     assert_includes @source, '{ url: url }'
     refute_includes @source, 'authenticity_token'
+  end
+
+  test 'feed branch posts url title and source feed' do
+    assert_includes @source, "source: 'feed'"
+    assert_includes @source, 'title: title'
+    assert_includes @source, 'title = $(this).text().trim()'
+  end
+
+  test 'feed detection uses feed_ id prefix' do
+    assert_includes @source, "indexOf('feed_') === 0"
+    assert_includes @source, "closest('.gadget')"
   end
 
   test 'strips fragment from href before posting' do
