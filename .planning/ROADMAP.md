@@ -48,7 +48,7 @@
 
 **Milestone Goal:** フィードから開いた記事の履歴を専用ページで一覧し、タイトルから同じ記事を開き直せる。
 
-- [ ] **Phase 131: Feed Visit Recording** - Persist title + URL on feed clicks; upsert last-visited without duplicates
+- [x] **Phase 131: Feed Visit Recording** - Persist title + URL on feed clicks; upsert last-visited without duplicates (completed 2026-09-21)
 - [ ] **Phase 132: History Page, Navigation & i18n** - Dedicated history page from nav; ja/en chrome
 - [ ] **Phase 133: Test Coverage & Tri-Suite Gate** - Minitest + Cucumber + lint gate
 
@@ -714,7 +714,11 @@ Plans:
   4. User sees a localized empty state when they have no feed article history
   5. Nav label and page heading render in Japanese or English according to the user's locale
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 132-01-PLAN.md — Feed history page, primary nav link, ja/en locales, smoke tests
+
 **UI hint**: yes
 
 ---
