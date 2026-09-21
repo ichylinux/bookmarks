@@ -74,3 +74,36 @@ end
          "訪問済みリンク (#{stored_url.inspect}) がサーバーに保存されませんでした"
   capture
 end
+
+もし /^フィード閲覧履歴ページを開きます。$/ do
+  visit feed_article_histories_path
+  assert page.has_css?('h1', text: I18n.t('feed_article_histories.index.heading'), wait: 15),
+         "expected h1 with #{I18n.t('feed_article_histories.index.heading').inspect}"
+  capture
+end
+
+ならば /^閲覧履歴に "([^"]*)" が表示される$/ do |title|
+  link = find('ol li a', text: title, wait: 15)
+  @_history_article_href = link[:href]
+  capture
+end
+
+もし /^閲覧履歴の記事リンクのナビゲーションを抑制します。$/ do
+  raise 'run history visibility step first' if @_history_article_href.blank?
+
+  page.execute_script(feed_stub_nav_suppress_js(@_history_article_href.to_json))
+  capture
+end
+
+もし /^閲覧履歴の "([^"]*)" をクリックします。$/ do |title|
+  find('ol li a', text: title).click
+  capture
+end
+
+ならば /^閲覧履歴の記事リンク先 URL が stub-article である$/ do
+  raise 'run history visibility step first' if @_history_article_href.blank?
+
+  assert @_history_article_href.include?('stub-article'),
+         "expected history link href to include 'stub-article', got #{@_history_article_href.inspect}"
+  capture
+end
