@@ -2,7 +2,9 @@ class VisitedLink < ApplicationRecord
   belongs_to :user
   validates :url, presence: true
 
-  scope :feed_history_for, ->(user) { where(user_id: user.id, source: 'feed').order(visited_at: :desc) }
+  HISTORY_SOURCES = %w[feed x].freeze
+
+  scope :feed_history_for, ->(user) { where(user_id: user.id, source: HISTORY_SOURCES).order(visited_at: :desc) }
 
   MAX_TITLE_LENGTH = 2083
 
@@ -11,8 +13,8 @@ class VisitedLink < ApplicationRecord
     return if normalized.blank?
 
     attrs = { user_id: user.id, url: normalized, visited_at: Time.current }
-    if source == 'feed'
-      attrs[:source] = 'feed'
+    if HISTORY_SOURCES.include?(source)
+      attrs[:source] = source
       stripped_title = title.to_s.strip
       if stripped_title.present?
         attrs[:title] = stripped_title.byteslice(0, MAX_TITLE_LENGTH)

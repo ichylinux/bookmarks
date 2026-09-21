@@ -115,6 +115,26 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_equal 'a' * 2083, link.title
   end
 
+  def test_x_record_persists_title_and_source
+    VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'Sample Post', source: 'x')
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://x.com/user/status/1')
+    assert_equal 'Sample Post', link.title
+    assert_equal 'x', link.source
+  end
+
+  def test_feed_history_for_includes_feed_and_x_rows
+    VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Item', source: 'feed')
+    VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'X Post', source: 'x')
+    VisitedLink.record!(@user, 'https://mastodon.example/@user/1', title: 'Mastodon Post', source: 'mastodon')
+
+    titles = VisitedLink.feed_history_for(@user).map(&:title)
+
+    assert_includes titles, 'Feed Item'
+    assert_includes titles, 'X Post'
+    assert_not_includes titles, 'Mastodon Post'
+  end
+
   # urls_for
 
   def test_urls_for_returns_set

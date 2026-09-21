@@ -36,6 +36,16 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, 'Mastodon Post'
   end
 
+  def test_index_shows_x_title
+    sign_in @user
+    VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'X Post Headline', source: 'x')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_includes response.body, 'X Post Headline'
+  end
+
   def test_index_orders_newest_first
     sign_in @user
     VisitedLink.record!(@user, 'https://example.com/older', title: 'Older Article', source: 'feed')

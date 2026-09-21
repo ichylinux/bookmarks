@@ -1,7 +1,8 @@
 class VisitedLinksController < ApplicationController
   def create
-    if params[:source] == 'feed'
-      VisitedLink.record!(current_user, params[:url], title: params[:title], source: 'feed')
+    source = params[:source]
+    if VisitedLink::HISTORY_SOURCES.include?(source)
+      VisitedLink.record!(current_user, params[:url], title: params[:title], source: source)
     else
       VisitedLink.record!(current_user, params[:url])
     end

@@ -35,7 +35,12 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
   test 'feed branch posts url title and source feed' do
     assert_includes @source, "source: 'feed'"
     assert_includes @source, 'title: title'
-    assert_includes @source, 'title = $(this).text().trim()'
+    assert_includes @source, 'const title = $(this).text().trim()'
+  end
+
+  test 'x branch posts url title and source x' do
+    assert_includes @source, "source: 'x'"
+    assert_includes @source, "indexOf('x_account_') === 0"
   end
 
   test 'feed detection uses feed_ id prefix' do
