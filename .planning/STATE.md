@@ -6,8 +6,8 @@ status: Awaiting next milestone
 stopped_at: Phase 133 complete — all phases complete
 last_updated: "2026-09-21T08:50:00.000Z"
 last_activity: 2026-09-21
-last_activity_desc: "Completed quick task 260921-opa: 閲覧履歴でXもサポート"
-state_head: 9c8348291a059eccfa9ca7e36465ebc2ab6f19fe
+last_activity_desc: "Completed quick task 260921-ot0: 閲覧履歴でMastodonもサポート"
+state_head: 152895f
 progress:
   total_phases: 3
   completed_phases: 1
@@ -76,7 +76,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 ### Decisions
 
 - (v1.37.1) Extend existing `visited_links` with nullable `title` + `source='feed'`; no new table
-- (v1.37.1) Feeds-only history; Mastodon/X visits must not appear
+- (v1.37.1) Feed/X/Mastodon history via `HISTORY_SOURCES`; URL-only visits excluded from history page
 - (v1.37.1) New GET at `/feed_article_histories` — must not collide with `resources :feeds` `:id`; existing `/feeds` CRUD stays unchanged
 - (v1.37.1) No which-feed-source column, no history delete, no backfill of URL-only rows
 - (v1.37.1) Sprockets + jQuery, ja/en, no new frontend framework
@@ -114,6 +114,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 260831-1mg | Windows+Chromeの場合、タスクガジェットのヘッダにマウスオーバーしても追加ボタンが表示されない(⚠ 未検証: dad:test 未実行 + 実機確認待ち) | 2026-08-31 | 71b8c47 | [260831-1mg-windows-chrome](./quick/260831-1mg-windows-chrome/) |
 | 260902-tc9 | Jenkinsのリモート Chrome サイドカーで動作しないマウスオーバーステップをCucumberから割愛し、WINCHR-01実機証跡を残存ステップへ移送 | 2026-09-02 | a71a692..1ce9ec1 | [260902-tc9-jenkins](./quick/260902-tc9-jenkins/) |
 | 260921-opa | 閲覧履歴でXもサポート | 2026-09-21 | 907ccc6 | [260921-opa-x](./quick/260921-opa-x/) |
+| 260921-ot0 | 閲覧履歴でMastodonもサポート | 2026-09-21 | 152895f | [260921-ot0-mastodon](./quick/260921-ot0-mastodon/) |
 
 ## Operator Next Steps
 
