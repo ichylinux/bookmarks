@@ -52,6 +52,24 @@ class VisitedLinksControllerTest < ActionDispatch::IntegrationTest
     assert_routing({ path: '/visited_links', method: :post }, { controller: 'visited_links', action: 'create' })
   end
 
+  def test_feed_create_persists_title_and_source
+    sign_in @user
+
+    assert_difference('VisitedLink.count', 1) do
+      post visited_links_path, params: {
+        url: 'https://example.com/rss-article',
+        title: 'Sample Headline',
+        source: 'feed'
+      }
+    end
+
+    assert_response :no_content
+    link = VisitedLink.last
+    assert_equal 'https://example.com/rss-article', link.url
+    assert_equal 'Sample Headline', link.title
+    assert_equal 'feed', link.source
+  end
+
   def test_cucumber_hooks_include_visited_link_reset
     hooks_path = Rails.root.join('features/support/hooks.rb')
     assert File.read(hooks_path).include?('VisitedLink.delete_all'),
