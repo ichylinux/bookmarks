@@ -9,8 +9,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Recording (REC)
 
-- [ ] **REC-01**: User can click a feed article link and have its title and URL persisted for history
-- [ ] **REC-02**: User can click the same feed article again and still see a single history row, with last-visited time updated
+- [x] **REC-01**: User can click a feed article link and have its title and URL persisted for history
+- [x] **REC-02**: User can click the same feed article again and still see a single history row, with last-visited time updated
 
 ### History (HIST)
 
@@ -50,8 +50,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REC-01 | Phase 131 | Pending |
-| REC-02 | Phase 131 | Pending |
+| REC-01 | Phase 131 | Complete |
+| REC-02 | Phase 131 | Complete |
 | HIST-01 | Phase 132 | Pending |
 | HIST-02 | Phase 132 | Pending |
 | HIST-03 | Phase 132 | Pending |
@@ -63,6 +63,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-02 | Phase 133 | Pending |
 
 **Coverage:**
+
 - v1.37.1 requirements: 11 total
 - Mapped to phases: 11
 - Unmapped: 0

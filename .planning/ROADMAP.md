@@ -687,14 +687,17 @@ Plans:
 **Depends on**: Nothing (first phase of v1.37.1; v1.26 `visited_links` already exists)
 **Requirements**: REC-01, REC-02
 **Success Criteria** (what must be TRUE):
+
   1. When the user opens a feed article, its title and URL are stored so they can later appear as history
   2. When the user opens the same feed article again, they still have one history row and last-visited time is newer
   3. Existing URL-only visited-link rows and gadget "visited" styling still work — new nullable `title` / `source` columns do not lose or break prior data
   4. Title and source are accepted only for feed visits (`source='feed'`); Mastodon/X clicks remain URL-only and are not titled as feed history
-**Plans**: 1 plan
+
+**Plans**: 1/1 plans executed
 
 Plans:
-- [ ] 131-01-PLAN.md — Feed visit recording: migration, model/controller, feed-aware JS, scoped tests
+
+- [x] 131-01-PLAN.md — Feed visit recording: migration, model/controller, feed-aware JS, scoped tests
 
 ---
 
@@ -704,11 +707,13 @@ Plans:
 **Depends on**: Phase 131
 **Requirements**: HIST-01, HIST-02, HIST-03, HIST-04, HIST-05, HIST-06, I18N-01
 **Success Criteria** (what must be TRUE):
+
   1. User can open a dedicated history page from navigation at `/feed_article_histories` — the path does not collide with `resources :feeds` `:id`, and existing `/feeds` CRUD is unchanged
   2. User sees titles of RSS/Atom articles they previously opened, newest first; Mastodon and X visits never appear, and they see only their own rows
   3. User can click a history title and reopen the same article, honoring `open_links_in_new_tab`
   4. User sees a localized empty state when they have no feed article history
   5. Nav label and page heading render in Japanese or English according to the user's locale
+
 **Plans**: TBD
 **UI hint**: yes
 
@@ -720,9 +725,11 @@ Plans:
 **Depends on**: Phase 132
 **Requirements**: TEST-01, TEST-02
 **Success Criteria** (what must be TRUE):
+
   1. Minitest covers recording (title/source persist, upsert, feed-only source) and history index (newest first, empty state, per-user isolation, Mastodon/X excluded)
   2. A Cucumber scenario covers feed article click → history page shows the title → clicking the title reopens the article
   3. `yarn run lint` exits 0; scoped Minitest and related `bundle exec rake dad:test` exit 0 with 0 failed scenarios
+
 **Plans**: TBD
 
 ## Progress Table
@@ -753,7 +760,7 @@ Plans:
 | 128. Test Coverage & Tri-Suite Gate | 1/1 | Complete | 2026-06-19 |
 | 129. Mobile CSS & Link Visibility | 1/1 | Complete   | 2026-06-26 |
 | 130. Test Coverage & Tri-Suite Gate | 1/1 | Complete   | 2026-06-26 |
-| 131. Feed Visit Recording | 0/TBD | Not started | - |
+| 131. Feed Visit Recording | 1/1 | In Progress|  |
 | 132. History Page, Navigation & i18n | 0/TBD | Not started | - |
 | 133. Test Coverage & Tri-Suite Gate | 0/TBD | Not started | - |
 

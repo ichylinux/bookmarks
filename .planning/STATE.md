@@ -5,16 +5,16 @@ milestone_name: フィード記事の閲覧履歴
 current_phase: 131
 current_phase_name: Feed Visit Recording
 status: executing
-stopped_at: v1.37.1 roadmap created; Phase 131 ready to plan
-last_updated: "2026-09-21T06:42:53.295Z"
+stopped_at: Completed 131-01-PLAN.md
+last_updated: "2026-09-21T06:44:58.458Z"
 last_activity: 2026-09-21
 last_activity_desc: v1.37.1 roadmap created (phases 131–133)
-state_head: e6da319caf7af4e6d80f86dd589ac0ba28742b8c
+state_head: 2158a987e2a7858c64dd26633903da1fc8ad8c3f
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 1
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -42,6 +42,12 @@ See: .planning/PROJECT.md (updated 2026-09-21)
 - v1.36.0 close: `yarn run lint` ✓ · `bin/rails test` 681/681 ✓ · `dad:test` 39/39 ✓
 - v1.35.1 close: `yarn run lint` ✓ · `bin/rails test` 667/667 ✓ · `dad:test` 38/38 ✓
 - v1.34 close: `yarn run lint` ✓ · `bin/rails test` 587/587 ✓ · `dad:test` 38/38 ✓
+
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 131-feed-visit-recording P01 | 25min | 3 tasks | 8 files |
 
 ## Deferred Items
 
@@ -91,6 +97,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 - (v1.34) Disconnect safety guard: blocked if no other linked provider AND `password_auth_enabled: false`
 - (v1.34) No "connect new provider" from preferences — sign-in pages remain the only linking surface
 - [Phase 37.0]: quick-260902-tc9: Jenkinsのリモート Chrome サイドカーで動作しない専用セッションCucumberステップを削除、WINCHR-01実機証跡は残存ステップへコメント移送 (commit範囲 a71a692..1ce9ec1)
+- [Phase 131]: Extended record! with optional title:/source: kwargs; feed-only when source=='feed'
 
 ### Blockers/Concerns
 
@@ -116,6 +123,6 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 
 ## Session
 
-**Last session:** 2026-09-21
-**Stopped at:** v1.37.1 roadmap created; Phase 131 ready to plan
+**Last session:** 2026-09-21T06:44:58.412Z
+**Stopped at:** Completed 131-01-PLAN.md
 **Resume file:** None
