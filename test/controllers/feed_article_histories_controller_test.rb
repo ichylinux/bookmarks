@@ -73,4 +73,27 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_redirected_to new_user_session_path
   end
+
+  def test_index_link_has_target_blank_when_open_in_new_tab
+    sign_in @user
+    @user.preference.update!(open_links_in_new_tab: true)
+    VisitedLink.record!(@user, 'https://example.com/article', title: 'Article', source: 'feed')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li a[href=?][target=?][rel=?]', 'https://example.com/article', '_blank', 'noopener noreferrer', text: 'Article'
+  end
+
+  def test_index_link_has_no_target_when_open_in_new_tab_off
+    sign_in @user
+    @user.preference.update!(open_links_in_new_tab: false)
+    VisitedLink.record!(@user, 'https://example.com/article', title: 'Article', source: 'feed')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li a[href=?]', 'https://example.com/article', text: 'Article'
+    assert_select 'ol li a[href=?][target=?]', 'https://example.com/article', '_blank', count: 0
+  end
 end
