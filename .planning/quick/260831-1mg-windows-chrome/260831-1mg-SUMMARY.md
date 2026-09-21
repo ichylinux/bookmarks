@@ -3,6 +3,10 @@ id: 260831-1mg
 status: fixed-pending-device-verification
 date: 2026-08-31
 commit: 71b8c47 (第1次・誤診), 未コミット (第2次・本修正)
+audit_acknowledged:
+  milestone: v1.37.1
+  at: 2026-09-21
+  status: fixed-pending-device-verification
 ---
 
 # Quick Task 260831-1mg — SUMMARY

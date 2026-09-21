@@ -18,17 +18,24 @@ key_files:
     - app/views/welcome/_dashboard.html.erb
     - test/assets/portal_mobile_tabs_js_contract_test.rb
     - features/03.モダンテーマ.feature
+
 decisions:
+
   - "Note sentinel stored as string 'note' in localStorage portalMobileActiveColumn; parseInt('note',10) is NaN so the existing NaN guard in the prehydrate script no-ops it correctly with no code change."
   - "cycleLength replaces colCount in the guard: `if (cycleLength < 2) return;` allows 1-column + note to be swipeable."
   - "Circular modular arithmetic ((currentIndex + direction) % cycleLength + cycleLength) % cycleLength; the old if (newIndex !== currentIndex) guard removed as redundant when cycleLength >= 2."
   - "hiddenClass derived from theme at init time (simple-tab-panel--hidden vs welcome-tab-panel--hidden); $homePanel likewise resolved by theme — no cross-theme hardcoding."
   - "Contract test and Cucumber scenario updated to reflect new circular behavior (old clamping assertions replaced)."
+
 metrics:
   duration: "~45 minutes"
   completed_date: "2026-06-15"
   tasks_completed: 2
   files_changed: 5
+audit_acknowledged:
+  milestone: v1.37.1
+  at: 2026-09-21
+  status: unknown
 ---
 
 # Phase quick-260615-0jw Plan 01: Integrate Note into Mobile Swipe Cycle — Summary
@@ -72,12 +79,14 @@ const newIndex = ((currentIndex + direction) % cycleLength + cycleLength) % cycl
 ```
 
 Cycle model:
+
 - Indices 0 through colCount-1 are portal columns.
 - Index colCount is the note sentinel (only when `noteInCycle` is true).
 - Swipe left (direction=+1): advances forward through the cycle.
 - Swipe right (direction=-1): retreats, wrapping from 0 to the last slot.
 
 Activation dispatch:
+
 - `newIndex === colCount` (note sentinel): calls `notePane.show()`, deactivates all column tabs, persists `'note'` to localStorage.
 - Otherwise (column): calls `notePane.hide()` then `activateColumn($portal, $tabs, newIndex)`.
 
@@ -92,6 +101,7 @@ Added a comment to the prehydrate IIFE noting that `'note'` is a valid sentinel 
 ## Note-Sentinel Persistence Approach
 
 `localStorage.portalMobileActiveColumn` stores either:
+
 - A numeric string (`"0"`, `"1"`, ...) for column indices
 - The literal string `"note"` for the note pane
 
@@ -104,6 +114,7 @@ The portal_mobile_tabs.js restore block checks `raw === 'note' && noteInCycle` e
 ### Auto-fixed Issues
 
 **1. [Rule 1 - Bug] Contract test assertions encoded old clamping behavior**
+
 - **Found during:** Task 2 green-bar gate (bin/rails test)
 - **Issue:** `portal_mobile_tabs_js_contract_test.rb` contained 3 assertions tied to the old implementation: `function($portal` (no space), `if (colCount < 2) return;`, and an `if (newIndex !== currentIndex)` guard that the circular model no longer uses.
 - **Fix:** Updated assertions to match the new style (`function ($portal`), new guard (`cycleLength < 2`), and replaced the obsolete newIndex guard check with a simple `activateColumn($portal, $tabs, newIndex)` pattern match.
@@ -111,6 +122,7 @@ The portal_mobile_tabs.js restore block checks `raw === 'note' && noteInCycle` e
 - **Commit:** 7747f8b
 
 **2. [Rule 1 - Bug] Cucumber scenario tested old clamping boundary behavior**
+
 - **Found during:** Task 2 green-bar gate (bundle exec rake dad:test)
 - **Issue:** Scenario `先頭列で右スワイプしても列が変わらない` (line 59) expected column 1 to remain active after right-swipe from col 0. With circular wrap, right-swipe from col 0 with 3 columns and use_note=OFF wraps to col 2 (last column).
 - **Fix:** Renamed scenario to `先頭列で右スワイプすると最終列へ循環する`; changed assertion to `3列目のポータル列がアクティブです。`. Determinism confirmed: the `Before` hook calls `Capybara.reset_sessions!` and resets `@_preferences_reset_for` before every scenario, so the modern theme background `sign_in` always triggers `reset_preferences_via_browser!` which unchecks `use_note`.

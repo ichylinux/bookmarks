@@ -1,7 +1,7 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": "v1.37.1",
+  "milestone": "v1.37.1 — フィード記事の閲覧履歴",
   "phases": [
     {
       "number": "104",
@@ -122,12 +122,27 @@
       "number": "130",
       "name": "Test Coverage & Tri-Suite Gate",
       "status": "complete"
+    },
+    {
+      "number": "131",
+      "name": "Feed Visit Recording",
+      "status": "in_progress"
+    },
+    {
+      "number": "132",
+      "name": "History Page, Navigation & i18n",
+      "status": "pending"
+    },
+    {
+      "number": "133",
+      "name": "Test Coverage & Tri-Suite Gate",
+      "status": "pending"
     }
   ],
   "next": {
-    "command": "/gsd-discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd-progress",
+    "label": "Show progress",
+    "reason": "Unsure of state — showing progress"
   },
-  "updated_at": "2026-09-21T05:27:40.999Z"
+  "updated_at": "2026-09-21T07:04:46.314Z"
 }

@@ -4,6 +4,10 @@ slug: disconnect-form-auth-error
 trigger: "rails test fails: UserPasswordAuthTest#test_disconnect_form_auth!_prevents_sign-in_with_old_password raises User::LastAuthMethodError"
 created: 2026-05-29
 updated: 2026-05-29
+audit_acknowledged:
+  milestone: v1.37.1
+  at: 2026-09-21
+  status: awaiting_human_verify
 ---
 
 ## Symptoms
@@ -62,6 +66,7 @@ root_cause: >
   because the DB lock_version no longer matched the stale in-memory value.
 
 fix: >
+
   1. Added OauthIdentity.upsert_for! setup to both disconnect_form_auth! tests so the
      LastAuthMethodError guard passes (user has an OAuth fallback auth method).
   2. Added `self.lock_version = snapshot.lock_version + 1` in disconnect_form_auth! after
@@ -71,5 +76,6 @@ fix: >
 verification: "5/5 tests pass in user_password_auth_test.rb; all 131 model tests pass (2 pre-existing stub errors in user_disconnect_auth_test.rb are unrelated)"
 
 files_changed:
+
   - app/models/user.rb
   - test/models/user_password_auth_test.rb
