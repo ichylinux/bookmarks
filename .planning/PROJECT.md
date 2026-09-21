@@ -343,10 +343,10 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - [ ] Title click reopens the same article, honoring `open_links_in_new_tab` (HIST-03)
 - [ ] Empty state when the user has no feed article history (HIST-04)
 - [ ] History is per-user isolated (HIST-05)
-- [ ] Mastodon / X visits do not appear (HIST-06)
+- ~~Mastodon / X visits do not appear (HIST-06)~~ — superseded 2026-09-21; X/Mastodon now included in reading history
 - [ ] Nav, heading, and empty state are ja/en (I18N-01)
 - [ ] Minitest for recording and index (TEST-01)
-- [ ] Cucumber: feed click → history title → reopen (TEST-02)
+- [x] Cucumber: gadget click → history title → reopen — feed, X, Mastodon (TEST-02)
 
 <details>
 <summary>Shipped: v1.31 X Account Manual Add (Non-Following) (2026-05-22)</summary>
@@ -376,7 +376,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 - Which-feed-source column on article history — user chose title + reopen only
 - Delete / manage history rows — not requested for v1.37.1
 - Backfill of existing `visited_links` that have URL only — no title/source to reconstruct
-- Mastodon / X visit history — feeds-only scope
+- ~~Mastodon / X visit history~~ — extended post-ship (quick tasks 260921-opa / 260921-ot0)
 
 ## Context
 
@@ -488,7 +488,7 @@ The app is bilingual end-to-end. All UI chrome (navigation, drawer, menus, flash
 | Session-scoped OAuth client credentials (v1.35) | Per-instance `POST /api/v1/apps` registration; stale `mastodon_oauth_client_*` cleared on instance change | ✓ Good — supports federated instances without static ENV config |
 | Composite uid `instance:account_id` for Mastodon (v1.35) | `oauth_identities` unique on `(user_id, provider)` — one Mastodon account per user across instances | ✓ Good — `info[:instance]` from strategy enables assembly in `from_omniauth` |
 | No live Mastodon OAuth in Cucumber CI (v1.35) | Facebook precedent; static 5-row presence check sufficient | ✓ Good — avoids flaky external dependency in `dad:test` |
-| Extend `visited_links` with nullable `title` + `source` (v1.37.1) | History needs title after feed entries rotate off; `source='feed'` keeps Mastodon/X visits off the page without a new table | — Pending |
+| Extend `visited_links` with nullable `title` + `source` (v1.37.1) | History needs title after feed entries rotate off; `HISTORY_SOURCES` (`feed`, `x`, `mastodon`) drives which rows appear on the history page | ✓ Done — extended to X/Mastodon post-ship |
 
 ## Evolution
 

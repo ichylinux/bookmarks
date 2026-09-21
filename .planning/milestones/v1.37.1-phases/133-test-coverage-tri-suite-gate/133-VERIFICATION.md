@@ -45,3 +45,13 @@ coincidental_reliance_items: []
 ## Gaps Summary
 
 No gaps found. Milestone v1.37.1 test gate complete.
+
+## Post-ship addendum (2026-09-21)
+
+Quick tasks 260921-opa / 260921-ot0 extended reading history to X and Mastodon. Cucumber coverage updated in the same feature file:
+
+| Suite | Command | Result |
+|-------|---------|--------|
+| Cucumber (scoped) | `dad:test features/08.訪問済みリンク.feature` | 5 passed, 0 failed |
+
+New scenarios: X投稿を開いて閲覧履歴から再び開ける (`@x_gadget`), Mastodonトゥートを開いて閲覧履歴から再び開ける (`@mastodon_gadget`). HIST-06 (exclude X/Mastodon) superseded.
