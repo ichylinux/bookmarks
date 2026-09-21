@@ -2,11 +2,11 @@
 gsd_state_version: "1.0"
 milestone: v1.37.1
 milestone_name: フィード記事の閲覧履歴
-status: planning
-last_updated: "2026-09-21T05:27:40.993Z"
+status: ready
+last_updated: "2026-09-21T05:35:00.000Z"
 last_activity: 2026-09-21
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,17 +17,19 @@ progress:
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 131 of 3 (Feed Visit Recording)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-09-21 — Milestone v1.37.1 started
+Status: Ready to plan
+Last activity: 2026-09-21 — v1.37.1 roadmap created (phases 131–133)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-26)
+See: .planning/PROJECT.md (updated 2026-09-21)
 
 **Core value:** Users can quickly capture, find, and manage their own bookmarks and related gadgets in one place, with a stable and familiar server-rendered experience — now in their preferred language.
-**Current focus:** Plan and execute Phase 129 with `/gsd-plan-phase 129`
+**Current focus:** Plan Phase 131 with `/gsd-plan-phase 131`
 
 ## Performance Metrics
 
@@ -65,6 +67,11 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 
 ### Decisions
 
+- (v1.37.1) Extend existing `visited_links` with nullable `title` + `source='feed'`; no new table
+- (v1.37.1) Feeds-only history; Mastodon/X visits must not appear
+- (v1.37.1) New GET at `/feed_article_histories` — must not collide with `resources :feeds` `:id`; existing `/feeds` CRUD stays unchanged
+- (v1.37.1) No which-feed-source column, no history delete, no backfill of URL-only rows
+- (v1.37.1) Sprockets + jQuery, ja/en, no new frontend framework
 - (v1.37.0) CSS-only approach for mobile layout — no JS changes to `todos.js`; `_form.html.erb` partial is NOT touched (shared by 3 render contexts)
 - (v1.37.0) `@media (hover: none)` override scoped to `.todo-gadget-new-link` only in `welcome.css.scss` (MOB-01)
 - (v1.37.0) `flex-wrap: wrap` added inside `.todo` scope in `todos.css.scss` mobile media query block (MOB-02)
@@ -100,10 +107,10 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Plan Phase 131 with `/gsd-plan-phase 131`
 
 ## Session
 
-**Last session:** 2026-09-02T12:17:22.856Z
-**Stopped at:** Completed quick task 260902-tc9 (Jenkins非対応マウスオーバーステップ削除)
+**Last session:** 2026-09-21
+**Stopped at:** v1.37.1 roadmap created; Phase 131 ready to plan
 **Resume file:** None

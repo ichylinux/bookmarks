@@ -50,23 +50,23 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| REC-01 | — | Pending |
-| REC-02 | — | Pending |
-| HIST-01 | — | Pending |
-| HIST-02 | — | Pending |
-| HIST-03 | — | Pending |
-| HIST-04 | — | Pending |
-| HIST-05 | — | Pending |
-| HIST-06 | — | Pending |
-| I18N-01 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
+| REC-01 | Phase 131 | Pending |
+| REC-02 | Phase 131 | Pending |
+| HIST-01 | Phase 132 | Pending |
+| HIST-02 | Phase 132 | Pending |
+| HIST-03 | Phase 132 | Pending |
+| HIST-04 | Phase 132 | Pending |
+| HIST-05 | Phase 132 | Pending |
+| HIST-06 | Phase 132 | Pending |
+| I18N-01 | Phase 132 | Pending |
+| TEST-01 | Phase 133 | Pending |
+| TEST-02 | Phase 133 | Pending |
 
 **Coverage:**
 - v1.37.1 requirements: 11 total
-- Mapped to phases: 0
-- Unmapped: 11 (filled by roadmap)
+- Mapped to phases: 11
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-09-21*
-*Last updated: 2026-09-21 after initial definition*
+*Last updated: 2026-09-21 after roadmap creation*

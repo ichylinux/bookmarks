@@ -2,6 +2,7 @@
 
 ## Milestones
 
+- 🚧 **v1.37.1 — フィード記事の閲覧履歴** — Phases 131–133 (active)
 - ✅ **v1.37.0 — モバイルでのタスク追加機能** — Phases 129–130 (shipped 2026-06-27) — [archived](milestones/v1.37.0-ROADMAP.md)
 - ✅ **v1.36.0 — タスクガジェットの完了操作の改善** — Phases 127–128 (shipped 2026-06-19) — [archived](milestones/v1.36.0-ROADMAP.md)
 - ✅ **v1.35.1 — Mastodonハンドルと既存ユーザの関連付け** — Phases 124–126 (shipped 2026-06-16) — [archived](milestones/v1.35.1-ROADMAP.md)
@@ -42,6 +43,14 @@
 - ✅ **v1.1 — Modern JavaScript** — Phases 2–4 (shipped 2026-04-27) — [archived](milestones/v1.1-ROADMAP.md)
 
 ## Phases
+
+### 🚧 v1.37.1 — フィード記事の閲覧履歴 (In Progress)
+
+**Milestone Goal:** フィードから開いた記事の履歴を専用ページで一覧し、タイトルから同じ記事を開き直せる。
+
+- [ ] **Phase 131: Feed Visit Recording** - Persist title + URL on feed clicks; upsert last-visited without duplicates
+- [ ] **Phase 132: History Page, Navigation & i18n** - Dedicated history page from nav; ja/en chrome
+- [ ] **Phase 133: Test Coverage & Tri-Suite Gate** - Minitest + Cucumber + lint gate
 
 <details>
 <summary>✅ v1.37.0 — モバイルでのタスク追加機能 (Phases 129–130) — SHIPPED 2026-06-27</summary>
@@ -670,6 +679,49 @@ Plans:
 
 - [x] 130-01-PLAN.md
 
+---
+
+### Phase 131: Feed Visit Recording
+
+**Goal**: Feed article clicks persist title + URL on the existing `visited_links` store, and a second click updates last-visited time without a duplicate row
+**Depends on**: Nothing (first phase of v1.37.1; v1.26 `visited_links` already exists)
+**Requirements**: REC-01, REC-02
+**Success Criteria** (what must be TRUE):
+  1. When the user opens a feed article, its title and URL are stored so they can later appear as history
+  2. When the user opens the same feed article again, they still have one history row and last-visited time is newer
+  3. Existing URL-only visited-link rows and gadget "visited" styling still work — new nullable `title` / `source` columns do not lose or break prior data
+  4. Title and source are accepted only for feed visits (`source='feed'`); Mastodon/X clicks remain URL-only and are not titled as feed history
+**Plans**: TBD
+
+---
+
+### Phase 132: History Page, Navigation & i18n
+
+**Goal**: Users can open a dedicated feed-article history page from navigation, see their own feed-opened titles newest first, reopen an article, and read chrome in Japanese or English
+**Depends on**: Phase 131
+**Requirements**: HIST-01, HIST-02, HIST-03, HIST-04, HIST-05, HIST-06, I18N-01
+**Success Criteria** (what must be TRUE):
+  1. User can open a dedicated history page from navigation at `/feed_article_histories` — the path does not collide with `resources :feeds` `:id`, and existing `/feeds` CRUD is unchanged
+  2. User sees titles of RSS/Atom articles they previously opened, newest first; Mastodon and X visits never appear, and they see only their own rows
+  3. User can click a history title and reopen the same article, honoring `open_links_in_new_tab`
+  4. User sees a localized empty state when they have no feed article history
+  5. Nav label and page heading render in Japanese or English according to the user's locale
+**Plans**: TBD
+**UI hint**: yes
+
+---
+
+### Phase 133: Test Coverage & Tri-Suite Gate
+
+**Goal**: Recording and history flows are covered by Minitest and Cucumber, and the related tri-suite is green
+**Depends on**: Phase 132
+**Requirements**: TEST-01, TEST-02
+**Success Criteria** (what must be TRUE):
+  1. Minitest covers recording (title/source persist, upsert, feed-only source) and history index (newest first, empty state, per-user isolation, Mastodon/X excluded)
+  2. A Cucumber scenario covers feed article click → history page shows the title → clicking the title reopens the article
+  3. `yarn run lint` exits 0; scoped Minitest and related `bundle exec rake dad:test` exit 0 with 0 failed scenarios
+**Plans**: TBD
+
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
@@ -698,5 +750,8 @@ Plans:
 | 128. Test Coverage & Tri-Suite Gate | 1/1 | Complete | 2026-06-19 |
 | 129. Mobile CSS & Link Visibility | 1/1 | Complete   | 2026-06-26 |
 | 130. Test Coverage & Tri-Suite Gate | 1/1 | Complete   | 2026-06-26 |
+| 131. Feed Visit Recording | 0/TBD | Not started | - |
+| 132. History Page, Navigation & i18n | 0/TBD | Not started | - |
+| 133. Test Coverage & Tri-Suite Gate | 0/TBD | Not started | - |
 
-*Last updated: 2026-06-26 — v1.37.0 モバイルでのタスク追加機能 roadmap created*
+*Last updated: 2026-09-21 — v1.37.1 フィード記事の閲覧履歴 roadmap created*
