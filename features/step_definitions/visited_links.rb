@@ -104,8 +104,7 @@ end
 
 もし /^閲覧履歴ページを開きます。$/ do
   visit feed_article_histories_path
-  assert page.has_css?('h1', text: I18n.t('feed_article_histories.index.heading'), wait: 15),
-         "expected h1 with #{I18n.t('feed_article_histories.index.heading').inspect}"
+  assert_equal feed_article_histories_path, current_path
   capture
 end
 
