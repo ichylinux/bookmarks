@@ -184,10 +184,10 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#header .head-box.head-box--with-note-action', count: 1
-    assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'ノート', count: 1
+    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'ノート', 'ノート', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
-    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
     assert_select '#header a.head-history-btn.head-history-btn--active', count: 0
   end
 
@@ -196,7 +196,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
-    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?]', root_path, 'ブックマーク画面に戻る', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', root_path, 'ブックマーク画面に戻る', 'ブックマーク画面に戻る', count: 1
   end
 
   def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
@@ -206,7 +206,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#header .head-box.head-box--with-note-action', count: 1
     assert_select '#header a.head-note-btn', count: 0
-    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
   end
 
   def test_クラシックテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
@@ -214,9 +214,9 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'Note', count: 1
+    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'Note', 'Note', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
-    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, 'Reading history', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, 'Reading history', 'Reading history', count: 1
   end
 
   def test_クラシックテーマでノート表示中はヘッダーアイコンがホームへ向く
@@ -224,7 +224,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path(tab: 'notes')
     assert_response :success
-    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?]', root_path, 'Return to bookmarks', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', root_path, 'Return to bookmarks', 'Return to bookmarks', count: 1
   end
 
   def test_シンプルテーマではヘッダーにノートアイコンがない
@@ -241,7 +241,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get feed_article_histories_path
     assert_response :success
-    assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?][title=?]', feed_article_histories_path, '閲覧履歴', '閲覧履歴', count: 1
   end
 
   def test_モダンテーマでuse_feed_article_historiesオフのときヘッダーに履歴アイコンがない

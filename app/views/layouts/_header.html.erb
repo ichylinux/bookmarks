@@ -12,9 +12,11 @@
       <div class="head-trailing-actions<%= ' head-trailing-actions--with-note' if drawer_ui? %>">
         <% if current_user.preference&.use_note? %>
           <% on_welcome_notes = controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s == 'notes' %>
+          <% note_label = on_welcome_notes ? t('nav.note_return') : t('nav.note') %>
           <%= link_to(on_welcome_notes ? root_path : root_path(tab: 'notes'),
                       class: "head-note-btn#{' head-note-btn--active' if on_welcome_notes}",
-                      aria: { label: on_welcome_notes ? t('nav.note_return') : t('nav.note') }) do %>
+                      title: note_label,
+                      aria: { label: note_label }) do %>
             <%= render 'icons/note' %>
           <% end %>
         <% end %>
@@ -22,6 +24,7 @@
           <% on_feed_article_histories = controller_name == 'feed_article_histories' && action_name == 'index' %>
           <%= link_to feed_article_histories_path,
                       class: "head-history-btn#{' head-history-btn--active' if on_feed_article_histories}",
+                      title: t('nav.feed_article_histories'),
                       aria: { label: t('nav.feed_article_histories') } do %>
             <%= render 'icons/history' %>
           <% end %>
