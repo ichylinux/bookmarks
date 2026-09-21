@@ -47,6 +47,7 @@ class Preference < ApplicationRecord
     ret.use_bookmark = true
     ret.use_todo = true
     ret.use_calendar = true
+    ret.use_feed_article_histories = false
     ret.portal_column_count = PORTAL_COLUMN_COUNTS.first
     ret.show_icons = SHOW_ICONS_DEFAULT
     ret

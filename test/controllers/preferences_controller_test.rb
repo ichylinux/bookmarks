@@ -308,6 +308,27 @@ class PreferencesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][use_calendar]'
   end
 
+  def test_use_feed_article_historiesをオフに保存する
+    assert user.preference.persisted?
+    user.preference.update!(use_feed_article_histories: true)
+    preference_param = preference_params(use_feed_article_histories: false).merge(id: user.preference.id)
+    sign_in user
+    patch preference_path(user), params: {
+      user: { preference_attributes: preference_param }
+    }
+    assert_response :redirect
+    assert_not user.preference.reload.use_feed_article_histories?
+  end
+
+  def test_設定画面にuse_feed_article_historiesチェックボックスを表示する
+    user.preference.update!(locale: 'ja')
+    sign_in user
+    get preferences_path
+    assert_response :success
+    assert_select 'label[for=?]', 'user_preference_attributes_use_feed_article_histories', text: '閲覧履歴を表示する'
+    assert_select 'input[type=checkbox][name=?]', 'user[preference_attributes][use_feed_article_histories]'
+  end
+
   def test_モダンテーマで設定フォームが描画される
     user.preference.update!(theme: 'modern')
     sign_in user

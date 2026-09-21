@@ -36,6 +36,7 @@ module PreferencesReset
     uncheck_if_checked "#{PREF}[use_note]"
     uncheck_if_checked "#{PREF}[use_todo]"
     check "#{PREF}[use_calendar]" unless find_field("#{PREF}[use_calendar]", visible: :all).checked?
+    check "#{PREF}[use_feed_article_histories]" unless find_field("#{PREF}[use_feed_article_histories]", visible: :all).checked?
     uncheck_if_checked "#{PREF}[open_links_in_new_tab]"
 
     find('form.preferences-form input[type="submit"]', match: :first).click

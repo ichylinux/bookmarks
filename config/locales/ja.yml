@@ -35,6 +35,7 @@ ja:
         use_note: ノートを表示する
         use_todo: タスクを表示する
         use_calendar: カレンダーを表示する
+        use_feed_article_histories: 閲覧履歴を表示する
       todo:
         priority: 優先度
         title: タイトル

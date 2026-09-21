@@ -35,6 +35,7 @@ en:
         use_note: Show notes
         use_todo: Show tasks
         use_calendar: Show calendar
+        use_feed_article_histories: Show reading history
       todo:
         priority: Priority
         title: Title

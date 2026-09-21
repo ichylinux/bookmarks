@@ -18,11 +18,13 @@
             <%= render 'icons/note' %>
           <% end %>
         <% end %>
-        <% on_feed_article_histories = controller_name == 'feed_article_histories' && action_name == 'index' %>
-        <%= link_to feed_article_histories_path,
-                    class: "head-history-btn#{' head-history-btn--active' if on_feed_article_histories}",
-                    aria: { label: t('nav.feed_article_histories') } do %>
-          <%= render 'icons/history' %>
+        <% if current_user.preference&.use_feed_article_histories? %>
+          <% on_feed_article_histories = controller_name == 'feed_article_histories' && action_name == 'index' %>
+          <%= link_to feed_article_histories_path,
+                      class: "head-history-btn#{' head-history-btn--active' if on_feed_article_histories}",
+                      aria: { label: t('nav.feed_article_histories') } do %>
+            <%= render 'icons/history' %>
+          <% end %>
         <% end %>
         <button class="hamburger-btn" aria-label="<%= t('nav.menu_aria') %>"></button>
       </div>

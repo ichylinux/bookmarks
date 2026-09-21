@@ -4,6 +4,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
   def setup
     @user = User.find(1)
     @other_user = User.find(2)
+    @user.preference.update!(use_feed_article_histories: true)
     VisitedLink.delete_all
   end
 
@@ -72,6 +73,15 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :redirect
     assert_redirected_to new_user_session_path
+  end
+
+  def test_index_returns_not_found_when_use_feed_article_histories_off
+    sign_in @user
+    @user.preference.update!(use_feed_article_histories: false)
+
+    get feed_article_histories_path
+
+    assert_response :not_found
   end
 
   def test_index_link_has_target_blank_when_open_in_new_tab

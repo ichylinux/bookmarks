@@ -99,7 +99,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマのナビに閲覧履歴リンクがノートの右隣に表示される
-    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
+    user.preference.update!(theme: 'simple', use_note: true, use_feed_article_histories: true, locale: 'ja')
     sign_in user
     get root_path
     assert_response :success
@@ -108,7 +108,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_シンプルテーマの英語ナビに閲覧履歴リンクが表示される
-    user.preference.update!(theme: 'simple', use_note: false, locale: 'en')
+    user.preference.update!(theme: 'simple', use_note: false, use_feed_article_histories: true, locale: 'en')
     sign_in user
     get root_path
     assert_response :success
@@ -126,7 +126,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'body.simple', count: 1
     assert_select 'ul.navigation', count: 1
     assert_select 'ul.navigation a[href=?]', root_path
-    assert_select 'ul.navigation a[href=?]', feed_article_histories_path
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, count: 0
     assert_select '.menu-divider[role=?]', 'separator', count: 2
     assert_select '.menu-section--primary a', count: 5
     assert_select '.menu-section--admin a', count: 2
@@ -179,7 +179,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_モダンテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
-    user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
+    user.preference.update!(theme: 'modern', use_note: true, use_feed_article_histories: true, locale: 'ja')
     sign_in user
     get root_path
     assert_response :success
@@ -200,7 +200,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
-    user.preference.update!(theme: 'modern', use_note: false, locale: 'ja')
+    user.preference.update!(theme: 'modern', use_note: false, use_feed_article_histories: true, locale: 'ja')
     sign_in user
     get root_path
     assert_response :success
@@ -210,7 +210,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_クラシックテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
-    user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
+    user.preference.update!(theme: 'classic', use_note: true, use_feed_article_histories: true, locale: 'en')
     sign_in user
     get root_path
     assert_response :success
@@ -237,11 +237,27 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_モダンテーマで閲覧履歴ページ表示中はヘッダー履歴アイコンがアクティブ
-    user.preference.update!(theme: 'modern', locale: 'ja')
+    user.preference.update!(theme: 'modern', use_feed_article_histories: true, locale: 'ja')
     sign_in user
     get feed_article_histories_path
     assert_response :success
     assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
+  end
+
+  def test_モダンテーマでuse_feed_article_historiesオフのときヘッダーに履歴アイコンがない
+    user.preference.update!(theme: 'modern', use_feed_article_histories: false, locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select '#header a.head-history-btn', count: 0
+  end
+
+  def test_シンプルテーマでuse_feed_article_historiesオフのときナビに履歴リンクがない
+    user.preference.update!(theme: 'simple', use_feed_article_histories: false, locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, count: 0
   end
 
   def test_モダンテーマでuse_noteオンのときドロワーnavは9リンク

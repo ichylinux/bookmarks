@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_21_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_21_120000) do
   create_table "bookmarks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.datetime "created_at"
     t.boolean "deleted", default: false, null: false
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_100000) do
     t.datetime "updated_at"
     t.boolean "use_bookmark", default: false, null: false
     t.boolean "use_calendar", default: false, null: false
+    t.boolean "use_feed_article_histories", default: false, null: false
     t.boolean "use_note", default: false, null: false
     t.boolean "use_todo", default: false, null: false
     t.bigint "user_id", null: false
