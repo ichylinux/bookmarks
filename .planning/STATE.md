@@ -4,9 +4,9 @@ milestone: v1.37.1
 milestone_name: フィード記事の閲覧履歴
 status: Awaiting next milestone
 stopped_at: Phase 133 complete — all phases complete
-last_updated: "2026-09-21T07:04:46.278Z"
+last_updated: "2026-09-21T08:50:00.000Z"
 last_activity: 2026-09-21
-last_activity_desc: Milestone v1.37.1 completed and archived
+last_activity_desc: "Completed quick task 260921-opa: 閲覧履歴でXもサポート"
 state_head: 9c8348291a059eccfa9ca7e36465ebc2ab6f19fe
 progress:
   total_phases: 3
@@ -113,6 +113,7 @@ Items acknowledged and deferred at milestone close on 2026-06-27:
 | 260816-s7k | GitHub の SECURITY.md テンプレートを実態に即したセキュリティポリシーに書き換え | 2026-08-16 | 22b83e4 | [260816-s7k-security-policy](./quick/260816-s7k-security-policy/) |
 | 260831-1mg | Windows+Chromeの場合、タスクガジェットのヘッダにマウスオーバーしても追加ボタンが表示されない(⚠ 未検証: dad:test 未実行 + 実機確認待ち) | 2026-08-31 | 71b8c47 | [260831-1mg-windows-chrome](./quick/260831-1mg-windows-chrome/) |
 | 260902-tc9 | Jenkinsのリモート Chrome サイドカーで動作しないマウスオーバーステップをCucumberから割愛し、WINCHR-01実機証跡を残存ステップへ移送 | 2026-09-02 | a71a692..1ce9ec1 | [260902-tc9-jenkins](./quick/260902-tc9-jenkins/) |
+| 260921-opa | 閲覧履歴でXもサポート | 2026-09-21 | 907ccc6 | [260921-opa-x](./quick/260921-opa-x/) |
 
 ## Operator Next Steps
 
