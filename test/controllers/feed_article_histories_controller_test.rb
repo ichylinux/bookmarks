@@ -92,6 +92,24 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'ol li .history-source-icon svg', count: 1
   end
 
+  def test_index_shows_visited_at
+    sign_in @user
+    VisitedLink.create!(
+      user: @user,
+      url: 'https://example.com/visited-at-test',
+      title: 'Visited At Article',
+      source: 'feed',
+      visited_at: Time.utc(2026, 9, 21, 13, 45)
+    )
+    link = VisitedLink.last
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li time.history-visited-at[datetime=?]', link.visited_at.iso8601
+    assert_includes response.body, I18n.l(link.visited_at, format: :admin_datetime)
+  end
+
   def test_index_orders_newest_first
     sign_in @user
     VisitedLink.record!(@user, 'https://example.com/older', title: 'Older Article', source: 'feed')
