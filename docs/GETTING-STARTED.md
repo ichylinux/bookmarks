@@ -7,12 +7,14 @@ Before running the app, ensure these tools are installed at the versions below.
 
 | Tool | Version | Source |
 |------|---------|--------|
-| Ruby | 3.4.10 | `.ruby-version` — use rbenv or asdf |
+| Ruby | 3.4.10 | `.ruby-version` — use rbenv or asdf (`Gemfile` requires `~> 3.4.0`) |
 | Node.js | 22.23.1 | `.node-version` — use nvm or asdf |
 | Yarn | Yarn Classic 1.x (lockfile v1; not pinned in `package.json`; 1.22.22 confirmed working) | installed via `npm install -g yarn` |
 | MySQL | not pinned in the repo <!-- VERIFY: confirm minimum supported server version --> | running locally, default port 3306 |
 
 MySQL must be running and reachable at `127.0.0.1:3306` (or override via environment variables — see [Configuration](CONFIGURATION.md)).
+
+For Cucumber E2E tests locally (not in Jenkins), `bundle exec rake dad:setup:test` installs a headless Chrome driver via Itamae. Jenkins sets `CI=jenkins`, which skips that cookbook step.
 
 ## Installation steps
 
@@ -43,9 +45,11 @@ MySQL must be running and reachable at `127.0.0.1:3306` (or override via environ
    export MYSQL_PASSWORD=bookmarks
    ```
 
-   Alternatively, put the same values in a `.env` file in the project root. `dotenv-rails` loads `.env` in development and test (there is no `.env.example`).
+   Alternatively, put the same values in a `.env` file in the project root. `dotenv-rails` loads `.env` in development and test (there is no `.env.example`). See [Configuration](CONFIGURATION.md) for the full variable list.
 
-   Create the `bookmarks` MySQL user if it does not exist:
+   Local development does not require `SECRET_KEY_BASE`, OAuth credentials, or encryption keys — Rails generates a local secret in development/test, and OmniAuth providers are optional until you configure them.
+
+   Create the `bookmarks` MySQL user manually if you will not run `dad:db:create`:
 
    ```sql
    CREATE USER 'bookmarks'@'127.0.0.1' IDENTIFIED BY 'bookmarks';
@@ -65,7 +69,7 @@ MySQL must be running and reachable at `127.0.0.1:3306` (or override via environ
    - `dad:setup` — runs the `default` [itamae](https://github.com/itamae-kitchen/itamae) role (`config/itamae/roles/default.rb`), which includes the `db` and `app` roles: MySQL client, Graphviz, and `bundle install`. May prompt for `sudo` to install OS packages.
    - `dad:setup:test` — runs the `test` role (`config/itamae/roles/test.rb`): MySQL client, `bundle install`, and the Selenium/headless Chrome driver needed by the Cucumber suite (Selenium is skipped when `CI=jenkins`)
    - `dad:db:create` — as MySQL root (`MYSQL_ROOT`, default `root`; prompts for a password unless `MYSQL_ALLOW_EMPTY_PASSWORD` is set), creates the `bookmarks` user at `'bookmarks'@'%'` and the databases in `config/database.yml` (`bookmarks_dev`, `bookmarks_test`, and `bookmarks_pro` unless `RAILS_ENV` limits the run)
-   - `db:reset` — drops, creates, schema-loads, and seeds the development database
+   - `db:reset` — drops, creates, schema-loads, and seeds the development database (`bookmarks_dev`)
 
 ## First run
 
@@ -75,7 +79,7 @@ Start the Puma server:
 bin/rails s
 ```
 
-The app is available at `http://localhost:3000` (override the port with `PORT`). Register a new user account or sign in with configured OmniAuth providers.
+The app is available at `http://localhost:3000` (override the port with `PORT`). Register a new account at `/users/sign_up` or sign in with configured OmniAuth providers.
 
 ## Common setup issues
 
@@ -91,7 +95,7 @@ The app is available at `http://localhost:3000` (override the port with `PORT`).
 `Mysql2::Error: Access denied for user 'bookmarks'@'127.0.0.1'` means the MySQL user or password is wrong.
 
 - Verify the `MYSQL_USERNAME` and `MYSQL_PASSWORD` env vars are set correctly
-- Re-run the SQL `GRANT` statement shown in the installation steps above
+- Re-run the SQL `GRANT` statement shown in the installation steps above, or re-run `bundle exec rake dad:db:create`
 
 **`dad:db:create` root access denied**
 
@@ -99,6 +103,12 @@ The app is available at `http://localhost:3000` (override the port with `PORT`).
 
 - Run the task as a user that can authenticate as that MySQL root account
 - Set `MYSQL_ALLOW_EMPTY_PASSWORD=1` only if the local root account has no password
+
+**Port 3000 already in use**
+
+Puma fails to bind when another process is using port 3000.
+
+- Stop the other process, or start on a different port: `PORT=3001 bin/rails s`
 
 **Wrong Ruby version**
 

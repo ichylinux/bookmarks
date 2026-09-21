@@ -74,8 +74,9 @@ Please give a reasonable window to ship a fix before publishing details.
   feeds, to-dos, calendar entries, visited links, or preferences
 - Injection flaws: SQL injection, XSS, CSRF, open redirect, SSRF via feed and
   page-title fetching
-- Exposure of secrets or encrypted attributes (for example the TOTP
-  `otp_secret`, encrypted via ActiveRecord Encryption)
+- Exposure of secrets or sensitive attributes (for example the TOTP
+  `otp_secret` column, or OAuth tokens encrypted via ActiveRecord Encryption
+  on `User`)
 - Remote code execution or arbitrary file read/write
 - Vulnerabilities in pinned dependencies that are demonstrably reachable from
   this application's code

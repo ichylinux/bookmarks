@@ -13,7 +13,7 @@ A personal dashboard for bookmarks, feeds, to-dos, notes, calendar, and social t
 - **Notes** — Optional notes pane on the dashboard (enabled from preferences)
 - **Calendar** — Calendar UI with Japanese public holiday support
 - **Social gadgets** — Mastodon and X (Twitter) timeline previews on the dashboard
-- **Visited links** — Clicked gadget links are marked visited and can appear in article history
+- **Reading history** — Feed, X, and Mastodon gadget links are marked visited on click; optional paginated history at `/feed_article_histories` (enable from preferences)
 - **Authentication** — Devise with two-factor authentication (TOTP) and OmniAuth (Google, X, Facebook, Mastodon)
 - **Themes** — Modern, Classic, and Simple themes switchable from the preferences page
 
@@ -87,6 +87,12 @@ After signing in, the dashboard at `/` shows gadget columns (bookmarks, todos, c
 
 1. Open `/feeds` and add an RSS/Atom URL (title can be fetched the same way).
 2. Return to `/`. The feed gadget lists recent articles.
+
+**View reading history**
+
+1. Open `/preferences` and enable **Show reading history** (`use_feed_article_histories`).
+2. Click articles in feed, X, or Mastodon gadgets — links gain a visited style and are recorded with title and source.
+3. Open **Reading history** from the header or nav (`/feed_article_histories`) to revisit past articles.
 
 **Switch theme**
 

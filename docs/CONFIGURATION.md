@@ -89,10 +89,12 @@ Production sends transactional mail through SMTP (Amazon SES). These variables h
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `CI` | Optional | — | When present, enables eager loading in the test environment (`config/environments/test.rb`). When set to `jenkins`, the Itamae test role skips the Selenium cookbook (`config/itamae/roles/test.rb`). |
+| `CI` | Optional | — | When present, enables eager loading in the test environment (`config/environments/test.rb`). When set to `jenkins`, the Itamae test role skips the Selenium cookbook (`config/itamae/roles/test.rb`). The test Docker image (`Dockerfile.test`) bakes in `CI=jenkins` at build time. |
 | `COVERAGE` | Optional | — | When set, `daddy/test_help` starts SimpleCov (used by `Jenkinsfile` as `COVERAGE=true`). |
+| `DRY_RUN` | Optional | — | When set (or set `DR`), the `closer` gem passes `--dry-run` to Cucumber — resolves step definitions without launching a browser. Used locally as `DRY_RUN=1 bundle exec rake dad:test features/…`. |
+| `DR` | Optional | — | Alias for `DRY_RUN` (handled by the `closer` gem). |
 | `FORMAT` | Optional | — | When set to `junit`, `daddy/test_help` enables the Minitest JUnit reporter (`Jenkinsfile` sets `FORMAT=junit`). |
-| `HEADLESS` | Optional | `true` when running `rake dad:test` | Headless Chrome for Cucumber (`daddy` sets it if empty; `Jenkinsfile.features` sets `HEADLESS=true`). |
+| `HEADLESS` | Optional | `true` when running `rake dad:test` | Headless Chrome for Cucumber (`daddy/lib/tasks/test.rake` sets it if empty; `Jenkinsfile.features` sets `HEADLESS=true`). |
 | `REMOTE` | Optional | — | When set, the `closer` gem drives a remote Selenium browser (`Jenkinsfile.features` sets `REMOTE=true`). |
 
 ### Rake tasks
@@ -148,7 +150,7 @@ Action Cable adapter by environment:
 |-------------|---------|-------|
 | development | `async` | In-process, no external dependency |
 | test | `async` | In-process, no external dependency |
-| production | `redis` | URL `redis://localhost:6379/1`, prefix `bookmarks_pro` <!-- VERIFY: Redis host and port may differ per deployment --> |
+| production | `redis` | URL `redis://localhost:6379/1` (hardcoded in `config/cable.yml`; no `REDIS_URL` env var), prefix `bookmarks_pro` <!-- VERIFY: Redis host and port may differ per deployment --> |
 
 ### `config/storage.yml`
 
@@ -235,7 +237,13 @@ Environment-specific files live in `config/environments/`.
 - Active Storage uses the `:local` disk service (S3 is commented out in `config/storage.yml`).
 - `SECRET_KEY_BASE` must be set; there is no credentials file.
 
+### Docker images
+
+- `Dockerfile.test` — sets `CI=jenkins` and `RAILS_ENV=test` at image build time; used by Jenkins unit and features stages.
+- `Dockerfile.app` — sets `RAILS_ENV=production` (build arg `rails_env`, default `production`); `SECRET_KEY_BASE=dummy` only during `dad:setup:app` and `assets:precompile`.
+- `Dockerfile.base` — production gem bundle (`bundle config without 'itamae development test'`); `SECRET_KEY_BASE=dummy` only during `dad:setup:base`.
+
 ### Kubernetes (`config/kustomize/`)
 
-- App Deployment and db-migrate Job both load ConfigMap `bookmarks-config` and Secret `bookmarks-secret`.
-- Service exposes port 3000; ALB health check annotation points at `/up`.
+- App Deployment (`config/kustomize/app.yml`) and db-migrate Job (`config/kustomize/db.yml`) both load ConfigMap `bookmarks-config` and Secret `bookmarks-secret`.
+- Service (`config/kustomize/service.yml`) exposes port 3000; ALB health check annotation points at `/up`.

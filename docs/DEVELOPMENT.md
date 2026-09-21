@@ -19,6 +19,8 @@ bin/rails db:reset
 bin/rails db:test:prepare
 ```
 
+First-time setup also requires the `daddy` gem bootstrap tasks from [Getting Started](GETTING-STARTED.md) (`dad:setup`, `dad:setup:test`, `dad:db:create`). `dad:setup:test` installs the Selenium/headless Chrome driver needed for local Cucumber runs.
+
 Start the development server:
 
 ```bash
@@ -47,7 +49,8 @@ bin/rails db:test:prepare
 | `bin/rails db:migrate` | Run pending migrations |
 | `bin/rails db:test:prepare` | Sync test schema after migrations |
 | `bin/rails db:reset` | Drop, create, schema-load, and seed the development DB |
-| `bundle exec rake dad:setup:test` | Bootstrap test environment via the `daddy` gem |
+| `bundle exec rake dad:setup` | Bootstrap dev environment via the `daddy` gem (itamae roles) |
+| `bundle exec rake dad:setup:test` | Bootstrap test/Cucumber prerequisites (Selenium, Chrome driver) |
 | `bundle exec rake dad:db:create` | Create the database via the `daddy` gem |
 | `bin/rails users:promote_admin` | Promote an active user to admin (`EMAIL=` or `USER_ID=`) |
 | `bin/rails assets:precompile` | Compile Sprockets assets |
@@ -65,12 +68,16 @@ bin/rails db:test:prepare
 
 | Command | Description |
 |---------|-------------|
-| `bin/rails test` | Run Minitest unit + integration suite |
+| `yarn run lint` | ESLint (run in full — fast; Jenkins does not run lint) |
+| `bin/rails test` | Run full Minitest unit + integration suite |
 | `bin/rails test test/models/user_test.rb` | Run a single Minitest file |
-| `bundle exec rake dad:test` | Run Cucumber E2E suite (spawns Rails server + headless Chrome automatically) |
+| `bin/rails test test/controllers/todos_controller_test.rb:42` | Run a single test by line number |
+| `bin/rails test test/controllers/todos_controller_test.rb -n /一覧/` | Run tests matching a name pattern |
+| `bundle exec rake dad:test` | Run full Cucumber E2E suite (spawns Rails server + headless Chrome automatically) |
 | `bundle exec rake dad:test features/02.タスク.feature` | Run a single Cucumber feature (`dad:test` forwards paths, including `:line`) |
+| `DRY_RUN=1 bundle exec rake dad:test features/02.タスク.feature` | Resolve step definitions without launching a browser |
 
-See [Testing](TESTING.md) for full details.
+**Local workflow:** run `yarn run lint` in full and scope Minitest/Cucumber to the files you changed. Full `bin/rails test` and `bundle exec rake dad:test` are slow; Jenkins is the safety net for the rest of the suite. See [Testing](TESTING.md) for scoping guidance and choosing related tests.
 
 ## Code style
 
@@ -101,6 +108,7 @@ Rules:
 - No ES module `import` — the Sprockets asset pipeline uses `//= require` directives in `application.js`.
 - Reusable modules use the IIFE pattern (`window.moduleName`); page-specific event binding uses jQuery document-ready (`$(function() { ... })`).
 - Allowed globals (from `eslint.config.mjs`): `$`, `jQuery`, `ActionCable`, `App`, `MOBILE_MQ`.
+- AJAX POST handlers (for example `visited_links.js`) use `$.post` with Rails CSRF; `jquery` must load before `rails-ujs` in `application.js`.
 
 Run linting and formatting before every commit:
 
@@ -126,11 +134,13 @@ yarn run format
 | Path | Purpose |
 |------|---------|
 | `app/controllers/` | HTTP layer, Devise extensions (`users/`), admin namespace |
+| `app/controllers/visited_links_controller.rb` | `POST /visited_links` — records feed/X/Mastodon link visits |
+| `app/controllers/feed_article_histories_controller.rb` | Paginated reading-history page (`/feed_article_histories`) |
 | `app/models/` | ActiveRecord models, gadget objects, concerns (`Crud::ByUser`) |
 | `app/services/` | Faraday clients (`MastodonClient`, `XClient`) and Mastodon input normalizers |
 | `app/helpers/` | View helpers (`ApplicationHelper`, calendar/welcome helpers) |
 | `app/views/` | ERB templates and partials |
-| `app/assets/javascripts/` | jQuery modules (linted by ESLint, formatted by Prettier) |
+| `app/assets/javascripts/` | jQuery modules (linted by ESLint, formatted by Prettier); `visited_links.js` handles visit recording |
 | `app/assets/stylesheets/` | SCSS; theme overrides in `themes/` subdirectory |
 | `config/locales/` | `ja.yml` and `en.yml` — must be kept in parity |
 | `lib/omniauth/` | Custom Mastodon OmniAuth strategy |
@@ -147,12 +157,15 @@ No formal branch naming convention is documented. Contributions branch from `mas
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full checklist. There is no GitHub pull-request template. Summary:
 
 - Branch from `master` and make focused changes with tests where behavior changes.
-- Run the full gate before opening a PR:
+- During local development, run `yarn run lint` in full and scope Minitest/Cucumber to related files (see [Testing](TESTING.md)).
+- Before opening a PR, run the full gate:
+
   ```bash
   yarn run lint && bin/rails test && bundle exec rake dad:test
   ```
+
 - Do not use `bundle exec cucumber` directly — always use `bundle exec rake dad:test`.
-- All three suites must exit 0 before a PR is considered ready. Jenkinsfile runs Minitest and triggers the downstream features job; Cucumber runs in Jenkinsfile.features; it does not run `yarn run lint`, so lint must be checked locally.
+- All three suites must exit 0 before a PR is considered ready. Jenkins (`Jenkinsfile`) runs Minitest in the `unit` stage and triggers the downstream `${APP_NAME}-features` job for Cucumber; it does not run `yarn run lint`, so lint must be checked locally.
 - Describe what changed and why in the PR body.
 
 ## Key project constraints
@@ -160,11 +173,12 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full checklist. There is no Gi
 - **No `dependent: :destroy` or `dependent: :delete_all`** on ActiveRecord associations — enforced by `test/models/active_record_dependent_contract_test.rb`.
 - **Cucumber preference changes** must use the `/preferences` UI in step definitions, not direct ActiveRecord writes — prevents cross-connection state leakage between scenarios.
 - **No hover/pointer media-feature gates** in stylesheets — enforced by WINCHR-01 in `test/assets/css_architecture_contract_test.rb`.
+- **`visited_links.js` structure** (CSRF POST shape, gadget id prefixes) — enforced by `test/assets/visited_links_js_contract_test.rb`.
 - Assets compiled with `rails assets:precompile` must be cleaned up afterward with `rails assets:clobber`; do not leave precompiled assets in the working tree.
 
 ## Related docs
 
 - [Getting Started](GETTING-STARTED.md) — prerequisites and first-run setup
-- [Testing](TESTING.md) — full test suite reference
+- [Testing](TESTING.md) — full test suite reference and scoping guidance
 - [Configuration](CONFIGURATION.md) — environment variables and config files
 - [Architecture](ARCHITECTURE.md) — system design and component overview

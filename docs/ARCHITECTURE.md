@@ -3,7 +3,7 @@
 
 ## System Overview
 
-Bookmarks is a personal information dashboard built as a Rails 8.1 monolith. Authenticated users manage bookmarks (tree-structured URLs with folders), RSS/Atom feeds, todos, notes, a monthly calendar, Mastodon account timeline previews, and X (Twitter) timeline previews, all displayed on a configurable portal page composed of widget-style gadgets arranged in resizable columns. Clicks on feed, X, and Mastodon gadget links are recorded as `VisitedLink` rows (URL plus optional title and source) and, when enabled, listed on a paginated reading-history page. Guests see a landing page at `/`. Data is stored in MySQL; external API communication is handled by two plain-Ruby service objects (`MastodonClient`, `XClient`) using Faraday. The architectural style is a classic layered Rails MVC monolith with a gadget composition system on top.
+Bookmarks is a personal information dashboard built as a Rails 8.1 monolith. Authenticated users manage bookmarks (tree-structured URLs with folders via `acts_as_tree`), RSS/Atom feeds, todos, notes, a monthly calendar, Mastodon account timeline previews, and X (Twitter) timeline previews, all displayed on a configurable portal page composed of widget-style gadgets arranged in resizable columns. Clicks on feed, X, and Mastodon gadget links are recorded as `VisitedLink` rows (URL plus optional title and source) and, when enabled, listed on a paginated reading-history page. Guests see a landing page at `/`. Data is stored in MySQL; external API communication is handled by two plain-Ruby service objects (`MastodonClient`, `XClient`) using Faraday, and feed fetching uses `Daddy::HttpClient` with Feedjira. The architectural style is a classic layered Rails MVC monolith with a gadget composition system on top.
 
 ## Component Diagram
 
@@ -52,29 +52,32 @@ A typical authenticated dashboard request follows this path:
 3. The `Localization` around-action resolves the active locale from (in priority order): `?locale=` query param, saved `Preference#locale`, guest session, or `Accept-Language` header.
 4. `WelcomeController#index` loads `current_user.portals.first` which retrieves the user's default `Portal`.
 5. The `Portal` model calls the private `get_gadgets` method, which reads `Preference` flags (`use_bookmark?`, `use_todo?`, `use_calendar?`) and collects active `Feed`, `MastodonAccount`, and selected `XAccount` rows. `BookmarkGadget`, `TodoGadget`, `CalendarGadget`, and `Feed` expose `gadget_id` plus `entries`; `MastodonAccount` and `XAccount` expose `gadget_id` (and a title) and load timeline items later via their `show` actions.
-6. `Portal#portal_columns` distributes gadgets into 3 or 4 columns according to `PortalLayout` rows ordered by `column_no, display_order`.
-7. The view renders gadget shells. Feed, calendar, Mastodon, and X gadgets register with `portalLazy` (`app/assets/javascripts/portal_lazy.js`): on desktop they XHR immediately; on viewports `max-width: 767px` they load when that column becomes active. `GET /feeds/:id` parses the remote feed with `Daddy::HttpClient` + Feedjira; `GET /mastodon_accounts/:id` and `GET /x_accounts/:id` call `MastodonClient` / `XClient`; `GET /calendars/get_gadget` returns the calendar fragment. Those `show` actions also preload matching `visited_links` URLs so `ApplicationHelper#visited_link_class` can add `link--visited`.
+6. `Portal#portal_columns` distributes gadgets into 3 or 4 columns according to `PortalLayout` rows ordered by `column_no, display_order`. Gadgets without saved layout rows are placed via round-robin `unshift` into columns.
+7. The view renders gadget shells. Feed, calendar, Mastodon, and X gadgets register with `portalLazy` (`app/assets/javascripts/portal_lazy.js`): on desktop they XHR immediately; on viewports `max-width: 767px` they load when that column becomes active. `GET /feeds/:id` parses the remote feed with `Daddy::HttpClient` + Feedjira; `GET /mastodon_accounts/:id` and `GET /x_accounts/:id` call `MastodonClient` / `XClient`; `GET /calendars/get_gadget` returns the calendar fragment. Those `show` actions preload `@visited_urls` for the current gadget's entry URLs only (`assign_visited_urls` in `FeedsController`, `MastodonAccountsController`, and `XAccountsController`) so `ApplicationHelper#visited_link_class` can add `link--visited`.
 8. Notes are loaded separately: the portal view triggers `GET /notes/gadget` (XHR, no layout) when the notes tab is opened. The `use_note` preference flag controls notes tab visibility.
-9. Clicks on feed, X, and Mastodon gadget links (not bookmark or todo gadgets) POST to `/visited_links`. `visited_links.js` sends `url` plus `title` and `source` (`feed`, `x`, or `mastodon`); `VisitedLinksController#create` calls `VisitedLink.record!`, which upserts the row and stores title/source only for those history sources.
+9. Clicks on feed, X, and Mastodon gadget links (not bookmark or todo gadgets) POST to `/visited_links`. `visited_links.js` sends `url` plus `title` and `source` (`feed`, `x`, or `mastodon`); `VisitedLinksController#create` calls `VisitedLink.record!`, which upserts on `(user_id, url)` and stores title/source only for those history sources.
 10. Portal column state is saved asynchronously via `POST /welcome/save_state` (XHR) whenever the user reorders gadgets, updating `PortalLayout` rows inside a transaction.
 
-When `Preference#use_feed_article_histories?` is on, the header/nav links to `GET /feed_article_histories`. `FeedArticleHistoriesController#index` returns 404 if the flag is off; otherwise it pages `VisitedLink.feed_history_for(current_user)` (rows whose `source` is `feed`, `x`, or `mastodon`, newest `visited_at` first) with Kaminari.
+When `Preference#use_feed_article_histories?` is on, the header (Modern/Classic themes) or drawer menu (Simple theme) links to `GET /feed_article_histories`. `FeedArticleHistoriesController#index` returns 404 if the flag is off; otherwise it pages `VisitedLink.feed_history_for(current_user)` (rows whose `source` is `feed`, `x`, or `mastodon`, newest `visited_at` first) with Kaminari. Each row renders the stored title (falling back to the URL), a source icon, the link, and a `visited_at` timestamp.
 
 For OAuth sign-in: browser → OmniAuth provider redirect → `Users::OmniauthCallbacksController#<provider>` → `User.from_omniauth` (find or create) → Devise `sign_in_and_redirect` → root path.
 
 For 2FA sign-in: Devise `Users::SessionsController` validates password → stores `otp_user_id` in session → redirects to `Users::TwoFactorAuthenticationController#show` → user submits TOTP code → `user.validate_and_consume_otp!` → full Devise sign-in → root path.
+
+For 2FA setup: authenticated user visits `Users::TwoFactorSetupController#show` → scans QR code → submits TOTP via `#enable` → `Preference#use_two_factor_authentication` is set; disable via `#disable`.
 
 ## Key Abstractions
 
 | Abstraction | File | Description |
 |---|---|---|
 | `Gadget` | `app/models/concerns/gadget.rb` | Concern that defines the dashboard widget interface: `gadget_id`, `entries`, `visible?`. Only `BookmarkGadget` includes this concern. Other gadget objects (`TodoGadget`, `CalendarGadget`, `Feed`, `MastodonAccount`, `XAccount`) implement a duck-typed subset (`gadget_id`, and `entries` where the object itself holds the list). |
+| `Bookmark` | `app/models/bookmark.rb` | User-scoped URL or folder node. Uses `acts_as_tree` for hierarchical folders (`url` blank) and bookmark files (`url` present). Included in `Crud::ByUser`. |
 | `Crud::ByUser` | `app/models/crud/by_user.rb` | Module adding `readable_by?`, `updatable_by?`, `deletable_by?` for user-scoped ownership. Included by `Bookmark`, `Feed`, `Note`, `Todo`, `MastodonAccount`, `XAccount`. |
 | `Localization` | `app/controllers/concerns/localization.rb` | Controller concern that wraps each action in `I18n.with_locale` using a multi-source locale resolution chain (params → preference → guest session → `Accept-Language`). |
 | `Portal` | `app/models/portal.rb` | Assembles the set of active gadget objects from user data and `Preference` flags, then distributes them into ordered columns using `PortalLayout` records. Central coordinator of the dashboard. |
 | `PortalLayout` | `app/models/portal_layout.rb` | Persists `column_no` and `display_order` for each `gadget_id` per user. Updated by `Portal#update_layout` (called from `WelcomeController#save_state`) on drag-and-drop or column reorder. |
 | `Preference` | `app/models/preference.rb` | Per-user settings: active gadgets (`use_bookmark`, `use_todo`, `use_calendar`, `use_note`), reading history (`use_feed_article_histories`), theme, font size, locale, portal column count (3 or 4), column widths (JSON array summing to 100), and link behaviour flags. |
-| `VisitedLink` | `app/models/visited_link.rb` | Per-user upsert of visited URLs (`user_id` + fragment-stripped `url`). History sources `feed`, `x`, and `mastodon` also store `title` and `source`; `feed_history_for` powers the reading-history page. Written by `VisitedLinksController#create` via `record!`. |
+| `VisitedLink` | `app/models/visited_link.rb` | Per-user upsert of visited URLs on unique `(user_id, url)` with fragment-stripped URLs. History sources `feed`, `x`, and `mastodon` also store `title` and `source`; `feed_history_for` powers the reading-history page. Legacy rows without `source` can be backfilled via `backfill_history_sources!` (migration `20260921140000`). Written by `VisitedLinksController#create` via `record!`. |
 | `MastodonClient` | `app/services/mastodon_client.rb` | Plain-Ruby Faraday client for the public Mastodon REST API (read-only, no OAuth). Looks up an account via `/api/v1/accounts/lookup` then fetches recent statuses. Returns `{ success:, items: }` result hashes. |
 | `XClient` | `app/services/x_client.rb` | Plain-Ruby Faraday client for the X API v2. Authenticates with the user's OAuth 2.0 Bearer token against `api.twitter.com` and refreshes tokens via `api.x.com`. Exposes `fetch_following`, `fetch_recent_tweets`, and `lookup_user_by_username`. |
 | `OauthIdentity` | `app/models/oauth_identity.rb` | Joins a `User` to one or more OAuth provider identities (google\_oauth2, twitter2, facebook, mastodon). Upserted via `OauthIdentity.upsert_for!`. Disconnect is guarded: the last authentication method cannot be removed. |
@@ -86,7 +89,7 @@ For 2FA sign-in: Devise `Users::SessionsController` validates password → store
 app/
   controllers/
     admin/           # User list + hard-purge; X API usage report (admin-only)
-    users/           # Devise overrides: sessions, OmniAuth callbacks, 2FA flow,
+    users/           # Devise overrides: sessions, OmniAuth callbacks, 2FA sign-in/setup,
                      # email registration, Mastodon instance selection, account deletion
     concerns/        # Localization (locale resolution), TwitterLinkRequirement
   models/
