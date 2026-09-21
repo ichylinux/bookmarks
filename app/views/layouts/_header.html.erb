@@ -1,5 +1,5 @@
 <div id="header">
-  <div class="head-box<%= ' head-box--with-note-action' if drawer_ui? && current_user.preference&.use_note? %>">
+  <div class="head-box<%= ' head-box--with-note-action' if drawer_ui? %>">
     <div class="head-leading">
       <%= link_to root_path do %><%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'header-icon' %><% end %>
       <%= link_to 'Bookmarks', root_path, class: 'head-title' %>
@@ -9,7 +9,7 @@
     </div>
     <% if drawer_ui? %>
       <span class="head-user-email"><%= current_user.display_name %></span>
-      <div class="head-trailing-actions<%= ' head-trailing-actions--with-note' if current_user.preference&.use_note? %>">
+      <div class="head-trailing-actions<%= ' head-trailing-actions--with-note' if drawer_ui? %>">
         <% if current_user.preference&.use_note? %>
           <% on_welcome_notes = controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s == 'notes' %>
           <%= link_to(on_welcome_notes ? root_path : root_path(tab: 'notes'),
@@ -17,6 +17,12 @@
                       aria: { label: on_welcome_notes ? t('nav.note_return') : t('nav.note') }) do %>
             <%= render 'icons/note' %>
           <% end %>
+        <% end %>
+        <% on_feed_article_histories = controller_name == 'feed_article_histories' && action_name == 'index' %>
+        <%= link_to feed_article_histories_path,
+                    class: "head-history-btn#{' head-history-btn--active' if on_feed_article_histories}",
+                    aria: { label: t('nav.feed_article_histories') } do %>
+          <%= render 'icons/history' %>
         <% end %>
         <button class="hamburger-btn" aria-label="<%= t('nav.menu_aria') %>"></button>
       </div>

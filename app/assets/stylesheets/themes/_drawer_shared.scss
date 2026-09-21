@@ -129,7 +129,8 @@
     outline-offset: 2px;
   }
 
-  #header .head-box .head-note-btn {
+  #header .head-box .head-note-btn,
+  #header .head-box .head-history-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -142,23 +143,27 @@
     box-sizing: border-box;
   }
 
-  #header .head-box .head-note-btn:hover {
+  #header .head-box .head-note-btn:hover,
+  #header .head-box .head-history-btn:hover {
     text-decoration: none;
     opacity: $note-hover-opacity;
   }
 
-  #header .head-box .head-note-btn:focus-visible {
+  #header .head-box .head-note-btn:focus-visible,
+  #header .head-box .head-history-btn:focus-visible {
     outline: 2px solid $focus-color;
     outline-offset: 2px;
     border-radius: 2px;
   }
 
-  #header .head-box .head-note-btn svg {
+  #header .head-box .head-note-btn svg,
+  #header .head-box .head-history-btn svg {
     display: block;
     flex-shrink: 0;
   }
 
-  #header .head-box .head-note-btn--active {
+  #header .head-box .head-note-btn--active,
+  #header .head-box .head-history-btn--active {
     background: $note-active-bg;
     border-radius: 8px;
   }
@@ -232,7 +237,8 @@
     }
   }
 
-  &.drawer-open #header .head-box .head-note-btn {
+  &.drawer-open #header .head-box .head-note-btn,
+  &.drawer-open #header .head-box .head-history-btn {
     visibility: hidden;
   }
 

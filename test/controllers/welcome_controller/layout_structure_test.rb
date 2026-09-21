@@ -98,6 +98,23 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'div.drawer-overlay', count: 1
   end
 
+  def test_シンプルテーマのナビに閲覧履歴リンクがノートの右隣に表示される
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'ul.navigation a[href=?]', root_path(tab: 'notes'), text: 'ノート'
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: '閲覧履歴'
+  end
+
+  def test_シンプルテーマの英語ナビに閲覧履歴リンクが表示される
+    user.preference.update!(theme: 'simple', use_note: false, locale: 'en')
+    sign_in user
+    get root_path
+    assert_response :success
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: 'Reading history'
+  end
+
   def test_シンプルテーマではドロワーとハンバーガーがなくシンプルメニューが表示される
     user.preference.update!(theme: 'simple')
     sign_in user
@@ -109,6 +126,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'body.simple', count: 1
     assert_select 'ul.navigation', count: 1
     assert_select 'ul.navigation a[href=?]', root_path
+    assert_select 'ul.navigation a[href=?]', feed_article_histories_path
     assert_select '.menu-divider[role=?]', 'separator', count: 2
     assert_select '.menu-section--primary a', count: 5
     assert_select '.menu-section--admin a', count: 2
@@ -169,6 +187,8 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'ノート', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
+    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
+    assert_select '#header a.head-history-btn.head-history-btn--active', count: 0
   end
 
   def test_モダンテーマでノート表示中はヘッダーアイコンがホームへ向きアクティブ表示になる
@@ -180,12 +200,13 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
   end
 
   def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
-    user.preference.update!(theme: 'modern', use_note: false)
+    user.preference.update!(theme: 'modern', use_note: false, locale: 'ja')
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#header .head-box.head-box--with-note-action', count: 0
+    assert_select '#header .head-box.head-box--with-note-action', count: 1
     assert_select '#header a.head-note-btn', count: 0
+    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
   end
 
   def test_クラシックテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
@@ -195,6 +216,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '#header a.head-note-btn[href=?][aria-label=?]', root_path(tab: 'notes'), 'Note', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
+    assert_select '#header a.head-history-btn[href=?][aria-label=?]', feed_article_histories_path, 'Reading history', count: 1
   end
 
   def test_クラシックテーマでノート表示中はヘッダーアイコンがホームへ向く
@@ -211,6 +233,15 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#header a.head-note-btn', count: 0
+    assert_select '#header a.head-history-btn', count: 0
+  end
+
+  def test_モダンテーマで閲覧履歴ページ表示中はヘッダー履歴アイコンがアクティブ
+    user.preference.update!(theme: 'modern', locale: 'ja')
+    sign_in user
+    get feed_article_histories_path
+    assert_response :success
+    assert_select '#header a.head-history-btn.head-history-btn--active[href=?][aria-label=?]', feed_article_histories_path, '閲覧履歴', count: 1
   end
 
   def test_モダンテーマでuse_noteオンのときドロワーnavは9リンク
