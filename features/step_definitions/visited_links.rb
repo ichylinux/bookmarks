@@ -114,6 +114,12 @@ end
   capture
 end
 
+ならば /^閲覧履歴にガジェット名 "([^"]*)" が表示される$/ do |gadget_name|
+  assert page.has_css?('ol li .history-gadget-label', text: gadget_name, wait: 15),
+         "expected history gadget label #{gadget_name.inspect}"
+  capture
+end
+
 もし /^閲覧履歴を(\d+)件投入します。$/ do |count|
   base = Time.current
   count.to_i.times do |i|

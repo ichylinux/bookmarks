@@ -182,11 +182,19 @@ ol {
   }
 }
 
-.history-visited-at {
+.history-meta {
   margin-left: 0.5em;
   font-size: 0.875rem;
   color: #666;
   white-space: nowrap;
+}
+
+.history-gadget-label::after {
+  content: ' · ';
+}
+
+.history-visited-at {
+  display: inline;
 }
 
 .pagination {

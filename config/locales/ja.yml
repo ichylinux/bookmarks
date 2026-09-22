@@ -561,6 +561,7 @@ ja:
   feed_article_histories:
     index:
       empty: まだ閲覧履歴はありません
+      gadget_removed: （削除済み）
       sources:
         feed: フィード
         x: X

@@ -4,5 +4,9 @@ class FeedArticleHistoriesController < ApplicationController
 
     page = [params[:page].to_i, 1].max
     @feed_article_histories = VisitedLink.feed_history_for(current_user).page(page)
+    @gadget_titles = VisitedLink.gadget_titles_for(
+      current_user,
+      @feed_article_histories.map(&:gadget_id).compact
+    )
   end
 end

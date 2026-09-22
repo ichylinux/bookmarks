@@ -129,6 +129,37 @@ class VisitedLinksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'x', link.source
   end
 
+  def test_feed_create_persists_gadget_id
+    sign_in @user
+    feed = Feed.find(1)
+
+    post visited_links_path, params: {
+      url: 'https://example.com/rss-article',
+      title: 'Sample Headline',
+      source: 'feed',
+      gadget_id: feed.gadget_id
+    }
+
+    assert_response :no_content
+    link = VisitedLink.last
+    assert_equal feed.gadget_id, link.gadget_id
+  end
+
+  def test_feed_create_rejects_other_users_gadget_id
+    sign_in @user
+    other_feed = Feed.find(2)
+
+    post visited_links_path, params: {
+      url: 'https://example.com/rss-article',
+      title: 'Sample Headline',
+      source: 'feed',
+      gadget_id: other_feed.gadget_id
+    }
+
+    assert_response :no_content
+    assert_nil VisitedLink.last.gadget_id
+  end
+
   def test_mastodon_create_persists_title_and_source
     sign_in @user
 

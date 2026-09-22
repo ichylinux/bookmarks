@@ -561,6 +561,7 @@ en:
   feed_article_histories:
     index:
       empty: No reading history yet
+      gadget_removed: (removed)
       sources:
         feed: Feed
         x: X

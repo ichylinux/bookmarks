@@ -32,19 +32,22 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
     refute_includes @source, 'authenticity_token'
   end
 
-  test 'feed branch posts url title and source feed' do
+  test 'feed branch posts url title source feed and gadget_id' do
     assert_includes @source, "source: 'feed'"
     assert_includes @source, 'title: title'
+    assert_includes @source, 'gadget_id: gadgetId'
     assert_includes @source, 'const title = $(this).text().trim()'
   end
 
-  test 'x branch posts url title and source x' do
+  test 'x branch posts url title source x and gadget_id' do
     assert_includes @source, "source: 'x'"
+    assert_includes @source, 'gadget_id: gadgetId'
     assert_includes @source, "indexOf('x_account_') === 0"
   end
 
-  test 'mastodon branch posts url title and source mastodon' do
+  test 'mastodon branch posts url title source mastodon and gadget_id' do
     assert_includes @source, "source: 'mastodon'"
+    assert_includes @source, 'gadget_id: gadgetId'
     assert_includes @source, "indexOf('mastodon_account_') === 0"
   end
 

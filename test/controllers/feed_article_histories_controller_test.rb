@@ -24,6 +24,46 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'Feed Headline'
   end
 
+  def test_index_shows_gadget_label_for_feed
+    sign_in @user
+    feed = Feed.find(1)
+    VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Headline', source: 'feed',
+                      gadget_id: feed.gadget_id)
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li .history-gadget-label', text: feed.title, count: 1
+  end
+
+  def test_index_shows_removed_fallback_for_missing_gadget
+    sign_in @user
+    VisitedLink.create!(
+      user: @user,
+      url: 'https://example.com/feed-a',
+      title: 'Feed Headline',
+      source: 'feed',
+      gadget_id: 'feed_999999',
+      visited_at: Time.current
+    )
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li .history-gadget-label',
+                  text: I18n.t('feed_article_histories.index.gadget_removed'), count: 1
+  end
+
+  def test_index_hides_gadget_label_when_gadget_id_nil
+    sign_in @user
+    VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Headline', source: 'feed')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li .history-gadget-label', count: 0
+  end
+
   def test_index_excludes_url_only_rows
     sign_in @user
     VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Headline', source: 'feed')

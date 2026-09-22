@@ -131,6 +131,86 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_equal 'mastodon', link.source
   end
 
+  def test_feed_record_persists_gadget_id_for_owned_feed
+    feed = Feed.find(1)
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Headline', source: 'feed',
+                      gadget_id: feed.gadget_id)
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    assert_equal feed.gadget_id, link.gadget_id
+  end
+
+  def test_feed_record_rejects_gadget_id_for_other_users_feed
+    other_feed = Feed.find(2)
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Headline', source: 'feed',
+                      gadget_id: other_feed.gadget_id)
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    assert_nil link.gadget_id
+  end
+
+  def test_feed_record_rejects_mismatched_gadget_id_prefix
+    feed = Feed.find(1)
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Headline', source: 'feed',
+                      gadget_id: "x_account_#{feed.id}")
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    assert_nil link.gadget_id
+  end
+
+  def test_feed_record_empty_gadget_id_preserves_existing_gadget_id
+    feed = Feed.find(1)
+    VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Headline', source: 'feed',
+                      gadget_id: feed.gadget_id)
+
+    assert_no_difference -> { VisitedLink.count } do
+      VisitedLink.record!(@user, 'https://example.com/feed-item', title: 'Updated', source: 'feed',
+                          gadget_id: '   ')
+    end
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/feed-item')
+    assert_equal feed.gadget_id, link.gadget_id
+    assert_equal 'Updated', link.title
+  end
+
+  def test_feed_record_updates_gadget_id_on_reclick_from_different_feed
+    feed_one = Feed.find(1)
+    feed_two = Feed.create!(user_id: @user.id, title: 'Second Feed', feed_url: 'https://example.com/rss.xml')
+
+    VisitedLink.record!(@user, 'https://example.com/shared', title: 'Shared', source: 'feed',
+                      gadget_id: feed_one.gadget_id)
+
+    assert_no_difference -> { VisitedLink.count } do
+      VisitedLink.record!(@user, 'https://example.com/shared', title: 'Shared', source: 'feed',
+                          gadget_id: feed_two.gadget_id)
+    end
+
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/shared')
+    assert_equal feed_two.gadget_id, link.gadget_id
+  end
+
+  def test_gadget_titles_for_resolves_feed_x_and_mastodon
+    feed = Feed.find(1)
+    x_account = XAccount.create!(
+      user: @user, x_user_id: '90199', username: 'gadgethist', display_name: 'Gadget Hist User',
+      selected: true, deleted: false, protected: false
+    )
+    mastodon = MastodonAccount.find(1)
+
+    titles = VisitedLink.gadget_titles_for(@user, [feed.gadget_id, x_account.gadget_id, mastodon.gadget_id])
+
+    assert_equal feed.title, titles[feed.gadget_id]
+    assert_equal x_account.title, titles[x_account.gadget_id]
+    assert_equal mastodon.title, titles[mastodon.gadget_id]
+  end
+
+  def test_gadget_titles_for_omits_deleted_gadgets
+    feed = Feed.find(1)
+    titles = VisitedLink.gadget_titles_for(@user, [feed.gadget_id, 'feed_999999'])
+
+    assert_equal({ feed.gadget_id => feed.title }, titles)
+  end
+
   def test_feed_history_for_includes_feed_x_and_mastodon_rows
     VisitedLink.record!(@user, 'https://example.com/feed-a', title: 'Feed Item', source: 'feed')
     VisitedLink.record!(@user, 'https://x.com/user/status/1', title: 'X Post', source: 'x')

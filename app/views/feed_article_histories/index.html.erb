@@ -12,9 +12,14 @@
           <%= render 'icons/service', variant: link.source.to_sym %>
         </span>
         <%= link_to link.title.presence || link.url, link.url, **link_opts %>
-        <time class="history-visited-at" datetime="<%= link.visited_at.iso8601 %>">
-          <%= l(link.visited_at, format: :admin_datetime) %>
-        </time>
+        <span class="history-meta">
+          <% if link.gadget_id.present? %>
+            <span class="history-gadget-label"><%= @gadget_titles[link.gadget_id] || t('feed_article_histories.index.gadget_removed') %></span>
+          <% end %>
+          <time class="history-visited-at" datetime="<%= link.visited_at.iso8601 %>">
+            <%= l(link.visited_at, format: :admin_datetime) %>
+          </time>
+        </span>
       </li>
     <% end %>
   </ol>
