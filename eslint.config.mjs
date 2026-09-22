@@ -1,6 +1,5 @@
 import js from '@eslint/js';
 import babelParser from '@babel/eslint-parser';
-import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 
 export default [
@@ -33,6 +32,5 @@ export default [
         MOBILE_MQ: 'readonly',
       },
     },
-  },
-  prettier,
+  }
 ];

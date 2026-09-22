@@ -123,10 +123,7 @@ Scoped runs (single file, line, or feature) are documented in [docs/TESTING.md](
 ```bash
 yarn run lint        # Run ESLint
 yarn run lint:fix    # Auto-fix lint errors
-yarn run format      # Format with Prettier
 ```
-
-ESLint 9 (flat config) with Prettier. Configuration: `eslint.config.mjs`.
 
 ## Database Configuration
 

@@ -10,7 +10,7 @@ See [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md) for prerequisites and fir
 ## Coding standards
 
 - **Ruby:** Follow Rails conventions with two-space indentation. There is no RuboCop config.
-- **JavaScript:** ESLint 9 (`eslint.config.mjs`) and Prettier 3 (`.prettierrc.json`). Run `yarn run lint` to check, `yarn run lint:fix` to auto-fix, and `yarn run format` to format. Jenkins does not run ESLint — lint must pass locally before you open a PR.
+- **JavaScript:** ESLint 9 (`eslint.config.mjs`). Run `yarn run lint` to check, `yarn run lint:fix` to auto-fix. Jenkins does not run ESLint — lint must pass locally before you open a PR.
 - **SCSS:** Shared stylesheets must not contain theme-specific selectors (`.modern`, `.classic`, `.simple`); theme overrides belong in `app/assets/stylesheets/themes/`. Do not gate styles on hover/pointer media features — use viewport width instead. Contract tests in `test/assets/` enforce these rules.
 - **Locales:** All user-facing strings must be added to both `config/locales/ja.yml` and `config/locales/en.yml`. The `test/i18n/locales_parity_test.rb` test must pass.
 - **ActiveRecord:** Do not add `dependent: :destroy` or `dependent: :delete_all` to ActiveRecord associations. This is enforced by `test/models/active_record_dependent_contract_test.rb`.

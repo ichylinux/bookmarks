@@ -3,8 +3,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint \"app/assets/javascripts/**/*.js\"",
-    "lint:fix": "eslint \"app/assets/javascripts/**/*.js\" --fix",
-    "format": "prettier --write \"app/assets/javascripts/**/*.js\""
+    "lint:fix": "eslint \"app/assets/javascripts/**/*.js\" --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -12,8 +11,6 @@
     "@babel/preset-env": "^7.29.2",
     "@eslint/js": "^9.39.4",
     "eslint": "^9.0.0",
-    "eslint-config-prettier": "^10.0.0",
-    "globals": "^15.0.0",
-    "prettier": "^3.0.0"
+    "globals": "^15.0.0"
   }
 }
