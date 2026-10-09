@@ -74,6 +74,24 @@ class FeedGadgetMobileCssContractTest < ActiveSupport::TestCase
     )
   end
 
+  # ガードがヘッダ全体（FEED_HEADER_SELECTOR はドラッグハンドルを含む）で
+  # stopImmediatePropagation すると sortable にイベントが届かず、フィード
+  # ガジェットをドラッグで並べ替えられなくなる（2026-09 のレグレッション）。
+  # ハンドル上の押下は並べ替えに委ねること。ハンドル内のサイト名リンクは
+  # portal_gadget_sort.js 側の HEADER_LINK_SELECTOR ガードが止める。
+  test 'feed_gadget.js header guard excludes the drag handle so sortable can still start a drag' do
+    guard_body_match = @feed_gadget_js.match(
+      /\.on\(\s*['"]mousedown\.feedGadgetHeader touchstart\.feedGadgetHeader['"],\s*FEED_HEADER_SELECTOR,\s*function\(e\)\s*\{([\s\S]*?)\}\);/
+    )
+    assert_not_nil guard_body_match, 'feed_gadget.js must keep the .gadgets-bound feed header guard'
+    assert_match(
+      /\.gadget-title-drag-handle/,
+      guard_body_match[1],
+      'feed_gadget.js header guard must return early when the press starts on ' \
+      '.gadget-title-drag-handle, otherwise the feed gadget cannot be dragged for reordering.'
+    )
+  end
+
   test 'feed_gadget.js prevents default navigation on first mobile header tap' do
     assert_match(
       /MOBILE_MQ\.matches[\s\S]*?preventDefault\(\)/,

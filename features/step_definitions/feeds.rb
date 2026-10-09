@@ -86,6 +86,32 @@ end
   capture
 end
 
+もし /^ガジェット並べ替えの監視を開始します。$/ do
+  page.execute_script(feed_header_link_probe_js)
+  capture
+end
+
+# ハンドル全体の中心はタイトルテキスト（サイト名リンク）に重なるため、
+# リンクではないアイコン側を掴む。アイコン上での押下は sortable に届く
+# 必要がある（feed_gadget.js のヘッダガードが握り潰していないことの検証）。
+もし /^フィードガジェットのドラッグハンドルのアイコンを数ピクセルドラッグします。$/ do
+  icon = find('.gadget[id^="feed_"] .gadget-title-drag-handle .gadget-title-icon')
+
+  Capybara.current_session.driver.browser.action
+          .move_to(icon.native)
+          .click_and_hold
+          .move_by(3, 2)
+          .release
+          .perform
+  capture
+end
+
+ならば /^ガジェットの並べ替えドラッグが開始されています。$/ do
+  assert wait_until { page.evaluate_script('window.__gadgetSortStarted === true') },
+         'ドラッグハンドルのアイコンを押してもガジェットの並べ替えドラッグが始まりません'
+  capture
+end
+
 もし /^フィードガジェットが表示されたモバイル版ルートページを開きます。$/ do
   sign_in user
   ensure_mobile_viewport!

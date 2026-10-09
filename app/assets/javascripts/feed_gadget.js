@@ -18,6 +18,11 @@ $(document).ready(() => {
   // document 委譲の stopPropagation だけでは touch-punch が先に touchstart を
   // 握って click を潰す。portal_gadget_sort.js のヘッダリンク対策と同様に
   // .gadgets へ直接 bind して stopImmediatePropagation する（#260731-u3v）。
+  // ただしドラッグハンドル（.gadget-title-drag-handle）上の押下は並べ替えに
+  // 委ねる — ここで止めると sortable にイベントが届かず、フィードガジェットを
+  // ドラッグで移動できなくなる。ハンドル内のサイト名リンクは
+  // portal_gadget_sort.js 側の HEADER_LINK_SELECTOR ガードが止めるので、
+  // リンククリックとドラッグの両方が機能する。
   function bindFeedHeaderSortGuard() {
     const $gadgets = $('.gadgets');
     if (!$gadgets.length) return;
@@ -26,6 +31,7 @@ $(document).ready(() => {
       .off('mousedown.feedGadgetHeader touchstart.feedGadgetHeader', FEED_HEADER_SELECTOR)
       .on('mousedown.feedGadgetHeader touchstart.feedGadgetHeader', FEED_HEADER_SELECTOR, function(e) {
         if ($(e.target).closest('.feed-gadget-settings-link').length) return;
+        if ($(e.target).closest('.gadget-title-drag-handle').length) return;
         e.stopImmediatePropagation();
       });
   }
