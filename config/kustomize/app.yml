@@ -30,6 +30,9 @@ spec:
         - secretRef:
             name: bookmarks-secret
         command: ['bundle', 'exec', 'rails', 's']
+        resources:
+          requests:
+            memory: 256Mi
         readinessProbe:
           httpGet:
             path: /up
@@ -40,4 +43,6 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["sleep", "15"]
+              # Give the ALB time to deregister the target before SIGTERM.
+              # Keep this well below terminationGracePeriodSeconds - force_shutdown_after.
+              command: ["sleep", "10"]

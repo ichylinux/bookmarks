@@ -40,3 +40,12 @@ plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+# Bound the graceful shutdown so Kubernetes' terminationGracePeriodSeconds is
+# never exceeded. Without this, Puma waits indefinitely for in-flight and
+# keep-alive/WebSocket connections, the kubelet eventually SIGKILLs the
+# container during a rolling deploy, and the Pod ends up in status `Error`
+# (exit code 137) instead of terminating cleanly.
+# Budget: preStop (sleep 10s) + this timeout must stay below the Deployment's
+# terminationGracePeriodSeconds (60s).
+force_shutdown_after ENV.fetch("PUMA_FORCE_SHUTDOWN_AFTER", 10).to_i
