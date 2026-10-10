@@ -19,7 +19,6 @@ spec:
       labels:
         app: bookmarks-app
     spec:
-      terminationGracePeriodSeconds: 60
       restartPolicy: Always
       containers:
       - name: bookmarks
@@ -32,6 +31,7 @@ spec:
         command: ['bundle', 'exec', 'rails', 's']
         resources:
           requests:
+            cpu: 100m
             memory: 256Mi
         readinessProbe:
           httpGet:
