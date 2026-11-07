@@ -21,7 +21,8 @@
   var mouseProto = $.ui.mouse.prototype,
     _mouseInit = mouseProto._mouseInit,
     _mouseDestroy = mouseProto._mouseDestroy,
-    touchHandled;
+    touchHandled,
+    TAP_TOLERANCE_PX = 10;
 
   /**
    * Simulate a mouse event based on a corresponding touch event
@@ -71,6 +72,8 @@
 
     touchHandled = true;
     self._touchMoved = false;
+    self._touchStartX = event.originalEvent.changedTouches[0].clientX;
+    self._touchStartY = event.originalEvent.changedTouches[0].clientY;
 
     // Skip mousemove on touchstart so jQuery UI sortable delay (long-press) works.
     simulateMouseEvent(event, 'mouseover');
@@ -83,7 +86,13 @@
       return;
     }
 
-    this._touchMoved = true;
+    // 指の微小なブレはタップ扱いのままにし、合成 click を残す（ヘッダのタップ操作用）
+    var t = event.originalEvent.changedTouches[0];
+    if (this._touchMoved ||
+        Math.abs(t.clientX - this._touchStartX) > TAP_TOLERANCE_PX ||
+        Math.abs(t.clientY - this._touchStartY) > TAP_TOLERANCE_PX) {
+      this._touchMoved = true;
+    }
     simulateMouseEvent(event, 'mousemove');
   };
 
