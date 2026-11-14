@@ -200,6 +200,29 @@ ol {
 .pagination {
   margin-top: 1rem;
   text-align: center;
+
+  .page,
+  .first,
+  .prev,
+  .next,
+  .last {
+    display: inline-block;
+
+    a {
+      display: inline-block;
+      min-width: 1.5rem;
+      padding: 0.4rem 0.3rem;
+      box-sizing: border-box;
+    }
+  }
+
+  .page.current {
+    display: inline-block;
+    min-width: 1.5rem;
+    padding: 0.4rem 0.3rem;
+    box-sizing: border-box;
+    font-weight: bold;
+  }
 }
 
 table {
