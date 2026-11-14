@@ -36,11 +36,11 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     assert_includes response.body, I18n.t('landing.integrations.facebook.title', locale: :ja)
   end
 
-  def test_rootのヒーローにブランド表示がある
+  def test_rootのヘッダーにキャッチコピーがありヒーローにブランドロックアップはない
     get root_path
     assert_response :success
-    assert_select '.landing-brand-lockup img.landing-brand-icon[alt=?]', 'Bookmarks'
-    assert_includes response.body, I18n.t('landing.header.subtitle', locale: :ja)
+    assert_select '#header .head-subtitle', text: I18n.t('landing.header.subtitle', locale: :ja)
+    assert_select '.landing-brand-lockup', count: 0
   end
 
   def test_未ログインでrootへ英語優先でアクセスすると英語ランディングが表示される

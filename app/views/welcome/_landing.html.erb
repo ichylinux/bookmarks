@@ -2,13 +2,6 @@
   <%= render 'welcome/landing_lang_switcher', path_helper: :root_path %>
   <section class="landing-hero">
     <div class="landing-hero__inner">
-      <div class="landing-brand-lockup">
-        <%= image_tag '/icon.svg', alt: 'Bookmarks', class: 'landing-brand-icon' %>
-        <div>
-          <p class="landing-brand-name">Bookmarks</p>
-          <p class="landing-brand-subtitle"><%= t('landing.header.subtitle') %></p>
-        </div>
-      </div>
       <p class="landing-eyebrow"><%= t('landing.hero.eyebrow') %></p>
       <h1 class="landing-hero-title"><%= t('landing.hero.title') %></h1>
       <p class="landing-description"><%= t('landing.hero.description') %></p>

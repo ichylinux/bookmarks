@@ -46,6 +46,13 @@
   color: var(--modern-header-fg);
 }
 
+.modern #header .head-box .head-subtitle {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
 // モダン＋ログイン時は common/_menu を出さないため二次ナビ帯が無い。その分、メイン領域上端に余白と区切り線を足す。
 .modern .wrapper {
   padding-top: 24px;
