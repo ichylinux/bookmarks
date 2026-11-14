@@ -13,9 +13,9 @@ Jenkins runs the full Minitest and Cucumber suites; ESLint is local-only (Jenkin
 
 | Suite | Framework | Command |
 |-------|-----------|---------|
-| Lint | ESLint 9 (via `yarn`) | `yarn run lint` |
+| Lint | ESLint ^9 (via `yarn`) | `yarn run lint` |
 | Minitest | Minitest ~> 5.0 (5.27.0) + minitest-reporters 1.8.0 | `bin/rails test` |
-| Cucumber | Cucumber 9.2.1 + Capybara 3.40.0 + Selenium WebDriver 4.46.0 | `bundle exec rake dad:test` |
+| Cucumber | Cucumber 10.2.0 + Capybara 3.40.0 + Selenium WebDriver 4.52.0 | `bundle exec rake dad:test` |
 
 `test/test_helper.rb` requires `daddy/test_help` first. That file starts SimpleCov when `COVERAGE` is set, and enables minitest-reporters when `FORMAT` is set (see [Configuration](CONFIGURATION.md)).
 
@@ -40,10 +40,9 @@ Lints JavaScript files under `app/assets/javascripts/`. Run this in full — it 
 ```bash
 yarn run lint          # Check for violations
 yarn run lint:fix      # Auto-fix violations
-yarn run format        # Prettier write (same JS glob)
 ```
 
-ESLint is configured in `eslint.config.mjs` using `@babel/eslint-parser` with `eslint-config-prettier` to avoid conflicts with Prettier formatting.
+ESLint is configured in `eslint.config.mjs` (flat config) using `@eslint/js` recommended rules and `@babel/eslint-parser`, with browser globals plus `$`, `jQuery`, `ActionCable`, `App`, and `MOBILE_MQ`.
 
 ### Minitest
 
@@ -57,7 +56,7 @@ bin/rails test test/controllers/todos_controller_test.rb -n /一覧/  # By test 
 
 ### Cucumber (E2E)
 
-Sixteen feature files live under `features/` (numbered `01`–`15` plus `13.Facebook.feature` in English Gherkin).
+Sixteen feature files live under `features/` (numbered `01`–`15`, with two files sharing the `07` prefix; `13.Facebook.feature` is in English Gherkin).
 
 ```bash
 bundle exec rake dad:test                                   # Full suite (Jenkins features job)
@@ -189,7 +188,7 @@ The Cucumber `World` object includes `TestSupport` (which loads all `test/suppor
 
 No minimum coverage thresholds are configured.
 
-`simplecov` 1.0.3 is in the Gemfile (`require: false`). `daddy/test_help` starts SimpleCov when `ENV['COVERAGE']` is set, skipping `features/`, `test/`, `user_stories/`, and `vendor/`. HTML output goes to `coverage/` (gitignored). The Jenkins unit stage sets `COVERAGE=true` and publishes that directory as the "Coverage" HTML report.
+`simplecov` 1.3.2 is in the Gemfile (`require: false`). `daddy/test_help` starts SimpleCov when `ENV['COVERAGE']` is set, skipping `features/`, `test/`, `user_stories/`, and `vendor/`. HTML output goes to `coverage/` (gitignored). The Jenkins unit stage sets `COVERAGE=true` and publishes that directory as the "Coverage" HTML report.
 
 There is no `coverageThreshold` (or equivalent) anywhere in the repo.
 

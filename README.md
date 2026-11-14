@@ -102,21 +102,17 @@ After signing in, the dashboard at `/` shows gadget columns (bookmarks, todos, c
 
 ## Testing
 
-Run the full quality gate (lint + Minitest + Cucumber):
+Three suites are used: ESLint, Minitest, and Cucumber. Run lint in full, but scope the Minitest and Cucumber runs to the tests related to your change. The full suites are run by Jenkins (`Jenkinsfile` runs `bundle exec rails test`; the downstream `-features` job runs `bundle exec rake dad:test` via `Jenkinsfile.features`).
 
 ```bash
-yarn run lint && bin/rails test && bundle exec rake dad:test
+yarn run lint                                                       # ESLint (fast; run in full)
+bin/rails test test/controllers/todos_controller_test.rb            # Minitest: one file
+bin/rails test test/models                                          # Minitest: one directory
+bundle exec rake dad:test features/02.タスク.feature                  # Cucumber E2E: one feature
+bundle exec rake dad:test features/02.タスク.feature:23               # Cucumber E2E: one scenario (by line)
 ```
 
-Run suites individually:
-
-```bash
-yarn run lint               # ESLint
-bin/rails test              # Minitest (unit + integration)
-bundle exec rake dad:test   # Cucumber E2E (spawns server automatically; do not use bundle exec cucumber directly)
-```
-
-Scoped runs (single file, line, or feature) are documented in [docs/TESTING.md](docs/TESTING.md).
+`dad:test` spawns the Rails server and headless Chrome automatically; do not use `bundle exec cucumber` directly, and always pass a feature path. More scoping options are documented in [docs/TESTING.md](docs/TESTING.md).
 
 ## JavaScript and Linting
 

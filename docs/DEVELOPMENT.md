@@ -62,18 +62,17 @@ bin/rails db:test:prepare
 |---------|-------------|
 | `yarn run lint` | ESLint — lint `app/assets/javascripts/**/*.js` |
 | `yarn run lint:fix` | ESLint — auto-fix lint violations |
-| `yarn run format` | Prettier — format `app/assets/javascripts/**/*.js` |
 
 ### Testing
 
 | Command | Description |
 |---------|-------------|
 | `yarn run lint` | ESLint (run in full — fast; Jenkins does not run lint) |
-| `bin/rails test` | Run full Minitest unit + integration suite |
+| `bin/rails test` | Full Minitest suite (slow; normally left to Jenkins — scope runs instead) |
 | `bin/rails test test/models/user_test.rb` | Run a single Minitest file |
 | `bin/rails test test/controllers/todos_controller_test.rb:42` | Run a single test by line number |
 | `bin/rails test test/controllers/todos_controller_test.rb -n /一覧/` | Run tests matching a name pattern |
-| `bundle exec rake dad:test` | Run full Cucumber E2E suite (spawns Rails server + headless Chrome automatically) |
+| `bundle exec rake dad:test` | Cucumber E2E via the `daddy` gem (spawns Rails server + headless Chrome automatically); always pass a feature path rather than running the whole suite |
 | `bundle exec rake dad:test features/02.タスク.feature` | Run a single Cucumber feature (`dad:test` forwards paths, including `:line`) |
 | `DRY_RUN=1 bundle exec rake dad:test features/02.タスク.feature` | Resolve step definitions without launching a browser |
 
@@ -90,18 +89,7 @@ bin/rails db:test:prepare
 
 ### JavaScript
 
-Linter: **ESLint 9.x** — config file `eslint.config.mjs` (parser `@babel/eslint-parser` with `babel.config.js`).  
-Formatter: **Prettier 3.x** — config file `.prettierrc.json`.
-
-Prettier settings:
-
-```json
-{
-  "semi": true,
-  "singleQuote": true,
-  "trailingComma": "es5"
-}
-```
+Linter: **ESLint 9.x** — config file `eslint.config.mjs` (parser `@babel/eslint-parser` with `babel.config.js`). Only `app/assets/javascripts/**/*.js` is linted. No JavaScript formatter (Prettier or similar) is configured; follow the style of the surrounding code (semicolons, single quotes).
 
 Rules:
 - Prefer `const` and `let`. `eslint.config.mjs` extends `eslint:recommended` and does not enable `no-var`; a few existing files still use `var`.
@@ -110,11 +98,11 @@ Rules:
 - Allowed globals (from `eslint.config.mjs`): `$`, `jQuery`, `ActionCable`, `App`, `MOBILE_MQ`.
 - AJAX POST handlers (for example `visited_links.js`) use `$.post` with Rails CSRF; `jquery` must load before `rails-ujs` in `application.js`.
 
-Run linting and formatting before every commit:
+Run linting before every commit:
 
 ```bash
-yarn run lint
-yarn run format
+yarn run lint        # check
+yarn run lint:fix    # auto-fix
 ```
 
 ### SCSS
@@ -140,7 +128,7 @@ yarn run format
 | `app/services/` | Faraday clients (`MastodonClient`, `XClient`) and Mastodon input normalizers |
 | `app/helpers/` | View helpers (`ApplicationHelper`, calendar/welcome helpers) |
 | `app/views/` | ERB templates and partials |
-| `app/assets/javascripts/` | jQuery modules (linted by ESLint, formatted by Prettier); `visited_links.js` handles visit recording |
+| `app/assets/javascripts/` | jQuery modules (linted by ESLint); `visited_links.js` handles visit recording |
 | `app/assets/stylesheets/` | SCSS; theme overrides in `themes/` subdirectory |
 | `config/locales/` | `ja.yml` and `en.yml` — must be kept in parity |
 | `lib/omniauth/` | Custom Mastodon OmniAuth strategy |
@@ -158,14 +146,16 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full checklist. There is no Gi
 
 - Branch from `master` and make focused changes with tests where behavior changes.
 - During local development, run `yarn run lint` in full and scope Minitest/Cucumber to related files (see [Testing](TESTING.md)).
-- Before opening a PR, run the full gate:
+- Before opening a PR, run all three checks for the tests related to your change:
 
   ```bash
-  yarn run lint && bin/rails test && bundle exec rake dad:test
+  yarn run lint                                              # always in full
+  bin/rails test test/models/user_test.rb                    # scoped Minitest example
+  bundle exec rake dad:test features/02.タスク.feature        # scoped Cucumber example
   ```
 
 - Do not use `bundle exec cucumber` directly — always use `bundle exec rake dad:test`.
-- All three suites must exit 0 before a PR is considered ready. Jenkins (`Jenkinsfile`) runs Minitest in the `unit` stage and triggers the downstream `${APP_NAME}-features` job for Cucumber; it does not run `yarn run lint`, so lint must be checked locally.
+- The related lint, Minitest, and Cucumber runs must exit 0 before a PR is considered ready; state which tests you ran and why in the PR description. Jenkins (`Jenkinsfile`) runs the full Minitest suite in the `unit` stage and triggers the downstream `${APP_NAME}-features` job for the full Cucumber suite; it does not run `yarn run lint`, so lint must be checked locally.
 - Describe what changed and why in the PR body.
 
 ## Key project constraints
