@@ -65,10 +65,16 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
     refute_includes @source, 'preventDefault'
   end
 
-  test 'queues on session failure via fail handler' do
+  test 'queues on ajax failure and clears session meta' do
     assert_includes @source, '.fail(function'
-    assert_includes @source, 'isSessionFailure(xhr)'
+    assert_includes @source, 'markSessionExpired()'
     assert_includes @source, 'enqueue(payload)'
+    refute_includes @source, 'isSessionFailure'
+  end
+
+  test 'skips ajax when session meta was removed until page reload' do
+    assert_includes @source, 'if (!sessionActiveOnPage())'
+    assert_includes @source, 'meta.remove()'
   end
 
   test 'persists pending visits in localStorage' do
@@ -79,6 +85,7 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
 
   test 'flushes pending queue when session meta is present' do
     assert_includes @source, 'meta[name="bookmarks-session-active"]'
+    assert_includes @source, 'SESSION_META_SELECTOR'
     assert_includes @source, 'flushPending()'
   end
 

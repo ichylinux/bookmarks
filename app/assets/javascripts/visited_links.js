@@ -1,9 +1,17 @@
 (function () {
   const STORAGE_KEY = 'bookmarksPendingVisitedLinks';
   const POST_URL = '/visited_links';
+  const SESSION_META_SELECTOR = 'meta[name="bookmarks-session-active"]';
 
   function sessionActiveOnPage() {
-    return document.querySelector('meta[name="bookmarks-session-active"]') !== null;
+    return document.querySelector(SESSION_META_SELECTOR) !== null;
+  }
+
+  function markSessionExpired() {
+    const meta = document.querySelector(SESSION_META_SELECTOR);
+    if (meta) {
+      meta.remove();
+    }
   }
 
   function readQueue() {
@@ -48,15 +56,12 @@
     writeQueue(queue);
   }
 
-  function isSessionFailure(xhr) {
-    if (!xhr) return true;
-    if (xhr.status === 401 || xhr.status === 403) return true;
-    const loc = xhr.getResponseHeader && xhr.getResponseHeader('Location');
-    if (loc && loc.indexOf('/users/sign_in') !== -1) return true;
-    return false;
-  }
-
   function postVisitedLink(payload) {
+    if (!sessionActiveOnPage()) {
+      enqueue(payload);
+      return;
+    }
+
     return $.ajax({
       url: POST_URL,
       method: 'POST',
@@ -65,10 +70,9 @@
       if (xhr && xhr.status === 204) {
         removeFromQueue(payload.url);
       }
-    }).fail(function (xhr) {
-      if (isSessionFailure(xhr)) {
-        enqueue(payload);
-      }
+    }).fail(function () {
+      markSessionExpired();
+      enqueue(payload);
     });
   }
 
@@ -88,6 +92,7 @@
   function flushPending() {
     if (!sessionActiveOnPage()) return;
     readQueue().forEach(function (payload) {
+      if (!sessionActiveOnPage()) return;
       postVisitedLink(payload);
     });
   }
