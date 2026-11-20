@@ -127,6 +127,7 @@ class WelcomeController::RootPathTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_includes response.body, "localStorage.setItem('#{ApplicationHelper::LOGGED_IN_BEFORE_STORAGE_KEY}'"
+    assert_select 'meta[name=?][content=?]', 'bookmarks-session-active', '1'
   end
 
   def test_ログイン済みの設定画面には過去ログイン記録スクリプトが含まれる

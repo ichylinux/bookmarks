@@ -24,6 +24,7 @@ module ApplicationHelper
   end
 
   LOGGED_IN_BEFORE_STORAGE_KEY = 'bookmarksHasLoggedIn'
+  PENDING_VISITED_LINKS_STORAGE_KEY = 'bookmarksPendingVisitedLinks'
   MASTODON_INSTANCE_STORAGE_KEY = 'bookmarksMastodonInstance'
   EXPLICIT_LANDING_PARAM = :landing
 
