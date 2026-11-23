@@ -32,12 +32,36 @@
   </script>
   <div>
     <ul class="navigation">
-      <li><%= link_to t('nav.home'), root_path %></li>
+      <li>
+        <%= render 'common/navigation_link',
+                   url: root_path,
+                   label: t('nav.home'),
+                   icon: :home,
+                   highlight: simple_nav_welcome_home_current?,
+                   aria_current_page: simple_nav_welcome_home_current? %>
+      </li>
       <% if current_user.preference&.use_note? %>
-        <li><%= link_to t('nav.note'), root_path(tab: 'notes') %></li>
+        <% notes_open = simple_nav_welcome_notes_open? %>
+        <% note_label = notes_open ? t('nav.note_return') : t('nav.note') %>
+        <% note_url = notes_open ? root_path : root_path(tab: 'notes') %>
+        <li>
+          <%= render 'common/navigation_link',
+                     url: note_url,
+                     label: note_label,
+                     icon: :note,
+                     highlight: notes_open,
+                     aria_current_page: false %>
+        </li>
       <% end %>
       <% if current_user.preference&.use_feed_article_histories? %>
-        <li><%= link_to t('nav.feed_article_histories'), feed_article_histories_path %></li>
+        <li>
+          <%= render 'common/navigation_link',
+                     url: feed_article_histories_path,
+                     label: t('nav.feed_article_histories'),
+                     icon: :history,
+                     highlight: simple_nav_feed_histories_current?,
+                     aria_current_page: simple_nav_feed_histories_current? %>
+        </li>
       <% end %>
       <li class="email">
         <a href="#"><%= current_user.display_name %><span style="font-size: 0.8em;"> ▼</span></a>

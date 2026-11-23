@@ -1,0 +1,20 @@
+<% highlight = local_assigns.fetch(:highlight, false) %>
+<% aria_current_page = local_assigns.fetch(:aria_current_page, false) %>
+<% aria = { label: label } %>
+<% aria[:current] = 'page' if aria_current_page %>
+<%= link_to url,
+            class: ["navigation-link", ("navigation-link--active" if highlight)].compact.join(" "),
+            title: label,
+            aria: aria do %>
+  <span class="navigation-link__icon" aria-hidden="true">
+    <% case icon %>
+    <% when :home %>
+      <%= render 'icons/service', variant: :home %>
+    <% when :note %>
+      <%= render 'icons/note' %>
+    <% when :history %>
+      <%= render 'icons/history' %>
+    <% end %>
+  </span>
+  <span class="navigation-link__label"><%= label %></span>
+<% end %>

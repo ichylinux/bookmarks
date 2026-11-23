@@ -35,4 +35,16 @@ module ApplicationHelper
   def explicit_landing_request?
     params[EXPLICIT_LANDING_PARAM].present?
   end
+
+  def simple_nav_welcome_home_current?
+    controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s != 'notes'
+  end
+
+  def simple_nav_welcome_notes_open?
+    controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s == 'notes'
+  end
+
+  def simple_nav_feed_histories_current?
+    controller_name == 'feed_article_histories' && action_name == 'index'
+  end
 end

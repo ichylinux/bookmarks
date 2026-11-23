@@ -103,8 +103,12 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'ul.navigation a[href=?]', root_path(tab: 'notes'), text: 'ノート'
-    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: '履歴'
+    assert_select 'ul.navigation a.navigation-link[href=?]', root_path(tab: 'notes'), text: 'ノート'
+    assert_select 'ul.navigation a.navigation-link[href=?]', feed_article_histories_path, text: '履歴'
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?][aria-current=?]', root_path, 'ホーム', 'ホーム', 'page'
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'ノート', 'ノート'
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴'
+    assert_select 'ul.navigation a.navigation-link[href=?] .navigation-link__icon svg', root_path, count: 1
   end
 
   def test_シンプルテーマの英語ナビに閲覧履歴リンクが表示される
@@ -112,7 +116,26 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'ul.navigation a[href=?]', feed_article_histories_path, text: 'Reading history'
+    assert_select 'ul.navigation a.navigation-link[href=?]', feed_article_histories_path, text: 'Reading history'
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', feed_article_histories_path, 'Reading history', 'Reading history'
+  end
+
+  def test_シンプルテーマでノート表示中はナビのノートリンクがホームへ向きラベルが戻る表記になる
+    user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_response :success
+    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-label=?][title=?]', root_path, 'ブックマーク画面に戻る', 'ブックマーク画面に戻る'
+    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-current]', root_path, count: 0
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-current]', root_path(tab: 'notes'), count: 0
+  end
+
+  def test_シンプルテーマで閲覧履歴ページ表示中は履歴ナビがアクティブかつaria_currentになる
+    user.preference.update!(theme: 'simple', use_feed_article_histories: true, locale: 'ja')
+    sign_in user
+    get feed_article_histories_path
+    assert_response :success
+    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-current=?]', feed_article_histories_path, 'page'
   end
 
   def test_シンプルテーマではドロワーとハンバーガーがなくシンプルメニューが表示される
