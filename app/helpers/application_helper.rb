@@ -37,11 +37,11 @@ module ApplicationHelper
   end
 
   def simple_nav_welcome_home_current?
-    controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s != 'notes'
+    controller_name == 'welcome' && action_name == 'index'
   end
 
-  def simple_nav_welcome_notes_open?
-    controller_name == 'welcome' && action_name == 'index' && params[:tab].to_s == 'notes'
+  def simple_nav_notes_current?
+    controller_name == 'notes' && action_name == 'index'
   end
 
   def simple_nav_feed_histories_current?

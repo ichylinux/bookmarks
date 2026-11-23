@@ -14,7 +14,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :redirect
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
 
     note = Note.order(id: :desc).first
     assert_equal '新しいメモ', note.body
@@ -28,7 +28,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
       post notes_path, params: { note: { body: '   ' } }
     end
 
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
     follow_redirect!
     assert_predicate flash[:alert], :present?
   end
@@ -72,7 +72,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
       post notes_path, params: { note: { body: long_body } }
     end
 
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
     follow_redirect!
     assert_predicate flash[:alert], :present?
   end
@@ -111,7 +111,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
 
     patch note_path(note), params: { note: { body: '更新後メモ' } }
 
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
     assert_equal '更新後メモ', note.reload.body
   end
 
@@ -122,7 +122,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
 
     patch note_path(note), params: { note: { body: '   ' } }
 
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
     assert_equal old_body, note.reload.body
   end
 
@@ -156,7 +156,7 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
       delete note_path(note)
     end
 
-    assert_redirected_to root_path(tab: 'notes')
+    assert_redirected_to notes_path
     assert note.reload.deleted
   end
 
@@ -189,90 +189,92 @@ class NotesControllerTest < ActionDispatch::IntegrationTest
     assert_routing({ path: '/notes/1', method: :delete }, { controller: 'notes', action: 'destroy', id: '1' })
   end
 
-  # gadget action tests
-
-  def test_gadget_returns_note_gadget_html
+  def test_index_success
+    @user.preference.update!(use_note: true)
     sign_in @user
-    get gadget_notes_path
+    get notes_path
     assert_response :success
-    assert_not_includes response.body, '<html'
-    assert_select '.note-gadget', minimum: 1
-  end
-
-  def test_gadget_assigns_new_note
-    sign_in @user
-    get gadget_notes_path
-    assert_response :success
-    # Fragment contains the new-note form (action=notes_path POST) confirming @note is a new record
+    assert_select '#notes-page .note-gadget', count: 1
     assert_select 'form.note-gadget-form[action=?][method=?]', notes_path, 'post', count: 1
   end
 
-  def test_gadget_assigns_active_notes
+  def test_index_returns_not_found_when_use_note_off
+    @user.preference.update!(use_note: false)
+    sign_in @user
+    get notes_path
+    assert_response :not_found
+  end
+
+  def test_index_unauthenticated_redirects
+    get notes_path
+    assert_redirected_to new_user_session_path
+  end
+
+  def test_index_assigns_active_notes
+    @user.preference.update!(use_note: true)
     Note.where(user_id: @user.id).delete_all
     own_note = @user.notes.create!(body: 'active note for assigns test')
     sign_in @user
-    get gadget_notes_path
+    get notes_path
     assert_response :success
     assert_includes response.body, own_note.body
   end
 
-  def test_gadget_unauthenticated_redirects
-    get gadget_notes_path
-    assert_redirected_to new_user_session_path
-  end
-
-  def test_gadget_empty_notes_state_ja
+  def test_index_empty_notes_state_ja
+    @user.preference.update!(use_note: true)
     Note.where(user_id: @user.id).delete_all
     sign_in @user
     I18n.with_locale(:ja) do
-      get gadget_notes_path
+      get notes_path
     end
     assert_response :success
     assert_select '.note-empty', text: 'メモはまだありません', count: 1
   end
 
-  def test_gadget_empty_notes_state_en
+  def test_index_empty_notes_state_en
+    @user.preference.update!(use_note: true, locale: 'en')
     Note.where(user_id: @user.id).delete_all
-    @user.preference.update!(locale: 'en')
     sign_in @user
     I18n.with_locale(:en) do
-      get gadget_notes_path
+      get notes_path
     end
     assert_response :success
     assert_select '.note-empty', text: 'No notes yet', count: 1
   end
 
-  def test_gadget_locale_ja_labels
+  def test_index_locale_ja_labels
+    @user.preference.update!(use_note: true)
     sign_in @user
     I18n.with_locale(:ja) do
-      get gadget_notes_path
+      get notes_path
     end
     assert_response :success
     assert_select 'form.note-gadget-form textarea[aria-label=?]', 'メモ'
   end
 
-  def test_gadget_locale_en_labels
-    @user.preference.update!(locale: 'en')
+  def test_index_locale_en_labels
+    @user.preference.update!(use_note: true, locale: 'en')
     sign_in @user
     I18n.with_locale(:en) do
-      get gadget_notes_path
+      get notes_path
     end
     assert_response :success
     assert_select 'form.note-gadget-form textarea[aria-label=?]', 'Note'
   end
 
-  def test_gadget_does_not_include_other_users_notes
+  def test_index_does_not_include_other_users_notes
+    @user.preference.update!(use_note: true)
     Note.where(user_id: @user.id).delete_all
-    own_note = @user.notes.create!(body: '自分のメモ gadget-test')
-    other_note = @other_user.notes.create!(body: '他ユーザーの秘密メモ gadget-test')
+    own_note = @user.notes.create!(body: '自分のメモ index-test')
+    other_note = @other_user.notes.create!(body: '他ユーザーの秘密メモ index-test')
     sign_in @user
-    get gadget_notes_path
+    get notes_path
     assert_response :success
     assert_includes response.body, own_note.body
     assert_not_includes response.body, other_note.body
   end
 
-  def test_routing_get_gadget_notes_to_gadget
-    assert_routing({ path: '/notes/gadget', method: :get }, { controller: 'notes', action: 'gadget' })
+  def test_routing_get_notes_to_index
+    assert_routing({ path: '/notes', method: :get }, { controller: 'notes', action: 'index' })
   end
 end

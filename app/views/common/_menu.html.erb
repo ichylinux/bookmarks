@@ -41,16 +41,13 @@
                    aria_current_page: simple_nav_welcome_home_current? %>
       </li>
       <% if current_user.preference&.use_note? %>
-        <% notes_open = simple_nav_welcome_notes_open? %>
-        <% note_label = notes_open ? t('nav.note_return') : t('nav.note') %>
-        <% note_url = notes_open ? root_path : root_path(tab: 'notes') %>
         <li>
           <%= render 'common/navigation_link',
-                     url: note_url,
-                     label: note_label,
+                     url: notes_path,
+                     label: t('nav.note'),
                      icon: :note,
-                     highlight: notes_open,
-                     aria_current_page: false %>
+                     highlight: simple_nav_notes_current?,
+                     aria_current_page: simple_nav_notes_current? %>
         </li>
       <% end %>
       <% if current_user.preference&.use_feed_article_histories? %>

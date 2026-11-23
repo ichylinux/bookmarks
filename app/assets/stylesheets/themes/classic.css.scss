@@ -20,8 +20,8 @@
   );
 }
 
-// Note gadget (welcome /?tab=notes) — classic theme spacing and borders
-.classic #notes-tab-panel {
+// Note gadget (/notes) — classic theme spacing and borders
+.classic #notes-page {
   padding: 0 12px 28px;
   max-width: 1200px;
   margin: 0 auto;
@@ -53,20 +53,20 @@
   );
 }
 
-.classic #notes-tab-panel .note-gadget {
+.classic #notes-page .note-gadget {
   margin: 0;
   padding-top: calc(1.05rem * 1.3 + 10px);
   box-sizing: border-box;
 }
 
-.classic #notes-tab-panel .note-gadget-form {
+.classic #notes-page .note-gadget-form {
   margin: 0;
   display: grid;
   row-gap: 8px;
 }
 
-.classic #notes-tab-panel .note-gadget-form textarea,
-.classic #notes-tab-panel .note-item-edit-form textarea {
+.classic #notes-page .note-gadget-form textarea,
+.classic #notes-page .note-item-edit-form textarea {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -79,14 +79,14 @@
 }
 
 
-.classic #notes-tab-panel .note-empty {
+.classic #notes-page .note-empty {
   margin: 0;
   font-size: 0.875rem;
   color: #555;
 }
 
-.classic #notes-tab-panel .note-item,
-.classic #notes-tab-panel .note-gadget-composer {
+.classic #notes-page .note-item,
+.classic #notes-page .note-gadget-composer {
   margin: 0 0 10px 0;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -94,13 +94,13 @@
   background: #fff;
 }
 
-.classic #notes-tab-panel .note-body {
+.classic #notes-page .note-body {
   font-size: 0.875rem;
   line-height: 1.5;
   white-space: pre-wrap;
 }
 
-.classic #notes-tab-panel .note-timestamp {
+.classic #notes-page .note-timestamp {
   margin-top: 6px;
   font-size: 0.8125rem;
   color: #666;

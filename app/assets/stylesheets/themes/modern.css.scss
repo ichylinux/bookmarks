@@ -303,8 +303,8 @@
   color: #ffffff;
 }
 
-// Note gadget (welcome /?tab=notes) — spacing and list cards aligned with STYLE tokens
-.modern #notes-tab-panel {
+// Note gadget (/notes) — spacing and list cards aligned with STYLE tokens
+.modern #notes-page {
   padding: 0 16px 32px;
   max-width: 1200px;
   margin: 0 auto;
@@ -336,20 +336,20 @@
   );
 }
 
-.modern #notes-tab-panel .note-gadget {
+.modern #notes-page .note-gadget {
   margin: 0;
   padding-top: calc(1.125rem * 1.3 + 12px);
   box-sizing: border-box;
 }
 
-.modern #notes-tab-panel .note-gadget-form {
+.modern #notes-page .note-gadget-form {
   margin: 0;
   display: grid;
   row-gap: 10px;
 }
 
-.modern #notes-tab-panel .note-gadget-form textarea,
-.modern #notes-tab-panel .note-item-edit-form textarea {
+.modern #notes-page .note-gadget-form textarea,
+.modern #notes-page .note-item-edit-form textarea {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -358,19 +358,19 @@
 }
 
 
-.modern #notes-tab-panel .note-empty {
+.modern #notes-page .note-empty {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
   color: #6b7280;
 }
 
-.modern #notes-tab-panel .note-list {
+.modern #notes-page .note-list {
   list-style: none;
 }
 
-.modern #notes-tab-panel .note-item,
-.modern #notes-tab-panel .note-gadget-composer {
+.modern #notes-page .note-item,
+.modern #notes-page .note-gadget-composer {
   margin: 0 0 12px 0;
   padding: 12px 14px;
   border: 1px solid var(--modern-border);
@@ -379,26 +379,26 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.modern #notes-tab-panel .note-item:last-child {
+.modern #notes-page .note-item:last-child {
   margin-bottom: 0;
 }
 
 
-.modern #notes-tab-panel .note-body {
+.modern #notes-page .note-body {
   font-size: 0.9375rem;
   line-height: 1.5;
   white-space: pre-wrap;
   color: var(--modern-text);
 }
 
-.modern #notes-tab-panel .note-timestamp {
+.modern #notes-page .note-timestamp {
   margin-top: 8px;
   font-size: 0.8125rem;
   line-height: 1.4;
   color: #6b7280;
 }
 
-.modern #notes-tab-panel .note-item .note-edited-badge {
+.modern #notes-page .note-item .note-edited-badge {
   background: rgba(59, 130, 246, 0.16);
   color: #2563eb;
   border: 1px solid rgba(59, 130, 246, 0.28);

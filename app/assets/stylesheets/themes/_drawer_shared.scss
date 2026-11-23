@@ -9,10 +9,6 @@
   $open-icon-color: null,
   $drawer-link-hover-underline: false
 ) {
-  .welcome-tab-panel--hidden {
-    display: none;
-  }
-
   #header .head-box .head-user-email {
     margin-left: auto;
     color: $email-color;

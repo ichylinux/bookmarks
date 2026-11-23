@@ -61,7 +61,6 @@ $(function () {
     const $tabs = $btn.closest('.portal-column-tabs');
     const $portal = $tabs.next('.portal');
     if (!$portal.length) return;
-    if (typeof window.notePane !== 'undefined') window.notePane.hide();
     activateColumn($portal, $tabs, index);
   });
 
@@ -86,7 +85,6 @@ $(function () {
     const direction = totalDx < 0 ? 1 : -1;
     const newIndex = ((currentIndex + direction) % colCount + colCount) % colCount;
 
-    if (typeof window.notePane !== 'undefined') window.notePane.hide();
     activateColumn($portal, $tabs, newIndex);
   };
 

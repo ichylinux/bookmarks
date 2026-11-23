@@ -116,108 +116,27 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     assert_includes response.body, todo.title
   end
 
-  def test_シンプルテーマでuse_noteがfalseのときノートパネルが表示されない
-    user.preference.update!(theme: 'simple', use_note: false)
-    sign_in user
-    get root_path
-    assert_response :success
-    assert_select '#simple-home-panel', count: 1
-    assert_select '#notes-tab-panel', count: 0
-  end
-
-  def test_シンプルテーマでウェルカムにホームとノートのパネルが表示される
-    user.preference.update!(theme: 'simple', use_note: true)
-    sign_in user
-    get root_path
-    assert_response :success
-    assert_select '#simple-home-panel', count: 1
-    assert_select '#notes-tab-panel', count: 1
-  end
-
-  def test_シンプルテーマでtab_notesクエリのときノートパネルが非表示クラスでホームが隠される
-    user.preference.update!(theme: 'simple', use_note: true)
-    sign_in user
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select '#simple-home-panel.simple-tab-panel--hidden', count: 1
-    assert_select '#notes-tab-panel.simple-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
-  end
-
-  def test_シンプルテーマで不正なtabクエリはホームを表示する
-    user.preference.update!(theme: 'simple', use_note: true)
-    sign_in user
-    get root_path(tab: 'evil')
-    assert_response :success
-    assert_select '#simple-home-panel.simple-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel.simple-tab-panel--hidden', count: 1
-  end
-
-
-  def test_モダンテーマでuse_noteがfalseのときノートパネルが表示されない
-    user.preference.update!(theme: 'modern', use_note: false)
-    sign_in user
-    get root_path
-    assert_response :success
-    assert_select '#welcome-home-panel', count: 1
-    assert_select '#notes-tab-panel', count: 0
-  end
-
-  def test_モダンテーマでルートではノートパネルが隠れtab_notesで表示される
+  def test_ウェルカムにノートパネルは含まれない
     user.preference.update!(theme: 'modern', use_note: true)
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+    assert_select '#notes-page', count: 0
+  end
 
+  def test_tab_notesクエリはnotesページへリダイレクトする
+    user.preference.update!(use_note: true)
+    sign_in user
+    get root_path(tab: 'notes')
+    assert_redirected_to notes_path
+  end
+
+  def test_use_noteオフのときtab_notesクエリはリダイレクトしない
+    user.preference.update!(use_note: false)
+    sign_in user
     get root_path(tab: 'notes')
     assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
-  end
-
-  def test_モダンテーマで不正なtabクエリはホームを表示する
-    user.preference.update!(theme: 'modern', use_note: true)
-    sign_in user
-    get root_path(tab: 'evil')
-    assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
-  end
-
-  def test_クラシックテーマでuse_noteがfalseのときノートパネルが表示されない
-    user.preference.update!(theme: 'classic', use_note: false)
-    sign_in user
-    get root_path
-    assert_response :success
-    assert_select '#welcome-home-panel', count: 1
-    assert_select '#notes-tab-panel', count: 0
-  end
-
-  def test_クラシックテーマでルートではノートパネルが隠れtab_notesで表示される
-    user.preference.update!(theme: 'classic', use_note: true)
-    sign_in user
-    get root_path
-    assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
-
-    get root_path(tab: 'notes')
-    assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 1
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
-  end
-
-  def test_クラシックテーマで不正なtabクエリはホームを表示する
-    user.preference.update!(theme: 'classic', use_note: true)
-    sign_in user
-    get root_path(tab: 'evil')
-    assert_response :success
-    assert_select '#welcome-home-panel.welcome-tab-panel--hidden', count: 0
-    assert_select '#notes-tab-panel.welcome-tab-panel--hidden', count: 1
+    assert_equal root_path, path
   end
 
   def test_show_iconsがfalseのときbodyにno_iconsクラスが付く
@@ -234,17 +153,6 @@ class WelcomeController::DashboardTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select 'body.no-icons', count: 0
-  end
-
-  def test_indexはnoteとnotesを割り当てない
-    user.preference.update!(use_note: true)
-    sign_in user
-    get root_path
-    assert_response :success
-    # @note and @notes are no longer assigned by WelcomeController#index.
-    # The notes panel should contain only the loading placeholder, not a note form.
-    assert_select '#notes-tab-panel form.note-gadget-form', count: 0
-    assert_select '#notes-tab-panel .note-gadget-loading', count: 1
   end
 
 end

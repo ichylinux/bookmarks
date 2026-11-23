@@ -183,12 +183,5 @@ $(function() {
     }
   }
 
-  // Initialize on DOM ready
   initNoteGadget();
-
-  // Re-initialize after AJAX injection of note gadget
-  $(document).on('noteGadgetLoaded', function() {
-    initNoteGadget();
-  });
-
 });

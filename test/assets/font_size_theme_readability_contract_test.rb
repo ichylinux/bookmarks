@@ -17,7 +17,7 @@ class FontSizeThemeReadabilityContractTest < ActiveSupport::TestCase
   end
 
   test 'simple note surfaces use rem values for readability scaling' do
-    assert_match(/#notes-tab-panel[\s\S]*font-size:\s*0\.875rem/, @simple)
+    assert_match(/#notes-page[\s\S]*font-size:\s*0\.875rem/, @simple)
     assert_match(/\.note-body[\s\S]*font-size:\s*0\.875rem/, @simple)
     assert_match(/\.note-timestamp[\s\S]*font-size:\s*0\.8125rem/, @simple)
   end

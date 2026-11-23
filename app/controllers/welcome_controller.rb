@@ -4,6 +4,11 @@ class WelcomeController < ApplicationController
   def index
     return unless user_signed_in?
 
+    if params[:tab].to_s == 'notes' && current_user.preference.use_note?
+      redirect_to notes_path
+      return
+    end
+
     @portal = current_user.portals.first
   end
 

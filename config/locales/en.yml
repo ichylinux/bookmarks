@@ -285,7 +285,6 @@ en:
   nav:
     home: Home
     note: Note
-    note_return: Return to bookmarks
     preferences: Preferences
     bookmarks: Bookmarks
     todos: Tasks
@@ -318,7 +317,6 @@ en:
 
   notes:
     gadget:
-      loading: Loading notes...
       body_label: Note
       submit: Save Note
       submit_shortcut: Ctrl+S

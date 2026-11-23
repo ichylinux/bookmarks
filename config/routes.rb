@@ -56,11 +56,7 @@ Rails.application.routes.draw do
 
   resources :visited_links, only: [:create]
 
-  resources :notes, only: [:create, :update, :destroy] do
-    collection do
-      get :gadget
-    end
-  end
+  resources :notes, only: [:index, :create, :update, :destroy]
 
   resources :preferences, only: %i[index update]
   delete 'oauth_identities/:provider', to: 'oauth_identities#destroy', as: :oauth_identity

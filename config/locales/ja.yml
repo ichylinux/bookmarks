@@ -285,7 +285,6 @@ ja:
   nav:
     home: ホーム
     note: ノート
-    note_return: ブックマーク画面に戻る
     preferences: 設定
     bookmarks: ブックマーク
     todos: タスク
@@ -318,7 +317,6 @@ ja:
 
   notes:
     gadget:
-      loading: ノートを読み込み中・・・
       body_label: メモ
       submit: メモを保存
       submit_shortcut: Ctrl+S

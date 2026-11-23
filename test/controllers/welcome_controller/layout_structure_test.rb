@@ -103,10 +103,10 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select 'ul.navigation a.navigation-link[href=?]', root_path(tab: 'notes'), text: 'ノート'
+    assert_select 'ul.navigation a.navigation-link[href=?]', notes_path, text: 'ノート'
     assert_select 'ul.navigation a.navigation-link[href=?]', feed_article_histories_path, text: '履歴'
     assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?][aria-current=?]', root_path, 'ホーム', 'ホーム', 'page'
-    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'ノート', 'ノート'
+    assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', notes_path, 'ノート', 'ノート'
     assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴'
     assert_select 'ul.navigation a.navigation-link[href=?] .navigation-link__icon svg', root_path, count: 1
   end
@@ -120,14 +120,12 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select 'ul.navigation a.navigation-link[href=?][aria-label=?][title=?]', feed_article_histories_path, 'Reading history', 'Reading history'
   end
 
-  def test_シンプルテーマでノート表示中はナビのノートリンクがホームへ向きラベルが戻る表記になる
+  def test_シンプルテーマでノートページ表示中はノートナビがアクティブかつaria_currentになる
     user.preference.update!(theme: 'simple', use_note: true, locale: 'ja')
     sign_in user
-    get root_path(tab: 'notes')
+    get notes_path
     assert_response :success
-    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-label=?][title=?]', root_path, 'ブックマーク画面に戻る', 'ブックマーク画面に戻る'
-    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-current]', root_path, count: 0
-    assert_select 'ul.navigation a.navigation-link[href=?][aria-current]', root_path(tab: 'notes'), count: 0
+    assert_select 'ul.navigation a.navigation-link.navigation-link--active[href=?][aria-current=?]', notes_path, 'page'
   end
 
   def test_シンプルテーマで閲覧履歴ページ表示中は履歴ナビがアクティブかつaria_currentになる
@@ -176,20 +174,20 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     assert_select '.landing-page', count: 1
   end
 
-  def test_モダンテーマではuse_noteオフのときノートパネルが出力されない
+  def test_モダンテーマのウェルカムにノートパネルはない
     user.preference.update!(theme: 'modern', use_note: false)
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#notes-tab-panel', count: 0
+    assert_select '#notes-page', count: 0
   end
 
-  def test_クラシックテーマではuse_noteオフのときノートパネルが出力されない
+  def test_クラシックテーマのウェルカムにノートパネルはない
     user.preference.update!(theme: 'classic', use_note: false)
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#notes-tab-panel', count: 0
+    assert_select '#notes-page', count: 0
   end
 
   def test_モダンテーマでuse_noteオンのときドロワーにノートリンクはない
@@ -198,7 +196,7 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select 'html[lang=?]', 'ja'
-    assert_select '.drawer a[href=?]', root_path(tab: 'notes'), count: 0
+    assert_select '.drawer a[href=?]', notes_path, count: 0
   end
 
   def test_モダンテーマでuse_noteオンのときヘッダーにノートアイコンリンクがある
@@ -207,19 +205,19 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select '#header .head-box.head-box--with-note-action', count: 1
-    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'ノート', 'ノート', count: 1
+    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', notes_path, 'ノート', 'ノート', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-note-btn svg', count: 1
     assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, '履歴', '履歴', count: 1
     assert_select '#header a.head-history-btn.head-history-btn--active', count: 0
   end
 
-  def test_モダンテーマでノート表示中はヘッダーアイコンがホームへ向きアクティブ表示になる
+  def test_モダンテーマでノートページ表示中はヘッダーノートアイコンがアクティブになる
     user.preference.update!(theme: 'modern', use_note: true, locale: 'ja')
     sign_in user
-    get root_path(tab: 'notes')
+    get notes_path
     assert_response :success
-    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', root_path, 'ブックマーク画面に戻る', 'ブックマーク画面に戻る', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', notes_path, 'ノート', 'ノート', count: 1
   end
 
   def test_モダンテーマでuse_noteオフのときヘッダーにノートアイコンがない
@@ -237,17 +235,17 @@ class WelcomeController::LayoutStructureTest < ActionDispatch::IntegrationTest
     sign_in user
     get root_path
     assert_response :success
-    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', root_path(tab: 'notes'), 'Note', 'Note', count: 1
+    assert_select '#header a.head-note-btn[href=?][aria-label=?][title=?]', notes_path, 'Note', 'Note', count: 1
     assert_select '#header a.head-note-btn.head-note-btn--active', count: 0
     assert_select '#header a.head-history-btn[href=?][aria-label=?][title=?]', feed_article_histories_path, 'Reading history', 'Reading history', count: 1
   end
 
-  def test_クラシックテーマでノート表示中はヘッダーアイコンがホームへ向く
+  def test_クラシックテーマでノートページ表示中はヘッダーノートアイコンがアクティブになる
     user.preference.update!(theme: 'classic', use_note: true, locale: 'en')
     sign_in user
-    get root_path(tab: 'notes')
+    get notes_path
     assert_response :success
-    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', root_path, 'Return to bookmarks', 'Return to bookmarks', count: 1
+    assert_select '#header a.head-note-btn.head-note-btn--active[href=?][aria-label=?][title=?]', notes_path, 'Note', 'Note', count: 1
   end
 
   def test_シンプルテーマではヘッダーにノートアイコンがない
