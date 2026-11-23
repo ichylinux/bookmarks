@@ -36,6 +36,7 @@ group :itamae do
 end
 
 group :development, :test do
+  gem 'bundler-audit', require: false
   gem 'byebug'
   gem 'cucumber'
   gem 'dotenv-rails'
