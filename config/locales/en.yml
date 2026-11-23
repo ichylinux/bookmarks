@@ -263,6 +263,10 @@ en:
         four: '4 columns'
       portal_column_width_column_label: Column
       portal_column_widths_help: Width ratio for each column on desktop (always totals 100%). Does not affect mobile layout.
+      section_appearance_title: Display & behavior
+      section_gadgets_title: Gadgets
+      section_portal_title: Portal
+      section_security_title: Account & security
       submit: Save
       email_registration_section_title: Email address
       email_registration_link: Register a real email address

@@ -1,110 +1,152 @@
-<%= form_with model: @user, url: preference_path(@user), html: { class: 'preferences-form' } do |f| %>
-  <table class="preferences-table">
+<div class="preferences-page">
+  <%= form_with model: @user, url: preference_path(@user), html: { class: 'preferences-form' } do |f| %>
     <% unless @user.has_valid_email? %>
-      <tr>
-        <th><%= t('preferences.index.email_registration_section_title') %></th>
-        <td><%= link_to t('preferences.index.email_registration_link'), users_email_registration_path %></td>
-      </tr>
+      <section class="preferences-section">
+        <h2 class="preferences-section__heading"><%= t('preferences.index.email_registration_section_title') %></h2>
+        <table class="preferences-table">
+          <tbody>
+            <tr>
+              <th scope="row"><%= t('preferences.index.email_registration_section_title') %></th>
+              <td><%= link_to t('preferences.index.email_registration_link'), users_email_registration_path %></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     <% end %>
 
-    <%= f.fields_for :preference_attributes, @user.preference do |f| %>
-      <tr>
-        <th><%= f.label :theme %></th>
-        <td>
-          <%= f.hidden_field :id %>
-          <%= f.select :theme, { t('.theme_options.modern') => 'modern', t('.theme_options.classic') => 'classic', t('.theme_options.simple') => 'simple' } %>
-        </td>
-      </tr>
-      <tr>
-        <th><%= f.label :locale %></th>
-        <td><%= f.select :locale, Preference::LOCALE_OPTIONS, { include_blank: false, selected: @user.preference.locale } %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :font_size %></th>
-        <td><%= f.select :font_size, Preference::FONT_SIZES.map { |size| [t(".font_size_options.#{size}"), size] }, selected: (@user.preference.font_size.presence || Preference::FONT_SIZE_MEDIUM) %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :open_links_in_new_tab %></th>
-        <td><%= f.check_box :open_links_in_new_tab %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :use_bookmark %></th>
-        <td><%= f.check_box :use_bookmark %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :use_todo %></th>
-        <td><%= f.check_box :use_todo %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :default_priority %></th>
-        <td><%= f.select :default_priority, Todo.priority_options %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :use_note %></th>
-        <td><%= f.check_box :use_note %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :use_calendar %></th>
-        <td><%= f.check_box :use_calendar %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :use_feed_article_histories %></th>
-        <td><%= f.check_box :use_feed_article_histories %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :show_column_nav_buttons %></th>
-        <td><%= f.check_box :show_column_nav_buttons %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :show_icons %></th>
-        <td><%= f.check_box :show_icons %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :portal_column_count %></th>
-        <td><%= f.select :portal_column_count,
-              Preference::PORTAL_COLUMN_COUNTS.map { |n|
-                [t(".portal_column_count_options.#{n == 3 ? 'three' : 'four'}"), n]
-              } %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :portal_column_widths %></th>
-        <td>
-          <%= render 'portal_column_widths',
-                f: f,
-                widths: @user.preference.effective_portal_column_widths %>
-        </td>
-      </tr>
+    <%= f.fields_for :preference_attributes, @user.preference do |pf| %>
+      <section class="preferences-section">
+        <h2 class="preferences-section__heading"><%= t('.section_appearance_title') %></h2>
+        <table class="preferences-table">
+          <tbody>
+            <tr>
+              <th scope="row"><%= pf.label :theme %></th>
+              <td>
+                <%= pf.hidden_field :id %>
+                <%= pf.select :theme, { t('.theme_options.modern') => 'modern', t('.theme_options.classic') => 'classic', t('.theme_options.simple') => 'simple' } %>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :locale %></th>
+              <td><%= pf.select :locale, Preference::LOCALE_OPTIONS, { include_blank: false, selected: @user.preference.locale } %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :font_size %></th>
+              <td><%= pf.select :font_size, Preference::FONT_SIZES.map { |size| [t(".font_size_options.#{size}"), size] }, selected: (@user.preference.font_size.presence || Preference::FONT_SIZE_MEDIUM) %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :open_links_in_new_tab %></th>
+              <td><%= pf.check_box :open_links_in_new_tab %></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="preferences-section">
+        <h2 class="preferences-section__heading"><%= t('.section_gadgets_title') %></h2>
+        <table class="preferences-table">
+          <tbody>
+            <tr>
+              <th scope="row"><%= pf.label :use_bookmark %></th>
+              <td><%= pf.check_box :use_bookmark %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :use_todo %></th>
+              <td><%= pf.check_box :use_todo %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :default_priority %></th>
+              <td><%= pf.select :default_priority, Todo.priority_options %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :use_note %></th>
+              <td><%= pf.check_box :use_note %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :use_calendar %></th>
+              <td><%= pf.check_box :use_calendar %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :use_feed_article_histories %></th>
+              <td><%= pf.check_box :use_feed_article_histories %></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="preferences-section">
+        <h2 class="preferences-section__heading"><%= t('.section_portal_title') %></h2>
+        <table class="preferences-table">
+          <tbody>
+            <tr>
+              <th scope="row"><%= pf.label :show_column_nav_buttons %></th>
+              <td><%= pf.check_box :show_column_nav_buttons %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :show_icons %></th>
+              <td><%= pf.check_box :show_icons %></td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :portal_column_count %></th>
+              <td>
+                <%= pf.select :portal_column_count,
+                      Preference::PORTAL_COLUMN_COUNTS.map { |n|
+                        [t(".portal_column_count_options.#{n == 3 ? 'three' : 'four'}"), n]
+                      } %>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row"><%= pf.label :portal_column_widths %></th>
+              <td>
+                <%= render 'portal_column_widths',
+                      f: pf,
+                      widths: @user.preference.effective_portal_column_widths %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     <% end %>
-    <tr>
-      <th><%= f.label :mastodon_handle %></th>
-      <td>
-        <%= f.text_field :mastodon_handle, placeholder: t('preferences.mastodon_handle.placeholder') %>
-        <p class="form-help"><%= t('preferences.mastodon_handle.help') %></p>
-      </td>
-    </tr>
-    <tr>
-      <th><%= t('two_factor.section_title') %></th>
-      <td>
-        <% if current_user.two_factor_enabled? %>
-          <%= t('two_factor.status_enabled') %>
-        <% else %>
-          <%= t('two_factor.status_disabled') %>
-        <% end %>
-      </td>
-    </tr>
-    <tr>
-      <th></th>
-      <td><%= link_to t('two_factor.setup_link'), users_two_factor_setup_path %></td>
-    </tr>
-  </table>
 
-  <%= f.submit t('.submit') %>
-<% end %>
+    <section class="preferences-section">
+      <h2 class="preferences-section__heading"><%= t('.section_security_title') %></h2>
+      <table class="preferences-table">
+        <tbody>
+          <tr>
+            <th scope="row"><%= f.label :mastodon_handle %></th>
+            <td>
+              <%= f.text_field :mastodon_handle, placeholder: t('preferences.mastodon_handle.placeholder') %>
+              <p class="form-help"><%= t('preferences.mastodon_handle.help') %></p>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row"><%= t('two_factor.section_title') %></th>
+            <td>
+              <% if current_user.two_factor_enabled? %>
+                <%= t('two_factor.status_enabled') %>
+              <% else %>
+                <%= t('two_factor.status_disabled') %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td><%= link_to t('two_factor.setup_link'), users_two_factor_setup_path %></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
-<%= render 'connected_accounts', user: @user, oauth_identities: @user.oauth_identities %>
+    <div class="preferences-form__actions">
+      <%= f.submit t('.submit') %>
+    </div>
+  <% end %>
 
-<section class="preferences-danger-zone">
-  <h2 class="preferences-danger-zone-heading"><%= t('preferences.index.account_deletion_section_title') %></h2>
-  <p><%= t('preferences.index.account_deletion_warning') %></p>
-  <p><%= link_to t('preferences.index.account_deletion_link'), new_account_deletion_path, class: 'preferences-danger-zone-link' %></p>
-</section>
+  <%= render 'connected_accounts', user: @user, oauth_identities: @user.oauth_identities %>
+
+  <section class="preferences-danger-zone">
+    <h2 class="preferences-danger-zone-heading"><%= t('preferences.index.account_deletion_section_title') %></h2>
+    <p><%= t('preferences.index.account_deletion_warning') %></p>
+    <p><%= link_to t('preferences.index.account_deletion_link'), new_account_deletion_path, class: 'preferences-danger-zone-link' %></p>
+  </section>
+</div>

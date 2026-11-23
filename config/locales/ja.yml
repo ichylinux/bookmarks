@@ -263,6 +263,10 @@ ja:
         four: '4列'
       portal_column_width_column_label: 列
       portal_column_widths_help: デスクトップ表示時の列幅比率です。合計は常に100%です。モバイル表示には影響しません。
+      section_appearance_title: 表示と操作
+      section_gadgets_title: ガジェット
+      section_portal_title: ポータル
+      section_security_title: アカウントとセキュリティ
       submit: 保存
       email_registration_section_title: メールアドレス
       email_registration_link: 実メールアドレスを登録する

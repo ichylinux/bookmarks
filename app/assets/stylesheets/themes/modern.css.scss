@@ -207,6 +207,21 @@
   background: var(--modern-surface-alt);
 }
 
+.modern .preferences-section,
+.modern .connected-accounts {
+  background: var(--modern-bg);
+  border-color: var(--modern-border);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.modern .preferences-section__heading,
+.modern .connected-accounts__heading {
+  color: var(--modern-text);
+  border-bottom-color: var(--modern-border);
+}
+
 .modern .preferences-form input[type="submit"] {
   border: none;
   border-radius: 6px;
