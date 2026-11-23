@@ -93,6 +93,32 @@ end
   capture
 end
 
+もし /^フィードガジェットの "([^"]*)" にいいねします。$/ do |title|
+  within first('.gadget[id^="feed_"]') do
+    link = find('a', text: title)
+    @_visited_gadget_link_href = link[:href]
+    link.ancestor('.gadget-entry', match: :first).find('.entry-like-btn').click
+  end
+  assert has_css?('.gadget-entry .entry-like-btn--active', wait: 5)
+  capture
+end
+
+もし /^いいねがサーバーに保存されるまで待ちます。$/ do
+  raise 'run like step first' if @_visited_gadget_link_href.blank?
+
+  stored_url = VisitedLink.normalize_url(@_visited_gadget_link_href)
+  assert wait_until {
+    row = VisitedLink.find_by(user_id: user.id, url: stored_url)
+    row&.liked_at.present?
+  }, "いいね (#{stored_url.inspect}) がサーバーに保存されませんでした"
+  capture
+end
+
+もし /^閲覧履歴の「いいねのみ」を表示します。$/ do
+  click_link 'いいねのみ'
+  capture
+end
+
 もし /^訪問済みリンクがサーバーに保存されるまで待ちます。$/ do
   raise 'run gadget visibility step first' if @_visited_gadget_link_href.blank?
 

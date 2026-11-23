@@ -1,17 +1,35 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 
+<nav class="history-filter-bar" aria-label="<%= t('feed_article_histories.index.filter_aria_label') %>">
+  <%= link_to t('feed_article_histories.index.filter.all'),
+              feed_article_histories_path,
+              class: "history-filter-link#{' history-filter-link--active' unless @filter_liked}" %>
+  <%= link_to t('feed_article_histories.index.filter.liked'),
+              feed_article_histories_path(liked: 1),
+              class: "history-filter-link#{' history-filter-link--active' if @filter_liked}" %>
+</nav>
+
+<% empty_message = @filter_liked ? t('feed_article_histories.index.empty_liked') : t('feed_article_histories.index.empty') %>
+
 <% unless @feed_article_histories.present? %>
-  <div><%= t('feed_article_histories.index.empty') %></div>
+  <div><%= empty_message %></div>
 <% else %>
   <ol>
     <% @feed_article_histories.each do |link| %>
       <% source_label = t("feed_article_histories.index.sources.#{link.source}") %>
-      <li>
+      <% link_title = link.title.presence || link.url %>
+      <li class="history-entry">
+        <%= render 'common/entry_like_button',
+              url: link.url,
+              title: link_title,
+              source: link.source,
+              gadget_id: link.gadget_id,
+              liked_urls: @liked_urls %>
         <span class="history-source-icon" role="img"
               aria-label="<%= source_label %>" title="<%= source_label %>">
           <%= render 'icons/service', variant: link.source.to_sym %>
         </span>
-        <%= link_to link.title.presence || link.url, link.url, **link_opts %>
+        <%= link_to link_title, link.url, **link_opts %>
         <span class="history-meta">
           <% if link.gadget_id.present? %>
             <span class="history-gadget-label"><%= @gadget_titles[link.gadget_id] || t('feed_article_histories.index.gadget_removed') %></span>
@@ -25,4 +43,4 @@
   </ol>
 <% end %>
 
-<%= paginate @feed_article_histories if @feed_article_histories.total_pages > 1 %>
+<%= paginate @feed_article_histories, params: (@filter_liked ? { liked: 1 } : {}) if @feed_article_histories.total_pages > 1 %>

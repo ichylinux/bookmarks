@@ -18,6 +18,16 @@ module ApplicationHelper
     visited_set&.include?(normalized) ? "link--visited" : ""
   end
 
+  def entry_like_button_classes(liked_set, url)
+    normalized = VisitedLink.normalize_url(url)
+    liked_set&.include?(normalized) ? 'entry-like-btn entry-like-btn--active' : 'entry-like-btn'
+  end
+
+  def entry_like_aria_pressed(liked_set, url)
+    normalized = VisitedLink.normalize_url(url)
+    liked_set&.include?(normalized) ? 'true' : 'false'
+  end
+
   # Sign-in / sign-up: brand panel already shows logo + name; hide site header on narrow viewports.
   def auth_flow_page?
     !user_signed_in? && devise_controller? && %w[sessions registrations].include?(controller_name)

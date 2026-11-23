@@ -54,7 +54,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :visited_links, only: [:create]
+  resources :visited_links, only: [:create] do
+    collection do
+      post :toggle_like
+    end
+  end
 
   resources :notes, only: [:index, :create, :update, :destroy]
 

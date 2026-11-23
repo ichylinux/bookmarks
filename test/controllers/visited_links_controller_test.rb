@@ -178,6 +178,49 @@ class VisitedLinksControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'mastodon', link.source
   end
 
+  def test_toggle_like_creates_row_and_sets_header
+    sign_in @user
+
+    assert_difference('VisitedLink.count', 1) do
+      post toggle_like_visited_links_path, params: {
+        url: 'https://example.com/like-me',
+        title: 'Like Me',
+        source: 'feed',
+        gadget_id: 'feed_1'
+      }
+    end
+
+    assert_response :no_content
+    assert_equal '1', response.headers['X-Entry-Liked']
+    assert VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/like-me').liked?
+  end
+
+  def test_toggle_like_second_request_unlikes
+    sign_in @user
+    post toggle_like_visited_links_path, params: {
+      url: 'https://example.com/toggle',
+      title: 'Toggle',
+      source: 'x'
+    }
+    assert_equal '1', response.headers['X-Entry-Liked']
+
+    post toggle_like_visited_links_path, params: {
+      url: 'https://example.com/toggle',
+      title: 'Toggle',
+      source: 'x'
+    }
+
+    assert_response :no_content
+    assert_equal '0', response.headers['X-Entry-Liked']
+    assert_not VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/toggle').liked?
+  end
+
+  def test_toggle_like_rejects_invalid_source
+    sign_in @user
+    post toggle_like_visited_links_path, params: { url: 'https://example.com/x', source: 'bookmark' }
+    assert_response :unprocessable_entity
+  end
+
   def test_cucumber_hooks_include_visited_link_reset
     hooks_path = Rails.root.join('features/support/hooks.rb')
     assert File.read(hooks_path).include?('VisitedLink.delete_all'),

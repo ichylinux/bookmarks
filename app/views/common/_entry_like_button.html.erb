@@ -1,0 +1,10 @@
+<button type="button"
+        class="<%= entry_like_button_classes(liked_urls, url) %>"
+        data-url="<%= url %>"
+        data-title="<%= title %>"
+        data-source="<%= source %>"
+        data-gadget-id="<%= gadget_id %>"
+        aria-label="<%= t('entry_like.toggle') %>"
+        aria-pressed="<%= entry_like_aria_pressed(liked_urls, url) %>">
+  <%= render 'icons/like' %>
+</button>

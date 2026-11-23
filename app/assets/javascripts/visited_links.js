@@ -1,6 +1,7 @@
 (function () {
   const STORAGE_KEY = 'bookmarksPendingVisitedLinks';
   const POST_URL = '/visited_links';
+  const TOGGLE_LIKE_URL = '/visited_links/toggle_like';
   const SESSION_META_SELECTOR = 'meta[name="bookmarks-session-active"]';
 
   function sessionActiveOnPage() {
@@ -96,6 +97,33 @@
       postVisitedLink(payload);
     });
   }
+
+  function postToggleLike(payload) {
+    return $.ajax({
+      url: TOGGLE_LIKE_URL,
+      method: 'POST',
+      data: payload
+    });
+  }
+
+  $(document).on('click.entryLike', '.entry-like-btn', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const $btn = $(this);
+    const payload = {
+      url: $btn.data('url'),
+      title: $btn.data('title'),
+      source: $btn.data('source'),
+      gadget_id: $btn.data('gadget-id')
+    };
+    const wasLiked = $btn.hasClass('entry-like-btn--active');
+    $btn.toggleClass('entry-like-btn--active', !wasLiked);
+    $btn.attr('aria-pressed', (!wasLiked).toString());
+    postToggleLike(payload).fail(function () {
+      $btn.toggleClass('entry-like-btn--active', wasLiked);
+      $btn.attr('aria-pressed', wasLiked.toString());
+    });
+  });
 
   $(document).on('click.visitedLinks', '.gadget:not(#bookmark_gadget):not(#todo) ol li a[href]', function () {
     const url = this.href.replace(/#.*$/, '');

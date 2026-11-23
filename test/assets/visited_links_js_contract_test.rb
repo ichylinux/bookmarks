@@ -61,8 +61,16 @@ class VisitedLinksJsContractTest < ActiveSupport::TestCase
     assert_includes @source, "this.href.replace(/#.*$/, '')"
   end
 
-  test 'does not prevent default — link navigates normally' do
-    refute_includes @source, 'preventDefault'
+  test 'entry like handler posts toggle and uses stopPropagation' do
+    like_handler = @source.split("click.entryLike'")[1] || ''
+    assert_includes @source, 'TOGGLE_LIKE_URL'
+    assert_includes like_handler, 'stopPropagation'
+    assert_includes like_handler, "entry-like-btn--active"
+  end
+
+  test 'does not prevent default on gadget link navigation' do
+    click_handler = @source.split("click.visitedLinks'")[1]&.split('});')&.first || ''
+    refute_includes click_handler, 'preventDefault'
   end
 
   test 'queues on ajax failure and clears session meta' do

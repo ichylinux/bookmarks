@@ -72,8 +72,8 @@ class MastodonAccountsController < ApplicationController
   end
 
   def assign_visited_urls
-    entry_urls = @mastodon_items.map { |item| VisitedLink.normalize_url(item[:url]) }.reject(&:blank?)
-    @visited_urls = VisitedLink.where(user_id: current_user.id, url: entry_urls).pluck(:url).to_set
+    entry_urls = @mastodon_items.map { |item| item[:url] }
+    assign_entry_link_states(entry_urls)
   end
 
   def mastodon_account_params

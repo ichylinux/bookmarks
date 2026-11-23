@@ -331,4 +331,44 @@ class VisitedLinkTest < ActiveSupport::TestCase
     assert_instance_of Set, result
     assert result.empty?
   end
+
+  # toggle_like!
+
+  def test_toggle_like_creates_liked_row_without_prior_visit
+    assert_difference -> { VisitedLink.count }, 1 do
+      liked = VisitedLink.toggle_like!(@user, 'https://example.com/new', title: 'Headline', source: 'feed')
+      assert_equal true, liked
+    end
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/new')
+    assert link.liked?
+    assert_equal 'feed', link.source
+    assert_equal 'Headline', link.title
+  end
+
+  def test_toggle_like_unlikes_existing
+    VisitedLink.toggle_like!(@user, 'https://example.com/liked', title: 'H', source: 'feed')
+    liked = VisitedLink.toggle_like!(@user, 'https://example.com/liked', title: 'H', source: 'feed')
+    assert_equal false, liked
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/liked')
+    assert_not link.liked?
+  end
+
+  def test_record_preserves_liked_at_on_revisit
+    VisitedLink.toggle_like!(@user, 'https://example.com/keep-like', title: 'T', source: 'feed')
+    first_liked = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/keep-like').liked_at
+    VisitedLink.record!(@user, 'https://example.com/keep-like', title: 'T2', source: 'feed')
+    link = VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/keep-like')
+    assert_equal first_liked, link.liked_at
+    assert_equal 'T2', link.title
+  end
+
+  def test_link_state_for_partitions_visited_and_liked
+    VisitedLink.record!(@user, 'https://example.com/visited-only')
+    VisitedLink.toggle_like!(@user, 'https://example.com/liked', title: 'L', source: 'feed')
+    states = VisitedLink.link_state_for(@user, ['https://example.com/visited-only', 'https://example.com/liked', 'https://example.com/unknown'])
+    assert_includes states[:visited], 'https://example.com/visited-only'
+    assert_includes states[:visited], 'https://example.com/liked'
+    assert_includes states[:liked], 'https://example.com/liked'
+    assert_not_includes states[:liked], 'https://example.com/visited-only'
+  end
 end

@@ -1,0 +1,9 @@
+<li class="gadget-entry">
+  <%= render 'common/entry_like_button',
+        url: url,
+        title: title,
+        source: source,
+        gadget_id: gadget_id,
+        liked_urls: liked_urls %>
+  <%= link_to title, url, **link_opts, class: visited_link_class(visited_urls, url) %>
+</li>

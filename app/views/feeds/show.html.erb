@@ -15,7 +15,14 @@
   <% end %>
   <ol>
     <% @feed.entries.each do |e| %>
-      <li><%= link_to e.title, e.url, **link_opts, class: visited_link_class(@visited_urls, e.url) %></li>
+      <%= render 'common/history_gadget_entry',
+            url: e.url,
+            title: e.title,
+            source: 'feed',
+            gadget_id: @feed.gadget_id,
+            link_opts: link_opts,
+            visited_urls: @visited_urls,
+            liked_urls: @liked_urls %>
     <% end %>
   </ol>
 </div>

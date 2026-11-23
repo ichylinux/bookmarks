@@ -556,9 +556,17 @@ en:
       previous_month: Previous month
       next_month: Next month
 
+  entry_like:
+    toggle: Like
+
   feed_article_histories:
     index:
       empty: No reading history yet
+      empty_liked: No liked articles yet
+      filter_aria_label: Reading history filters
+      filter:
+        all: All
+        liked: Liked only
       gadget_removed: (removed)
       sources:
         feed: Feed

@@ -556,9 +556,17 @@ ja:
       previous_month: 前の月
       next_month: 次の月
 
+  entry_like:
+    toggle: いいね
+
   feed_article_histories:
     index:
       empty: まだ閲覧履歴はありません
+      empty_liked: いいねした記事はまだありません
+      filter_aria_label: 閲覧履歴の絞り込み
+      filter:
+        all: すべて
+        liked: いいねのみ
       gadget_removed: （削除済み）
       sources:
         feed: フィード

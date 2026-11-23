@@ -245,6 +245,46 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_select 'nav.pagination', count: 1
   end
 
+  def test_index_shows_like_filter_links
+    sign_in @user
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select '.history-filter-link', text: I18n.t('feed_article_histories.index.filter.all')
+    assert_select '.history-filter-link', text: I18n.t('feed_article_histories.index.filter.liked')
+  end
+
+  def test_index_liked_filter_excludes_unliked_rows
+    sign_in @user
+    VisitedLink.record!(@user, 'https://example.com/liked', title: 'Liked Article', source: 'feed')
+    VisitedLink.find_by!(user_id: @user.id, url: 'https://example.com/liked').update!(liked_at: Time.current)
+    VisitedLink.record!(@user, 'https://example.com/plain', title: 'Plain Article', source: 'feed')
+
+    get feed_article_histories_path(liked: 1)
+
+    assert_response :success
+    assert_includes response.body, 'Liked Article'
+    assert_not_includes response.body, 'Plain Article'
+  end
+
+  def test_index_liked_filter_empty_message
+    sign_in @user
+    get feed_article_histories_path(liked: 1)
+
+    assert_response :success
+    assert_includes response.body, I18n.t('feed_article_histories.index.empty_liked')
+  end
+
+  def test_index_shows_entry_like_button
+    sign_in @user
+    VisitedLink.record!(@user, 'https://example.com/article', title: 'Article', source: 'feed')
+
+    get feed_article_histories_path
+
+    assert_response :success
+    assert_select 'ol li.history-entry .entry-like-btn', count: 1
+  end
+
   def test_index_hides_pagination_when_one_page
     sign_in @user
     seed_history(Kaminari.config.default_per_page)

@@ -7,6 +7,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def assign_entry_link_states(urls)
+    states = VisitedLink.link_state_for(current_user, urls)
+    @visited_urls = states[:visited]
+    @liked_urls = states[:liked]
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_in, keys: [:otp_attempt])
   end
