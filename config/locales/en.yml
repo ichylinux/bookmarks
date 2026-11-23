@@ -414,6 +414,42 @@ en:
         performance: Performance
         new: New Feature
       entries:
+        - date: "2026-11-24"
+          headline: Preferences are now grouped into easy-to-scan cards
+          tag: ux
+          description: The long preferences page is split into sections such as display, layout, and connected accounts. Each block uses the same card style as the account list, so settings are easier to find.
+        - date: "2026-11-24"
+          headline: Like articles and posts on your dashboard, and filter reading history to your likes
+          tag: new
+          description: Feed articles, X posts, and Mastodon toots on your dashboard now have a like button. On the reading history page, switch to "Liked only" to revisit what you marked.
+        - date: "2026-11-23"
+          headline: Notes now open on a dedicated page
+          tag: new
+          description: Notes live on their own page in the navigation instead of a dashboard tab. Older bookmarks to the previous notes view redirect there, matching how reading history works.
+        - date: "2026-11-23"
+          headline: Mobile navigation uses compact icons on one row
+          tag: ux
+          description: On the Simple theme, the header on smartphones shows icon-first navigation in a single row, so you can jump to key screens without crowding the bar.
+        - date: "2026-11-21"
+          headline: Visits are saved locally until you sign back in
+          tag: new
+          description: If your session expires after you open links while signed in, those visits are held on your device and recorded in reading history after you sign in again. Nothing is saved after you sign out.
+        - date: "2026-11-14"
+          headline: Pagination numbers are easier to tap
+          tag: ux
+          description: Page number links in lists have a larger tap target, which makes moving between pages more comfortable on a smartphone.
+        - date: "2026-11-07"
+          headline: Fixed gadget header taps failing with slight finger movement on mobile
+          tag: fix
+          description: A small shift while tapping could cancel the tap, so header buttons on gadget columns did not respond. Tap detection now tolerates minor movement.
+        - date: "2026-10-09"
+          headline: Restored drag-to-reorder for feed gadgets
+          tag: fix
+          description: Feed gadgets could no longer be reordered on the dashboard. You can drag them into place again like your other gadgets.
+        - date: "2026-09-22"
+          headline: Reading history shows which gadget you opened the link from
+          tag: ux
+          description: Each row in reading history includes the gadget name before the date, so you can tell which column you used when several feeds share the same site.
         - date: "2026-09-21"
           headline: Revisit articles you opened from feeds, X, and Mastodon
           tag: new
@@ -566,7 +602,7 @@ en:
   feed_article_histories:
     index:
       empty: No reading history yet
-      empty_liked: No liked articles yet
+      empty_liked: No liked articles or posts yet
       filter_aria_label: Reading history filters
       filter:
         all: All
