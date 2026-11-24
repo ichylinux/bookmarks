@@ -1,5 +1,8 @@
 // LAYOUT-03 (v1.7) — mobile portal layout breakpoint: use only this variable below (do not hardcode px).
 $portal-mobile-breakpoint: 768px;
+// Mirrors common.css `ol { padding: 2px }` + `ol li { margin: 0.5em }` so the header
+// service icon lines up with the entry-like column in gadget lists.
+$gadget-list-inset-inline-start: calc(2px + 0.5em);
 
 div.portal {
   margin-top: 2px;
@@ -22,6 +25,7 @@ div.gadgets {
         display: flex;
         align-items: center;
         gap: 6px;
+        padding: 4px 4px 4px $gadget-list-inset-inline-start;
       }
 
       div.title.title--gadget-with-icon .gadget-title-drag-handle {
