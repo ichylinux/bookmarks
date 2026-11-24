@@ -425,6 +425,14 @@ en:
         new: New Feature
       entries:
         - date: "2026-11-24"
+          headline: Change X and Mastodon gadget settings from your dashboard
+          tag: new
+          description: Like feed gadgets, X and Mastodon columns now have a settings button in the header. Open the dialog to adjust how many posts appear without leaving the dashboard.
+        - date: "2026-11-24"
+          headline: Reading history on the Simple theme uses the same card layout as Notes
+          tag: ux
+          description: The reading history page now matches the Notes page card layout, so entries are easier to scan at a glance.
+        - date: "2026-11-24"
           headline: Preferences are now grouped into easy-to-scan cards
           tag: ux
           description: The long preferences page is split into sections such as display, layout, and connected accounts. Each block uses the same card style as the account list, so settings are easier to find.
