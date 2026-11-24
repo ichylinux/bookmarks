@@ -339,7 +339,7 @@ GEM
       net-ssh (>= 2.6.5, < 9.0.0)
     net-smtp (0.5.2)
       net-protocol
-    net-ssh (7.3.9)
+    net-ssh (7.3.10)
       logger
     net-telnet (0.2.0)
     nio4r (2.7.5)
@@ -399,11 +399,11 @@ GEM
     prettyprint (0.2.1)
     prism (2.1.0)
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.8)
-    rack-protection (4.2.1)
+    rack (3.2.9)
+    rack-protection (4.2.2)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
