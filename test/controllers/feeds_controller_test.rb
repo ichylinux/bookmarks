@@ -204,6 +204,26 @@ class FeedsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, n, "Expected 1 visited_links query (N+1 guard), got #{n}"
   end
 
+  def test_show_hides_entry_like_when_use_feed_article_histories_off
+    stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
+    user.preference.update!(use_feed_article_histories: false)
+    sign_in user
+    get feed_path(feed_of(user), format: :html), xhr: true
+
+    assert_response :success
+    assert_select '.gadget-entry .entry-like-btn', count: 0
+  end
+
+  def test_show_renders_entry_like_when_use_feed_article_histories_on
+    stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
+    user.preference.update!(use_feed_article_histories: true)
+    sign_in user
+    get feed_path(feed_of(user), format: :html), xhr: true
+
+    assert_response :success
+    assert_select '.gadget-entry .entry-like-btn', count: 1
+  end
+
   def test_show_renders_settings_link_in_gadget_header
     feed = feed_of(user)
     stub_feed_with_items([{ title: 'Article One', url: 'https://example.com/article-one' }])
