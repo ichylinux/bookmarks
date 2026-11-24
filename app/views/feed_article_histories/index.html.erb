@@ -1,46 +1,50 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
 
-<nav class="history-filter-bar" aria-label="<%= t('feed_article_histories.index.filter_aria_label') %>">
-  <%= link_to t('feed_article_histories.index.filter.all'),
-              feed_article_histories_path,
-              class: "history-filter-link#{' history-filter-link--active' unless @filter_liked}" %>
-  <%= link_to t('feed_article_histories.index.filter.liked'),
-              feed_article_histories_path(liked: 1),
-              class: "history-filter-link#{' history-filter-link--active' if @filter_liked}" %>
-</nav>
+<div id="history-page" class="history-page">
+  <nav class="history-filter-bar" aria-label="<%= t('feed_article_histories.index.filter_aria_label') %>">
+    <%= link_to t('feed_article_histories.index.filter.all'),
+                feed_article_histories_path,
+                class: "history-filter-link#{' history-filter-link--active' unless @filter_liked}",
+                aria: (@filter_liked ? {} : { current: 'page' }) %>
+    <%= link_to t('feed_article_histories.index.filter.liked'),
+                feed_article_histories_path(liked: 1),
+                class: "history-filter-link#{' history-filter-link--active' if @filter_liked}",
+                aria: (@filter_liked ? { current: 'page' } : {}) %>
+  </nav>
 
-<% empty_message = @filter_liked ? t('feed_article_histories.index.empty_liked') : t('feed_article_histories.index.empty') %>
+  <% empty_message = @filter_liked ? t('feed_article_histories.index.empty_liked') : t('feed_article_histories.index.empty') %>
 
-<% unless @feed_article_histories.present? %>
-  <div><%= empty_message %></div>
-<% else %>
-  <ol>
-    <% @feed_article_histories.each do |link| %>
-      <% source_label = t("feed_article_histories.index.sources.#{link.source}") %>
-      <% link_title = link.title.presence || link.url %>
-      <li class="history-entry">
-        <%= render 'common/entry_like_button',
-              url: link.url,
-              title: link_title,
-              source: link.source,
-              gadget_id: link.gadget_id,
-              liked_urls: @liked_urls %>
-        <span class="history-source-icon" role="img"
-              aria-label="<%= source_label %>" title="<%= source_label %>">
-          <%= render 'icons/service', variant: link.source.to_sym %>
-        </span>
-        <%= link_to link_title, link.url, **link_opts %>
-        <span class="history-meta">
-          <% if link.gadget_id.present? %>
-            <span class="history-gadget-label"><%= @gadget_titles[link.gadget_id] || t('feed_article_histories.index.gadget_removed') %></span>
-          <% end %>
-          <time class="history-visited-at" datetime="<%= link.visited_at.iso8601 %>">
-            <%= l(link.visited_at, format: :admin_datetime) %>
-          </time>
-        </span>
-      </li>
-    <% end %>
-  </ol>
-<% end %>
+  <% unless @feed_article_histories.present? %>
+    <p class="history-empty"><%= empty_message %></p>
+  <% else %>
+    <ol class="history-list">
+      <% @feed_article_histories.each do |link| %>
+        <% source_label = t("feed_article_histories.index.sources.#{link.source}") %>
+        <% link_title = link.title.presence || link.url %>
+        <li class="history-entry">
+          <%= render 'common/entry_like_button',
+                url: link.url,
+                title: link_title,
+                source: link.source,
+                gadget_id: link.gadget_id,
+                liked_urls: @liked_urls %>
+          <span class="history-source-icon" role="img"
+                aria-label="<%= source_label %>" title="<%= source_label %>">
+            <%= render 'icons/service', variant: link.source.to_sym %>
+          </span>
+          <%= link_to link_title, link.url, **link_opts %>
+          <span class="history-meta">
+            <% if link.gadget_id.present? %>
+              <span class="history-gadget-label"><%= @gadget_titles[link.gadget_id] || t('feed_article_histories.index.gadget_removed') %></span>
+            <% end %>
+            <time class="history-visited-at" datetime="<%= link.visited_at.iso8601 %>">
+              <%= l(link.visited_at, format: :admin_datetime) %>
+            </time>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
 
-<%= paginate @feed_article_histories, params: (@filter_liked ? { liked: 1 } : {}) if @feed_article_histories.total_pages > 1 %>
+  <%= paginate @feed_article_histories, params: (@filter_liked ? { liked: 1 } : {}) if @feed_article_histories.total_pages > 1 %>
+</div>

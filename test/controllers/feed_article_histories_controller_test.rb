@@ -12,6 +12,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     sign_in @user
     get feed_article_histories_path
     assert_response :success
+    assert_select '#history-page.history-page', count: 1
   end
 
   def test_index_shows_feed_title
@@ -22,6 +23,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, 'Feed Headline'
+    assert_select 'ol.history-list li.history-entry', count: 1
   end
 
   def test_index_shows_gadget_label_for_feed
@@ -169,7 +171,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     get feed_article_histories_path
 
     assert_response :success
-    assert_includes response.body, I18n.t('feed_article_histories.index.empty')
+    assert_select '.history-empty', text: I18n.t('feed_article_histories.index.empty')
   end
 
   def test_index_excludes_other_user_rows
@@ -252,6 +254,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '.history-filter-link', text: I18n.t('feed_article_histories.index.filter.all')
     assert_select '.history-filter-link', text: I18n.t('feed_article_histories.index.filter.liked')
+    assert_select "a.history-filter-link--active[aria-current=page]", text: I18n.t('feed_article_histories.index.filter.all'), count: 1
   end
 
   def test_index_liked_filter_excludes_unliked_rows
@@ -273,6 +276,7 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_includes response.body, I18n.t('feed_article_histories.index.empty_liked')
+    assert_select "a.history-filter-link--active[aria-current=page]", text: I18n.t('feed_article_histories.index.filter.liked'), count: 1
   end
 
   def test_index_shows_entry_like_button

@@ -21,4 +21,10 @@ class FontSizeThemeReadabilityContractTest < ActiveSupport::TestCase
     assert_match(/\.note-body[\s\S]*font-size:\s*0\.875rem/, @simple)
     assert_match(/\.note-timestamp[\s\S]*font-size:\s*0\.8125rem/, @simple)
   end
+
+  test 'simple history surfaces use rem values for readability scaling' do
+    assert_match(/\.history-empty\s*\{[^}]*font-size:\s*0\.875rem/, @simple)
+    assert_match(/\.history-entry[\s\S]*?>\s*a\s*\{[^}]*font-size:\s*0\.875rem/, @simple)
+    assert_match(/\.history-meta\s*\{[^}]*font-size:\s*0\.8125rem/, @simple)
+  end
 end
