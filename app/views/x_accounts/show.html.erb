@@ -1,6 +1,15 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<% dialog_id = "x-settings-dialog-#{@x_account.id}" %>
 <div>
-  <%= render 'common/gadget_title_with_icon', variant: :x do %>
+  <%= render 'common/gadget_title_with_icon',
+        variant: :x,
+        header_link: link_to(
+          t('welcome.x_gadget.settings_link'),
+          '#',
+          class: 'x-gadget-settings-link',
+          aria: { label: t('welcome.x_gadget.settings_link_aria_label') },
+          data: { dialog: dialog_id }
+        ) do %>
     <%= link_to @x_account.title, @x_account.profile_url, link_opts %>
   <% end %>
   <% if @x_error %>
@@ -31,3 +40,4 @@
     </ol>
   <% end %>
 </div>
+<%= render 'x_accounts/settings_dialog', x_account: @x_account %>

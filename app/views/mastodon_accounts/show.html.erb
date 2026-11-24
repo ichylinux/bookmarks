@@ -1,6 +1,15 @@
 <% link_opts = current_user.preference.open_links_in_new_tab? ? { target: '_blank', rel: 'noopener noreferrer' } : {} %>
+<% dialog_id = "mastodon-settings-dialog-#{@mastodon_account.id}" %>
 <div>
-  <%= render 'common/gadget_title_with_icon', variant: :mastodon do %>
+  <%= render 'common/gadget_title_with_icon',
+        variant: :mastodon,
+        header_link: link_to(
+          t('welcome.mastodon_gadget.settings_link'),
+          '#',
+          class: 'mastodon-gadget-settings-link',
+          aria: { label: t('welcome.mastodon_gadget.settings_link_aria_label') },
+          data: { dialog: dialog_id }
+        ) do %>
     <%= link_to @mastodon_account.title, @mastodon_account.profile_url, link_opts %>
   <% end %>
   <% if @mastodon_error %>
@@ -26,3 +35,4 @@
     </ol>
   <% end %>
 </div>
+<%= render 'mastodon_accounts/settings_dialog', mastodon_account: @mastodon_account %>

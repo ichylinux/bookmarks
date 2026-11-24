@@ -137,6 +137,48 @@ class XAccountsControllerTest < ActionDispatch::IntegrationTest
 
   # --- show ---
 
+  def test_show_renders_settings_link_in_gadget_header
+    acc = create_account(username: 'settest', selected: true)
+    WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/settest\/tweets/)
+      .to_return(status: 200, body: { data: [{ id: '1', text: 'Hi' }] }.to_json, headers: { 'Content-Type' => 'application/json' })
+    sign_in twitter_user
+    get x_account_path(acc, format: :html), xhr: true
+
+    assert_response :success
+    assert_select 'a.x-gadget-settings-link[data-dialog=?]', "x-settings-dialog-#{acc.id}", text: '設定'
+    assert_select "dialog#x-settings-dialog-#{acc.id}.feed-settings-dialog", count: 1
+    assert_select 'form.gadget-settings-dialog__form[data-remote=true][data-gadget-id=?][data-gadget-url=?]',
+                  acc.id.to_s, x_account_path(acc), count: 1
+  ensure
+    acc&.destroy
+  end
+
+  def test_ダッシュボードからのAJAX更新はokを返す
+    acc = create_account(username: 'dashupd', selected: true)
+    sign_in twitter_user
+    patch x_account_path(acc),
+          params: { x_account: { display_count: '9' }, return_to: 'dashboard' },
+          xhr: true
+
+    assert_response :ok
+    assert_equal 9, acc.reload.display_count
+  ensure
+    acc&.destroy
+  end
+
+  def test_ダッシュボードからのAJAX更新が不正な表示件数では422を返す
+    acc = create_account(username: 'dashbad', selected: true)
+    sign_in twitter_user
+    patch x_account_path(acc),
+          params: { x_account: { display_count: '-1' }, return_to: 'dashboard' },
+          xhr: true
+
+    assert_response :unprocessable_entity
+    assert_match(/表示件数/, response.body)
+  ensure
+    acc&.destroy
+  end
+
   def test_showがXHRでフラグメントを返す
     acc = create_account(username: 'charlie', selected: true)
     WebMock.stub_request(:get, /api\.twitter\.com\/2\/users\/charlie\/tweets/)

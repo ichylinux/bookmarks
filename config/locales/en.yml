@@ -348,6 +348,16 @@ en:
       settings_link_aria_label: Edit feed
       dialog_title: Edit Feed
       dialog_close_aria_label: Close
+    x_gadget:
+      settings_link: settings
+      settings_link_aria_label: Edit X gadget
+      dialog_title: Edit X Gadget
+      dialog_close_aria_label: Close
+    mastodon_gadget:
+      settings_link: settings
+      settings_link_aria_label: Edit Mastodon gadget
+      dialog_title: Edit Mastodon Gadget
+      dialog_close_aria_label: Close
     calendar_gadget:
       loading: Loading calendar...
     feed:

@@ -1,23 +1,3 @@
-def navigate_to_feed_gadget_column!
-  return if has_selector?('.gadget[id^="feed_"]', visible: true, wait: 1)
-
-  all('button.portal-column-tab').each do |tab|
-    tab.click
-    return if has_selector?('.gadget[id^="feed_"]', visible: true, wait: 1)
-  end
-end
-
-def click_feed_gadget_settings_link
-  within first('.gadget[id^="feed_"]') do
-    header = find('.title--gadget-with-icon[data-gadget-icon="feed"]')
-    unless header[:class].to_s.include?('title--gadget-actions-visible')
-      find('.gadget-title-text').click
-    end
-  end
-  el = find('.gadget[id^="feed_"] .feed-gadget-settings-link', visible: :all)
-  page.execute_script('arguments[0].click()', el)
-end
-
 module FeedGadgetHeaderHelpers
   # feeds/show.html.erb がヘッダに描画するサイト名リンク。
   # common/_gadget_title_with_icon.html.erb 経由で .gadget-title-drag-handle の
@@ -93,7 +73,7 @@ end
 
 # ハンドル全体の中心はタイトルテキスト（サイト名リンク）に重なるため、
 # リンクではないアイコン側を掴む。アイコン上での押下は sortable に届く
-# 必要がある（feed_gadget.js のヘッダガードが握り潰していないことの検証）。
+# 必要がある（gadget_header_settings.js のヘッダガードが握り潰していないことの検証）。
 もし /^フィードガジェットのドラッグハンドルのアイコンを数ピクセルドラッグします。$/ do
   icon = find('.gadget[id^="feed_"] .gadget-title-drag-handle .gadget-title-icon')
 
@@ -116,22 +96,22 @@ end
   sign_in user
   ensure_mobile_viewport!
   visit root_path
-  navigate_to_feed_gadget_column!
+  navigate_to_gadget_column!(feed_gadget_id_prefix)
   assert has_selector?('.gadget[id^="feed_"]', visible: true)
   find(feed_header_link_selector, wait: 15)
   capture
 end
 
 もし /^フィードガジェットのヘッダをタップして操作を表示します。$/ do
-  within first('.gadget[id^="feed_"]') do
-    find('.gadget-title-text').click
-    assert has_selector?('.title--gadget-actions-visible')
-  end
+  ensure_gadget_header_actions_visible!(gadget_id_prefix: feed_gadget_id_prefix, gadget_icon: 'feed')
   capture
 end
 
 もし /^フィード設定リンクをタップしてダイアログを開きます。$/ do
-  click_feed_gadget_settings_link
-  assert has_selector?('dialog.feed-settings-dialog[open]', visible: :all, wait: 5)
+  open_gadget_settings_dialog!(
+    gadget_id_prefix: feed_gadget_id_prefix,
+    settings_link_class: 'feed-gadget-settings-link',
+    gadget_icon: 'feed'
+  )
   capture
 end

@@ -113,6 +113,48 @@ class MastodonAccountsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'span', text: 'The Mastodon server took too long to respond.'
   end
 
+  def test_show_renders_settings_link_in_gadget_header
+    account = mastodon_account_of(user.id)
+    stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>Line</p>', url: 'https://ruby.social/@x/1' }])
+    sign_in user
+    get mastodon_account_path(account, format: :html), xhr: true
+
+    assert_response :success
+    assert_select 'a.mastodon-gadget-settings-link[data-dialog=?]',
+                  "mastodon-settings-dialog-#{account.id}", text: '設定'
+    assert_select "dialog#mastodon-settings-dialog-#{account.id}.feed-settings-dialog", count: 1
+    assert_select 'form.gadget-settings-dialog__form[data-remote=true][data-gadget-id=?][data-gadget-url=?]',
+                  account.id.to_s, mastodon_account_path(account), count: 1
+  end
+
+  def test_ダッシュボードからのAJAX更新はokを返す
+    account = mastodon_account_of(user.id)
+    sign_in user
+    patch mastodon_account_path(account),
+          params: {
+            mastodon_account: { profile_url: account.profile_url, display_count: 10 },
+            return_to: 'dashboard'
+          },
+          xhr: true
+
+    assert_response :ok
+    assert_equal 10, account.reload.display_count
+  end
+
+  def test_ダッシュボードからのAJAX更新が不正なプロフィールURLでは422を返す
+    account = mastodon_account_of(user.id)
+    sign_in user
+    patch mastodon_account_path(account),
+          params: {
+            mastodon_account: { profile_url: 'not-a-valid-profile-url', display_count: 5 },
+            return_to: 'dashboard'
+          },
+          xhr: true
+
+    assert_response :unprocessable_entity
+    assert_match(/インスタンス/, response.body)
+  end
+
   def test_show_xhr_returns_fragment_without_html_wrapper
     account = mastodon_account_of(user.id)
     stub_mastodon_success('ruby.social', 'FastRuby', [{ content: '<p>XHR line</p>', url: 'https://ruby.social/@x/2' }])

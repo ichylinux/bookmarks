@@ -48,7 +48,21 @@ class MastodonAccountsController < ApplicationController
       @mastodon_account.save!
     end
 
-    redirect_to action: 'index'
+    if params[:return_to] == 'dashboard'
+      if request.xhr?
+        head :ok
+      else
+        redirect_to root_path
+      end
+    else
+      redirect_to action: 'index'
+    end
+  rescue ActiveRecord::RecordInvalid
+    if params[:return_to] == 'dashboard' && request.xhr?
+      render plain: @mastodon_account.errors.full_messages.to_sentence, status: :unprocessable_entity
+    else
+      raise
+    end
   end
 
   def destroy

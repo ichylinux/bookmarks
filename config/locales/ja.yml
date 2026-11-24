@@ -348,6 +348,16 @@ ja:
       settings_link_aria_label: フィードを編集
       dialog_title: フィードを編集
       dialog_close_aria_label: 閉じる
+    x_gadget:
+      settings_link: 設定
+      settings_link_aria_label: Xガジェットを編集
+      dialog_title: Xガジェットを編集
+      dialog_close_aria_label: 閉じる
+    mastodon_gadget:
+      settings_link: 設定
+      settings_link_aria_label: Mastodonガジェットを編集
+      dialog_title: Mastodonガジェットを編集
+      dialog_close_aria_label: 閉じる
     calendar_gadget:
       loading: カレンダーを読み込み中・・・
     feed:

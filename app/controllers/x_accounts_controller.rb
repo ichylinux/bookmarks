@@ -85,12 +85,24 @@ class XAccountsController < ApplicationController
       @x_account.save!
     end
 
-    redirect_to x_accounts_path, notice: t('x_accounts.update.success')
+    if params[:return_to] == 'dashboard'
+      if request.xhr?
+        head :ok
+      else
+        redirect_to root_path
+      end
+    else
+      redirect_to x_accounts_path, notice: t('x_accounts.update.success')
+    end
   rescue ActiveRecord::RecordInvalid
     msg = @x_account.errors[:selected].presence ||
           @x_account.errors.full_messages.presence ||
           t('x_accounts.update.failure')
-    redirect_to x_accounts_path, alert: msg
+    if params[:return_to] == 'dashboard' && request.xhr?
+      render plain: Array(msg).join(', '), status: :unprocessable_entity
+    else
+      redirect_to x_accounts_path, alert: msg
+    end
   end
 
   private

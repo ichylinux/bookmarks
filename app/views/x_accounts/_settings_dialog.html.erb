@@ -1,0 +1,30 @@
+<% dialog_id = "x-settings-dialog-#{x_account.id}" %>
+<dialog id="<%= dialog_id %>" class="feed-settings-dialog">
+  <div class="feed-settings-dialog__inner">
+    <div class="feed-settings-dialog__header">
+      <span class="feed-settings-dialog__title"><%= t('welcome.x_gadget.dialog_title') %></span>
+      <button type="button" class="feed-settings-dialog__close" aria-label="<%= t('welcome.x_gadget.dialog_close_aria_label') %>" data-dialog-close="<%= dialog_id %>">&#x2715;</button>
+    </div>
+    <%= form_for x_account,
+                 url: x_account_path(x_account),
+                 method: :patch,
+                 remote: true,
+                 html: {
+                   class: 'feed-settings-dialog__form gadget-settings-dialog__form',
+                   data: {
+                     gadget_id: x_account.id,
+                     gadget_url: x_account_path(x_account),
+                     gadget_dom_prefix: 'x_account_'
+                   }
+                 } do |f| %>
+      <%= hidden_field_tag :return_to, 'dashboard' %>
+      <div class="feed-settings-dialog__field">
+        <%= f.label :display_count %>
+        <%= f.number_field :display_count, min: 1, class: 'display_count feed-settings-dialog__input' %>
+      </div>
+      <div class="feed-settings-dialog__actions">
+        <%= f.submit t('x_accounts.index.row_submit'), class: 'feed-settings-dialog__submit' %>
+      </div>
+    <% end %>
+  </div>
+</dialog>
