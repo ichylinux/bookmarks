@@ -166,7 +166,7 @@ end
 end
 
 もし /^閲覧履歴の次ページを開きます。$/ do
-  find('nav.pagination span.next a').click
+  find('.history-pagination--bottom nav.pagination span.next a').click
   capture
 end
 

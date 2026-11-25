@@ -12,6 +12,13 @@
                 aria: (@filter_liked ? { current: 'page' } : {}) %>
   </nav>
 
+  <% pagination_params = @filter_liked ? { liked: 1 } : {} %>
+  <% if @feed_article_histories.total_pages > 1 %>
+    <div class="history-pagination history-pagination--top">
+      <%= paginate @feed_article_histories, params: pagination_params %>
+    </div>
+  <% end %>
+
   <% empty_message = @filter_liked ? t('feed_article_histories.index.empty_liked') : t('feed_article_histories.index.empty') %>
 
   <% unless @feed_article_histories.present? %>
@@ -46,5 +53,9 @@
     </ol>
   <% end %>
 
-  <%= paginate @feed_article_histories, params: (@filter_liked ? { liked: 1 } : {}) if @feed_article_histories.total_pages > 1 %>
+  <% if @feed_article_histories.total_pages > 1 %>
+    <div class="history-pagination history-pagination--bottom">
+      <%= paginate @feed_article_histories, params: pagination_params %>
+    </div>
+  <% end %>
 </div>
