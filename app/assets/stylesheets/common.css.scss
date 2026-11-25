@@ -213,18 +213,24 @@ ol {
 
 .gadget-entry {
   display: flex;
-  align-items: flex-start;
+  // Align the like button to the first line of the title by baseline, so the icon
+  // tracks the text at every font size (centering a fixed 16px icon inside a
+  // 1.3em box drifted by a pixel or more depending on rounding and font metrics).
+  align-items: baseline;
   gap: 0.35rem;
   flex-wrap: nowrap;
 
   > .entry-like-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
     flex-shrink: 0;
     width: 1.15em;
-    height: 1.3em;
-    margin-top: 0;
+    line-height: 1.3em;
+    text-align: center;
+
+    // Center the 16px icon (half = 8px) on the cap-height midpoint (~0.36em above the baseline).
+    > .entry-like-icon {
+      vertical-align: calc(0.36em - 8px);
+    }
   }
 
   > a {
