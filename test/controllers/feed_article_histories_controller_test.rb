@@ -232,7 +232,8 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'ol li a', text: "History Item #{Kaminari.config.default_per_page}", count: 1
     assert_select 'ol li a', text: 'History Item 0', count: 0
-    assert_select 'nav.pagination', count: 1
+    assert_select '.history-pagination--top nav.pagination', count: 1
+    assert_select '.history-pagination--bottom nav.pagination', count: 1
   end
 
   def test_index_paginates_second_page
@@ -244,7 +245,8 @@ class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'ol li a', text: 'History Item 0', count: 1
     assert_select 'ol li a', text: "History Item #{Kaminari.config.default_per_page}", count: 0
-    assert_select 'nav.pagination', count: 1
+    assert_select '.history-pagination--top nav.pagination', count: 1
+    assert_select '.history-pagination--bottom nav.pagination', count: 1
   end
 
   def test_index_shows_like_filter_links

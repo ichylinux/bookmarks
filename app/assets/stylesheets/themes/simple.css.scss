@@ -257,6 +257,11 @@
     .pagination {
       margin-top: 16px;
     }
+
+    .history-pagination--top .pagination {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
   }
 
   .note-gadget {
