@@ -76,7 +76,7 @@
 ## Configuration
 
 - `config/app_config.yml` → `Rails.application.config.app_config` (`config/initializers/app_config.rb`): OTP length, OAuth client ids/secrets (Google, X, Facebook), production `default_url_options` and SMTP settings
-- `config/database.yml` — `MYSQL_HOST` / `MYSQL_PORT` / `MYSQL_USERNAME` / `MYSQL_PASSWORD`; DBs `bookmarks_dev`, `bookmarks_test`; the `production` block declares no `database:` key (supplied externally)
+- `config/database.yml` — `MYSQL_HOST` / `MYSQL_PORT` / `MYSQL_USERNAME` / `MYSQL_PASSWORD`; DBs `bookmarks_dev` / `bookmarks_test` / `bookmarks_pro`
 - `config/application.rb` — AR encryption keys from ENV with `'dev_dummy_key'` fallback; requires `lib/omniauth/strategies/mastodon`
 - `config/initializers/devise.rb` — OmniAuth provider registration and scopes
 - `config/initializers/kaminari_config.rb`, `omniauth_logger.rb`, `content_security_policy.rb` (all commented out), `permissions_policy.rb`

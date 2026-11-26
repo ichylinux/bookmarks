@@ -96,7 +96,8 @@ Rules:
 - No ES module `import` — the Sprockets asset pipeline uses `//= require` directives in `application.js`.
 - Reusable modules use the IIFE pattern (`window.moduleName`); page-specific event binding uses jQuery document-ready (`$(function() { ... })`).
 - Allowed globals (from `eslint.config.mjs`): `$`, `jQuery`, `ActionCable`, `App`, `MOBILE_MQ`.
-- AJAX POST handlers (for example `visited_links.js`) use `$.post` with Rails CSRF; `jquery` must load before `rails-ujs` in `application.js`.
+- AJAX POST handlers (for example `visited_links.js`) use `$.ajax` with Rails CSRF; `jquery` must load before `rails-ujs` in `application.js`. Forms inside gadget settings dialogs submit via rails-ujs (`ajax:success` / `ajax:error`).
+- Wrap every `localStorage` access in `try`/`catch` (see `visited_links.js`, `portal_mobile_tabs.js`).
 
 Run linting before every commit:
 
@@ -122,13 +123,13 @@ yarn run lint:fix    # auto-fix
 | Path | Purpose |
 |------|---------|
 | `app/controllers/` | HTTP layer, Devise extensions (`users/`), admin namespace |
-| `app/controllers/visited_links_controller.rb` | `POST /visited_links` — records feed/X/Mastodon link visits |
+| `app/controllers/visited_links_controller.rb` | `POST /visited_links` (records feed/X/Mastodon link visits) and `POST /visited_links/toggle_like` |
 | `app/controllers/feed_article_histories_controller.rb` | Paginated reading-history page (`/feed_article_histories`) |
 | `app/models/` | ActiveRecord models, gadget objects, concerns (`Crud::ByUser`) |
 | `app/services/` | Faraday clients (`MastodonClient`, `XClient`) and Mastodon input normalizers |
 | `app/helpers/` | View helpers (`ApplicationHelper`, calendar/welcome helpers) |
 | `app/views/` | ERB templates and partials |
-| `app/assets/javascripts/` | jQuery modules (linted by ESLint); `visited_links.js` handles visit recording |
+| `app/assets/javascripts/` | jQuery modules (linted by ESLint); `visited_links.js` handles visit recording, likes and the offline queue; `gadget_header_settings.js` handles gadget settings dialogs |
 | `app/assets/stylesheets/` | SCSS; theme overrides in `themes/` subdirectory |
 | `config/locales/` | `ja.yml` and `en.yml` — must be kept in parity |
 | `lib/omniauth/` | Custom Mastodon OmniAuth strategy |

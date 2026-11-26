@@ -103,6 +103,7 @@ Newer tests often load users with `User.find(1)` / `User.find(2)` in `setup` rat
 
 - Most features use `# language: ja` (`機能:` / `シナリオ:` / `もし` / `ならば`); `13.Facebook.feature` is written in English Gherkin.
 - `capture` at the end of steps saves screenshots to `features/reports/images/`.
+- **DB cleanup:** `daddy/cucumber/rails` sets DatabaseCleaner truncation and reloads fixtures per scenario (per `docs/TESTING.md`).
 - **Global `Before`:** `Capybara.reset_sessions!`, clears the memoized user and preference-reset marker, deletes all `MastodonAccount`, `XAccount`, `XApiCall`, `VisitedLink` rows, and resizes to 1280×800.
 - **Preference state is reset through the browser** (`/preferences` form) on the first `sign_in` of each scenario. Do not write preferences through ActiveRecord in steps; that caused the cross-connection leakage fixed in `bce47df`.
 - **Tags with hooks:** `@mastodon_gadget`, `@x_gadget`, `@x_manual_add`, `@feed_visited_links`, `@mobile_portal`, `@account_deletion`, `@admin_purge`, `@admin_x_api_report_rack` (switches to `:rack_test`), `@connected_accounts`. Feature-level tags without hooks: `@facebook`, `@admin_x_api_report`.
@@ -125,7 +126,7 @@ Newer tests often load users with `User.find(1)` / `User.find(2)` in `setup` rat
 
 ## Coverage
 
-Jenkins sets `COVERAGE=true` and publishes `coverage/index.html`. Nothing in this repo requires `simplecov`, so it is presumably started by `daddy/test_help` (the first line of `test_helper.rb`); not verified here. No threshold is enforced.
+Jenkins sets `COVERAGE=true` and publishes `coverage/index.html`. SimpleCov is started by `daddy/test_help` when `COVERAGE` is set (per `docs/TESTING.md`; the gem source isn't in this repo). No threshold is enforced.
 
 ## Flakiness
 

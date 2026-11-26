@@ -117,7 +117,7 @@ Severity: **HIGH** = security exposure or likely production breakage · **MEDIUM
 ## Fragile Areas
 
 - **Asset contract tests** (`test/assets/*`) assert on literal source text. Harmless refactors (renaming a selector, switching `$(document).ready` to an IIFE) fail them. Update the contract in the same change.
-- **Cucumber state:** the global `Before` deletes only Mastodon / X / XApiCall / VisitedLink rows. Bookmarks, todos, notes, feeds and layouts persist across scenarios. Preferences must be changed through the `/preferences` UI (see `bce47df`), never through ActiveRecord in steps.
+- **Cucumber state:** the repo's global `Before` explicitly deletes Mastodon / X / XApiCall / VisitedLink rows. Broader cleanup comes from `daddy` (per `docs/TESTING.md`: DatabaseCleaner truncation and a fixture reload per scenario), which is outside this repo. Preferences must be changed through the `/preferences` UI (see `bce47df`), never through ActiveRecord in steps.
 - **Mastodon OAuth session keys** (`mastodon_instance`, `mastodon_oauth_client_id/secret/instance`) must be cleared on both success and failure paths. The callback clears them; the failure path relies on the next `POST /users/mastodon_instance`.
 - **Single primary-user assumptions:** fixtures `users(:one)` (id 1, admin) and the Cucumber `user` helper (`User.first`).
 
