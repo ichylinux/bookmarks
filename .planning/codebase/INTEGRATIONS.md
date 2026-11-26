@@ -99,7 +99,7 @@ No GitHub Actions. ESLint is **not** run in CI — run `yarn run lint` locally.
 | `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `SMTP_FROM` | Mail |
 | `APP_HOST` | Mailer URL host |
 | `RAILS_MAX_THREADS`, `PORT`, `RAILS_LOG_LEVEL` | Puma / logging |
-| `BOOKMARKS_OTP_LENGTH` | TOTP digits (default 6) |
+| `BOOKMARKS_OTP_LENGTH` | Sets `app_config.otp_length`, but nothing reads it; TOTP is always ROTP's 6-digit default |
 
 ---
 

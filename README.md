@@ -10,10 +10,11 @@ A personal dashboard for bookmarks, feeds, to-dos, notes, calendar, and social t
 - **Bookmarks** — Save URLs with auto-fetched page titles; organize into hierarchical folders
 - **Feeds** — Subscribe to RSS/Atom feeds and browse articles
 - **To-do** — Task management with highlight and done toggles
-- **Notes** — Optional notes pane on the dashboard (enabled from preferences)
+- **Notes** — Optional standalone notes page at `/notes` (enabled from preferences)
 - **Calendar** — Calendar UI with Japanese public holiday support
 - **Social gadgets** — Mastodon and X (Twitter) timeline previews on the dashboard
-- **Reading history** — Feed, X, and Mastodon gadget links are marked visited on click; optional paginated history at `/feed_article_histories` (enable from preferences)
+- **Reading history** — Feed, X, and Mastodon gadget links are marked visited on click; with reading history enabled, entries can be liked and the paginated history at `/feed_article_histories` can be filtered to liked entries
+- **Gadget settings** — Feed, X, and Mastodon gadgets open a settings dialog from their header
 - **Authentication** — Devise with two-factor authentication (TOTP) and OmniAuth (Google, X, Facebook, Mastodon)
 - **Themes** — Modern, Classic, and Simple themes switchable from the preferences page
 
@@ -92,7 +93,7 @@ After signing in, the dashboard at `/` shows gadget columns (bookmarks, todos, c
 
 1. Open `/preferences` and enable **Show reading history** (`use_feed_article_histories`).
 2. Click articles in feed, X, or Mastodon gadgets — links gain a visited style and are recorded with title and source.
-3. Open **Reading history** from the header or nav (`/feed_article_histories`) to revisit past articles.
+3. Use the like button next to an entry to save it; open **Reading history** from the header or nav (`/feed_article_histories`) and switch to the liked filter to see only liked articles.
 
 **Switch theme**
 
