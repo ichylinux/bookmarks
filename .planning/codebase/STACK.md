@@ -1,121 +1,99 @@
 # Technology Stack
 
-**Analysis Date:** 2026-05-23
+**Analysis Date:** 2026-11-26
 
 ## Languages
 
 **Primary:**
-- Ruby 3.4.9 — all server-side code (`Gemfile`, `.ruby-version`)
-- JavaScript (ES2015+) — browser-side behavior (`app/assets/javascripts/`)
+- Ruby 3.4.10 — all server-side code (`.ruby-version`; `Gemfile` declares `ruby '~> 3.4.0'`)
+- JavaScript (ES2015+, no modules) — browser behavior in `app/assets/javascripts/` (17 files, ~1.5k lines)
 
 **Secondary:**
-- SCSS/CSS — styling via `sass-rails` (`app/assets/stylesheets/`)
-- ERB — HTML templating (`app/views/`)
-- YAML — configuration files (`config/`)
+- SCSS — `app/assets/stylesheets/` (per-screen files + `themes/`)
+- ERB — `app/views/`
+- YAML — config, fixtures, locales
 
 ## Runtime
 
-**Environment:**
-- Ruby 3.4.9 (MRI/CRuby)
-- Node.js — required for ESLint/Prettier tooling only (no frontend bundler)
-
-**Package Manager:**
-- Bundler — Ruby gems (`Gemfile.lock` present)
+- Ruby 3.4.10 (MRI)
+- Node.js 22.23.1 (`.node-version`) — ESLint only; also the ExecJS runtime for `uglifier` during `assets:precompile`
+- Bundler (`Gemfile.lock`; `source 'https://rubygems.org', cooldown: 7` — new gem releases are held back 7 days)
 - Yarn — JS devDependencies only (`package.json`)
 
 ## Frameworks
 
 **Core:**
-- Rails 8.1.3 (`rails ~> 8.1.0`) — full-stack MVC framework
-  - ActiveRecord with MySQL2 adapter
-  - ActionMailer with SMTP delivery (production)
-  - ActionCable (async adapter dev/test; Redis adapter production)
-  - ActiveStorage (local disk service in all environments)
-  - ActiveRecord Encryption (`otp_secret`, `oauth2_token`, `oauth2_refresh_token` on User)
+- Rails 8.1.4.1 (`rails ~> 8.1.0`, loaded via `require "rails/all"`)
+  - ActiveRecord + `mysql2` 0.5.7
+  - ActionMailer (SMTP / AWS SES in production; Devise mails only)
+  - ActionCable — stub only (`app/channels/application_cable/`, no channels)
+  - ActiveStorage — loaded, but routes disabled (`config.active_storage.draw_routes = false`); no attachments in use
+  - ActiveRecord Encryption — `encrypts :oauth2_token, :oauth2_refresh_token`; `otp_secret` via devise-two-factor
+- Sprockets via `sass-rails` 6.0 — asset pipeline (no importmap / esbuild / webpack)
+- jQuery + jQuery UI (`jquery-rails` 4.6.1, `jquery-ui-rails` 8.0.1) + `rails-ujs`
 
 **Authentication:**
-- Devise 5.0.4 — core auth (two_factor_authenticatable, registerable, recoverable, rememberable, trackable, validatable, omniauthable)
-- devise-two-factor ~> 6.0 — TOTP two-factor auth
-- omniauth 2.1.4 — OmniAuth base
-- omniauth-google-oauth2 — Google OAuth2 provider
-- omniauth-twitter2 — X OAuth 2.0 provider
-- omniauth-rails_csrf_protection — CSRF protection for OmniAuth POST routes
+- Devise 5.0.4 — `two_factor_authenticatable, registerable, recoverable, rememberable, trackable, validatable, omniauthable`
+- devise-two-factor ~> 6.0 (TOTP), `rqrcode` 2.2.0 (QR codes)
+- OmniAuth 2.3.1 + `omniauth-oauth2` ~> 1.9 (1.10.0)
+- Providers: `omniauth-google-oauth2` 1.2.3, `omniauth-twitter2` 1.2.0 (X OAuth 2.0), `omniauth-facebook` 11.0.0, and a **custom Mastodon strategy** in `lib/omniauth/strategies/mastodon.rb` (dynamic instance + per-instance app registration)
+- `omniauth-rails_csrf_protection` 2.0.1 — OmniAuth request phase is POST-only
 
 **Testing:**
-- Minitest 5.27.0 — unit and integration tests (`bin/rails test`)
-- Cucumber 9.2.1 + cucumber-rails — E2E feature tests (`bundle exec rake dad:test`)
-- Capybara 3.40.0 — browser automation DSL
-- Selenium WebDriver — headless Chrome driver for Capybara
+- Minitest 5.27.0 (`minitest ~> 5.0`) + `minitest-reporters`
+- Cucumber 10.2.0 + `cucumber-rails`, run through `daddy`'s `rake dad:test`
+- Capybara 3.40.0 + Selenium WebDriver 4.52.0 (headless Chrome)
+- WebMock 3.34.0, `database_cleaner` 2.1.0, `simplecov`, `ci_reporter`, `closer` 0.18.4 (cucumber HTML report)
 
-**Build/Dev:**
-- ESLint 9.x + `@babel/eslint-parser` — JavaScript linting (`yarn run lint`)
-- Prettier 3.x + `eslint-config-prettier` — JavaScript formatting (`yarn run format`)
-- Sprockets (via `sass-rails`) — asset pipeline (no Webpack/Vite)
-- Uglifier 4.2.1 — JavaScript minification in production
+**Lint / Dev:**
+- ESLint 9 flat config (`eslint.config.mjs`) + `@babel/eslint-parser` + `@eslint/js` recommended — `yarn run lint`
+- Prettier was **removed** (no `.prettierrc.json` / `.prettierignore`, no `format` script)
+- No RuboCop config
+- `bundler-audit` 0.9.3 (`bin/bundler-audit`, config `config/bundler-audit.yml`) — run in Jenkins `unit` stage
+- `rails-erd` + `ruby-graphviz` (ER diagram PDFs regenerated after migrate via `daddy`)
+- `web-console`, `byebug`, `dotenv-rails`
 
 ## Key Dependencies
 
-**Critical:**
-- `mysql2 >= 0.4.4, < 0.6` — MySQL database adapter
-- `puma 8.0.1` — application server (multi-threaded, default 3 threads via `RAILS_MAX_THREADS`)
-- `devise 5.0.4` — authentication backbone
-- `nokogiri 1.19.3` — HTML/XML parsing (used by feedjira, i18n-js, rails-erd)
-- `faraday 1.10.5` — HTTP client for external API calls (`app/services/mastodon_client.rb`, `app/services/x_client.rb`, OAuth2 token refresh)
-- `faraday_middleware` — `:follow_redirects` for bookmark title fetch
-- `feedjira 4.0.2` — RSS/Atom feed parsing (`app/models/feed.rb`)
+| Gem | Version | Used for |
+|-----|---------|----------|
+| `daddy` | 0.12.7 | In-house toolkit: `dad:setup:*`, `dad:test`, `dad:db:create`, soft-delete (`not_deleted`, `destroy_logically!`), `Daddy::HttpClient` (feed fetch), test helpers (`daddy/test_help`, `daddy/cucumber/rails`). Pulls in `itamae`, `docker-api`. |
+| `faraday` | 1.10.6 | HTTP client for `XClient`, `MastodonClient`, Mastodon OmniAuth app registration, bookmark title fetch |
+| `faraday_middleware` | (v1-era) | `:follow_redirects` in `BookmarksController#fetch_title` |
+| `feedjira` | 4.0.3 | RSS / Atom parsing in `Feed` |
+| `kaminari` | 1.3.3 | Pagination (`default_per_page = 25`) — reading history, admin users |
+| `acts_as_tree` | 2.9.1 | Bookmark folder hierarchy |
+| `holiday_jp` | 0.8.1 | Calendar gadget holidays |
+| `i18n-js` | 4.2.4 | Translations exported to JS |
+| `rails-i18n` ~> 8.0, `devise-i18n` | — | ja/en framework strings |
+| `nokogiri` | 1.19.7 (`force_ruby_platform: true`) | HTML/XML parsing |
+| `puma` | 8.1.2 | App server |
+| `bootsnap` | 1.26.1 | Boot cache |
+| `uglifier` | 4.2.1 | JS minification at precompile |
 
-**Infrastructure:**
-- `bootsnap 1.24.4` — boot time optimization
-- `daddy 0.12.0` — custom deployment/setup gem (provides `dad:setup`, `dad:test` rake tasks)
-- `acts_as_tree 2.9.1` — hierarchical bookmark model in `app/models/bookmark.rb`
-- `holiday_jp 0.8.1` — Japanese public holiday lookups in `app/models/calendar_gadget.rb`
-- `rqrcode ~> 2.0` (2.2.0) — QR code generation for TOTP setup in `app/controllers/users/two_factor_setup_controller.rb`
-- `i18n-js 4.2.4` — exports Rails i18n translations to JavaScript
-- `rails-i18n ~> 8.0` — Rails built-in i18n translations for Japanese
-- `devise-i18n` — Devise i18n translations
-- `jquery-rails` + `jquery-ui-rails` — jQuery and jQuery UI via asset pipeline
-
-**Development/Test Only:**
-- `dotenv-rails 3.2.0` — `.env` file loading in dev/test
-- `byebug` — Ruby debugger
-- `webmock 3.26.2` — HTTP request stubbing for tests
-- `database_cleaner 2.1.0` — DB cleanup between Cucumber scenarios
-- `simplecov 0.22.0` — test coverage reporting
-- `minitest-reporters` — enhanced Minitest output
-- `ci_reporter` — CI-compatible test reporting
-- `rails-erd 1.7.2` — entity-relationship diagram generation
+**Gemfile oddity:** `mysql2` sits in `group :itamae`, and `Dockerfile.base` sets `bundle config without 'itamae development test'`. How the production image obtains `mysql2` is not visible in this repo (presumably through `daddy`'s setup tasks or the base image) — verify before touching Gemfile groups.
 
 ## Configuration
 
-**Environment:**
-- `config/app_config.yml` — app-level config with ENV interpolation (OmniAuth keys, SMTP settings, OTP length)
-- `config/database.yml` — MySQL connection (ENV: `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD`)
-- ActiveRecord Encryption keys via ENV: `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`, `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` (fallback to hardcoded `'dev_dummy_key'` in non-production)
-- `.env` file present at repo root (loaded by `dotenv-rails` in dev/test — never read contents)
+- `config/app_config.yml` → `Rails.application.config.app_config` (`config/initializers/app_config.rb`): OTP length, OAuth client ids/secrets (Google, X, Facebook), production `default_url_options` and SMTP settings
+- `config/database.yml` — `MYSQL_HOST` / `MYSQL_PORT` / `MYSQL_USERNAME` / `MYSQL_PASSWORD`; DBs `bookmarks_dev`, `bookmarks_test`; the `production` block declares no `database:` key (supplied externally)
+- `config/application.rb` — AR encryption keys from ENV with `'dev_dummy_key'` fallback; requires `lib/omniauth/strategies/mastodon`
+- `config/initializers/devise.rb` — OmniAuth provider registration and scopes
+- `config/initializers/kaminari_config.rb`, `omniauth_logger.rb`, `content_security_policy.rb` (all commented out), `permissions_policy.rb`
+- `config/ci.rb` — unused Rails 8 scaffold (references `bin/importmap audit`, which does not exist here)
+- `.env` loaded by `dotenv-rails` in dev/test (do not read)
 
-**Build:**
-- `config/initializers/assets.rb` — Sprockets asset precompile list
-- `config/initializers/content_security_policy.rb` — CSP headers
-- `.prettierrc.json` — Prettier: `semi: true`, `singleQuote: true`, `trailingComma: "es5"`
-- `eslint.config.mjs` — ESLint flat config with Babel parser
+## Platform
 
-## Platform Requirements
-
-**Development:**
-- Ruby 3.4.9
-- MySQL (utf8mb4 encoding, `utf8mb4_general_ci` collation)
-- Node.js (for ESLint/Prettier)
-- Yarn
+**Development:** Ruby 3.4.10, Node 22, Yarn, MySQL (utf8mb4 / `utf8mb4_general_ci`), Chrome for Cucumber.
 
 **Production:**
-- Docker-based deployment (AlmaLinux 9.7 base image: `hybitz-almalinux:9.7`)
-- Kubernetes via Kustomize (`config/kustomize/`)
-- MySQL database `bookmarks_pro`
-- Redis at `redis://localhost:6379/1` (for ActionCable)
-- SMTP via AWS SES (`AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`)
-- SSL enforced (`config.force_ssl = true`)
-- Puma on port 3000 (`PORT` env var)
+- Container images built with Kaniko in Jenkins: `Dockerfile.base` (FROM `hybitz-almalinux:9.9-20261116-66`, bundle install, `dad:setup:base`) → `Dockerfile.app` (`dad:setup:app`, `assets:precompile`) / `Dockerfile.test` (`dad:setup:test`)
+- Kubernetes via Kustomize (`config/kustomize/`): 1 replica, 100m CPU / 256Mi, readiness probe and `preStop` hook for graceful rolling updates
+- Puma on port 3000; `force_ssl` + `assume_ssl`
+- ActionCable configured for Redis (`redis://localhost:6379/1`) but the `redis` gem is not in the bundle and no channels exist
+- SMTP via AWS SES
 
 ---
 
-*Stack analysis: 2026-05-23*
+*Stack analysis: 2026-11-26*

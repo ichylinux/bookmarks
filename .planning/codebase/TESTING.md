@@ -1,318 +1,136 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-05-23
+**Analysis Date:** 2026-11-26
 
-## Test Frameworks
+## Suites
 
-| Suite | Framework | Run Command |
-|-------|-----------|-------------|
-| Unit + Integration | Minitest 5.x | `bin/rails test` |
-| E2E / Browser | Cucumber + Capybara + Selenium | `bundle exec rake dad:test` |
-| Lint | ESLint | `yarn run lint` |
+| Suite | Framework | Command | Run in CI? |
+|-------|-----------|---------|-----------|
+| Lint | ESLint 9 | `yarn run lint` | **No**, local only |
+| Unit + integration | Minitest 5.27 | `bin/rails test <path>` | Jenkins `unit` stage (full) |
+| E2E | Cucumber 10 + Capybara + Selenium (headless Chrome) | `bundle exec rake dad:test <feature[:line]>` | Jenkins `bookmarks-features` job (full) |
+| Dependency audit | bundler-audit | `bin/bundler-audit` | Jenkins `unit` stage |
 
-**Full local gate (all three must pass):**
-```bash
-yarn run lint && bin/rails test && bundle exec rake dad:test
-```
-
-**Key gems (`Gemfile`):**
-- `minitest ~> 5.0` + `minitest-reporters`
-- `cucumber` + `cucumber-rails`
-- `capybara` + `selenium-webdriver`
-- `webmock` (HTTP stubbing for Minitest + Cucumber)
-- `simplecov` (coverage, `require: false` — not auto-loaded)
-- `database_cleaner` (present but minimal use; DB state between Cucumber scenarios is managed via explicit `Before` hooks)
-
-## Run Commands
+**Scoping policy (from `CLAUDE.md`):** never run the full Minitest or Cucumber suite locally; run the tests related to the change and say which ones you ran. Never call `bundle exec cucumber` directly; `dad:test` starts the server and browser. `DRY_RUN=1 bundle exec rake dad:test <feature>` checks that steps resolve without a browser.
 
 ```bash
-bin/rails test                    # All Minitest suites (models, controllers, assets, i18n, services)
-bin/rails test test/models/       # One subdirectory
-bin/rails test test/models/preference_test.rb  # One file
-bundle exec rake dad:test         # Cucumber E2E (spawns Rails server + headless Chrome automatically)
-# DO NOT use: bundle exec cucumber  (missing server setup)
-yarn run lint                     # ESLint on app/assets/javascripts/**/*.js
-yarn run lint:fix                 # ESLint auto-fix
-yarn run format                   # Prettier write
+bin/rails test test/models/visited_link_test.rb
+bin/rails test test/controllers/notes_controller_test.rb:42
+bin/rails test test/controllers/feeds_controller_test.rb -n /設定/
+bundle exec rake dad:test features/08.訪問済みリンク.feature
+bundle exec rake dad:test features/15.フィードガジェット.feature:12
 ```
 
-## Test File Organization
+## Layout
 
 ```
-test/
-├── test_helper.rb                # Base setup: fixtures, Devise helpers, support files
-├── support/                      # Shared helper methods (class_eval'd into ActiveSupport::TestCase)
-│   ├── bookmarks.rb              # bookmark(), bookmark_params(), folder_params()
-│   ├── feeds.rb                  # feed_of()
-│   ├── mastodon_accounts.rb
-│   ├── preferences.rb            # preference_params()
-│   ├── users.rb                  # user() → User.first
-│   └── webmock.rb                # WebMock setup, RSS feed stubs
-├── fixtures/                     # YAML fixtures for all models
-│   ├── users.yml
-│   ├── bookmarks.yml
-│   ├── preferences.yml
-│   ├── portals.yml
-│   ├── todos.yml
-│   ├── notes.yml
-│   ├── feeds.yml
-│   └── mastodon_accounts.yml
-├── models/                       # ActiveSupport::TestCase
-├── controllers/                  # ActionDispatch::IntegrationTest
-│   └── welcome_controller/       # Subdirectory grouping for complex controllers
-├── assets/                       # Contract tests for JS/CSS source (no browser)
-├── services/                     # Tests for app/services/ classes
-├── i18n/                         # Locale parity and i18n smoke tests
-├── helpers/                      # ActionView::TestCase for helpers
-└── system/                       # (empty — system tests not in use)
+test/                                  # 76 *_test.rb files
+├── test_helper.rb                     # daddy/test_help, fixtures :all, support/ class_eval, Devise IntegrationHelpers
+├── support/                           # bookmarks, feeds, mastodon_accounts, preferences, users (user → User.first),
+│                                      # webmock (disable_net_connect!, allow_localhost; RSS stubs), query_counter
+├── fixtures/                          # users, oauth_identities, preferences, portals, bookmarks, feeds, notes,
+│                                      # todos, mastodon_accounts, visited_links, files/
+├── models/                            # incl. user_purge, user_disconnect_auth, user_password_auth, user_two_factor,
+│                                      # user_mastodon_handle, visited_link, x_api_call, oauth_identity,
+│                                      # active_record_dependent_contract
+├── controllers/                       # IntegrationTest; admin/, users/, welcome_controller/{dashboard,layout_structure,root_path}
+├── services/                          # x_client, mastodon_client, *_normalizer
+├── lib/omniauth/strategies/           # Mastodon strategy
+├── assets/                            # 18 source-level contract tests for JS / CSS
+├── i18n/                              # locales_parity, rails_i18n_smoke, changelog, admin_users, email_registrations, portal_column_widths
+├── helpers/                           # application_helper, welcome_helper
+└── integration/ mailers/ system/      # empty
 
-features/
-├── 01.ブックマーク.feature        # Cucumber scenarios (Japanese)
-├── 02.タスク.feature
-├── 03.モダンテーマ.feature
-├── 04.ノート.feature
-├── 05.Mastodon.feature
-├── 06.X.feature
-├── 07.設定.feature
-├── step_definitions/             # Step implementation (.rb files, Japanese regex)
-│   ├── bookmarks.rb
-│   ├── preferences.rb
-│   └── ...
+features/                              # 15 feature files (01–15; two share 07)
+├── step_definitions/                  # one file per domain (bookmarks, todos, notes, feeds, visited_links, x_accounts,
+│                                      # mastodon, preferences, connected_accounts, facebook, admin_*, account_deletion,
+│                                      # gadget_settings_dialog, modern_theme, simple_theme)
 └── support/
-    ├── env.rb                    # require 'daddy/cucumber/rails'
-    ├── hooks.rb                  # Before/After hooks (preference reset, WebMock stubs)
-    ├── login.rb                  # Login module (World-mixed)
-    ├── test_support.rb           # Loads test/support/*.rb into Cucumber World
-    └── window_resize.rb          # Browser window helpers + @mobile_portal tag hook
+    ├── env.rb                         # require 'daddy/cucumber/rails'
+    ├── hooks.rb                       # global Before + tagged Before/After hooks
+    ├── login.rb                       # sign_in(user) via the UI (+ TOTP); resets preferences once per user
+    ├── preferences_reset.rb           # reset_preferences_via_browser! — fills /preferences with defaults
+    ├── gadget_settings_helpers.rb
+    ├── test_support.rb                # mixes test/support/*.rb into World
+    └── window_resize.rb               # resize_browser_window, @mobile_portal (390×844)
 ```
 
-## Test Helper Setup
+## Fixtures
 
-**`test/test_helper.rb`:**
+- Primary user `users(:one)` (= `User.first`), password `testtest`, `admin: true`.
+- X identities live in `oauth_identities.yml` (e.g. `twitter_user_twitter2`: provider `twitter2`, uid `fixture_twitter_uid`), not on `users`.
+- Encrypted columns are plain text in fixtures; `config/environments/test.rb` sets `support_unencrypted_data = true`.
+
+## Minitest Patterns
+
 ```ruby
-require 'daddy/test_help'
-# ...
-class ActiveSupport::TestCase
-  fixtures :all
-  Dir[File.join(File.dirname(__FILE__), 'support', '*.rb')].each do |f|
-    self.class_eval File.read(f)
-  end
-end
-
-class ActionDispatch::IntegrationTest
-  include Devise::Test::IntegrationHelpers
-end
-```
-
-All files in `test/support/` are `class_eval`'d into `ActiveSupport::TestCase`, making their methods available globally in all Minitest tests.
-
-**Cucumber World modules (`features/support/`):**
-- `Login` module — mixed in via `World(Login)`, provides `sign_in(user)` and `current_user`
-- `TestSupport` module — loads all `test/support/*.rb` files, providing `user`, `bookmark`, `preference_params`, etc. in step definitions
-
-## Fixture Patterns
-
-Fixtures use YAML with explicit `id:` values for fixtures that need stable IDs (user `1`, `2`, `3`), and named fixtures for association lookups:
-
-```yaml
-# test/fixtures/users.yml
-1:
-  id: 1
-  email: user@example.com
-  encrypted_password: $2a$10$...   # pre-hashed, password is "testtest"
-  otp_secret: KCWJDXNH2EJIHB7NUZL42TFZYDRWERPB
-  otp_required_for_login: false
-
-twitter_user:
-  email: dummy_00000000-0000-0000-0000-000000000001@example.com
-  x_user_name: twitter_test_user
-  provider: twitter2
-  uid: fixture_twitter_uid
-  oauth2_token: fixture_oauth2_token  # plain text — support_unencrypted_data: true in test.rb
-```
-
-**Important:** Fixtures bypass ActiveRecord callbacks and encryption. `config/environments/test.rb` sets `config.active_record.encryption.support_unencrypted_data = true` so fixture plain-text values are readable alongside encrypted values.
-
-**Primary test user:** `user` helper method returns `User.first` (fixture id: 1, email: `user@example.com`, password: `testtest`).
-
-**Accessing named fixtures in model tests:**
-```ruby
-u = users(:twitter_user)   # standard Rails fixture accessor
-```
-
-## Common Minitest Patterns
-
-**Controller (integration) test structure:**
-```ruby
-require 'test_helper'
-
-class BookmarksControllerTest < ActionDispatch::IntegrationTest
-  def test_一覧
-    sign_in user           # Devise helper — signs in User.first
-    get bookmarks_path
-    assert_response :success
-    assert_equal '/bookmarks', path
-  end
-
-  def test_他人のブックマークは参照できない
-    sign_in user
-    assert other_bookmark = Bookmark.where('user_id <> ?', user).first
-    get bookmark_path(other_bookmark)
-    assert_response :not_found
-  end
-end
-```
-
-**Model test structure:**
-```ruby
-require 'test_helper'
-
-class PreferenceTest < ActiveSupport::TestCase
-  def test_文字サイズは選択肢のみ有効
-    p = Preference.default_preference(user)
-    Preference::FONT_SIZES.each do |font_size|
-      p.font_size = font_size
-      assert p.valid?, "#{font_size} should be valid"
-    end
-    p.font_size = 'extra-large'
-    assert_not p.valid?
-  end
-end
-```
-
-**Asset contract test structure** (no browser — reads source file directly):
-```ruby
-require 'test_helper'
-
-class PortalLazyJsContractTest < ActiveSupport::TestCase
+# test/controllers/feed_article_histories_controller_test.rb
+class FeedArticleHistoriesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @source = Rails.root.join('app/assets/javascripts/portal_lazy.js').read
+    @user = User.find(1)
+    @other_user = User.find(2)
+    @user.preference.update!(use_feed_article_histories: true)
+    VisitedLink.delete_all
   end
 
-  test 'window.portalLazy namespace is declared at top level' do
-    assert_includes @source, 'window.portalLazy = window.portalLazy || {};'
+  def test_index_success
+    sign_in @user
+    get feed_article_histories_path
+    assert_response :success
+    assert_select '#history-page.history-page', count: 1
   end
 end
 ```
 
-Both `def test_name` and `test 'description' do` syntaxes are used. Domain tests prefer `def test_<日本語>`, contract/regression tests often use `test 'English description' do`.
+Newer tests often load users with `User.find(1)` / `User.find(2)` in `setup` rather than the `user` helper.
 
-## Mocking and HTTP Stubbing
+- Both `def test_<日本語>` (domain) and `test 'English description' do` (contract / regression) are used.
+- Ownership tests: request another user's record → `assert_response :not_found`.
+- Query-count guards: `count_visited_link_queries { … }` (`test/support/query_counter.rb`).
 
-**WebMock** (`test/support/webmock.rb`):
-```ruby
-WebMock.disable_net_connect!(allow_localhost: true)
-# allow_localhost: true permits Capybara's embedded Puma + Selenium ChromeDriver
+**Asset contract tests** read source files and assert on strings or regexes (no browser), e.g. `visited_links_js_contract_test.rb` checks the IIFE wrapper, the delegated selector excluding bookmark / todo gadgets, and that `addClass('link--visited')` comes before `postVisitedLink(`. `css_architecture_contract_test.rb` forbids theme selectors in non-theme SCSS. When you change a JS / CSS file that has a contract test, run that test.
 
-# Pre-stub fixture feed URLs:
-WebMock.stub_request(:get, /slashdot/).to_return(status: 200, body: STUB_RSS_BODY, ...)
-```
+**Structural contract:** `active_record_dependent_contract_test.rb` fails if any model declares `dependent: :destroy` or `dependent: :delete_all`.
 
-**Faraday test adapter** (for service tests — no WebMock needed):
-```ruby
-stubs = Faraday::Adapter::Test::Stubs.new
-stubs.get(%r{/2/users/\w+/following}) { [200, {'Content-Type' => 'application/json'}, body.to_json] }
-conn = Faraday.new { |f| f.adapter :test, stubs }
-result = XClient.new(connection: conn).fetch_following(user: users(:twitter_user))
-```
+## HTTP Stubbing
 
-**Singleton method injection** (for Faraday.new in controllers — see `BookmarksControllerTest`):
-```ruby
-def with_faraday_new(fake_conn)
-  singleton = Faraday.singleton_class
-  singleton.send(:alias_method, :__bookmarks_test_original_new, :new)
-  singleton.send(:define_method, :new) { |*_args, &_block| fake_conn }
-  yield
-ensure
-  singleton.send(:alias_method, :new, :__bookmarks_test_original_new)
-  singleton.send(:remove_method, :__bookmarks_test_original_new)
-end
-```
-
-**Cleanup in tests with side effects:** Use `ensure` blocks to restore state:
-```ruby
-def test_twitter_from_omniauth_creates_user
-  # ...
-ensure
-  User.where(uid: 'brand-new-uid-999', provider: 'twitter').delete_all
-end
-```
+- **WebMock** globally (`test/support/webmock.rb`); localhost allowed for Capybara / ChromeDriver.
+- **Faraday test adapter** for services: `XClient.new(connection: Faraday.new { |f| f.adapter :test, stubs })`.
+- **`Faraday.new` singleton swap** in `BookmarksControllerTest` for `fetch_title`.
+- X data stubs target `api.twitter.com`; token refresh targets `api.x.com`.
 
 ## Cucumber Patterns
 
-**Feature files:** Written in Japanese with `# language: ja` header. Numbered by domain area (e.g., `01.ブックマーク.feature`).
+- Most features use `# language: ja` (`機能:` / `シナリオ:` / `もし` / `ならば`); `13.Facebook.feature` is written in English Gherkin.
+- `capture` at the end of steps saves screenshots to `features/reports/images/`.
+- **Global `Before`:** `Capybara.reset_sessions!`, clears the memoized user and preference-reset marker, deletes all `MastodonAccount`, `XAccount`, `XApiCall`, `VisitedLink` rows, and resizes to 1280×800.
+- **Preference state is reset through the browser** (`/preferences` form) on the first `sign_in` of each scenario. Do not write preferences through ActiveRecord in steps; that caused the cross-connection leakage fixed in `bce47df`.
+- **Tags with hooks:** `@mastodon_gadget`, `@x_gadget`, `@x_manual_add`, `@feed_visited_links`, `@mobile_portal`, `@account_deletion`, `@admin_purge`, `@admin_x_api_report_rack` (switches to `:rack_test`), `@connected_accounts`. Feature-level tags without hooks: `@facebook`, `@admin_x_api_report`.
+- Remote APIs are stubbed with WebMock inside the hooks, so the in-process server never reaches X, Mastodon or RSS hosts.
 
-**Step definitions:** Japanese regex with `もし` (Given/When), `ならば` (Then):
-```ruby
-もし /^ブックマーク管理画面を開き、ブックマーク追加用のアイコンをクリックします。$/ do
-  sign_in user
-  visit bookmarks_path
-  find('a.breadcrumbs-action-btn[title="ブックマークを追加"]').click
-end
-```
+## Choosing Related Tests
 
-**`capture` helper:** Called at the end of most step definitions — takes a screenshot saved to `features/reports/images/`.
-
-**`Before` hook** (runs before every scenario, resets preference state):
-```ruby
-Before do
-  Capybara.reset_sessions!
-  instance_variable_set(:@_current_user, nil)
-  MastodonAccount.delete_all
-  XAccount.delete_all
-  pref = user.preference
-  pref.update!(theme: "modern", use_note: false, use_todo: false,
-               use_calendar: true, locale: "ja", portal_column_count: 3)
-end
-```
-
-**Tagged hooks** for optional feature setup:
-```ruby
-Before('@mastodon_gadget') do
-  MastodonAccount.create!(...)
-  @_mastodon_stub_lookup = WebMock.stub_request(:get, /ruby\.social\/.../).to_return(...)
-end
-
-After('@mastodon_gadget') do
-  WebMock.remove_request_stub(@_mastodon_stub_lookup) if @_mastodon_stub_lookup
-end
-```
-
-Available Cucumber tags: `@mastodon_gadget`, `@x_gadget`, `@mobile_portal`
-
-**Login in Cucumber:** `sign_in user` (from `Login` module) — visits `/users/sign_in`, fills credentials, handles 2FA TOTP if enabled. Password for fixture users is always `testtest`.
-
-**Window resizing for mobile tests:**
-```ruby
-Before('@mobile_portal') { resize_browser_window(390, 844) }
-After('@mobile_portal')  { resize_browser_window(1280, 800) }
-```
-
-## Known Flakiness
-
-`bundle exec rake dad:test` exhibits intermittent scenario-order-dependent failures:
-
-- **Root cause:** Scenarios share DB state. The `Before` hook resets the fixture user's preference, but the reset was not always present historically, and state from one scenario can affect another.
-- **Specific symptoms seen:** `Unable to find checkbox "タスクを表示する"`, missing `.todo_actions` on `/`, missing `#notes-tab-panel`.
-- **Mitigation:** Re-run once on failure. A consistent failure across two runs is a real regression. A failure that disappears on re-run is a known pre-existing flake.
-- **Current fix:** The `Before` hook in `features/support/hooks.rb` explicitly resets `use_note`, `use_todo`, `theme`, `locale`, and `portal_column_count` before each scenario.
-
-## Test Types by Directory
-
-| Directory | Base Class | Purpose |
-|-----------|-----------|---------|
-| `test/models/` | `ActiveSupport::TestCase` | Model validations, business logic |
-| `test/controllers/` | `ActionDispatch::IntegrationTest` | HTTP request/response, HTML assertions |
-| `test/assets/` | `ActiveSupport::TestCase` | CSS/JS source contract tests (regex on source files) |
-| `test/services/` | `ActiveSupport::TestCase` | Service classes with Faraday stubs |
-| `test/i18n/` | `ActiveSupport::TestCase` | Locale key parity, translation smoke tests |
-| `test/helpers/` | `ActionView::TestCase` | View helpers |
-| `features/` | Cucumber + Capybara | Full E2E browser tests |
+| Changed | Run |
+|---------|-----|
+| `app/models/visited_link.rb`, `visited_links_controller.rb` | `test/models/visited_link_test.rb`, `test/controllers/visited_links_controller_test.rb`, `features/08.訪問済みリンク.feature` |
+| `feed_article_histories` | its controller test + `features/08.訪問済みリンク.feature` |
+| Feed gadget / settings dialog | `feeds_controller_test.rb`, `test/assets/gadget_header_settings_contract_test.rb`, `features/15.フィードガジェット.feature` |
+| X | `x_accounts_controller_test.rb`, `test/services/x_client_test.rb`, `features/06.X.feature`, `07.X手動追加.feature`, `10.X_API利用状況.feature` |
+| Mastodon gadget / OAuth | `mastodon_accounts_controller_test.rb`, services, `test/lib/omniauth/…`, `features/05.Mastodon.feature` |
+| Preferences | `preferences_controller_test.rb`, `preference_test.rb`, `features/07.設定.feature` |
+| Auth disconnect / identities | `oauth_identities_controller_test.rb`, `user_disconnect_auth_test.rb`, `features/14.連携アカウント.feature` |
+| Account delete / purge | `user_purge_test.rb`, `admin/users_controller_test.rb`, `features/09.…`, `12.…` |
+| Theme CSS | relevant `test/assets/*` + `features/03.モダンテーマ.feature` |
+| Locale YAML | `test/i18n/` |
 
 ## Coverage
 
-`simplecov` gem is present (`require: false`) but not auto-loaded. No coverage enforcement configured. Run manually if needed by requiring simplecov before test_helper.
+Jenkins sets `COVERAGE=true` and publishes `coverage/index.html`. Nothing in this repo requires `simplecov`, so it is presumably started by `daddy/test_help` (the first line of `test_helper.rb`); not verified here. No threshold is enforced.
+
+## Flakiness
+
+Resolved 2026-05-19 (`bce47df`, browser-driven preference resets). If `dad:test` fails, re-run once; a failure that repeats is a real regression.
 
 ---
 
-*Testing analysis: 2026-05-23*
+*Testing analysis: 2026-11-26*

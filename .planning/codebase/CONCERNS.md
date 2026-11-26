@@ -1,260 +1,131 @@
 # Codebase Concerns
 
-**Analysis Date:** 2026-05-23 (OAuth2 / codebase doc refresh)
+**Analysis Date:** 2026-11-26 (full refresh; every item was re-checked against `HEAD` `570ba34`)
 
----
+Severity: **HIGH** = security exposure or likely production breakage · **MEDIUM** = real risk or debt worth scheduling · **LOW** = hygiene.
 
-## Security Considerations
+## Security
 
-### [HIGH] SSRF via `fetch_title` — No Private IP Blocking
+### [HIGH] Server-side fetch of user-supplied URLs without private-address blocking (SSRF)
+- `BookmarksController#fetch_title` (`safe_fetch_title_url!` only checks the http/https scheme and that a host is present, then follows redirects); `FeedsController#fetch_title` and feed gadgets (`Feed#retrieve_feed` via `Daddy::HttpClient`); `MastodonClient` against `MastodonAccount.profile_url` hosts.
+- **Unauthenticated variant:** `POST /users/mastodon_instance` accepts any hostname (`MastodonInstanceNormalizer` rejects IP literals but not DNS names that resolve to internal addresses). The Mastodon strategy then POSTs `/api/v1/apps` to that host.
+- No resolve-then-check for loopback, RFC 1918, link-local or metadata addresses (`169.254.169.254`). The app runs on Kubernetes, so in-cluster services can be reached.
+- Tests cover only success, blank input and exceptions (`bookmarks_controller_test.rb:288–317`); none covers blocking.
+- Fix: one shared URL guard that resolves the host, rejects private ranges and re-checks every redirect hop. Apply it to all four paths.
 
-- Risk: The `BookmarksController#fetch_title` action accepts a user-supplied URL, validates it is `http`/`https`, then makes a server-side HTTP request via Faraday. It does not block `localhost`, `127.0.0.1`, `10.x`, `172.16.x`, or `192.168.x`. An authenticated user can probe internal services.
-- Files: `app/controllers/bookmarks_controller.rb:64–82` (`safe_fetch_title_url!` validates scheme only)
-- Current mitigation: Requires authentication (attacker must be a signed-in user). Only `http`/`https` schemes are allowed. No further blocking.
-- Recommendation: Resolve the hostname after parsing and reject RFC-1918/loopback addresses before making the request. Similar risk exists in `FeedsController#fetch_title` (`app/controllers/feeds_controller.rb:51–63`) which passes user-supplied `feed_url` directly to `Feed.new` and calls `feed?`, triggering the HTTP request inside `Feed#retrieve_feed`.
+### [HIGH] Encryption keys silently fall back to `'dev_dummy_key'`
+- `config/application.rb:39–41` uses `ENV.fetch(..., 'dev_dummy_key')` for all three AR encryption keys in **every** environment. A production pod missing the secret would encrypt OAuth tokens with a publicly known key.
+- Fix: in production, raise at boot when any key is missing.
 
-### [HIGH] Hardcoded Fallback Encryption Keys in `application.rb`
+### [MEDIUM] No Content Security Policy
+- `config/initializers/content_security_policy.rb` is fully commented out. Inline `<script>` blocks are used (e.g. gadget `portalLazy.register`, the mobile pre-hydration script), so enabling CSP needs nonces.
 
-- Risk: `config.active_record.encryption.*` keys fall back to the literal string `'dev_dummy_key'` when ENV vars are absent. If a production deployment is missing these ENV vars, all encrypted data (`users.oauth2_token`, `users.oauth2_refresh_token`, `users.otp_secret`) is encrypted with known keys.
-- Files: `config/application.rb:30–32`
-- Current mitigation: ENV var names are documented. Production deploys should set them.
-- Recommendation: Raise at boot if any of the three keys resolves to `'dev_dummy_key'` when `Rails.env.production?`. This prevents silent misconfiguration.
+### [MEDIUM] No rate limiting
+- No `rack-attack` and no Rails 8 `rate_limit` on sign-in, 2FA verification, `/users/mastodon_instance`, `fetch_title`, `/visited_links` or `/visited_links/toggle_like`.
+- `/visited_links` accepts arbitrary URLs (up to 2083 chars) without a source, so any authenticated user can grow `visited_links` without bound.
 
-### [MEDIUM] Content Security Policy Not Configured
+### [MEDIUM] `user.save(validate: false)` in the X OAuth path
+- `User.from_omniauth` (`twitter2` branch) also changes `email` when the user has a dummy address, and this skips the uniqueness and format validators. A real X email that already belongs to another active user hits the unique index and raises instead of producing a validation error.
 
-- Risk: The CSP initializer is entirely commented out. No `Content-Security-Policy` header is sent. Inline scripts and styles are unrestricted.
-- Files: `config/initializers/content_security_policy.rb` (all lines commented)
-- Current mitigation: Rails escapes template output by default; jQuery-based JS is inline in asset files.
-- Recommendation: Enable CSP with at minimum `default-src 'self'` and add nonce support for inline scripts.
+### [LOW] Host authorization disabled
+- `config.hosts` is commented out in `config/environments/production.rb:75`.
 
-### [MEDIUM] `html_safe` on Server-Generated QR Code SVG
+### [LOW] `bundler-audit.yml` contains a placeholder ignore
+- `config/bundler-audit.yml` ignores `CVE-THAT-DOES-NOT-APPLY`. Harmless, but it looks like a template that was never edited; real ignores should be documented.
 
-- Risk: The QR code SVG string is rendered via `@qr_code.html_safe` without sanitization.
-- Files: `app/views/users/two_factor_setup/setup.html.erb:6`
-- Current mitigation: `@qr_code` is produced by the `rqrcode` gem from the user's own OTP provisioning URI — not from user-supplied input. Risk is low but violates defence-in-depth.
-- Recommendation: Confirm the `rqrcode` gem never embeds user-controlled data in unsafe positions, or wrap with `ActionController::Base.helpers.sanitize`.
+### [LOW] `html_safe` on the QR SVG
+- `app/views/users/two_factor_setup/setup.html.erb:6`. The input is generated by the server (rqrcode from the provisioning URI), so the risk is low.
 
-### [MEDIUM] `secrets.yml` Contains Plaintext Dev/Test `secret_key_base`
+### Resolved since the last audit
+- `config/secrets.yml` with plaintext keys has been removed.
+- The admin gate is a single `Admin::BaseController`, with `users:promote_admin` documented in `lib/tasks/users.rake`.
 
-- Risk: `config/secrets.yml` stores plaintext dev and test `secret_key_base` values and is committed to git. Production key is read from `ENV["SECRET_KEY_BASE"]` but falls back to running `` `bin/rails secret` `` at runtime — producing a new key per process restart and invalidating all sessions.
-- Files: `config/secrets.yml`
-- Current mitigation: Dev/test keys are non-secret by convention.
-- Recommendation: Remove the shell-backtick fallback in production. Require `SECRET_KEY_BASE` env var to be set, or migrate to Rails credentials (`credentials.yml.enc`).
+## Configuration / Ops
 
-### [MEDIUM] `User.save(validate: false)` on X OAuth2 Update
+### [MEDIUM] ActionCable production adapter is Redis, but the `redis` gem is not bundled
+- `config/cable.yml` sets `production: adapter: redis`, and `Gemfile.lock` has no `redis`. No channels exist today, so nothing breaks, but adding any cable feature would fail in production. Either switch to `async` or `solid_cable`, or remove ActionCable.
 
-- Risk: When an existing X-linked user signs in via `twitter2` OmniAuth, `user.save(validate: false)` is called. This skips email format validation and any future validators.
-- Files: `app/models/user.rb` (`from_omniauth` twitter2 branch)
-- Current mitigation: Only updates OAuth/profile fields (`provider`, `uid`, `oauth2_token`, `oauth2_refresh_token`, `oauth2_token_expires_at`, `x_user_name`, optional `email`) — none have model-level validations beyond the dummy-email guard on `:update`.
-- Recommendation: Use `update_columns` for token fields to be explicit about bypassing callbacks, or restructure to keep validations active.
+### [MEDIUM] `mysql2` only in `group :itamae`, while the image installs `without 'itamae …'`
+- `Gemfile` and `Dockerfile.base` disagree on the surface. Production evidently works, so `mysql2` must arrive another way (most likely `daddy` setup or the base image), but that way isn't visible here. Document it, or move `mysql2` to the default group.
 
-### [LOW] Host Authorization Disabled in Production
+### [LOW] Lint is not in CI
+- Jenkins runs bundler-audit, Minitest and Cucumber but not `yarn run lint`. Lint regressions rely on local discipline (the `CLAUDE.md` gate).
 
-- Risk: `config.hosts` is commented out in `config/environments/production.rb:75–81`. DNS rebinding protection is not enforced.
-- Files: `config/environments/production.rb:75`
-- Current mitigation: `config.force_ssl = true` and `config.assume_ssl = true` are active.
-- Recommendation: Uncomment and set `config.hosts` to the production hostname.
-
-### [LOW] `admin?` Relies on `users.admin` Column Only
-
-- Risk: Admin access is a plain boolean flag with no role hierarchy or audit trail.
-- Files: `users.admin`, `Admin::BaseController#require_admin`, drawer nav guards
-- Current mitigation: `User#admin?` is the Rails predicate for `users.admin`; admin routes return 404 for non-admins.
-- Recommendation: Document who receives `admin: true` in production seeds/ops runbooks.
-
----
+### [LOW] Stale scaffolding and hard-coded values
+- `config/ci.rb` references `bin/importmap audit`, which doesn't exist. `Jenkinsfile` hard-codes `MILESTONE = "v1.37.1"` for release tags, so it must be bumped by hand each milestone.
+- Two feature files share the prefix `07.` (`07.X手動追加.feature`, `07.設定.feature`).
+- ActiveStorage is loaded (`rails/all`) with routes disabled and no attachments.
 
 ## Tech Debt
 
-### [HIGH] Faraday Pinned at v1 (EOL)
+### [HIGH] Faraday 1.x (1.10.6) + `faraday_middleware`
+- Faraday v1 is in maintenance only and `faraday_middleware` is deprecated. Used by `XClient`, `MastodonClient`, the Mastodon strategy and bookmark title fetch.
+- Fix: upgrade to Faraday 2 and replace `:follow_redirects` with `faraday-follow_redirects`.
 
-- Issue: `Gemfile.lock` shows `faraday (1.10.5)`. Faraday v2 was released and v1 is unmaintained. `faraday_middleware` is a v1-era companion gem.
-- Files: `Gemfile:14–16`, `Gemfile.lock`
-- Impact: Missing security fixes in HTTP client; `faraday_middleware` gem is deprecated and not compatible with Faraday v2.
-- Fix approach: Upgrade `faraday` to `~> 2.0`, replace `faraday_middleware` with Faraday v2 built-in middleware (`:follow_redirects` in `BookmarksController#fetch_title`).
+### [MEDIUM] `Feed#base_url` / `#request_path` / `#request_params` parse URLs with `split('/')`
+- `app/models/feed.rb:117–140`. Breaks on unusual URLs: no path, ports with userinfo, encoded `&` / `=`, fragments. Use `URI`.
 
-### [MEDIUM] `uglifier` Asset Pipeline (Legacy Sprockets JS Minifier)
+### [MEDIUM] `uglifier` + Sprockets + jQuery
+- ES5-era minifier (needs ExecJS / Node at build time) and no module system. Long-term migration to importmap or esbuild; no urgency.
 
-- Issue: `uglifier` (4.2.1) relies on ExecJS and a system JavaScript runtime. The project uses the Sprockets asset pipeline with jQuery rather than a modern bundler (Webpack, esbuild, importmap is mentioned in CI but assets use Sprockets).
-- Files: `Gemfile:30`, `app/assets/javascripts/`
-- Impact: Slow asset compilation; ExecJS adds a Node.js runtime dependency; no ES module support.
-- Fix approach: Long-term: migrate JS to importmap or esbuild. Short-term: accept current state.
+### [MEDIUM] `Portal#update_layout` writes one row at a time
+- `app/models/portal.rb`: a `where().first` plus `save!` per gadget, then a destroy per stale row. Fine at personal scale.
 
-### [MEDIUM] `Portal#update_layout` Has N+1 Writes
+### [MEDIUM] `User#preference` may return an unsaved record
+- Convenient for reads, but a trap for writes (`update_column` on an unsaved record raises). Consider `find_or_create`.
 
-- Issue: `update_layout` loops over every gadget ID in every column and issues a `WHERE ... FIRST` + `SAVE!` per entry. For a portal with N gadgets, this is O(N) queries inside a transaction.
-- Files: `app/models/portal.rb:31–49`
-- Impact: Acceptable for small datasets (personal app), but degrades with more gadgets.
-- Fix approach: Load all existing `PortalLayout` records for the user once, diff in memory, then bulk-insert/update.
+### [LOW] `User#create_default_portal` runs on every `after_save`
+- Runs an extra query on every user save (including token refreshes). `after_create` would be enough.
 
-### [MEDIUM] `Feed#base_url` / `#request_path` URL Parsing is Fragile
+### [LOW] `XAccount.refresh_cache_from_items!` soft-deletes one row at a time
+- Could be a single `update_all`.
 
-- Issue: `base_url` and `request_path` split the feed URL by `/` character rather than using `URI`. A feed URL with an unusual path (double slashes, encoded characters) will produce wrong results silently.
-- Files: `app/models/feed.rb:117–139`
-- Impact: Feeds with non-standard URLs fail silently (returns `false` from `feed?`).
-- Fix approach: Replace string-split logic with `URI.parse(feed_url)` to extract host and path components.
+### [LOW] Mixed JS module styles
+- IIFE (preferred) next to `$(document).ready` files, and a few `var`s (`note_gadget.js`). ESLint does not enforce either rule.
 
-### [MEDIUM] `Preference.default_preference` Returns an Unsaved Record
+### Resolved since the last audit
+- `Preference#migrate_legacy_font_sizes!` has been removed.
+- `PreferencesController` POST route removed.
+- "Missing `user_id` indexes": every `user_id` column has an index (FK-generated `fk_rails_*` or explicit), so that item was wrong.
+- The `dependent:` question is settled by policy: `dependent:` is forbidden by `active_record_dependent_contract_test.rb`, and cleanup goes through `User#purge!`.
 
-- Issue: `User#preference` calls `Preference.default_preference(self)` which returns an unsaved `Preference.new`. Callers that call methods on this object get sensible defaults, but any call to `preference.update!` or `preference.save!` will create a new record only if the caller also saves. The `ApplicationController#render_font_size_migration_notice` calls `preference.update_column` on this potentially unsaved object, which would raise.
-- Files: `app/models/user.rb:84–86`, `app/models/preference.rb:43–52`, `app/controllers/application_controller.rb:14–23`
-- Impact: `font_size_notice_pending?` is guarded so `update_column` is never reached on an unsaved record. Currently safe but the pattern is easy to misuse in future code.
-- Fix approach: Use `find_or_create_by` in `User#preference` instead of returning an unsaved record.
+## Data Lifecycle
 
-### [LOW] `PreferencesController` Uses Only `update` (POST route removed)
+### [MEDIUM] `User#purge!` is a hand-maintained list of tables
+- Any new user-owned table must be added to the list, or it will be orphaned on purge. `user_purge_test.rb` guards the current list. Consider a test that compares the list against every model with a `user_id` column.
 
-- Issue: Preferences form PATCHes `preference_path(@user)`; `POST /preferences` (`create`) was removed as dead code (2026-05-23).
-- Files: `app/controllers/preferences_controller.rb`, `config/routes.rb`
-- Fix approach: None required unless a new client starts POSTing to collection path again.
+### [LOW] No retention for `visited_links` and `x_api_calls`
+- Both tables grow forever. Reading history is paginated (25 per page) and indexed on `(user_id, visited_at)` / `(user_id, liked_at)`, so reads stay fast, but storage does not shrink.
 
-### [LOW] No `dependent:` Option on Most `User` Associations
+## Performance
 
-- Issue: Most `User` associations lack `dependent: :destroy` or `dependent: :nullify`. A hard-delete of a User record leaves orphaned rows across `notes`, `bookmarks`, `feeds`, `todos`, `portals`, `portal_layouts`, `preferences`, and `mastodon_accounts`. The comment in `user.rb` acknowledges this for `:notes` but the problem extends to all associations.
-- Files: `app/models/user.rb:19–25`
-- Impact: Orphaned data on user hard-delete. In practice, user deletion is rare, but there is no protection.
-- Fix approach: Add `dependent: :destroy` to associations, or add database-level `ON DELETE CASCADE` via migration, or enforce a soft-delete-only policy and document it explicitly.
+### [MEDIUM] RSS, X and Mastodon fetched synchronously per gadget XHR, with no caching
+- Each feed / X / Mastodon gadget makes a live outbound call on every portal load (mitigated on mobile by `portalLazy`). A slow upstream ties up a Puma thread for up to 5s (X / Mastodon timeouts), and feeds have no explicit timeout beyond `Daddy::HttpClient`'s defaults. There are no background jobs (`active_job.queue_adapter` is not configured).
+- Fix: cache upstream responses (DB or `Rails.cache`) and refresh them in a job.
 
----
+### [LOW] `Portal#get_gadgets` queries each gadget type separately, every request
+- Bounded by the number of gadget types; acceptable.
 
-## Performance Bottlenecks
+## Test Gaps
 
-### [MEDIUM] `Portal#portal_columns` Makes Multiple Separate Queries Per Page Load
-
-- Issue: `get_gadgets` in `portal.rb` issues separate queries for `Todo`, `Feed`, `MastodonAccount`, and `XAccount` for every page render of the portal. No eager loading.
-- Files: `app/models/portal.rb:53–85`
-- Impact: Linear in number of gadget types; currently bounded by the small number of gadget types. Acceptable for personal use.
-
-### [MEDIUM] Feed RSS Fetch on Every Request (No Caching)
-
-- Issue: `Feed#feed` fetches the remote RSS URL synchronously on the first call per request. The portal page renders each feed gadget, which triggers a separate HTTP call per feed. No HTTP-level caching, no background jobs, no ETag support.
-- Files: `app/models/feed.rb:13–24`, `app/models/feed.rb:67–72`
-- Impact: Portal page load time scales linearly with the number of feeds. A slow or unavailable RSS server blocks the page render for that gadget.
-- Fix approach: Introduce background fetching (ActiveJob) to cache feed content in the database, serve from cache on page render, and refresh asynchronously. The portal already uses XHR lazy loading (`portal_lazy.js`) for gadgets, which partially mitigates visible slowness.
-
-### [LOW] `XAccount.refresh_cache_from_items!` Has N+1 Updates on Soft-Delete
-
-- Issue: The soft-delete loop calls `acc.update!(deleted: true)` per missing record.
-- Files: `app/models/x_account.rb:51–55`
-- Fix approach: Replace with `XAccount.where(user_id: user.id).where.not(x_user_id: seen.keys).update_all(deleted: true, updated_at: Time.current)`.
-
-### [LOW] Missing DB Indexes on Frequently Filtered Columns
-
-- Issue: `bookmarks.user_id`, `feeds.user_id`, `todos.user_id`, `portals.user_id`, `portal_layouts.user_id`, `preferences.user_id` have no explicit indexes in `db/schema.rb`. Only `mastodon_accounts`, `notes`, and `x_accounts` have `user_id` indexes.
-- Files: `db/schema.rb`
-- Impact: Full table scans on `bookmarks`, `feeds`, `todos`, `portals` when filtering by `user_id`. Negligible for a single-user app; significant if the user base grows.
-- Fix approach: Add indexes via migration: `add_index :bookmarks, :user_id`, `add_index :feeds, :user_id`, etc.
-
----
-
-## Test Coverage Gaps
-
-### [MEDIUM] `Portal#update_layout` Has No Unit Test
-
-- What's not tested: The `update_layout` method that processes drag-and-drop portal layout saves. Authorization boundary (can a user update another user's portal via `save_state`?) is only tested end-to-end via Cucumber, not in Minitest.
-- Files: `app/models/portal.rb:31–49`, `app/controllers/welcome_controller.rb:10–13`
-- Risk: A regression in layout persistence would only be caught by Cucumber, which is the slowest suite.
-- Priority: Medium
-
-### [MEDIUM] `Feed#base_url` / `#request_path` URL Edge Cases Untested
-
-- What's not tested: Feed URLs with query strings, encoded characters, no path segment, trailing slashes.
-- Files: `app/models/feed.rb:117–139`, `test/models/feed_test.rb`
-- Risk: Silent misfetch for unusual but valid feed URLs.
-- Priority: Medium
-
-### [MEDIUM] `BookmarksController#fetch_title` SSRF Guard Has No Test
-
-- What's not tested: No unit or integration test verifies that `fetch_title` rejects private IPs or non-http/https schemes.
-- Files: `test/controllers/bookmarks_controller_test.rb`
-- Risk: SSRF guard regression could go undetected.
-- Priority: High (given SSRF risk noted above)
-
-### [LOW] Admin Gate Integration Coverage Thin Outside Admin Controllers
-
-- What's tested: `User#admin?` maps to `users.admin` (`test/models/user_test.rb`); admin controller access-control tests exist.
-- What's not tested: Every future admin route must remember `Admin::BaseController` inheritance — no repo-wide static check.
-- Priority: Low
-
-### [LOW] Missing Translation Detection Not Enforced in Tests
-
-- What's not tested: `config.i18n.raise_on_missing_translations` is commented out in both `development.rb` and `test.rb`. Missing translation keys produce silent `translation missing:` strings.
-- Files: `config/environments/test.rb:46`, `config/environments/development.rb:62`
-- Risk: UI silently shows raw translation keys if a new locale key is added to one locale but forgotten in another.
-- Priority: Low (covered partially by `test/i18n/locales_parity_test.rb`)
-
----
+- **[HIGH]** No test that fetch paths reject private or loopback targets (follows from the SSRF item).
+- **[MEDIUM]** `Portal#update_layout` has no direct Minitest coverage; only Cucumber drag-drop covers it.
+- **[MEDIUM]** `Feed` URL-splitting edge cases are untested.
+- **[LOW]** `config.i18n.raise_on_missing_translations` is commented out in test and dev. The parity test catches missing keys only when both locale files lack them.
+- **[LOW]** No repo-wide check that every `app/controllers/admin/*` inherits `Admin::BaseController`.
 
 ## Fragile Areas
 
-### [MEDIUM] Cucumber Suite — Shared DB State Between Scenarios
+- **Asset contract tests** (`test/assets/*`) assert on literal source text. Harmless refactors (renaming a selector, switching `$(document).ready` to an IIFE) fail them. Update the contract in the same change.
+- **Cucumber state:** the global `Before` deletes only Mastodon / X / XApiCall / VisitedLink rows. Bookmarks, todos, notes, feeds and layouts persist across scenarios. Preferences must be changed through the `/preferences` UI (see `bce47df`), never through ActiveRecord in steps.
+- **Mastodon OAuth session keys** (`mastodon_instance`, `mastodon_oauth_client_id/secret/instance`) must be cleared on both success and failure paths. The callback clears them; the failure path relies on the next `POST /users/mastodon_instance`.
+- **Single primary-user assumptions:** fixtures `users(:one)` (id 1, admin) and the Cucumber `user` helper (`User.first`).
 
-- Files: `features/support/hooks.rb`, all `features/*.feature` files
-- Why fragile: Scenarios share a single database with no truncation between runs. The `Before` hook resets `Preference` fields and destroys `MastodonAccount`/`XAccount` rows but does not reset `Bookmark`, `Feed`, `Todo`, `Note`, or `PortalLayout` rows. Scenario-order-dependent failures are known and documented in `CLAUDE.md`.
-- Safe modification: Always tag new scenarios that create data; add cleanup in `After` hooks or add DB truncation for affected tables in the global `Before` hook.
+## Observability
 
-### [MEDIUM] `User#create_default_portal` Fires on Every `after_save`
-
-- Files: `app/models/user.rb:117–122`
-- Why fragile: The `after_save` callback runs on every user save (not just create), executing a `Portal.where(...).not_deleted.empty?` query each time. If portal creation fails (e.g., validation error), the error is raised inside the callback chain.
-- Safe modification: Change to `after_create` to only run on initial user creation.
-
-### [LOW] `Preference#migrate_legacy_font_sizes!` One-Time Migration Left in Model
-
-- Files: `app/models/preference.rb:60–66`
-- Why fragile: The migration method is still present in the model. It was designed as a one-time data migration but has no idempotency guard — calling it again would set `font_size = 'small'` and re-raise the notice for all users.
-- Safe modification: Move to a rake task or data migration script, then remove from the model once the migration is confirmed complete in production.
+### [LOW] No error tracking or APM
+- STDOUT logs only. OmniAuth logs go to the Rails logger (`omniauth_logger.rb`). X API errors are captured in `x_api_calls.error_code` and visible at `/admin/x_api_usages`, which is the only operational dashboard.
 
 ---
 
-## Scaling Limits
-
-### [LOW] Single-User Architecture Assumptions Baked Into Tests and Model Logic
-
-- Cucumber `user` helper uses `User.first`. Primary fixture user is `id: 1` with `admin: true`.
-- Current capacity: Works for personal use with a single primary user.
-- Scaling path: Not applicable for current use case, but limits operability if the app is ever shared.
-
----
-
-## Dependencies at Risk
-
-### [HIGH] `faraday` (1.10.5) — Major Version Behind
-
-- Risk: Faraday v1 is unmaintained. `faraday_middleware` companion is not compatible with v2.
-- Impact: No upstream security patches for the HTTP client used in feed fetching and X/Mastodon API calls.
-- Migration plan: Upgrade to `faraday ~> 2.0`, remove `faraday_middleware`, update middleware usage in `app/services/x_client.rb` and `app/services/mastodon_client.rb`.
-
-### [MEDIUM] `uglifier` (4.2.1) — Requires ExecJS / Node.js Runtime
-
-- Risk: Depends on a system Node.js runtime for asset compilation. ExecJS is in maintenance mode.
-- Impact: Build breakage if Node.js environment changes; no path to ES modules.
-- Migration plan: Migrate to importmap (already partially referenced in `config/ci.rb`) or esbuild.
-
-### [MEDIUM] `jquery-rails` / `jquery-ui-rails` — Legacy jQuery Dependency
-
-- Risk: No known active security vulnerabilities, but the gems pin the project to a legacy frontend model incompatible with modern asset strategies.
-- Impact: Blocks adoption of modern JS patterns (Stimulus, Turbo, importmap-native modules).
-- Migration plan: Long-term rewrite to stimulus/vanilla JS; not urgent.
-
----
-
-## Missing Critical Features
-
-### [MEDIUM] No Background Job Processing for Feed Fetches
-
-- Problem: RSS feeds are fetched synchronously during page render. There is no `ActiveJob` adapter configured for production (commented out in `production.rb`). Active Storage is configured but Active Job queue adapter is the default (inline/synchronous).
-- Blocks: Feed reliability and portal page performance at scale.
-
-### [MEDIUM] No Rate Limiting on Auth or API Endpoints
-
-- Problem: No `rack-attack` or equivalent rate limiting is configured. The `fetch_title` endpoints and Devise sign-in have no brute-force or flood protection.
-- Blocks: Hardening against credential stuffing and SSRF amplification attacks.
-
-### [LOW] No Error Tracking / Observability
-
-- Problem: No Sentry, Honeybadger, or equivalent error tracker configured. Errors are logged to STDOUT only in production.
-- Blocks: Visibility into production errors without log access.
-
----
-
-*Concerns audit: 2026-05-23 (OAuth2 stack; removed resolved omniauth-twitter / OAuth1 items)*
+*Concerns audit: 2026-11-26*
