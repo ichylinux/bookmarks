@@ -1,183 +1,106 @@
 # External Integrations
 
-**Analysis Date:** 2026-05-23
+**Analysis Date:** 2026-11-26
 
-## APIs & External Services
+## Sign-In Providers (OmniAuth)
 
-**Google OAuth2:**
-- Purpose: Social sign-in ("Sign in with Google")
-- SDK/Client: `omniauth-google-oauth2` gem
-- Scope: `['email']` (email only)
-- Auth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` env vars (configured in `config/app_config.yml`)
-- No separate Google API key in `config/app_config.yml` (removed; sign-in uses client id/secret only)
-- Flow: OmniAuth callback → `User.from_omniauth` in `app/models/user.rb`
+All providers are registered in `config/initializers/devise.rb`, routed through `Users::OmniauthCallbacksController` (`google_oauth2`, `twitter2`, `facebook`, `mastodon` actions → `handle_callback`) and resolved by `User.from_omniauth` (`app/models/user.rb`). Every successful sign-in upserts an `OauthIdentity(user_id, provider, uid)` row (`app/models/oauth_identity.rb`). OmniAuth sign-ins bypass the TOTP step.
 
-**X (Twitter) API v2:**
-- Purpose: OAuth 2.0 sign-in (`omniauth-twitter2`); fetch following list; fetch recent tweets; lookup user by handle (manual add)
-- SDK/Client: `omniauth-twitter2` (sign-in), `faraday` with per-user Bearer token (API calls)
-- Auth: `TWITTER2_CLIENT_ID`, `TWITTER2_CLIENT_SECRET` env vars → `config/app_config.yml`; per-user `oauth2_token` + `oauth2_refresh_token` on `users` (encrypted at rest)
-- Implementation: `app/services/x_client.rb`
-  - `fetch_following` — `GET /2/users/:uid/following`
-  - `fetch_recent_tweets` — `GET /2/users/:id/tweets` (excludes retweets and replies)
-  - `lookup_user_by_username` — `GET /2/users/by/username/:handle`
-  - Refreshes expired tokens via `POST https://api.x.com/2/oauth2/token` when `oauth2_token_expires_at` is near expiry
-- Gate: `TwitterLinkRequirement` requires `uid` + `oauth2_token` (not legacy OAuth1 columns)
-- Rate limiting: returns `{ success: false, error: :rate_limited }` on HTTP 429
-- Tests: WebMock stubs + Faraday `:test` adapter injection (no class-level stub accessors)
+| Provider | Gem / strategy | Scope | Credentials |
+|----------|----------------|-------|-------------|
+| Google | `omniauth-google-oauth2` | `email` | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` |
+| X (OAuth 2.0) | `omniauth-twitter2` | `tweet.read users.read follows.read users.email offline.access` | `TWITTER2_CLIENT_ID`, `TWITTER2_CLIENT_SECRET` |
+| Facebook | `omniauth-facebook` | `email` | `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` |
+| Mastodon | `OmniAuth::Strategies::Mastodon` (`lib/omniauth/strategies/mastodon.rb`) | `read` | None static — placeholders in `devise.rb`; client id/secret are obtained per instance at request time |
 
-**Mastodon REST API:**
-- Purpose: Fetch recent status previews for Mastodon gadget (read-only, no OAuth)
-- SDK/Client: `faraday` (plain HTTP, no auth)
-- Endpoints used: `GET /api/v1/accounts/lookup`, `GET /api/v1/accounts/:id/statuses`
-- Implementation: `app/services/mastodon_client.rb`
-- Instance host: user-configurable per `MastodonAccount` record
-- Timeouts: 3s connect, 5s read
+**User matching rules (`User.from_omniauth`):**
+- `twitter2`: match by `OauthIdentity(twitter2, uid)`, then by email; stores `oauth2_token`, `oauth2_refresh_token`, `oauth2_token_expires_at`, `x_user_name`; saved with `save(validate: false)`. New users without an email get `dummy_<uuid>@example.com` and can later register a real address (`Users::EmailRegistrationsController`).
+- `facebook` / `google_oauth2`: match by email or create.
+- `mastodon`: uid is the composite `"<instance>:<account_id>"`; match by identity, then by the user's normalized `mastodon_handle` (`MastodonHandleNormalizer`), else create.
 
-**RSS/Atom Feeds:**
-- Purpose: Parse external RSS/Atom feeds for the Feed gadget
-- SDK/Client: `feedjira 4.0.2`
-- Implementation: `app/models/feed.rb`
-- Supported parsers: `Feedjira::Parser::RSS`, `Feedjira::Parser::Atom`, `Feedjira::Parser::RSSFeedBurner`
+**Mastodon OAuth flow:**
+1. User enters an instance on the sign-in page → `POST /users/mastodon_instance` (`Users::MastodonInstancesController#create`, unauthenticated)
+2. `MastodonInstanceNormalizer` validates the hostname → stored in `session[:mastodon_instance]`
+3. `authorize_redirect.html.erb` auto-submits a POST to `/users/auth/mastodon` (CSRF-protected request phase)
+4. The strategy registers an app on the instance (`POST /api/v1/apps`, Faraday), keeps client credentials in session, then runs standard OAuth2
+5. The callback clears the `mastodon_*` session keys
+
+**Connected-account management:** `DELETE /oauth_identities/:provider` (`OauthIdentitiesController`) disconnects a provider, or `provider=form` disables password login. Guarded by `User#disconnect_oauth!` / `#disconnect_form_auth!`: refuses to remove the last auth method (`LastAuthMethodError`) and uses `users.lock_version` for optimistic concurrency (`StaleObjectError`).
+
+## Content APIs
+
+**X API v2** — `app/services/x_client.rb`
+- Base URL `https://api.twitter.com` for data calls; token refresh at `POST https://api.x.com/2/oauth2/token`
+- Per-user Bearer token (`users.oauth2_token`), refreshed automatically when near expiry
+- `fetch_following` (`GET /2/users/:uid/following`), `fetch_recent_tweets` (`GET /2/users/:id/tweets`, excludes retweets and replies), `lookup_user_by_username` (`GET /2/users/by/username/:handle`)
+- Timeouts: 3s connect, 5s read. Result hash with error symbols `:timeout :network :unauthorized :rate_limited :not_found :suspended :api_error :parse_error`
+- **Usage metering:** controllers log every call via `XApiCall.record!` (endpoint, success, error_code, rate_limit_remaining). The `x_api_calls` table feeds the admin report at `/admin/x_api_usages`.
+- Gate: `TwitterLinkRequirement` concern (`User#twitter_linked?` = twitter2 identity + token present)
+- Selection cap: at most 12 selected X accounts per user (`XAccount::MAX_SELECTION`, soft warning at 9)
+
+**Mastodon REST API** (read-only, unauthenticated) — `app/services/mastodon_client.rb`
+- `GET /api/v1/accounts/lookup`, `GET /api/v1/accounts/:id/statuses` against `https://<instance_host>`
+- Timeouts: 3s / 5s; same result-hash convention
+- Helpers: `MastodonHandleNormalizer`, `MastodonInstanceNormalizer`
+
+**RSS / Atom feeds** — `app/models/feed.rb`
+- Fetched with `Daddy::HttpClient`, parsed by `feedjira` (RSS, Atom, RSSFeedBurner parsers)
+- Synchronous fetch on each gadget XHR (`feeds#show`); no caching
+- Feed icon URLs read from feed metadata (`gadget_title_icon_image_url`)
+
+**Page-title fetch** — `GET /bookmarks/fetch_title` (Faraday + `follow_redirects`) and `GET /feeds/fetch_title` (via `Feed#feed?`). Scheme / host checks only; see CONCERNS.md (SSRF).
 
 ## Data Storage
 
-**Databases:**
-- Type: MySQL (utf8mb4 charset, `utf8mb4_general_ci` collation)
-- Databases: `bookmarks_dev` / `bookmarks_test` / `bookmarks_pro`
-- Connection env vars: `MYSQL_HOST` (default: `127.0.0.1`), `MYSQL_PORT` (default: 3306), `MYSQL_USERNAME` (default: `bookmarks`), `MYSQL_PASSWORD` (default: `bookmarks`)
-- Client: `mysql2` gem via ActiveRecord
-- Pool: `RAILS_MAX_THREADS` (default: 5)
-
-**File Storage:**
-- Service: ActiveStorage local disk in all environments
-- Development/test path: `storage/` and `tmp/storage/`
-- Production: local disk (`config.active_storage.service = :local`)
-- AWS S3, GCS, Azure Storage configs are commented out in `config/storage.yml` — not active
-
-**Caching:**
-- Development: `:memory_store`
-- Production: default in-process (no external cache store configured; `mem_cache_store` commented out)
-
-**Message Bus:**
-- ActionCable
-- Development/test adapter: `:async` (in-process)
-- Production adapter: Redis at `redis://localhost:6379/1`, channel prefix `bookmarks_pro`
-
-## Authentication & Identity
-
-**Primary Auth:**
-- Devise 5.0.4 with `database_authenticatable` (bcrypt, 11 stretches in production)
-- Password length: 8–128 characters
-- Email confirmation not enabled (`:confirmable` commented out on `User`); password reset and remember-me supported
-- Password reset token valid for 6 hours
-- Remember-me supported; all tokens invalidated on sign-out
-
-**Two-Factor Auth (TOTP):**
-- `devise-two-factor ~> 6.0` with ROTP
-- `otp_secret` encrypted via ActiveRecord Encryption on `users` table
-- OTP length: 6 digits (configurable via `BOOKMARKS_OTP_LENGTH` env var)
-- QR code generation: `rqrcode 2.2.0`
-- Two-step sign-in flow: password → OTP page (`app/controllers/users/two_factor_authentication_controller.rb`)
-- Setup/disable: `app/controllers/users/two_factor_setup_controller.rb`
-- OmniAuth sign-in bypasses OTP
-
-**Social Sign-In:**
-- Google OAuth2: `omniauth-google-oauth2`
-- X OAuth 2.0: `omniauth-twitter2` (scopes include `users.email`, `offline.access`)
-- CSRF protection: `omniauth-rails_csrf_protection`
-- User lookup/creation: `User.from_omniauth(access_token)` in `app/models/user.rb` (`twitter2` branch persists OAuth2 tokens and optional real email)
-
-**ActiveRecord Encryption:**
-- Used for: `otp_secret`, `oauth2_token`, `oauth2_refresh_token` on `User`
-- Keys (ENV with dev fallback in `config/application.rb`):
-  - `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`
-  - `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY`
-  - `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`
-- `support_unencrypted_data: true` enabled in test environment (`config/environments/test.rb`) to allow fixture plain-text reads
+- **MySQL** (utf8mb4): 13 tables — `bookmarks, feeds, mastodon_accounts, notes, oauth_identities, portal_layouts, portals, preferences, todos, users, visited_links, x_accounts, x_api_calls`. Schema version `2026_11_24_120000`.
+- **Browser `localStorage`:** `bookmarksPendingVisitedLinks` (queue of visit / like posts made while the session was expired, flushed after re-login — `visited_links.js`); `portalMobileActiveColumn` (mobile tab).
+- **ActiveStorage:** local disk; routes disabled; unused.
+- **Cache store:** none configured in production.
 
 ## Email
 
-**Delivery:**
-- Development: `raise_delivery_errors = false` (no actual sending)
-- Production: SMTP via AWS SES
-  - `config.action_mailer.delivery_method = :smtp`
-  - Settings from `config/app_config.yml` → env vars: `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
-  - From address: `SMTP_FROM` env var (also used in Devise mailer sender)
-- Default URL options (production): `https://` + `APP_HOST` env var
+- Production: SMTP (port 587, `login` auth) via AWS SES — `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`; sender `SMTP_FROM`; links use `https://$APP_HOST`
+- Only Devise mailers (password reset etc.); no application mailers
 
-**Mailers:**
-- Devise mailer (password reset, email confirmation, etc.)
-- No custom application mailers detected
+## Observability
 
-## Monitoring & Observability
+- Logs: STDOUT, tagged by request id, `RAILS_LOG_LEVEL` (default `info`); `/up` silenced
+- `config/initializers/omniauth_logger.rb` routes OmniAuth logs to the Rails logger
+- No error tracker or APM
 
-**Error Tracking:**
-- None detected
+## CI/CD
 
-**Logging:**
-- Development: Rails default logger with verbose query logs and query log tags enabled
-- Production: `ActiveSupport::TaggedLogging` to STDOUT, tagged with request ID, log level controlled by `RAILS_LOG_LEVEL` env var (default: `info`)
-- Health check path `/up` silenced from logs in production
+**Jenkins** (`Jenkinsfile`, Kubernetes agents, `global-build-lock`):
+1. `build` — Kaniko builds `base` and `test` images, pushed to ECR
+2. `unit` — `bin/bundler-audit`, `rake dad:db:create`, `rails db:reset`, `rails test` (`COVERAGE=true`, JUnit + SimpleCov HTML published)
+3. `release` — pushes `HEAD:release`, tags `${MILESTONE}-${BUILD_NUMBER}` (`MILESTONE = "v1.37.1"` in the Jenkinsfile), builds the `app` image
+4. On success, triggers `bookmarks-features` (`Jenkinsfile.features`): MySQL + Chrome pod, `rake dad:test` with `HEADLESS=true REMOTE=true`; publishes `features/reports`
 
-**APM/Metrics:**
-- None detected
+No GitHub Actions. ESLint is **not** run in CI — run `yarn run lint` locally.
 
-## CI/CD & Deployment
+**Deploy:** Kustomize manifests (`config/kustomize/app.yml`, `db.yml`, `service.yml`), secret `bookmarks-secret`. Server provisioning recipes: Itamae (`config/itamae/`).
 
-**Hosting:**
-- Docker-based on Kubernetes (Kustomize manifests in `config/kustomize/`)
-- Base image: `hybitz-almalinux:9.7`
-- App image built from `Dockerfile.app` (extends `Dockerfile.base`)
-- Test image: `Dockerfile.test`
+## Admin Tooling
 
-**Deployment process:**
-- `daddy` gem provides `dad:setup` rake task for app initialization
-- `Dockerfile.app` runs `rake dad:setup:app` then `assets:precompile` at build time
-- Kubernetes config: 1 replica, port 3000, ConfigMap + Secret via `bookmarks-secret`
+- `bin/rails users:promote_admin EMAIL=… | USER_ID=…` (`lib/tasks/users.rake`) sets `users.admin = true`
+- `/admin/users` — user list with per-user content counts; purge of accounts soft-deleted ≥ 90 days ago (`User::PURGE_AFTER_DAYS`, `User#purge!`)
+- `/admin/x_api_usages` — X API call summary and per-day breakdown, with date-range filter
 
-**CI Pipeline:**
-- No hosted CI detected (no `.github/workflows/`, `.circleci/`, etc.)
-- `config/ci.rb` present (Rails CI config file)
-- `ci_reporter` gem available for CI-compatible test output
-
-**Infrastructure as Code:**
-- Itamae cookbooks in `config/itamae/` (server provisioning — roles: `app`, `db`, `base`, `test`)
-
-## Webhooks & Callbacks
-
-**Incoming:**
-- OmniAuth callbacks for Google and Twitter (mounted via Devise routes)
-
-**Outgoing:**
-- None detected
-
-## Environment Configuration Summary
-
-**Required env vars for production:**
+## Environment Variables (production)
 
 | Variable | Purpose |
 |----------|---------|
-| `MYSQL_HOST` | Database host |
-| `MYSQL_USERNAME` | Database username |
-| `MYSQL_PASSWORD` | Database password |
-| `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
-| `TWITTER2_CLIENT_ID` | X OAuth 2.0 client ID |
-| `TWITTER2_CLIENT_SECRET` | X OAuth 2.0 client secret |
-| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | AR encryption primary key |
-| `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | AR encryption deterministic key |
-| `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | AR encryption salt |
-| `AWS_ADDRESS` | SES SMTP address |
-| `AWS_DOMAIN` | SES SMTP domain |
-| `AWS_ACCESS_KEY_ID` | SES SMTP username |
-| `AWS_SECRET_ACCESS_KEY` | SES SMTP password |
-| `SMTP_FROM` | Email from address |
-| `APP_HOST` | Production hostname for mailer URLs |
-| `SECRET_KEY_BASE` | Rails secret key base |
-| `RAILS_MAX_THREADS` | Puma thread count (default: 3) |
-| `PORT` | Puma listen port (default: 3000) |
-| `BOOKMARKS_OTP_LENGTH` | TOTP code length (default: 6) |
+| `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USERNAME`, `MYSQL_PASSWORD` | Database |
+| `SECRET_KEY_BASE` | Rails secret |
+| `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `…_DETERMINISTIC_KEY`, `…_KEY_DERIVATION_SALT` | AR encryption (falls back to `dev_dummy_key` if unset!) |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in |
+| `TWITTER2_CLIENT_ID`, `TWITTER2_CLIENT_SECRET` | X sign-in + API |
+| `FACEBOOK_APP_ID`, `FACEBOOK_APP_SECRET` | Facebook sign-in |
+| `AWS_ADDRESS`, `AWS_DOMAIN`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `SMTP_FROM` | Mail |
+| `APP_HOST` | Mailer URL host |
+| `RAILS_MAX_THREADS`, `PORT`, `RAILS_LOG_LEVEL` | Puma / logging |
+| `BOOKMARKS_OTP_LENGTH` | TOTP digits (default 6) |
 
 ---
 
-*Integration audit: 2026-05-23*
+*Integration audit: 2026-11-26*
