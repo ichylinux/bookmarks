@@ -28,6 +28,12 @@ div.gadgets {
         padding: 4px 4px 4px $gadget-list-inset-inline-start;
       }
 
+      // Align the title icon with the entry like (heart) icons below:
+      // entries start at ol padding (2px) + li margin (0.5em), see common.css.scss.
+      body:not(.no-icons) & div.title.title--gadget-with-icon {
+        padding-left: calc(2px + 0.5em);
+      }
+
       div.title.title--gadget-with-icon .gadget-title-drag-handle {
         flex: 1;
         min-width: 0;
