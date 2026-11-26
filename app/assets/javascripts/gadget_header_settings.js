@@ -29,6 +29,22 @@ $(document).ready(() => {
     });
   }
 
+  // 再読込（feeds#show）はリモートの RSS を取り直すため、応答まで数秒かかったり
+  // 取得失敗で置き換え自体が起きなかったりする。保存したタイトルはその完了を
+  // 待たずにヘッダへ反映する。
+  function applyFeedTitle($form, feedId) {
+    const title = $.trim($form.find('input[name="feed[title]"]').val() || '');
+    if (title === '') return;
+
+    const $titleText = $('#feed_' + feedId + ' .gadget-title-text');
+    const $link = $titleText.find('a').first();
+    if ($link.length) {
+      $link.text(title);
+    } else {
+      $titleText.text(title);
+    }
+  }
+
   function reloadFeedGadget(feedId, feedUrl) {
     $.get(feedUrl, { format: 'html' }, function(html) {
       $('#feed_' + feedId).html(html);
@@ -127,7 +143,9 @@ $(document).ready(() => {
 
     const feedId = $form.data('feedId');
     const feedUrl = $form.data('feedUrl');
-    if (feedId && feedUrl) reloadFeedGadget(feedId, feedUrl);
+    if (!feedId) return;
+    applyFeedTitle($form, feedId);
+    if (feedUrl) reloadFeedGadget(feedId, feedUrl);
   });
 
   $(document).on('ajax:error', '.feed-settings-dialog__form', function(e) {
