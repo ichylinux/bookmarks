@@ -115,3 +115,31 @@ end
   )
   capture
 end
+
+もし /^フィードガジェット設定でタイトルを "([^"]*)" に変更して保存すると、ヘッダのタイトルが即座に変わります。$/ do |title|
+  dialog_id = find('dialog.feed-settings-dialog[open]', visible: :all)[:id]
+  feed = Feed.find(dialog_id.delete_prefix('feed-settings-dialog-'))
+  gadget_sel = "##{feed.gadget_id}"
+
+  # 保存後の再読込（feeds#show）はリモート RSS の取得を待つため遅い。その応答を
+  # 保留させ、再読込の完了を待たずにヘッダへ反映されることを確かめる。
+  page.execute_script(<<~JS, "/feeds/#{feed.id}")
+    const reloadPath = arguments[0];
+    const originalGet = jQuery.get;
+    jQuery.get = function(url) {
+      if (url === reloadPath) return jQuery.Deferred().promise();
+      return originalGet.apply(this, arguments);
+    };
+  JS
+
+  within 'dialog.feed-settings-dialog[open]' do
+    find('input[name="feed[title]"]').set(title)
+    find('.feed-settings-dialog__submit').click
+  end
+  assert wait_until { !has_selector?('dialog.feed-settings-dialog[open]', visible: :all, wait: 0.5) },
+         '設定ダイアログが閉じません'
+  assert wait_until { feed.reload.title == title }, 'タイトルが保存されていません'
+
+  assert_selector("#{gadget_sel} .gadget-title-text a", exact_text: title, wait: 5)
+  capture
+end
