@@ -39,7 +39,7 @@ $todo-priority-width-en: 4.5em;
 
     &.highlighted {
       background: #fff8e1;
-      box-shadow: inset 3px 0 0 #f59e0b;
+      box-shadow: inset 0.2em 0 0 #f59e0b;
 
       .todo-title {
         color: #92400e;
@@ -63,7 +63,7 @@ $todo-priority-width-en: 4.5em;
           min-width: auto;
           max-width: none;
           text-align: left;
-          padding-left: 2px;
+          padding-left: 0.15em;
         }
       }
 
